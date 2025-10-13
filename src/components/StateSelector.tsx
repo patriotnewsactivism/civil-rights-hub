@@ -4,37 +4,71 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { MapPin, Video, Phone } from "lucide-react";
 
-const stateData = {
-  "California": {
-    recording: "Two-party consent",
-    policeRecording: "Legal in public",
-    notes: "All parties must consent to private recordings. Police recording in public is protected by First Amendment."
-  },
-  "New York": {
-    recording: "One-party consent",
-    policeRecording: "Legal in public",
-    notes: "Only one party needs to consent to recordings. Recording police is constitutionally protected."
-  },
-  "Texas": {
-    recording: "One-party consent",
-    policeRecording: "Legal in public",
-    notes: "One-party consent state. Citizens may record police in public spaces."
-  },
-  "Florida": {
-    recording: "Two-party consent",
-    policeRecording: "Legal in public",
-    notes: "All parties must consent to private recordings. Public recordings of police are protected."
-  },
-  "Illinois": {
-    recording: "Two-party consent",
-    policeRecording: "Legal in public",
-    notes: "Illinois requires all-party consent. Recording police officers in public is legal."
-  }
+const stateData: Record<string, { recording: string; policeRecording: string; notes: string }> = {
+  "Alabama": { recording: "One-party consent", policeRecording: "Legal in public", notes: "One-party consent state. Citizens may record police in public spaces." },
+  "Alaska": { recording: "One-party consent", policeRecording: "Legal in public", notes: "One-party consent state. Recording police officers in public is legal." },
+  "Arizona": { recording: "One-party consent", policeRecording: "Legal in public", notes: "One-party consent state. Public recordings of police are protected." },
+  "Arkansas": { recording: "One-party consent", policeRecording: "Legal in public", notes: "One-party consent state. Citizens may record police in public spaces." },
+  "California": { recording: "Two-party consent", policeRecording: "Legal in public", notes: "All parties must consent to private recordings. Police recording in public is protected by First Amendment." },
+  "Colorado": { recording: "One-party consent", policeRecording: "Legal in public", notes: "One-party consent state. Recording police officers in public is legal." },
+  "Connecticut": { recording: "Two-party consent", policeRecording: "Legal in public", notes: "All parties must consent. Public recordings of police are protected." },
+  "Delaware": { recording: "Two-party consent", policeRecording: "Legal in public", notes: "All parties must consent to private recordings. Recording police in public is legal." },
+  "Florida": { recording: "Two-party consent", policeRecording: "Legal in public", notes: "All parties must consent to private recordings. Public recordings of police are protected." },
+  "Georgia": { recording: "One-party consent", policeRecording: "Legal in public", notes: "One-party consent state. Citizens may record police in public spaces." },
+  "Hawaii": { recording: "One-party consent", policeRecording: "Legal in public", notes: "One-party consent state. Recording police officers in public is legal." },
+  "Idaho": { recording: "One-party consent", policeRecording: "Legal in public", notes: "One-party consent state. Public recordings of police are protected." },
+  "Illinois": { recording: "Two-party consent", policeRecording: "Legal in public", notes: "Illinois requires all-party consent. Recording police officers in public is legal." },
+  "Indiana": { recording: "One-party consent", policeRecording: "Legal in public", notes: "One-party consent state. Citizens may record police in public spaces." },
+  "Iowa": { recording: "One-party consent", policeRecording: "Legal in public", notes: "One-party consent state. Recording police officers in public is legal." },
+  "Kansas": { recording: "One-party consent", policeRecording: "Legal in public", notes: "One-party consent state. Public recordings of police are protected." },
+  "Kentucky": { recording: "One-party consent", policeRecording: "Legal in public", notes: "One-party consent state. Citizens may record police in public spaces." },
+  "Louisiana": { recording: "One-party consent", policeRecording: "Legal in public", notes: "One-party consent state. Recording police officers in public is legal." },
+  "Maine": { recording: "One-party consent", policeRecording: "Legal in public", notes: "One-party consent state. Public recordings of police are protected." },
+  "Maryland": { recording: "Two-party consent", policeRecording: "Legal in public", notes: "All parties must consent. Recording police in public is constitutionally protected." },
+  "Massachusetts": { recording: "Two-party consent", policeRecording: "Legal in public", notes: "All parties must consent to private recordings. Public recordings of police are protected." },
+  "Michigan": { recording: "Two-party consent", policeRecording: "Legal in public", notes: "All parties must consent. Recording police officers in public is legal." },
+  "Minnesota": { recording: "One-party consent", policeRecording: "Legal in public", notes: "One-party consent state. Citizens may record police in public spaces." },
+  "Mississippi": { recording: "One-party consent", policeRecording: "Legal in public", notes: "One-party consent state. Recording police officers in public is legal." },
+  "Missouri": { recording: "One-party consent", policeRecording: "Legal in public", notes: "One-party consent state. Public recordings of police are protected." },
+  "Montana": { recording: "Two-party consent", policeRecording: "Legal in public", notes: "All parties must consent. Recording police in public is legal." },
+  "Nebraska": { recording: "One-party consent", policeRecording: "Legal in public", notes: "One-party consent state. Citizens may record police in public spaces." },
+  "Nevada": { recording: "Two-party consent", policeRecording: "Legal in public", notes: "All parties must consent to private recordings. Public recordings of police are protected." },
+  "New Hampshire": { recording: "Two-party consent", policeRecording: "Legal in public", notes: "All parties must consent. Recording police officers in public is legal." },
+  "New Jersey": { recording: "One-party consent", policeRecording: "Legal in public", notes: "One-party consent state. Public recordings of police are protected." },
+  "New Mexico": { recording: "One-party consent", policeRecording: "Legal in public", notes: "One-party consent state. Citizens may record police in public spaces." },
+  "New York": { recording: "One-party consent", policeRecording: "Legal in public", notes: "Only one party needs to consent to recordings. Recording police is constitutionally protected." },
+  "North Carolina": { recording: "One-party consent", policeRecording: "Legal in public", notes: "One-party consent state. Recording police officers in public is legal." },
+  "North Dakota": { recording: "One-party consent", policeRecording: "Legal in public", notes: "One-party consent state. Public recordings of police are protected." },
+  "Ohio": { recording: "One-party consent", policeRecording: "Legal in public", notes: "One-party consent state. Citizens may record police in public spaces." },
+  "Oklahoma": { recording: "One-party consent", policeRecording: "Legal in public", notes: "One-party consent state. Recording police officers in public is legal." },
+  "Oregon": { recording: "Two-party consent", policeRecording: "Legal in public", notes: "All parties must consent. Public recordings of police are protected." },
+  "Pennsylvania": { recording: "Two-party consent", policeRecording: "Legal in public", notes: "All parties must consent to private recordings. Recording police in public is legal." },
+  "Rhode Island": { recording: "One-party consent", policeRecording: "Legal in public", notes: "One-party consent state. Citizens may record police in public spaces." },
+  "South Carolina": { recording: "One-party consent", policeRecording: "Legal in public", notes: "One-party consent state. Recording police officers in public is legal." },
+  "South Dakota": { recording: "One-party consent", policeRecording: "Legal in public", notes: "One-party consent state. Public recordings of police are protected." },
+  "Tennessee": { recording: "One-party consent", policeRecording: "Legal in public", notes: "One-party consent state. Citizens may record police in public spaces." },
+  "Texas": { recording: "One-party consent", policeRecording: "Legal in public", notes: "One-party consent state. Citizens may record police in public spaces." },
+  "Utah": { recording: "One-party consent", policeRecording: "Legal in public", notes: "One-party consent state. Recording police officers in public is legal." },
+  "Vermont": { recording: "One-party consent", policeRecording: "Legal in public", notes: "One-party consent state. Public recordings of police are protected." },
+  "Virginia": { recording: "One-party consent", policeRecording: "Legal in public", notes: "One-party consent state. Citizens may record police in public spaces." },
+  "Washington": { recording: "Two-party consent", policeRecording: "Legal in public", notes: "All parties must consent. Recording police officers in public is legal." },
+  "West Virginia": { recording: "One-party consent", policeRecording: "Legal in public", notes: "One-party consent state. Public recordings of police are protected." },
+  "Wisconsin": { recording: "One-party consent", policeRecording: "Legal in public", notes: "One-party consent state. Citizens may record police in public spaces." },
+  "Wyoming": { recording: "One-party consent", policeRecording: "Legal in public", notes: "One-party consent state. Recording police officers in public is legal." }
 };
 
-export const StateSelector = () => {
-  const [selectedState, setSelectedState] = useState<string>("");
+interface StateSelectorProps {
+  selectedState?: string;
+}
+
+export const StateSelector = ({ selectedState: initialState = "" }: StateSelectorProps) => {
+  const [selectedState, setSelectedState] = useState<string>(initialState);
   const stateInfo = selectedState ? stateData[selectedState as keyof typeof stateData] : null;
+  
+  // Update selected state when prop changes
+  useState(() => {
+    if (initialState) setSelectedState(initialState);
+  });
 
   return (
     <section id="states" className="py-20 bg-background">

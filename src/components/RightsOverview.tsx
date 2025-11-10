@@ -145,12 +145,6 @@ export const RightsOverview = () => {
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Understanding your rights is the first step to protecting them. Download pocket guides or view details for each constitutional protection.
           </p>
-          {!loading && state && (
-            <Badge variant="outline" className="mt-4">
-              <FileText className="h-4 w-4 mr-2" />
-              Showing rights for: {state}
-            </Badge>
-          )}
         </div>
 
         <div className="grid md:grid-cols-2 gap-6 max-w-6xl mx-auto">

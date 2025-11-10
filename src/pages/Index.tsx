@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { Hero } from "@/components/Hero";
 import { RightsOverview } from "@/components/RightsOverview";
+import { KnowYourRights } from "@/components/KnowYourRights";
+import { IncidentGuide } from "@/components/IncidentGuide";
+import { ViolationReport } from "@/components/ViolationReport";
+import { ViolationFeed } from "@/components/ViolationFeed";
 import { StateSelector } from "@/components/StateSelector";
 import { InteractiveMap } from "@/components/InteractiveMap";
 import { CaseSearch } from "@/components/CaseSearch";
@@ -21,6 +25,10 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Hero />
       <RightsOverview />
+      <KnowYourRights />
+      <IncidentGuide />
+      <ViolationReport />
+      <ViolationFeed />
       <section className="py-12 bg-muted/50">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">

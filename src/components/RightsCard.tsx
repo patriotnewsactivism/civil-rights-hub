@@ -2,9 +2,10 @@ import { useState, useRef } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Download, CreditCard } from "lucide-react";
+import { Download, CreditCard, Share2 } from "lucide-react";
 import { useGeolocation } from "@/hooks/useGeolocation";
 import html2canvas from "html2canvas";
+import { useToast } from "@/hooks/use-toast";
 
 const stateRightsData: Record<string, {
   recordingLaw: string;
@@ -15,17 +16,26 @@ const stateRightsData: Record<string, {
     recordingLaw: "One-party consent",
     policeRecording: "Legal in public",
     importantNotes: [
-      "You can record police in public spaces",
-      "Cannot interfere with official duties",
-      "ID required if driving, not walking"
+      "You can record police in public",
+      "ID required if driving, not walking",
+      "Cannot interfere with duties"
     ]
   },
   "Alaska": {
     recordingLaw: "One-party consent",
     policeRecording: "Legal in public",
     importantNotes: [
-      "You can record police in public spaces",
-      "Cannot interfere with official duties",
+      "You can record police in public",
+      "Stop and identify law applies",
+      "Cannot interfere with duties"
+    ]
+  },
+  "Arizona": {
+    recordingLaw: "One-party consent",
+    policeRecording: "Legal in public",
+    importantNotes: [
+      "Recording police is protected",
+      "Cannot record within 8 feet",
       "Stop and identify law applies"
     ]
   },
@@ -34,7 +44,7 @@ const stateRightsData: Record<string, {
     policeRecording: "Legal in public",
     importantNotes: [
       "Recording police in public is protected",
-      "Private conversations require all-party consent",
+      "Private conversations need consent",
       "Stop and identify law applies"
     ]
   },
@@ -44,7 +54,7 @@ const stateRightsData: Record<string, {
     importantNotes: [
       "Recording police in public is legal",
       "Cannot record private conversations",
-      "No stop and identify statute"
+      "No stop and identify law"
     ]
   },
   "New York": {
@@ -62,7 +72,7 @@ const stateRightsData: Record<string, {
     importantNotes: [
       "Recording police is protected by law",
       "Must provide ID if lawfully arrested",
-      "Open carry state - know your rights"
+      "Open carry state"
     ]
   }
 };
@@ -82,7 +92,9 @@ const allStates = [
 export const RightsCard = () => {
   const { state: detectedState } = useGeolocation();
   const [selectedState, setSelectedState] = useState<string>("");
+  const [isGenerating, setIsGenerating] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
+  const { toast } = useToast();
 
   const currentState = selectedState || detectedState || "";
   const stateData = stateRightsData[currentState] || {
@@ -90,36 +102,95 @@ export const RightsCard = () => {
     policeRecording: "Generally legal in public",
     importantNotes: [
       "You have the right to remain silent",
-      "You can refuse searches without a warrant",
-      "You can record police in public spaces"
+      "Refuse searches without warrant",
+      "Record police in public spaces"
     ]
   };
 
-  const downloadCard = async () => {
-    if (!cardRef.current || !currentState) return;
+  const saveToGallery = async () => {
+    if (!cardRef.current || !currentState) {
+      toast({
+        title: "Please select a state",
+        description: "Choose a state to generate your rights card",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsGenerating(true);
 
     try {
       const canvas = await html2canvas(cardRef.current, {
         scale: 3,
         backgroundColor: "#1e3a8a",
         logging: false,
+        width: 600,
+        height: 900,
       });
 
-      // Convert to blob and download
-      canvas.toBlob((blob) => {
-        if (blob) {
-          const url = URL.createObjectURL(blob);
-          const link = document.createElement('a');
-          link.href = url;
-          link.download = `Know-Your-Rights-${currentState.replace(/\s+/g, '-')}.png`;
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          URL.revokeObjectURL(url);
+      // Convert to blob
+      canvas.toBlob(async (blob) => {
+        if (!blob) {
+          throw new Error("Failed to generate image");
         }
-      }, 'image/png');
+
+        const fileName = `Rights-Card-${currentState.replace(/\s+/g, '-')}.png`;
+
+        // Try Web Share API first (works great on mobile)
+        if (navigator.share && navigator.canShare) {
+          try {
+            const file = new File([blob], fileName, { type: 'image/png' });
+
+            if (navigator.canShare({ files: [file] })) {
+              await navigator.share({
+                files: [file],
+                title: `${currentState} Rights Card`,
+                text: `Know Your Rights - ${currentState}`
+              });
+
+              toast({
+                title: "Success!",
+                description: "Choose 'Save to Photos' or 'Save Image' to add to your camera roll",
+              });
+              setIsGenerating(false);
+              return;
+            }
+          } catch (shareError) {
+            // User cancelled or share failed, fall through to download
+            console.log('Share cancelled or failed:', shareError);
+          }
+        }
+
+        // Fallback: Direct download (works on desktop and some mobile browsers)
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = fileName;
+
+        // For mobile browsers, try to trigger a long-press save
+        link.setAttribute('target', '_blank');
+
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+
+        toast({
+          title: "Card Generated!",
+          description: "On mobile: Tap and hold the image, then select 'Save to Photos' or 'Add to Photos'",
+          duration: 6000,
+        });
+
+        setIsGenerating(false);
+      }, 'image/png', 1.0);
     } catch (error) {
       console.error('Error generating card:', error);
+      toast({
+        title: "Error",
+        description: "Failed to generate card. Please try again.",
+        variant: "destructive"
+      });
+      setIsGenerating(false);
     }
   };
 
@@ -133,7 +204,7 @@ export const RightsCard = () => {
               <h2 className="text-4xl font-bold">Pocket Rights Card</h2>
             </div>
             <p className="text-muted-foreground text-lg">
-              Generate a mobile-optimized rights card for your state. Save it to your phone for quick reference.
+              Generate a mobile-sized rights card for your state. Save it to your camera roll for quick reference during encounters.
             </p>
           </div>
 
@@ -141,11 +212,11 @@ export const RightsCard = () => {
             <CardHeader>
               <CardTitle>Select Your State</CardTitle>
               <CardDescription>
-                Choose your state to generate a personalized rights card with state-specific information
+                Choose your state to generate a personalized pocket rights card
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="flex gap-4 items-end">
+              <div className="flex flex-col sm:flex-row gap-4">
                 <div className="flex-1">
                   <Select value={selectedState} onValueChange={setSelectedState}>
                     <SelectTrigger>
@@ -161,12 +232,19 @@ export const RightsCard = () => {
                   </Select>
                 </div>
                 <Button
-                  onClick={downloadCard}
-                  disabled={!currentState}
+                  onClick={saveToGallery}
+                  disabled={!currentState || isGenerating}
                   className="gap-2"
+                  size="lg"
                 >
-                  <Download className="h-4 w-4" />
-                  Save to Gallery
+                  {isGenerating ? (
+                    "Generating..."
+                  ) : (
+                    <>
+                      <Share2 className="h-4 w-4" />
+                      Save to Photos
+                    </>
+                  )}
                 </Button>
               </div>
             </CardContent>
@@ -176,54 +254,83 @@ export const RightsCard = () => {
             <div className="flex justify-center">
               <div
                 ref={cardRef}
-                className="w-[800px] h-[500px] bg-gradient-to-br from-blue-900 to-blue-600 rounded-2xl p-8 text-white shadow-2xl"
+                className="w-[600px] h-[900px] bg-gradient-to-br from-blue-900 via-blue-800 to-blue-600 rounded-3xl p-8 text-white shadow-2xl relative overflow-hidden"
                 style={{
                   fontFamily: 'Inter, sans-serif',
                 }}
               >
-                {/* Header */}
-                <div className="flex items-start justify-between mb-6">
-                  <div>
-                    <div className="text-3xl font-bold mb-1">KNOW YOUR RIGHTS</div>
-                    <div className="text-xl font-semibold text-blue-100">{currentState}</div>
-                  </div>
-                  <div className="w-16 h-16 bg-white/20 rounded-lg flex items-center justify-center">
-                    <CreditCard className="h-10 w-10 text-white" />
-                  </div>
+                {/* Decorative pattern */}
+                <div className="absolute inset-0 opacity-10">
+                  <div className="absolute top-0 right-0 w-64 h-64 bg-white rounded-full -translate-y-32 translate-x-32"></div>
+                  <div className="absolute bottom-0 left-0 w-48 h-48 bg-white rounded-full translate-y-24 -translate-x-24"></div>
                 </div>
 
-                {/* Main Content */}
-                <div className="space-y-5">
-                  <div className="bg-white/10 rounded-lg p-4 backdrop-blur-sm">
-                    <div className="text-sm font-semibold text-blue-100 mb-1">Recording Law</div>
-                    <div className="text-lg font-bold">{stateData.recordingLaw}</div>
+                <div className="relative z-10">
+                  {/* Header */}
+                  <div className="text-center mb-8">
+                    <div className="text-4xl font-bold mb-3 tracking-tight">KNOW YOUR RIGHTS</div>
+                    <div className="text-3xl font-bold text-blue-100 mb-2">{currentState}</div>
+                    <div className="w-24 h-1 bg-white/30 mx-auto rounded-full"></div>
                   </div>
 
-                  <div className="bg-white/10 rounded-lg p-4 backdrop-blur-sm">
-                    <div className="text-sm font-semibold text-blue-100 mb-1">Police Recording</div>
-                    <div className="text-lg font-bold">{stateData.policeRecording}</div>
-                  </div>
+                  {/* Main Content */}
+                  <div className="space-y-6">
+                    {/* Recording Law */}
+                    <div className="bg-white/15 rounded-2xl p-6 backdrop-blur-sm border border-white/20">
+                      <div className="text-sm font-bold text-blue-100 mb-2 uppercase tracking-wide">Recording Law</div>
+                      <div className="text-2xl font-bold">{stateData.recordingLaw}</div>
+                    </div>
 
-                  <div className="bg-white/10 rounded-lg p-4 backdrop-blur-sm">
-                    <div className="text-sm font-semibold text-blue-100 mb-2">Essential Rights</div>
-                    <ul className="space-y-1.5">
-                      {stateData.importantNotes.map((note, idx) => (
-                        <li key={idx} className="flex items-start gap-2 text-sm">
-                          <span className="text-blue-200 mt-0.5">•</span>
-                          <span>{note}</span>
+                    {/* Police Recording */}
+                    <div className="bg-white/15 rounded-2xl p-6 backdrop-blur-sm border border-white/20">
+                      <div className="text-sm font-bold text-blue-100 mb-2 uppercase tracking-wide">Police Recording</div>
+                      <div className="text-2xl font-bold">{stateData.policeRecording}</div>
+                    </div>
+
+                    {/* Essential Rights */}
+                    <div className="bg-white/15 rounded-2xl p-6 backdrop-blur-sm border border-white/20">
+                      <div className="text-sm font-bold text-blue-100 mb-4 uppercase tracking-wide">Essential Rights</div>
+                      <ul className="space-y-3">
+                        {stateData.importantNotes.map((note, idx) => (
+                          <li key={idx} className="flex items-start gap-3 text-base leading-relaxed">
+                            <span className="text-blue-200 text-xl mt-0.5 shrink-0">•</span>
+                            <span className="font-medium">{note}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    {/* Key Reminders */}
+                    <div className="bg-white/20 rounded-2xl p-6 backdrop-blur-sm border-2 border-white/30">
+                      <div className="text-sm font-bold text-blue-100 mb-3 uppercase tracking-wide">Remember</div>
+                      <ul className="space-y-2 text-sm">
+                        <li className="flex items-start gap-2">
+                          <span className="text-blue-200">✓</span>
+                          <span>You have the right to remain silent</span>
                         </li>
-                      ))}
-                    </ul>
+                        <li className="flex items-start gap-2">
+                          <span className="text-blue-200">✓</span>
+                          <span>Ask "Am I free to go?"</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="text-blue-200">✓</span>
+                          <span>Request a lawyer immediately</span>
+                        </li>
+                      </ul>
+                    </div>
                   </div>
-                </div>
 
-                {/* Footer */}
-                <div className="mt-6 pt-4 border-t border-white/20 text-center">
-                  <div className="text-xs text-blue-100">
-                    Civil Rights Hub • civilrights.wtpnews.org
-                  </div>
-                  <div className="text-xs text-blue-200 mt-1">
-                    This is general legal information, not legal advice
+                  {/* Footer */}
+                  <div className="mt-8 pt-6 border-t border-white/20 text-center space-y-2">
+                    <div className="text-sm font-bold">
+                      civilrights.wtpnews.org
+                    </div>
+                    <div className="text-xs text-blue-100">
+                      This is general legal information, not legal advice
+                    </div>
+                    <div className="text-xs text-blue-200">
+                      Consult an attorney for specific guidance
+                    </div>
                   </div>
                 </div>
               </div>
@@ -234,10 +341,19 @@ export const RightsCard = () => {
             <Card className="border-dashed">
               <CardContent className="py-12 text-center text-muted-foreground">
                 <CreditCard className="h-16 w-16 mx-auto mb-4 opacity-50" />
-                <p>Select a state above to generate your rights card</p>
+                <p>Select a state above to preview your pocket rights card</p>
               </CardContent>
             </Card>
           )}
+
+          <div className="mt-8 text-center text-sm text-muted-foreground max-w-2xl mx-auto">
+            <p className="mb-2">
+              <strong>📱 Mobile Tip:</strong> After tapping "Save to Photos", choose "Save Image" or "Add to Photos" from the share menu.
+            </p>
+            <p>
+              Keep this card on your phone for quick reference during traffic stops or interactions with law enforcement.
+            </p>
+          </div>
         </div>
       </div>
     </section>

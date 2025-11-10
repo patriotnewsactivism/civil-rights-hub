@@ -33,6 +33,9 @@ export const Hero = () => {
 
       <div className="relative z-10 container mx-auto px-4 py-20 md:py-32">
         <div className="max-w-4xl mx-auto text-center animate-fade-in">
+          <div className="flex justify-center mb-8">
+            <Shield className="h-32 w-32 md:h-40 md:w-40 text-primary-foreground drop-shadow-lg" />
+          </div>
           <h1 className="text-4xl md:text-6xl font-bold text-primary-foreground mb-6 leading-tight">
             Know Your Rights.<br />Protect Your Freedom.
           </h1>

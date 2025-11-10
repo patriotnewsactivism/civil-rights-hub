@@ -223,7 +223,8 @@ const emergencyContacts = [
   {
     category: "Documentation & Support",
     contacts: [
-      { name: "Mobile Justice App", number: "Download from ACLU", description: "Auto-upload police encounter videos" },
+      { name: "Cop Recorder App", number: "iOS & Android", description: "Record audio of police encounters (background recording available)", website: "apps.apple.com" },
+      { name: "Cop Block App", number: "iOS & Android", description: "Film and upload police interactions to community", website: "www.copblock.org" },
       { name: "Witness LA", number: "Visit website", description: "Criminal justice reform", website: "www.witnessla.com" },
       { name: "Cop Watch", number: "Find local chapter", description: "Community police monitoring", website: "www.berkeleycopwatch.org" }
     ]

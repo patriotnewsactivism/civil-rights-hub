@@ -9,8 +9,8 @@ const __dirname = path.dirname(__filename);
 const WIDTH = 1200;
 const HEIGHT = 630;
 
-// Create SVG with gradient background, logo, and text
-const createSvg = (logoBase64) => `
+// Create gradient background SVG (just the background, no images)
+const createBackgroundSvg = () => `
 <svg width="${WIDTH}" height="${HEIGHT}" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -24,19 +24,12 @@ const createSvg = (logoBase64) => `
 
   <!-- Pattern overlay -->
   <rect width="${WIDTH}" height="${HEIGHT}" fill="#000" opacity="0.1"/>
+</svg>
+`;
 
-  <!-- Main large logo (centered) -->
-  <image href="data:image/png;base64,${logoBase64}"
-         x="${WIDTH/2 - 150}" y="120"
-         width="300" height="300"
-         preserveAspectRatio="xMidYMid meet"/>
-
-  <!-- Small WTPN logo above Civil Rights Hub text -->
-  <image href="data:image/png;base64,${logoBase64}"
-         x="${WIDTH/2 - 40}" y="420"
-         width="80" height="80"
-         preserveAspectRatio="xMidYMid meet"/>
-
+// Create text overlay SVG
+const createTextSvg = () => `
+<svg width="${WIDTH}" height="${HEIGHT}" xmlns="http://www.w3.org/2000/svg">
   <!-- Text -->
   <text x="${WIDTH/2}" y="535"
         font-family="Inter, Arial, sans-serif"
@@ -63,32 +56,62 @@ async function generateOgImage() {
   try {
     // Read the WTPN logo
     const logoPath = path.join(__dirname, '../public/wtpn-logo.png');
-    const logoBuffer = fs.readFileSync(logoPath);
-    const logoBase64 = logoBuffer.toString('base64');
 
-    // Create SVG
-    const svg = createSvg(logoBase64);
+    // Create background
+    const backgroundBuffer = Buffer.from(createBackgroundSvg());
 
-    // Generate PNG images
-    const outputDir = path.join(__dirname, '../public');
+    // Resize logo for large display (top center)
+    const largeLogo = await sharp(logoPath)
+      .resize(300, 300, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })
+      .png()
+      .toBuffer();
+
+    // Resize logo for small display (above text)
+    const smallLogo = await sharp(logoPath)
+      .resize(80, 80, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })
+      .png()
+      .toBuffer();
+
+    // Create text layer
+    const textBuffer = Buffer.from(createTextSvg());
+
+    // Composite all layers
+    const finalImage = await sharp(backgroundBuffer)
+      .composite([
+        {
+          input: largeLogo,
+          top: 120,
+          left: Math.floor(WIDTH/2 - 150)
+        },
+        {
+          input: smallLogo,
+          top: 420,
+          left: Math.floor(WIDTH/2 - 40)
+        },
+        {
+          input: textBuffer,
+          top: 0,
+          left: 0
+        }
+      ])
+      .png()
+      .toBuffer();
 
     // Generate og-image.png
-    await sharp(Buffer.from(svg))
-      .png()
+    const outputDir = path.join(__dirname, '../public');
+    await sharp(finalImage)
       .toFile(path.join(outputDir, 'og-image.png'));
 
     console.log('✓ Generated og-image.png (1200x630)');
 
     // Generate twitter-image.png (same as og-image)
-    await sharp(Buffer.from(svg))
-      .png()
+    await sharp(finalImage)
       .toFile(path.join(outputDir, 'twitter-image.png'));
 
     console.log('✓ Generated twitter-image.png (1200x630)');
 
     // Also create logo.png (referenced in structured data)
-    // Resize wtpn-logo to a standard square size
-    await sharp(logoBuffer)
+    await sharp(logoPath)
       .resize(512, 512, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })
       .png()
       .toFile(path.join(outputDir, 'logo.png'));

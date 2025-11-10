@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Download, FileText, Scale } from "lucide-react";
 import { useGeolocation } from "@/hooks/useGeolocation";
+import jsPDF from "jspdf";
 
 const rightsData = {
   "First Amendment": {
@@ -48,17 +49,90 @@ export const KnowYourRights = () => {
 
   const downloadPDF = (amendment: string) => {
     const content = rightsData[amendment as keyof typeof rightsData];
-    const text = `KNOW YOUR RIGHTS: ${amendment}\n\n${content.summary}\n\n${content.details.join('\n')}\n\nThis is general legal information, not legal advice. Consult a qualified attorney for specific guidance.\n\nCivil Rights Hub - Protecting Your Constitutional Rights`;
-    
-    const blob = new Blob([text], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `KnowYourRights-${amendment.replace(/\s+/g, '-')}.txt`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+
+    // Create new PDF document
+    const doc = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'a4'
+    });
+
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const margin = 20;
+    const maxWidth = pageWidth - (margin * 2);
+    let yPos = margin;
+
+    // Header
+    doc.setFontSize(22);
+    doc.setFont('helvetica', 'bold');
+    doc.text('KNOW YOUR RIGHTS', margin, yPos);
+    yPos += 10;
+
+    // Amendment Title
+    doc.setFontSize(18);
+    doc.setTextColor(59, 130, 246); // Primary color
+    doc.text(amendment, margin, yPos);
+    yPos += 10;
+
+    // Summary
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'italic');
+    doc.setTextColor(0, 0, 0);
+    const summaryLines = doc.splitTextToSize(content.summary, maxWidth);
+    doc.text(summaryLines, margin, yPos);
+    yPos += summaryLines.length * 7 + 10;
+
+    // Details
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(11);
+
+    content.details.forEach((detail, idx) => {
+      // Check if we need a new page
+      if (yPos > 270) {
+        doc.addPage();
+        yPos = margin;
+      }
+
+      // Bullet point
+      doc.text('•', margin, yPos);
+
+      // Detail text with wrapping
+      const detailLines = doc.splitTextToSize(detail, maxWidth - 10);
+      doc.text(detailLines, margin + 5, yPos);
+      yPos += detailLines.length * 6 + 3;
+    });
+
+    // Add some spacing before footer
+    yPos += 15;
+    if (yPos > 240) {
+      doc.addPage();
+      yPos = margin;
+    }
+
+    // State-specific note
+    if (state) {
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'bold');
+      doc.text(`State: ${state}`, margin, yPos);
+      yPos += 7;
+    }
+
+    // Disclaimer
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'italic');
+    doc.setTextColor(100, 100, 100);
+    const disclaimerText = 'This is general legal information, not legal advice. Consult a qualified attorney for specific guidance.';
+    const disclaimerLines = doc.splitTextToSize(disclaimerText, maxWidth);
+    doc.text(disclaimerLines, margin, yPos);
+    yPos += disclaimerLines.length * 5 + 5;
+
+    // Footer
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(59, 130, 246);
+    doc.text('Act Now Hub - Protecting Your Constitutional Rights', margin, yPos);
+
+    // Save the PDF
+    doc.save(`KnowYourRights-${amendment.replace(/\s+/g, '-')}.pdf`);
   };
 
   return (

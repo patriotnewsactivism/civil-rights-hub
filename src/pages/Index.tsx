@@ -43,16 +43,17 @@ const Index = () => {
         </div>
       </section>
       <StateSelector selectedState={selectedState} onStateChange={setSelectedState} />
-      <FederalLaws />
-      <LawyerFinder />
-      <PoliceScanner />
-      <CourtWatch />
-      <FOIABuilder />
       <CaseSearch />
       <AITools />
-      <DiscussionBoard />
       <Resources />
       <Footer />
+      {/* New features commented out until migrations are applied */}
+      {/* <FederalLaws /> */}
+      {/* <LawyerFinder /> */}
+      {/* <PoliceScanner /> */}
+      {/* <CourtWatch /> */}
+      {/* <FOIABuilder /> */}
+      {/* <DiscussionBoard /> */}
     </div>
   );
 };

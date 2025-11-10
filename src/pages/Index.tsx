@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Hero } from "@/components/Hero";
-import { RightsOverview } from "@/components/RightsOverview";
 import { KnowYourRights } from "@/components/KnowYourRights";
 import { IncidentGuide } from "@/components/IncidentGuide";
 import { ViolationReport } from "@/components/ViolationReport";
@@ -30,7 +29,6 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <Hero />
-      <RightsOverview />
       <KnowYourRights />
       <IncidentGuide />
       <ViolationReport />

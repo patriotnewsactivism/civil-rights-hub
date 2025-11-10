@@ -1,75 +1,96 @@
-# Welcome to your Lovable project
+# Civil Rights Hub
 
-## Project info
+**Empowering Citizens with Legal Knowledge and Resources**
 
-**URL**: https://lovable.dev/projects/d500b074-d25b-49f1-b74a-05f654d0b40f
+## About the Project
 
-## How can I edit this code?
+Civil Rights Hub is a comprehensive civil rights platform built to help citizens understand and protect their constitutional rights. The platform provides:
 
-There are several ways of editing your application.
+- 📚 **Legal Resources** - Comprehensive federal and state-specific civil rights laws
+- 👨‍⚖️ **Attorney Directory** - Searchable database of civil rights attorneys
+- 📝 **Violation Reporting** - Report and track civil rights violations
+- 🔍 **Case Search** - AI-powered legal case research
+- 📄 **FOIA Requests** - Template-based Freedom of Information Act request builder
+- 📱 **Know Your Rights** - Downloadable pocket guides for constitutional rights
+- 💬 **Community Forums** - Discussion boards for civil rights topics
+- 📡 **Police Scanners** - Links to live police scanner feeds
+- 🗓️ **Court Watch** - Calendar of upcoming civil rights hearings
 
-**Use Lovable**
+## Getting Started
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/d500b074-d25b-49f1-b74a-05f654d0b40f) and start prompting.
+### Prerequisites
 
-Changes made via Lovable will be committed automatically to this repo.
+- Node.js & npm ([install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating))
+- Supabase account (for backend services)
 
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+### Installation
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+# Clone the repository
+git clone https://github.com/patriotnewsactivism/act-now-hub.git
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+# Navigate to project directory
+cd act-now-hub
 
-# Step 3: Install the necessary dependencies.
-npm i
+# Install dependencies
+npm install
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Start development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+The application will be available at `http://localhost:8080`
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Environment Setup
 
-**Use GitHub Codespaces**
+Create a `.env` file with your Supabase credentials:
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+```
+VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_PUBLISHABLE_KEY=your_supabase_key
+```
 
-> See [Repository Guidelines](AGENTS.md) for contributor best practices and required workflows.
+## Technology Stack
 
-## What technologies are used for this project?
+- **Frontend**: React 18, TypeScript, Vite
+- **UI Components**: shadcn/ui, Radix UI
+- **Styling**: Tailwind CSS
+- **Backend**: Supabase (PostgreSQL, Edge Functions)
+- **State Management**: TanStack Query (React Query)
+- **Maps**: react-simple-maps, topojson-client
+- **PDF Generation**: jsPDF
+- **AI Integration**: Gemini 2.5 Flash via AI Gateway
 
-This project is built with:
+## Development
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+### Available Scripts
 
-## How can I deploy this project?
+- `npm run dev` - Start development server on port 8080
+- `npm run build` - Production build
+- `npm run build:dev` - Development build
+- `npm run preview` - Preview production build
+- `npm run lint` - Run ESLint
 
-Simply open [Lovable](https://lovable.dev/projects/d500b074-d25b-49f1-b74a-05f654d0b40f) and click on Share -> Publish.
+### Database Commands
 
-## Can I connect a custom domain to my Lovable project?
+- `supabase db push` - Apply migrations
+- `supabase gen types typescript --local > src/integrations/supabase/types.ts` - Generate types
 
-Yes, you can!
+## Documentation
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+- [CLAUDE.md](CLAUDE.md) - Comprehensive project documentation and architecture
+- [AGENTS.md](AGENTS.md) - Contributor guidelines and workflows
+- [FEATURES.md](FEATURES.md) - Detailed feature documentation
+- [DEPLOYMENT.md](DEPLOYMENT.md) - Deployment instructions
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+## Contributing
+
+We welcome contributions! Please see [AGENTS.md](AGENTS.md) for contributor best practices and required workflows.
+
+## License
+
+This project is open source and available for public use to promote civil rights awareness and education.
+
+## Support
+
+For questions or issues, please open an issue on GitHub or contact support@civilrightshub.org

@@ -81,8 +81,8 @@ The app follows a single-page application (SPA) pattern with React Router:
 **8. AI Legal Tools** (`CaseSearch.tsx`, `AITools.tsx`):
 - Case law search via `case-search` Supabase Edge Function
 - Legal Q&A assistant via `legal-assistant` Edge Function
-- Both use Lovable AI Gateway with Gemini 2.5 Flash
-- Requires `LOVABLE_API_KEY` in Supabase secrets
+- Both use AI Gateway with Gemini 2.5 Flash
+- Requires AI Gateway API key configured in Supabase secrets
 
 **9. Know Your Rights PDF Generation** (`KnowYourRights.tsx`):
 - Professional PDF pocket guides using jsPDF
@@ -121,7 +121,7 @@ All tables have:
 **Edge Functions** (`supabase/functions/`):
 - `case-search` - AI legal case research
 - `legal-assistant` - Civil rights Q&A
-- Deno runtime with Lovable AI Gateway
+- Deno runtime with AI Gateway integration
 - CORS configured for cross-origin requests
 
 **Client Configuration**:

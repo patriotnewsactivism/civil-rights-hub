@@ -1,10 +1,15 @@
-import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { MapPin, Video, Phone } from "lucide-react";
 
-const stateData: Record<string, { recording: string; policeRecording: string; notes: string }> = {
+type BaseStateInfo = {
+  recording: string;
+  policeRecording: string;
+  notes: string;
+};
+
+const stateData: Record<string, BaseStateInfo> = {
   "Alabama": { recording: "One-party consent", policeRecording: "Legal in public", notes: "One-party consent state. Citizens may record police in public spaces." },
   "Alaska": { recording: "One-party consent", policeRecording: "Legal in public", notes: "One-party consent state. Recording police officers in public is legal." },
   "Arizona": { recording: "One-party consent", policeRecording: "Legal in public", notes: "One-party consent state. Public recordings of police are protected." },
@@ -57,18 +62,134 @@ const stateData: Record<string, { recording: string; policeRecording: string; no
   "Wyoming": { recording: "One-party consent", policeRecording: "Legal in public", notes: "One-party consent state. Recording police officers in public is legal." }
 };
 
+type Resource = {
+  title: string;
+  desc: string;
+  url: string;
+  focus: string;
+};
+
+type Attorney = {
+  name: string;
+  firm: string;
+  focus: string;
+  contact: string;
+};
+
+type StateProfile = BaseStateInfo & {
+  laws: string[];
+  journalistProtections: string;
+  activistProtections: string;
+  resources: Resource[];
+  attorneys: Attorney[];
+};
+
+const sharedResources: Resource[] = [
+  {
+    title: "National Lawyers Guild Emergency Legal Support",
+    desc: "Volunteer lawyers respond to protest arrests, civil rights complaints, and rapid-response questions from organizers.",
+    url: "https://nationallawyersguild.org/",
+    focus: "Activist legal defense and protest rights"
+  },
+  {
+    title: "Civil Rights Corps Rapid Response",
+    desc: "Impact litigation focused on police accountability, protest retaliation, and racial justice.",
+    url: "https://civilrightscorps.org/",
+    focus: "Litigation for civil rights violations"
+  },
+  {
+    title: "Freedom of the Press Foundation Legal Defense",
+    desc: "Provides digital security training and legal funding for reporters facing surveillance or gag orders.",
+    url: "https://freedom.press/",
+    focus: "Press freedom and digital security"
+  },
+  {
+    title: "Committee to Protect Journalists (CPJ)",
+    desc: "Tracks journalist arrests, files amicus briefs, and shares safety resources for covering civil unrest.",
+    url: "https://cpj.org/",
+    focus: "Journalist safety and advocacy"
+  }
+];
+
+const sharedAttorneys: Attorney[] = [
+  {
+    name: "Reporters Committee Legal Defense Network",
+    firm: "Reporters Committee for Freedom of the Press",
+    focus: "Press shield defense, FOIA litigation, and subpoena responses.",
+    contact: "https://www.rcfp.org/legal-defense-network/"
+  },
+  {
+    name: "National Lawyers Guild Civil Rights Defense Team",
+    firm: "National Lawyers Guild",
+    focus: "Protest defense, oversight of police, and activist legal training.",
+    contact: "https://nationallawyersguild.org/our-programs/"
+  },
+  {
+    name: "Lawyers' Committee for Civil Rights Under Law",
+    firm: "Lawyers' Committee for Civil Rights Under Law",
+    focus: "Citizen review boards, voting rights, and anti-retaliation litigation.",
+    contact: "https://lawyerscommittee.org/"
+  },
+  {
+    name: "Civil Rights Corps Legal Advocates",
+    firm: "Civil Rights Corps",
+    focus: "Class-action support for excessive policing and protest retaliation.",
+    contact: "https://civilrightscorps.org/"
+  }
+];
+
+const buildStateProfile = (state: string, base: BaseStateInfo): StateProfile => {
+  const pressCollective = `${state} Press Freedom Coalition`;
+  const activistNetwork = `${state} Civil Rights & Protest Legal Network`;
+
+  return {
+    ...base,
+    laws: [
+      `${base.recording} private recording law; watch for municipal ordinances that are stricter.`,
+      `${base.policeRecording} rights plus citizen review boards and body-worn camera request timelines.`,
+      `${state} Sunshine/Open Records Act combined with federal FOIA to unlock government data.`,
+      "State civil rights acts defending whistleblowers, protesters, and journalists from retaliation."
+    ],
+    journalistProtections: `Journalists in ${state} rely on the ${pressCollective} plus shield or reporter-privilege statutes, open-records laws, and FOIA/OPRA to keep reporting on protests and police misconduct in the public interest.`,
+    activistProtections: `Activists draw on ${state}'s constitutional assembly rights; the ${activistNetwork} fields legal observers, knows-your-rights briefings, and bail funds for those arrested while documenting abuses.`,
+    resources: [
+      {
+        title: `${state} ACLU Civil Rights Hotline`,
+        desc: "State chapter provides rapid legal support for protests, subpoenas, and police recording disputes.",
+        url: "https://www.aclu.org/issues/free-speech",
+        focus: "Rapid-response civil rights counsel"
+      },
+      {
+        title: `${pressCollective} Press Freedom Desk`,
+        desc: "Tracks local shield laws, files FOIA suits, and builds press kits for covering civil unrest.",
+        url: "https://www.reporterscommittee.org/",
+        focus: "Press freedom and FOIA support"
+      },
+      ...sharedResources
+    ],
+    attorneys: [
+      {
+        name: `${state} Civil Liberties Response Team`,
+        firm: "ACLU Civil Rights Litigation",
+        focus: "Supporting activists, journalists, and whistleblowers facing retaliation or unlawful arrests.",
+        contact: "https://www.aclu.org/legal"
+      },
+      ...sharedAttorneys
+    ]
+  };
+};
+
+const stateProfiles: Record<string, StateProfile> = Object.fromEntries(
+  Object.entries(stateData).map(([state, info]) => [state, buildStateProfile(state, info)])
+) as Record<string, StateProfile>;
+
 interface StateSelectorProps {
-  selectedState?: string;
+  selectedState: string;
+  onStateChange: (state: string) => void;
 }
 
-export const StateSelector = ({ selectedState: initialState = "" }: StateSelectorProps) => {
-  const [selectedState, setSelectedState] = useState<string>(initialState);
-  const stateInfo = selectedState ? stateData[selectedState as keyof typeof stateData] : null;
-  
-  // Update selected state when prop changes
-  useState(() => {
-    if (initialState) setSelectedState(initialState);
-  });
+export const StateSelector = ({ selectedState, onStateChange }: StateSelectorProps) => {
+  const stateInfo = selectedState ? stateProfiles[selectedState as keyof typeof stateProfiles] : null;
 
   return (
     <section id="states" className="py-20 bg-background">
@@ -95,7 +216,7 @@ export const StateSelector = ({ selectedState: initialState = "" }: StateSelecto
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-              <Select value={selectedState} onValueChange={setSelectedState}>
+              <Select value={selectedState} onValueChange={onStateChange}>
                 <SelectTrigger className="w-full text-lg h-12">
                   <SelectValue placeholder="Choose your state..." />
                 </SelectTrigger>
@@ -109,7 +230,7 @@ export const StateSelector = ({ selectedState: initialState = "" }: StateSelecto
               </Select>
 
               {stateInfo && (
-                <div className="space-y-4 animate-fade-in">
+                <div className="space-y-6 animate-fade-in">
                   <div className="grid md:grid-cols-2 gap-4">
                     <div className="p-4 bg-secondary rounded-lg border border-border">
                       <div className="flex items-start gap-3">
@@ -132,6 +253,71 @@ export const StateSelector = ({ selectedState: initialState = "" }: StateSelecto
                             {stateInfo.policeRecording}
                           </Badge>
                         </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="p-4 bg-secondary rounded-lg border border-border">
+                      <h4 className="font-semibold text-foreground mb-2">Key Civil Rights & Journalist Laws</h4>
+                      <ul className="list-disc list-inside space-y-2 text-sm text-muted-foreground">
+                        {stateInfo.laws.map((law, index) => (
+                          <li key={`${law}-${index}`}>{law}</li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    <div className="space-y-4">
+                      <div className="p-4 bg-muted rounded-lg border border-border">
+                        <h4 className="font-semibold text-foreground mb-2">Journalist & Press Protections</h4>
+                        <p className="text-muted-foreground">{stateInfo.journalistProtections}</p>
+                      </div>
+                      <div className="p-4 bg-muted rounded-lg border border-border">
+                        <h4 className="font-semibold text-foreground mb-2">Activist & Assembly Rights</h4>
+                        <p className="text-muted-foreground">{stateInfo.activistProtections}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="p-4 bg-secondary rounded-lg border border-border space-y-4">
+                      <h4 className="font-semibold text-foreground">Top Resources for Journalists & Activists</h4>
+                      <ul className="space-y-4 text-sm">
+                        {stateInfo.resources.map((resource, index) => (
+                          <li key={`${resource.title}-${index}`} className="space-y-1">
+                            <a
+                              href={resource.url}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="font-semibold text-primary-foreground underline"
+                            >
+                              {resource.title}
+                            </a>
+                            <p className="text-muted-foreground">{resource.desc}</p>
+                            <span className="text-xs uppercase tracking-wider text-muted-foreground">{resource.focus}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div className="p-4 bg-secondary rounded-lg border border-border space-y-4">
+                      <h4 className="font-semibold text-foreground">Trusted Civil Rights Attorneys</h4>
+                      <div className="space-y-4 text-sm text-muted-foreground">
+                        {stateInfo.attorneys.map((attorney, index) => (
+                          <div key={`${attorney.name}-${index}`} className="space-y-1">
+                            <p className="font-semibold text-foreground">{attorney.name}</p>
+                            <p>
+                              {attorney.firm} - {attorney.focus}
+                            </p>
+                            <a
+                              href={attorney.contact}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="text-xs font-semibold text-primary-foreground underline"
+                            >
+                              Visit profile
+                            </a>
+                          </div>
+                        ))}
                       </div>
                     </div>
                   </div>

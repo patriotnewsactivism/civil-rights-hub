@@ -36,7 +36,7 @@ const Index = () => {
           </div>
         </div>
       </section>
-      <StateSelector selectedState={selectedState} />
+      <StateSelector selectedState={selectedState} onStateChange={setSelectedState} />
       <CaseSearch />
       <AITools />
       <Resources />

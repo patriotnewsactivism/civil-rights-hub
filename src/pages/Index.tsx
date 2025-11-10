@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Hero } from "@/components/Hero";
 import { RightsOverview } from "@/components/RightsOverview";
+import { RightsCard } from "@/components/RightsCard";
 import { IncidentGuide } from "@/components/IncidentGuide";
 import { ViolationReport } from "@/components/ViolationReport";
 import { ViolationFeed } from "@/components/ViolationFeed";
@@ -30,6 +31,7 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Hero />
       <RightsOverview />
+      <RightsCard />
       <IncidentGuide />
       <ViolationReport />
       <ViolationFeed />

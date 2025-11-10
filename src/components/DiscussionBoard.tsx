@@ -8,8 +8,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
-import { MessageSquare, Eye, MessageCircle, Clock, Loader2, Plus, Pin } from "lucide-react";
+import { MessageSquare, Eye, MessageCircle, Clock, Loader2, Plus, Pin, Heart, Bookmark, Flag, Bell, BellOff, Hash, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 import { formatDistanceToNow } from "date-fns";
 
 interface ForumThread {
@@ -21,6 +22,7 @@ interface ForumThread {
   category: string;
   view_count: number;
   post_count: number;
+  like_count: number;
   last_post_at: string | null;
   is_pinned: boolean;
   is_locked: boolean;
@@ -38,6 +40,7 @@ const CATEGORIES = [
 
 export const DiscussionBoard = () => {
   const { toast } = useToast();
+  const { user } = useAuth();
   const [threads, setThreads] = useState<ForumThread[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState<string>("");
@@ -49,11 +52,25 @@ export const DiscussionBoard = () => {
   const [newContent, setNewContent] = useState("");
   const [newCategory, setNewCategory] = useState("General Discussion");
   const [newUsername, setNewUsername] = useState("");
+  const [newTags, setNewTags] = useState<string[]>([]);
+  const [tagInput, setTagInput] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // User engagement state
+  const [userUpvotes, setUserUpvotes] = useState<Set<string>>(new Set());
+  const [userBookmarks, setUserBookmarks] = useState<Set<string>>(new Set());
+  const [userSubscriptions, setUserSubscriptions] = useState<Set<string>>(new Set());
+  const [threadTags, setThreadTags] = useState<Map<string, string[]>>(new Map());
 
   useEffect(() => {
     fetchThreads();
   }, [selectedCategory]);
+
+  useEffect(() => {
+    if (user) {
+      fetchUserEngagement();
+    }
+  }, [user]);
 
   const fetchThreads = async () => {
     setLoading(true);
@@ -86,6 +103,11 @@ export const DiscussionBoard = () => {
       }
 
       setThreads(filteredData);
+
+      // Fetch tags for all threads
+      if (filteredData.length > 0) {
+        fetchThreadTags(filteredData.map(t => t.id));
+      }
     } catch (error) {
       console.error("Error fetching threads:", error);
       toast({
@@ -98,8 +120,282 @@ export const DiscussionBoard = () => {
     }
   };
 
+  const fetchThreadTags = async (threadIds: string[]) => {
+    try {
+      const { data, error } = await supabase
+        .from("thread_tags")
+        .select("thread_id, tag")
+        .in("thread_id", threadIds);
+
+      if (error) throw error;
+
+      const tagsMap = new Map<string, string[]>();
+      data?.forEach(({ thread_id, tag }) => {
+        if (!tagsMap.has(thread_id)) {
+          tagsMap.set(thread_id, []);
+        }
+        tagsMap.get(thread_id)!.push(tag);
+      });
+      setThreadTags(tagsMap);
+    } catch (error) {
+      console.error("Error fetching tags:", error);
+    }
+  };
+
+  const fetchUserEngagement = async () => {
+    if (!user) return;
+
+    try {
+      // Fetch upvotes
+      const { data: upvotes } = await supabase
+        .from("thread_upvotes")
+        .select("thread_id")
+        .eq("user_id", user.id);
+
+      if (upvotes) {
+        setUserUpvotes(new Set(upvotes.map(u => u.thread_id)));
+      }
+
+      // Fetch bookmarks
+      const { data: bookmarks } = await supabase
+        .from("thread_bookmarks")
+        .select("thread_id")
+        .eq("user_id", user.id);
+
+      if (bookmarks) {
+        setUserBookmarks(new Set(bookmarks.map(b => b.thread_id)));
+      }
+
+      // Fetch subscriptions
+      const { data: subscriptions } = await supabase
+        .from("thread_subscriptions")
+        .select("thread_id")
+        .eq("user_id", user.id);
+
+      if (subscriptions) {
+        setUserSubscriptions(new Set(subscriptions.map(s => s.thread_id)));
+      }
+    } catch (error) {
+      console.error("Error fetching user engagement:", error);
+    }
+  };
+
   const handleSearch = () => {
     fetchThreads();
+  };
+
+  const handleAddTag = () => {
+    if (!tagInput.trim()) return;
+
+    const tag = tagInput.trim().toLowerCase().replace(/^#/, '');
+    if (!newTags.includes(tag)) {
+      setNewTags([...newTags, tag]);
+    }
+    setTagInput("");
+  };
+
+  const handleRemoveTag = (tag: string) => {
+    setNewTags(newTags.filter(t => t !== tag));
+  };
+
+  const toggleUpvote = async (threadId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+
+    if (!user) {
+      toast({
+        title: "Sign in required",
+        description: "Please sign in to upvote threads.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const hasUpvoted = userUpvotes.has(threadId);
+
+      if (hasUpvoted) {
+        // Remove upvote
+        await supabase
+          .from("thread_upvotes")
+          .delete()
+          .eq("thread_id", threadId)
+          .eq("user_id", user.id);
+
+        setUserUpvotes(prev => {
+          const next = new Set(prev);
+          next.delete(threadId);
+          return next;
+        });
+
+        // Update local thread count
+        setThreads(threads.map(t =>
+          t.id === threadId ? { ...t, like_count: t.like_count - 1 } : t
+        ));
+      } else {
+        // Add upvote
+        await supabase
+          .from("thread_upvotes")
+          .insert({ thread_id: threadId, user_id: user.id });
+
+        setUserUpvotes(prev => new Set(prev).add(threadId));
+
+        // Update local thread count
+        setThreads(threads.map(t =>
+          t.id === threadId ? { ...t, like_count: t.like_count + 1 } : t
+        ));
+      }
+    } catch (error) {
+      console.error("Error toggling upvote:", error);
+      toast({
+        title: "Failed to upvote",
+        description: "Unable to update upvote. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const toggleBookmark = async (threadId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+
+    if (!user) {
+      toast({
+        title: "Sign in required",
+        description: "Please sign in to bookmark threads.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const hasBookmarked = userBookmarks.has(threadId);
+
+      if (hasBookmarked) {
+        await supabase
+          .from("thread_bookmarks")
+          .delete()
+          .eq("thread_id", threadId)
+          .eq("user_id", user.id);
+
+        setUserBookmarks(prev => {
+          const next = new Set(prev);
+          next.delete(threadId);
+          return next;
+        });
+
+        toast({
+          title: "Bookmark removed",
+          description: "Thread removed from your bookmarks.",
+        });
+      } else {
+        await supabase
+          .from("thread_bookmarks")
+          .insert({ thread_id: threadId, user_id: user.id });
+
+        setUserBookmarks(prev => new Set(prev).add(threadId));
+
+        toast({
+          title: "Thread bookmarked",
+          description: "Thread added to your bookmarks.",
+        });
+      }
+    } catch (error) {
+      console.error("Error toggling bookmark:", error);
+      toast({
+        title: "Failed to bookmark",
+        description: "Unable to update bookmark. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const toggleSubscription = async (threadId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+
+    if (!user) {
+      toast({
+        title: "Sign in required",
+        description: "Please sign in to subscribe to threads.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const isSubscribed = userSubscriptions.has(threadId);
+
+      if (isSubscribed) {
+        await supabase
+          .from("thread_subscriptions")
+          .delete()
+          .eq("thread_id", threadId)
+          .eq("user_id", user.id);
+
+        setUserSubscriptions(prev => {
+          const next = new Set(prev);
+          next.delete(threadId);
+          return next;
+        });
+
+        toast({
+          title: "Unsubscribed",
+          description: "You will no longer receive notifications for this thread.",
+        });
+      } else {
+        await supabase
+          .from("thread_subscriptions")
+          .insert({ thread_id: threadId, user_id: user.id, email_notifications: true });
+
+        setUserSubscriptions(prev => new Set(prev).add(threadId));
+
+        toast({
+          title: "Subscribed",
+          description: "You will receive notifications for new posts.",
+        });
+      }
+    } catch (error) {
+      console.error("Error toggling subscription:", error);
+      toast({
+        title: "Failed to subscribe",
+        description: "Unable to update subscription. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const reportThread = async (threadId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+
+    if (!user) {
+      toast({
+        title: "Sign in required",
+        description: "Please sign in to report content.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      await supabase
+        .from("content_reports")
+        .insert({
+          content_type: 'thread',
+          content_id: threadId,
+          reported_by: user.id,
+          reason: 'user_report',
+        });
+
+      toast({
+        title: "Content reported",
+        description: "Thank you for helping keep our community safe.",
+      });
+    } catch (error) {
+      console.error("Error reporting thread:", error);
+      toast({
+        title: "Failed to report",
+        description: "Unable to submit report. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleCreateThread = async () => {
@@ -116,15 +412,29 @@ export const DiscussionBoard = () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
 
-      const { error } = await supabase.from("forum_threads").insert({
-        user_id: user?.id || null,
-        username: newUsername.trim() || user?.email || "Anonymous",
-        title: newTitle.trim(),
-        content: newContent.trim(),
-        category: newCategory,
-      });
+      const { data: newThread, error } = await supabase
+        .from("forum_threads")
+        .insert({
+          user_id: user?.id || null,
+          username: newUsername.trim() || user?.email || "Anonymous",
+          title: newTitle.trim(),
+          content: newContent.trim(),
+          category: newCategory,
+        })
+        .select()
+        .single();
 
       if (error) throw error;
+
+      // Add tags if any
+      if (newTags.length > 0 && newThread) {
+        const tagInserts = newTags.map(tag => ({
+          thread_id: newThread.id,
+          tag: tag,
+        }));
+
+        await supabase.from("thread_tags").insert(tagInserts);
+      }
 
       toast({
         title: "Thread created",
@@ -136,6 +446,8 @@ export const DiscussionBoard = () => {
       setNewContent("");
       setNewUsername("");
       setNewCategory("General Discussion");
+      setNewTags([]);
+      setTagInput("");
       setIsCreateDialogOpen(false);
 
       // Refresh threads
@@ -242,6 +554,48 @@ export const DiscussionBoard = () => {
                           onChange={(e) => setNewUsername(e.target.value)}
                           placeholder="Leave blank for 'Anonymous'"
                         />
+                      </div>
+
+                      <div>
+                        <Label htmlFor="thread-tags">Tags (Optional)</Label>
+                        <div className="flex gap-2">
+                          <Input
+                            id="thread-tags"
+                            value={tagInput}
+                            onChange={(e) => setTagInput(e.target.value)}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") {
+                                e.preventDefault();
+                                handleAddTag();
+                              }
+                            }}
+                            placeholder="Add tags (e.g., police, protest, legal)"
+                          />
+                          <Button
+                            type="button"
+                            variant="outline"
+                            onClick={handleAddTag}
+                            disabled={!tagInput.trim()}
+                          >
+                            <Hash className="h-4 w-4" />
+                          </Button>
+                        </div>
+                        {newTags.length > 0 && (
+                          <div className="flex flex-wrap gap-2 mt-2">
+                            {newTags.map((tag) => (
+                              <Badge key={tag} variant="secondary" className="gap-1">
+                                #{tag}
+                                <button
+                                  type="button"
+                                  onClick={() => handleRemoveTag(tag)}
+                                  className="ml-1 hover:bg-destructive/20 rounded-full"
+                                >
+                                  <X className="h-3 w-3" />
+                                </button>
+                              </Badge>
+                            ))}
+                          </div>
+                        )}
                       </div>
 
                       <div className="flex gap-2 justify-end">
@@ -362,7 +716,61 @@ export const DiscussionBoard = () => {
                             <p className="text-sm text-muted-foreground line-clamp-2">
                               {thread.content}
                             </p>
+                            {/* Tags */}
+                            {threadTags.has(thread.id) && threadTags.get(thread.id)!.length > 0 && (
+                              <div className="flex flex-wrap gap-1 mt-2">
+                                {threadTags.get(thread.id)!.map((tag) => (
+                                  <Badge key={tag} variant="outline" className="text-xs">
+                                    #{tag}
+                                  </Badge>
+                                ))}
+                              </div>
+                            )}
                           </div>
+                        </div>
+
+                        {/* Engagement Buttons */}
+                        <div className="flex items-center gap-2 pt-2">
+                          <Button
+                            size="sm"
+                            variant={userUpvotes.has(thread.id) ? "default" : "ghost"}
+                            onClick={(e) => toggleUpvote(thread.id, e)}
+                            className="h-8"
+                          >
+                            <Heart className={`h-4 w-4 mr-1 ${userUpvotes.has(thread.id) ? 'fill-current' : ''}`} />
+                            <span>{thread.like_count || 0}</span>
+                          </Button>
+
+                          <Button
+                            size="sm"
+                            variant={userBookmarks.has(thread.id) ? "default" : "ghost"}
+                            onClick={(e) => toggleBookmark(thread.id, e)}
+                            className="h-8"
+                          >
+                            <Bookmark className={`h-4 w-4 ${userBookmarks.has(thread.id) ? 'fill-current' : ''}`} />
+                          </Button>
+
+                          <Button
+                            size="sm"
+                            variant={userSubscriptions.has(thread.id) ? "default" : "ghost"}
+                            onClick={(e) => toggleSubscription(thread.id, e)}
+                            className="h-8"
+                          >
+                            {userSubscriptions.has(thread.id) ? (
+                              <Bell className="h-4 w-4 fill-current" />
+                            ) : (
+                              <BellOff className="h-4 w-4" />
+                            )}
+                          </Button>
+
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={(e) => reportThread(thread.id, e)}
+                            className="h-8"
+                          >
+                            <Flag className="h-4 w-4" />
+                          </Button>
                         </div>
                       </div>
 

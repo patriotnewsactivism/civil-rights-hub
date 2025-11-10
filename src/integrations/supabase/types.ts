@@ -14,7 +14,54 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      violations: {
+        Row: {
+          created_at: string
+          description: string
+          id: string
+          incident_date: string
+          latitude: number | null
+          location_city: string | null
+          location_state: string
+          longitude: number | null
+          media_urls: string[] | null
+          status: string | null
+          title: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          id?: string
+          incident_date: string
+          latitude?: number | null
+          location_city?: string | null
+          location_state: string
+          longitude?: number | null
+          media_urls?: string[] | null
+          status?: string | null
+          title: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          id?: string
+          incident_date?: string
+          latitude?: number | null
+          location_city?: string | null
+          location_state?: string
+          longitude?: number | null
+          media_urls?: string[] | null
+          status?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

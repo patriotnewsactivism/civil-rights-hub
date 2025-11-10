@@ -7,12 +7,13 @@ export const RightsOverview = () => {
     {
       icon: Mic,
       title: "First Amendment Rights",
-      description: "Freedom of speech, press, and peaceful assembly",
+      description: "Freedom of religion, speech, press, assembly, and petition",
       details: [
-        "You have the right to record police officers in public spaces",
-        "Freedom of peaceful protest and assembly is protected",
+        "Freedom of religion protects your right to practice any faith or no religion",
         "Your speech is protected unless it incites immediate lawless action",
-        "The press has the right to gather and report news"
+        "The press has the right to gather and report news",
+        "Freedom of peaceful protest and assembly is protected",
+        "You have the right to petition the government for redress of grievances"
       ]
     },
     {

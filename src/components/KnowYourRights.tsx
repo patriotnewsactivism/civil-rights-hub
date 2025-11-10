@@ -514,11 +514,26 @@ export const KnowYourRights = () => {
                       {category.contacts.map((contact, contactIndex) => (
                         <div key={contactIndex} className="border-l-2 border-primary pl-3">
                           <div className="font-semibold text-sm">{contact.name}</div>
-                          <div className="text-sm text-primary">{contact.number}</div>
+                          <div className="text-sm text-primary">
+                            {contact.number.match(/^\d/) || contact.number.includes('-') && contact.number.match(/\d/) ? (
+                              <a href={`tel:${contact.number.replace(/[^\d]/g, '')}`} className="hover:underline">
+                                {contact.number}
+                              </a>
+                            ) : (
+                              contact.number
+                            )}
+                          </div>
                           <div className="text-xs text-muted-foreground">{contact.description}</div>
                           {contact.website && (
-                            <div className="text-xs text-blue-600 dark:text-blue-400 mt-1">
-                              {contact.website}
+                            <div className="text-xs mt-1">
+                              <a
+                                href={`https://${contact.website}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600 dark:text-blue-400 hover:underline"
+                              >
+                                {contact.website}
+                              </a>
                             </div>
                           )}
                         </div>

@@ -25,14 +25,20 @@ const createSvg = (logoBase64) => `
   <!-- Pattern overlay -->
   <rect width="${WIDTH}" height="${HEIGHT}" fill="#000" opacity="0.1"/>
 
-  <!-- Logo (centered horizontally, positioned higher) -->
+  <!-- Main large logo (centered) -->
   <image href="data:image/png;base64,${logoBase64}"
          x="${WIDTH/2 - 150}" y="120"
          width="300" height="300"
          preserveAspectRatio="xMidYMid meet"/>
 
+  <!-- Small WTPN logo above Civil Rights Hub text -->
+  <image href="data:image/png;base64,${logoBase64}"
+         x="${WIDTH/2 - 40}" y="420"
+         width="80" height="80"
+         preserveAspectRatio="xMidYMid meet"/>
+
   <!-- Text -->
-  <text x="${WIDTH/2}" y="480"
+  <text x="${WIDTH/2}" y="535"
         font-family="Inter, Arial, sans-serif"
         font-size="72"
         font-weight="bold"
@@ -42,7 +48,7 @@ const createSvg = (logoBase64) => `
   </text>
 
   <!-- Subtitle -->
-  <text x="${WIDTH/2}" y="540"
+  <text x="${WIDTH/2}" y="590"
         font-family="Inter, Arial, sans-serif"
         font-size="32"
         font-weight="400"

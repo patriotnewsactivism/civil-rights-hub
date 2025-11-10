@@ -7,8 +7,9 @@ import jsPDF from "jspdf";
 
 const rightsData = {
   "First Amendment": {
-    summary: "Freedom of speech, press, assembly, and petition",
+    summary: "Freedom of religion, speech, press, assembly, and petition",
     details: [
+      "Freedom of religion protects your right to practice any faith or no religion",
       "You have the right to photograph/record in public spaces",
       "You can document police activity from a safe distance",
       "You can protest peacefully without a permit in most cases",

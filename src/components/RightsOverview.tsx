@@ -1,8 +1,92 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Mic, Camera, FileText, Home } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Mic, Camera, FileText, Home, Download } from "lucide-react";
+import { useGeolocation } from "@/hooks/useGeolocation";
+import jsPDF from "jspdf";
 
 export const RightsOverview = () => {
+  const { state, loading } = useGeolocation();
+
+  const downloadPDF = (title: string, description: string, details: string[]) => {
+    const doc = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'a4'
+    });
+
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const margin = 20;
+    const maxWidth = pageWidth - (margin * 2);
+    let yPos = margin;
+
+    // Header
+    doc.setFontSize(22);
+    doc.setFont('helvetica', 'bold');
+    doc.text('KNOW YOUR RIGHTS', margin, yPos);
+    yPos += 10;
+
+    // Title
+    doc.setFontSize(18);
+    doc.setTextColor(59, 130, 246);
+    doc.text(title, margin, yPos);
+    yPos += 10;
+
+    // Description
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'italic');
+    doc.setTextColor(0, 0, 0);
+    const descLines = doc.splitTextToSize(description, maxWidth);
+    doc.text(descLines, margin, yPos);
+    yPos += descLines.length * 7 + 10;
+
+    // Details
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(11);
+
+    details.forEach((detail) => {
+      if (yPos > 270) {
+        doc.addPage();
+        yPos = margin;
+      }
+      doc.text('•', margin, yPos);
+      const detailLines = doc.splitTextToSize(detail, maxWidth - 10);
+      doc.text(detailLines, margin + 5, yPos);
+      yPos += detailLines.length * 6 + 3;
+    });
+
+    yPos += 15;
+    if (yPos > 240) {
+      doc.addPage();
+      yPos = margin;
+    }
+
+    // State info
+    if (state) {
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'bold');
+      doc.text(`State: ${state}`, margin, yPos);
+      yPos += 7;
+    }
+
+    // Disclaimer
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'italic');
+    doc.setTextColor(100, 100, 100);
+    const disclaimer = 'This is general legal information, not legal advice. Consult a qualified attorney for specific guidance.';
+    const disclaimerLines = doc.splitTextToSize(disclaimer, maxWidth);
+    doc.text(disclaimerLines, margin, yPos);
+    yPos += disclaimerLines.length * 5 + 5;
+
+    // Footer
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(59, 130, 246);
+    doc.text('Civil Rights Hub - Protecting Your Constitutional Rights', margin, yPos);
+
+    doc.save(`KnowYourRights-${title.replace(/\s+/g, '-')}.pdf`);
+  };
+
   const rights = [
     {
       icon: Mic,
@@ -56,12 +140,17 @@ export const RightsOverview = () => {
       <div className="container mx-auto px-4">
         <div className="text-center mb-12 animate-fade-in">
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-            Your Constitutional Rights
+            Know Your Rights
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Understanding your rights is the first step to protecting them. Here are the key constitutional
-            protections every citizen should know.
+            Understanding your rights is the first step to protecting them. Download pocket guides or view details for each constitutional protection.
           </p>
+          {!loading && state && (
+            <Badge variant="outline" className="mt-4">
+              <FileText className="h-4 w-4 mr-2" />
+              Showing rights for: {state}
+            </Badge>
+          )}
         </div>
 
         <div className="grid md:grid-cols-2 gap-6 max-w-6xl mx-auto">
@@ -72,8 +161,19 @@ export const RightsOverview = () => {
                   <div className="p-3 bg-primary/10 rounded-lg">
                     <right.icon className="h-6 w-6 text-primary" />
                   </div>
-                  <div>
-                    <CardTitle className="text-xl mb-2">{right.title}</CardTitle>
+                  <div className="flex-1">
+                    <div className="flex items-start justify-between gap-2 mb-2">
+                      <CardTitle className="text-xl">{right.title}</CardTitle>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => downloadPDF(right.title, right.description, right.details)}
+                        className="gap-1 shrink-0"
+                      >
+                        <Download className="h-4 w-4" />
+                        PDF
+                      </Button>
+                    </div>
                     <CardDescription className="text-base">{right.description}</CardDescription>
                   </div>
                 </div>

@@ -41,7 +41,7 @@ export const PoliceScanner = () => {
   const location = useGeolocation();
   const [scanners, setScanners] = useState<ScannerLink[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedState, setSelectedState] = useState<string>("");
+  const [selectedState, setSelectedState] = useState<string>("all");
 
   useEffect(() => {
     if (location.state && !selectedState) {
@@ -63,7 +63,7 @@ export const PoliceScanner = () => {
         .order("listener_count", { ascending: false })
         .order("scanner_name");
 
-      if (selectedState) {
+      if (selectedState && selectedState !== "all") {
         query = query.eq("state", selectedState);
       }
 
@@ -132,7 +132,7 @@ export const PoliceScanner = () => {
                   <SelectValue placeholder="All States" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All States</SelectItem>
+                  <SelectItem value="all">All States</SelectItem>
                   {US_STATES.map((state) => (
                     <SelectItem key={state} value={state}>
                       {state}

@@ -5,13 +5,53 @@ import type { Database } from './types';
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 
+// Validate environment variables
+if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
+  console.error('❌ Missing Supabase environment variables!');
+  console.error('VITE_SUPABASE_URL:', SUPABASE_URL ? 'Set' : 'Missing');
+  console.error('VITE_SUPABASE_PUBLISHABLE_KEY:', SUPABASE_PUBLISHABLE_KEY ? 'Set' : 'Missing');
+  console.error('The app will continue but Supabase features will not work.');
+  console.error('Please configure these environment variables in Vercel:');
+  console.error('  VITE_SUPABASE_URL');
+  console.error('  VITE_SUPABASE_PUBLISHABLE_KEY');
+}
+
+// Create a dummy client that won't crash the app but will log errors
+const createDummyClient = () => ({
+  from: () => ({
+    select: () => Promise.resolve({ data: [], error: new Error('Supabase not configured') }),
+    insert: () => Promise.resolve({ data: null, error: new Error('Supabase not configured') }),
+    update: () => Promise.resolve({ data: null, error: new Error('Supabase not configured') }),
+    delete: () => Promise.resolve({ data: null, error: new Error('Supabase not configured') }),
+  }),
+  auth: {
+    signUp: () => Promise.resolve({ data: null, error: new Error('Supabase not configured') }),
+    signIn: () => Promise.resolve({ data: null, error: new Error('Supabase not configured') }),
+    signOut: () => Promise.resolve({ error: new Error('Supabase not configured') }),
+    getSession: () => Promise.resolve({ data: { session: null }, error: null }),
+    onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } }),
+  },
+  storage: {
+    from: () => ({
+      upload: () => Promise.resolve({ data: null, error: new Error('Supabase not configured') }),
+      download: () => Promise.resolve({ data: null, error: new Error('Supabase not configured') }),
+    }),
+  },
+  channel: () => ({
+    on: () => ({ subscribe: () => {} }),
+    subscribe: () => {},
+  }),
+});
+
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";
 
-export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
-  auth: {
-    storage: localStorage,
-    persistSession: true,
-    autoRefreshToken: true,
-  }
-});
+export const supabase = (SUPABASE_URL && SUPABASE_PUBLISHABLE_KEY)
+  ? createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+      auth: {
+        storage: localStorage,
+        persistSession: true,
+        autoRefreshToken: true,
+      }
+    })
+  : createDummyClient() as any;

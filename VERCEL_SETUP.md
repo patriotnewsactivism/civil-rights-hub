@@ -106,12 +106,25 @@ The preview server will run at http://localhost:4173
 
 ## Recent Fixes
 
-### Blank Screen Fix (2025-11-11)
+### Blank Screen Fix - Phase 2 (2025-11-11)
 
+**What was fixed:**
+- Added `EnvironmentCheck` component that validates environment variables at startup
+- Shows a clear, user-friendly error screen when env vars are missing instead of a blank page
+- Provides step-by-step instructions for Vercel administrators
+- Displays technical details for debugging
+- Now impossible to deploy without seeing what's wrong
+
+**Previous fixes (Phase 1):**
 - Added environment variable validation in Supabase client
 - Created fallback "dummy client" that prevents crashes when env vars are missing
 - Added ErrorBoundary component to catch and display runtime errors gracefully
 - App now shows helpful error messages instead of blank screens
+
+**What you'll see now:**
+- ✅ If env vars are configured: App works normally
+- ⚠️ If env vars are missing: Clear yellow configuration error screen with instructions
+- ❌ If there's a runtime error: ErrorBoundary shows error details with reload button
 
 ## Support
 

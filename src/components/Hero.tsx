@@ -15,7 +15,10 @@ export const Hero = () => {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <img src="/wtpn-logo.png" alt="WTPN Logo" className="h-12 w-auto" />
-            <span className="text-2xl font-bold text-primary-foreground">Civil Rights Hub</span>
+            <div className="flex flex-col">
+              <span className="text-2xl font-bold text-primary-foreground">Civil Rights Hub</span>
+              <span className="text-sm text-primary-foreground/90">by We The People News</span>
+            </div>
           </div>
           <div className="hidden md:flex gap-6">
             <button onClick={() => scrollToSection('rights')} className="text-primary-foreground/90 hover:text-primary-foreground transition-colors">

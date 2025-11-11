@@ -11,7 +11,10 @@ export function Header() {
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2 font-bold text-xl">
           <Shield className="h-6 w-6 text-primary" />
-          Civil Rights Hub
+          <div className="flex flex-col">
+            <span>Civil Rights Hub</span>
+            <span className="text-xs font-normal text-muted-foreground">by We The People News</span>
+          </div>
         </Link>
         
         <nav className="flex items-center gap-4">

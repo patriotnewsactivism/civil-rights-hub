@@ -9,7 +9,10 @@ export const Footer = () => {
         <div className="flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="flex items-center gap-2">
             <Shield className="h-6 w-6" />
-            <span className="text-xl font-bold">Civil Rights Hub</span>
+            <div className="flex flex-col">
+              <span className="text-xl font-bold">Civil Rights Hub</span>
+              <span className="text-sm font-normal">by We The People News</span>
+            </div>
           </div>
           
           <div className="text-center md:text-left">
@@ -17,7 +20,7 @@ export const Footer = () => {
               Educational resource for civil rights information. Not a substitute for legal advice.
             </p>
             <p className="text-sm text-background/60 mt-2">
-              © {currentYear} Civil Rights Hub. Information subject to change.
+              © {currentYear} Civil Rights Hub by We The People News. Information subject to change.
             </p>
           </div>
           

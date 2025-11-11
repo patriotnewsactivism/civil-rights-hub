@@ -8,12 +8,7 @@ import { StateSelector } from "@/components/StateSelector";
 import { InteractiveMap } from "@/components/InteractiveMap";
 import { CaseSearch } from "@/components/CaseSearch";
 import { AITools } from "@/components/AITools";
-import { LawyerFinder } from "@/components/LawyerFinder";
 import { PoliceScanner } from "@/components/PoliceScanner";
-import { CourtWatch } from "@/components/CourtWatch";
-import { FederalLaws } from "@/components/FederalLaws";
-import { FOIABuilder } from "@/components/FOIABuilder";
-import { DiscussionBoard } from "@/components/DiscussionBoard";
 import { Resources } from "@/components/Resources";
 import { Footer } from "@/components/Footer";
 
@@ -41,6 +36,7 @@ const Index = () => {
         </div>
       </section>
       <StateSelector selectedState={selectedState} onStateChange={setSelectedState} />
+      <PoliceScanner />
       <CaseSearch />
       <AITools />
       <Resources />
@@ -48,7 +44,6 @@ const Index = () => {
       {/* New features commented out until migrations are applied */}
       {/* <FederalLaws /> */}
       {/* <LawyerFinder /> */}
-      {/* <PoliceScanner /> */}
       {/* <CourtWatch /> */}
       {/* <FOIABuilder /> */}
       {/* <DiscussionBoard /> */}

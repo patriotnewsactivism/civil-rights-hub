@@ -289,7 +289,7 @@ export const StateSelector = ({ selectedState, onStateChange }: StateSelectorPro
                               href={resource.url}
                               target="_blank"
                               rel="noreferrer"
-                              className="font-semibold text-primary-foreground underline"
+                              className="font-semibold text-primary hover:text-primary/80 underline transition-colors"
                             >
                               {resource.title}
                             </a>
@@ -312,7 +312,7 @@ export const StateSelector = ({ selectedState, onStateChange }: StateSelectorPro
                               href={attorney.contact}
                               target="_blank"
                               rel="noreferrer"
-                              className="text-xs font-semibold text-primary-foreground underline"
+                              className="text-xs font-semibold text-primary hover:text-primary/80 underline transition-colors"
                             >
                               Visit profile
                             </a>

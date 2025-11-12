@@ -20,12 +20,32 @@ import { Resources } from "@/components/Resources";
 import { Footer } from "@/components/Footer";
 import { SEO } from "@/components/SEO";
 import { AttorneySeoContent } from "@/components/AttorneySeoContent";
+import { SectionQuickNav, type SectionNavItem } from "@/components/SectionQuickNav";
 import { ATTORNEY_DIRECTORY } from "@/lib/seoData";
 
 const attorneyNames = ATTORNEY_DIRECTORY.map((entry) => entry.name);
 const organizationNames = ATTORNEY_DIRECTORY.map((entry) => entry.organization).filter(
   (organization): organization is string => Boolean(organization)
 );
+
+const SECTION_NAV_ITEMS: SectionNavItem[] = [
+  { id: "overview", label: "Overview" },
+  { id: "rights", label: "Know Your Rights" },
+  { id: "incident-guide", label: "Incident Guide" },
+  { id: "report-violation", label: "Report a Violation" },
+  { id: "violation-feed", label: "Latest Violations" },
+  { id: "states", label: "State Laws" },
+  { id: "police-scanner", label: "Police Scanner" },
+  { id: "find-attorney", label: "Find an Attorney" },
+  { id: "activist-directory", label: "Activist Directory" },
+  { id: "accountability", label: "Accountability Tools" },
+  { id: "foia-builder", label: "FOIA Builder" },
+  { id: "foia-tracker", label: "FOIA Tracker" },
+  { id: "legislative-action", label: "Legislative Action" },
+  { id: "case-search", label: "Case Search" },
+  { id: "ai-tools", label: "AI Tools" },
+  { id: "resources", label: "Resources" }
+];
 
 const seoKeywords = [
   "civil rights hub",
@@ -102,6 +122,7 @@ const Index = () => {
         structuredData={legalServicesStructuredData}
       />
       <Header />
+      <SectionQuickNav sections={SECTION_NAV_ITEMS} />
       <Hero />
       <KnowYourRights />
       <IncidentGuide />

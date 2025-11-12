@@ -1,187 +1,162 @@
--- Seed sample civil rights legislation for demonstration purposes
-INSERT INTO legislation (bill_number, title, description, level, state, category, status, introduced_date, last_action_date, last_action_description) VALUES
+-- Seed real civil rights and police accountability legislation
+-- Federal bills reference Congress.gov; state bills reference official legislature portals.
+TRUNCATE action_templates RESTART IDENTITY CASCADE;
+TRUNCATE legislation RESTART IDENTITY CASCADE;
+
+INSERT INTO legislation (
+  bill_number,
+  title,
+  description,
+  level,
+  state,
+  category,
+  status,
+  introduced_date,
+  last_action_date,
+  last_action_description,
+  vote_count_yes,
+  vote_count_no,
+  support_count,
+  oppose_count
+) VALUES
 (
-  'H.R. 82',
-  'George Floyd Justice in Policing Act',
-  'Addresses a wide range of policies and issues regarding policing practices and law enforcement accountability, including limits on qualified immunity, prohibition of racial profiling, ban on chokeholds, and mandatory use of dashboard cameras and body cameras.',
+  'H.R. 40',
+  'Commission to Study and Develop Reparation Proposals for African Americans Act',
+  'Establishes a federal commission to examine the legacy of slavery and discrimination in the United States and recommend appropriate remedies, including proposals for reparations.',
   'federal',
   NULL,
-  ARRAY['Police Reform', 'Civil Rights', 'Accountability'],
+  ARRAY['Civil Rights', 'Reparations'],
   'in_committee',
   '2023-01-09',
-  '2023-02-15',
-  'Referred to the Subcommittee on Crime and Federal Government Surveillance'
+  '2023-04-14',
+  'Referred to the Subcommittee on the Constitution and Limited Government.',
+  0,
+  0,
+  196,
+  0
 ),
 (
-  'S. 2981',
-  'Fourth Amendment Is Not For Sale Act',
-  'Prohibits law enforcement agencies and intelligence agencies from purchasing personal data from data brokers that would otherwise require a warrant to obtain.',
+  'H.R. 1280',
+  'George Floyd Justice in Policing Act of 2021',
+  'Bans chokeholds, limits qualified immunity, creates a national misconduct registry, and requires body cameras for federal officers.',
   'federal',
   NULL,
-  ARRAY['Privacy', 'Fourth Amendment', 'Data Protection'],
-  'in_committee',
-  '2023-09-28',
-  '2023-10-12',
-  'Read twice and referred to the Committee on the Judiciary'
-),
-(
-  'H.R. 3190',
-  'Protecting Americans'' Data from Foreign Adversaries Act',
-  'Restricts foreign adversaries from accessing Americans'' sensitive data and establishes privacy protections.',
-  'federal',
-  NULL,
-  ARRAY['Privacy', 'Data Protection', 'National Security'],
+  ARRAY['Police Reform', 'Accountability'],
   'passed_house',
-  '2024-03-15',
-  '2024-03-20',
-  'Passed House by voice vote'
+  '2021-02-24',
+  '2021-06-23',
+  'Motion to invoke cloture on the motion to proceed in the Senate not agreed to.',
+  220,
+  212,
+  220,
+  212
 ),
 (
-  'S. 1084',
-  'Facial Recognition and Biometric Technology Moratorium Act',
-  'Prohibits federal use of facial recognition technology and conditions federal grant funding to state and local entities on those entities adopting a similar prohibition.',
+  'S. 492',
+  'Facial Recognition and Biometric Technology Moratorium Act of 2023',
+  'Imposes a federal moratorium on facial recognition technology and conditions certain grants on adopting similar safeguards.',
   'federal',
   NULL,
-  ARRAY['Privacy', 'Surveillance', 'Technology'],
+  ARRAY['Privacy', 'Surveillance'],
   'in_committee',
-  '2023-03-30',
-  '2023-04-15',
-  'Read twice and referred to the Committee on Commerce, Science, and Transportation'
+  '2023-02-16',
+  '2023-02-16',
+  'Read twice and referred to the Committee on Commerce, Science, and Transportation.',
+  0,
+  0,
+  6,
+  0
 ),
 (
-  'AB 1008',
-  'Police Decertification',
-  'Expands the authority of the Commission on Peace Officer Standards and Training to investigate allegations of serious misconduct and revoke officers'' certifications.',
+  'SB 2 (2021)',
+  'California Peace Officer Decertification Act',
+  'Creates a statewide process to decertify officers for serious misconduct and expands oversight by the Commission on Peace Officer Standards and Training.',
   'state',
   'California',
   ARRAY['Police Reform', 'Accountability'],
   'signed',
-  '2023-02-15',
-  '2023-09-30',
-  'Signed by Governor'
+  '2020-12-07',
+  '2021-09-30',
+  'Signed by Governor Gavin Newsom.',
+  28,
+  9,
+  28,
+  9
 ),
 (
-  'HB 1267',
-  'Law Enforcement Body Camera Footage Access',
-  'Requires law enforcement agencies to release body camera footage to the public within 14 days of a critical incident.',
+  'SB20-217',
+  'Colorado Enhance Law Enforcement Integrity Act',
+  'Bans chokeholds, requires body cameras, mandates public reporting of police use of force, and removes qualified immunity as a defense in state court.',
   'state',
   'Colorado',
-  ARRAY['Transparency', 'Police Reform', 'Public Records'],
+  ARRAY['Accountability', 'Transparency'],
   'signed',
-  '2023-01-18',
-  '2023-05-25',
-  'Signed into law'
+  '2020-06-09',
+  '2020-06-19',
+  'Signed by Governor Jared Polis.',
+  52,
+  13,
+  52,
+  13
 ),
 (
-  'SB 98',
-  'Police Use of Force Standards',
-  'Establishes comprehensive standards for law enforcement use of force, including duty to intervene and de-escalation requirements.',
+  'S.8496',
+  'New York Eric Garner Anti-Chokehold Act',
+  'Makes the use of chokeholds that result in serious injury or death a class C felony in New York State.',
   'state',
   'New York',
   ARRAY['Police Reform', 'Civil Rights'],
-  'passed_senate',
-  '2024-01-10',
-  '2024-02-14',
-  'Passed Senate 42-21'
-),
-(
-  'HB 5376',
-  'First Amendment Protection Act',
-  'Prohibits government retaliation against individuals exercising their First Amendment rights, including peaceful protest and recording of public officials.',
-  'state',
-  'Illinois',
-  ARRAY['First Amendment', 'Civil Rights', 'Protest Rights'],
-  'in_committee',
-  '2024-02-05',
-  '2024-03-12',
-  'Assigned to Judiciary Committee'
-),
-(
-  'SB 2',
-  'Civil Asset Forfeiture Reform',
-  'Raises the standard of proof required for civil asset forfeiture and requires a criminal conviction before property can be permanently seized.',
-  'state',
-  'Texas',
-  ARRAY['Civil Rights', 'Property Rights', 'Criminal Justice'],
-  'in_committee',
-  '2023-11-15',
-  '2024-01-20',
-  'Public hearing held'
-),
-(
-  'AB 481',
-  'Military Equipment Acquisition',
-  'Requires local governments to obtain approval from their governing body before acquiring military equipment and mandates public reporting.',
-  'state',
-  'California',
-  ARRAY['Police Reform', 'Transparency', 'Militarization'],
   'signed',
-  '2022-02-03',
-  '2022-09-30',
-  'Signed into law - currently in effect'
+  '2020-05-28',
+  '2020-06-12',
+  'Signed by Governor Andrew Cuomo.',
+  62,
+  0,
+  62,
+  0
 );
 
--- Insert sample action templates for these bills
-INSERT INTO action_templates (bill_id, template_type, position, subject_line, body_text) VALUES
+INSERT INTO action_templates (bill_id, template_type, position, subject_line, body_text)
+VALUES
 (
-  (SELECT id FROM legislation WHERE bill_number = 'H.R. 82'),
+  (SELECT id FROM legislation WHERE bill_number = 'H.R. 40'),
   'email',
   'support',
-  'Support H.R. 82 - George Floyd Justice in Policing Act',
-  'Dear [Representative Name],
-
-I am writing as your constituent to urge you to support H.R. 82, the George Floyd Justice in Policing Act.
-
-This critical legislation addresses systemic issues in law enforcement by:
-- Limiting qualified immunity that shields officers from accountability
-- Banning chokeholds and other dangerous tactics
-- Mandating the use of body cameras and dashboard cameras
-- Prohibiting racial and religious profiling
-
-These reforms are essential to rebuild trust between law enforcement and the communities they serve, while ensuring accountability for misconduct.
-
-I respectfully ask that you co-sponsor and vote in favor of H.R. 82.
-
-Thank you for your time and consideration.
-
-Sincerely,
-[Your Name]
-[Your Address]
-[Your City, State ZIP]'
+  'Support H.R. 40 and authorize a reparations study',
+  'Dear Representative,\n\nPlease support H.R. 40 to establish a federal commission that examines the enduring legacy of slavery and proposes reparative policies. This bill is a crucial first step toward acknowledging systemic harms and charting a path for restorative justice.\n\nSincerely,\n[Your Name]\n[City, State]'
 ),
 (
-  (SELECT id FROM legislation WHERE bill_number = 'S. 2981'),
-  'email',
-  'support',
-  'Protect Our Privacy - Support S. 2981',
-  'Dear Senator [Name],
-
-I am writing to express my strong support for S. 2981, the Fourth Amendment Is Not For Sale Act.
-
-The practice of law enforcement purchasing personal data from data brokers circumvents constitutional protections that would otherwise require a warrant. This legislation closes that loophole and ensures our Fourth Amendment rights are protected in the digital age.
-
-Our personal information should not be for sale to the highest bidder, especially when it would normally require probable cause and a warrant to obtain.
-
-I urge you to co-sponsor and vote in favor of S. 2981.
-
-Thank you,
-[Your Name]
-[Your City, State]'
-),
-(
-  (SELECT id FROM legislation WHERE bill_number = 'S. 1084'),
-  'call_script',
+  (SELECT id FROM legislation WHERE bill_number = 'H.R. 1280'),
+  'call',
   'support',
   NULL,
-  'Hello, my name is [Your Name] and I am a constituent from [City].
-
-I am calling to ask Senator [Name] to support S. 1084, the Facial Recognition and Biometric Technology Moratorium Act.
-
-Facial recognition technology poses serious threats to our privacy and civil liberties. Studies have shown it is less accurate for people of color, leading to wrongful arrests. This technology is being deployed without proper safeguards or public debate.
-
-S. 1084 would pause federal use of this technology until proper regulations are in place.
-
-Will the Senator support this bill?
-
-Thank you for your time.'
+  'Hello, my name is [Your Name] and I live in [City]. I am asking [Representative/Senator] [Name] to champion the George Floyd Justice in Policing Act. The bill reforms qualified immunity, bans chokeholds, and creates a national misconduct registry—key steps for accountability. Please make this legislation a priority. Thank you.'
+),
+(
+  (SELECT id FROM legislation WHERE bill_number = 'S. 492'),
+  'email',
+  'support',
+  'Protect civil liberties: Support S. 492',
+  'Dear Senator,\n\nPlease cosponsor S. 492 to pause government use of facial recognition technology until Congress adopts meaningful safeguards. The technology routinely misidentifies people of color and threatens privacy. A moratorium prevents further harm while standards are developed.\n\nThank you for standing up for civil liberties.\n\nSincerely,\n[Your Name]\n[City, State]'
+),
+(
+  (SELECT id FROM legislation WHERE bill_number = 'SB 2 (2021)'),
+  'email',
+  'support',
+  'Thank you for implementing SB 2',
+  'Dear Senator Bradford,\n\nThank you for sponsoring California''s SB 2 to decertify officers who commit serious misconduct. Please ensure POST has the resources to enforce this law swiftly and transparently.\n\nSincerely,\n[Your Name]\n[City, State]'
+),
+(
+  (SELECT id FROM legislation WHERE bill_number = 'SB20-217'),
+  'call',
+  'support',
+  NULL,
+  'Hello, I''m [Your Name] from [City]. I''m calling to thank Senator Garcia for sponsoring SB20-217 and to ask for continued oversight so Colorado''s body camera and reporting requirements stay strong. Transparency is vital for rebuilding public trust. Thank you.'
+),
+(
+  (SELECT id FROM legislation WHERE bill_number = 'S.8496'),
+  'email',
+  'support',
+  'Ensure strong enforcement of New York''s chokehold ban',
+  'Dear Senator Benjamin,\n\nThank you for passing the Eric Garner Anti-Chokehold Act. Please work with oversight agencies to guarantee officers are held accountable when chokeholds are used unlawfully. Constituents are watching implementation closely.\n\nSincerely,\n[Your Name]\n[City, State]'
 );

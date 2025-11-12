@@ -1,6 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ExternalLink, Phone, Mail, Scale, Users } from "lucide-react";
+import { ExternalLink, Phone, Mail, Scale, Users, Shield } from "lucide-react";
 
 export const Resources = () => {
   const organizations = [
@@ -21,6 +21,12 @@ export const Resources = () => {
       description: "Defending civil liberties in the digital world",
       website: "https://www.eff.org",
       icon: Scale
+    },
+    {
+      name: "Attorney-Shield",
+      description: "Legal protection and support for citizens recording police and public officials",
+      website: "https://attorney-shield.com",
+      icon: Shield
     }
   ];
 
@@ -44,18 +50,18 @@ export const Resources = () => {
       <div className="container mx-auto px-4">
         <div className="text-center mb-12 animate-fade-in">
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-            Legal Resources & Support
+            Prevention, Safety & Legal Resources
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Connect with organizations and resources dedicated to protecting civil rights and
-            providing legal assistance.
+            Connect with organizations and resources dedicated to protecting civil rights,
+            providing legal assistance, and supporting prevention and safety measures.
           </p>
         </div>
 
         <div className="max-w-6xl mx-auto space-y-8">
           <div>
-            <h3 className="text-2xl font-semibold text-foreground mb-6">Legal Aid Organizations</h3>
-            <div className="grid md:grid-cols-3 gap-6">
+            <h3 className="text-2xl font-semibold text-foreground mb-6">Prevention, Safety & Legal Aid Organizations</h3>
+            <div className="grid md:grid-cols-4 gap-6">
               {organizations.map((org, index) => (
                 <Card key={index} className="shadow-soft hover:shadow-strong transition-all duration-300 border-border">
                   <CardHeader>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -6,31 +6,13 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useGeolocation } from "@/hooks/useGeolocation";
-import { Search, Shield, Building2, AlertTriangle, TrendingUp, ExternalLink } from "lucide-react";
+import { Search, Shield, Building2, AlertTriangle, TrendingUp, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
-
-interface Agency {
-  id: string;
-  name: string;
-  agency_type: string;
-  state: string;
-  city: string | null;
-  total_complaints: number;
-  total_settlements_paid: number;
-}
-
-interface Officer {
-  id: string;
-  badge_number: string | null;
-  first_name: string | null;
-  last_name: string | null;
-  rank: string | null;
-  total_violations: number;
-  agency: {
-    name: string;
-    state: string;
-  } | null;
-}
+import {
+  ACCOUNTABILITY_FALLBACK,
+  type AccountabilityAgency,
+  type AccountabilityOfficer,
+} from "@/lib/fallbackData";
 
 const US_STATES = [
   "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut",
@@ -45,12 +27,14 @@ const US_STATES = [
 
 export function OfficerAccountability() {
   const { state: userState, loading: locationLoading } = useGeolocation();
-  const [agencies, setAgencies] = useState<Agency[]>([]);
-  const [officers, setOfficers] = useState<Officer[]>([]);
+  const [agencies, setAgencies] = useState<AccountabilityAgency[]>([]);
+  const [officers, setOfficers] = useState<AccountabilityOfficer[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedState, setSelectedState] = useState<string>("all");
   const [activeTab, setActiveTab] = useState("agencies");
+  const [usingFallback, setUsingFallback] = useState(false);
+  const fallbackNoticeShown = useRef(false);
 
   useEffect(() => {
     if (userState && !locationLoading) {
@@ -78,38 +62,95 @@ export function OfficerAccountability() {
     }
   };
 
-  const fetchAgencies = async () => {
-    let query = supabase
-      .from('agencies')
-      .select('*')
-      .order('total_complaints', { ascending: false });
-
-    if (selectedState !== "all") {
-      query = query.eq('state', selectedState);
+  const showFallbackNotice = () => {
+    if (!fallbackNoticeShown.current) {
+      toast.info("Showing sample accountability data while we connect to live reports.");
+      fallbackNoticeShown.current = true;
     }
+  };
 
-    const { data, error } = await query;
-    if (error) throw error;
-    setAgencies(data || []);
+  const applyAgencyFallback = () => {
+    const filtered = selectedState === "all"
+      ? ACCOUNTABILITY_FALLBACK.agencies
+      : ACCOUNTABILITY_FALLBACK.agencies.filter((agency) => agency.state === selectedState);
+    setAgencies(filtered.length > 0 ? filtered : ACCOUNTABILITY_FALLBACK.agencies);
+    setUsingFallback(true);
+    showFallbackNotice();
+  };
+
+  const applyOfficerFallback = () => {
+    const filtered = selectedState === "all"
+      ? ACCOUNTABILITY_FALLBACK.officers
+      : ACCOUNTABILITY_FALLBACK.officers.filter((officer) => officer.agency?.state === selectedState);
+    setOfficers(filtered.length > 0 ? filtered : ACCOUNTABILITY_FALLBACK.officers);
+    setUsingFallback(true);
+    showFallbackNotice();
+  };
+
+  const fetchAgencies = async () => {
+    try {
+      let query = supabase
+        .from('agencies')
+        .select('*')
+        .order('total_complaints', { ascending: false });
+
+      if (selectedState !== "all") {
+        query = query.eq('state', selectedState);
+      }
+
+      const { data, error } = await query;
+      if (error) {
+        console.warn('Falling back to sample agencies due to Supabase error:', error);
+        applyAgencyFallback();
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        applyAgencyFallback();
+        return;
+      }
+
+      setAgencies(data as AccountabilityAgency[]);
+      setUsingFallback(false);
+    } catch (error) {
+      console.error('Unexpected error fetching agencies:', error);
+      applyAgencyFallback();
+    }
   };
 
   const fetchOfficers = async () => {
-    let query = supabase
-      .from('officers')
-      .select(`
-        *,
-        agency:agencies(name, state)
-      `)
-      .order('total_violations', { ascending: false })
-      .limit(100);
+    try {
+      let query = supabase
+        .from('officers')
+        .select(`
+          *,
+          agency:agencies(name, state)
+        `)
+        .order('total_violations', { ascending: false })
+        .limit(100);
 
-    if (selectedState !== "all") {
-      query = query.eq('agencies.state', selectedState);
+      if (selectedState !== "all") {
+        query = query.eq('agencies.state', selectedState);
+      }
+
+      const { data, error } = await query;
+      if (error) {
+        console.warn('Falling back to sample officers due to Supabase error:', error);
+        applyOfficerFallback();
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        applyOfficerFallback();
+        return;
+      }
+
+      setOfficers(data as AccountabilityOfficer[]);
+      setUsingFallback(false);
+    } catch (error) {
+      console.error('Unexpected error fetching officers:', error);
+      applyOfficerFallback();
     }
-
-    const { data, error } = await query;
-    if (error) throw error;
-    setOfficers(data || []);
   };
 
   const filteredAgencies = agencies.filter((agency) => {
@@ -180,6 +221,13 @@ export function OfficerAccountability() {
             </div>
           </CardContent>
         </Card>
+
+        {usingFallback && (
+          <div className="mb-4 flex items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900 dark:border-amber-800 dark:bg-amber-950/20 dark:text-amber-200">
+            <AlertCircle className="h-4 w-4" />
+            Displaying demo accountability data until live reports are available.
+          </div>
+        )}
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="grid w-full max-w-md grid-cols-2">

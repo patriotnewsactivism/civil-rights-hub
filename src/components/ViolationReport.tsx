@@ -256,13 +256,13 @@ export const ViolationReport = () => {
                       <Label htmlFor="agency">Law Enforcement Agency</Label>
                       <Select
                         value={formData.agencyId}
-                        onValueChange={(value) => setFormData({ ...formData, agencyId: value })}
+                        onValueChange={(value) => setFormData({ ...formData, agencyId: value === "none" ? "" : value })}
                       >
                         <SelectTrigger id="agency">
                           <SelectValue placeholder="Select agency (optional)" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="">None</SelectItem>
+                          <SelectItem value="none">None</SelectItem>
                           {agencies
                             .filter(a => !formData.locationState || a.state === formData.locationState || a.state === "Multiple")
                             .map((agency) => (

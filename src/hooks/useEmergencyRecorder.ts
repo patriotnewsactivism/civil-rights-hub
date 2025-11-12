@@ -22,11 +22,19 @@ export interface EmergencyRecorderState {
   recordingStartedAt: Date | null;
   error: string | null;
   support: RecorderSupportState;
+  permissionsSupported: boolean;
+  permissions: RecorderPermissions;
+  refreshPermissions: () => Promise<RecorderPermissions>;
   startRecording: () => Promise<boolean>;
   stopRecording: () => void;
   clearRecordings: () => void;
   frontVideoRef: MutableRefObject<HTMLVideoElement | null>;
   backVideoRef: MutableRefObject<HTMLVideoElement | null>;
+}
+
+export interface RecorderPermissions {
+  camera: PermissionState | null;
+  microphone: PermissionState | null;
 }
 
 const MIME_TYPE_PREFERENCE = [
@@ -84,6 +92,7 @@ export const useEmergencyRecorder = (): EmergencyRecorderState => {
   const backRecorderRef = useRef<MediaRecorder | null>(null);
   const frontStreamRef = useRef<MediaStream | null>(null);
   const backStreamRef = useRef<MediaStream | null>(null);
+  const permissionStatusRefs = useRef<Partial<Record<"camera" | "microphone", PermissionStatus>>>({});
   const frontChunksRef = useRef<Blob[]>([]);
   const backChunksRef = useRef<Blob[]>([]);
   const frontUrlRef = useRef<string | null>(null);
@@ -99,6 +108,48 @@ export const useEmergencyRecorder = (): EmergencyRecorderState => {
   const [supportsDualCamera, setSupportsDualCamera] = useState<boolean | null>(null);
   const [dualCameraActive, setDualCameraActive] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [permissionsSupported, setPermissionsSupported] = useState<boolean>(
+    typeof navigator !== "undefined" && Boolean(navigator.permissions?.query)
+  );
+  const [permissions, setPermissions] = useState<RecorderPermissions>({ camera: null, microphone: null });
+
+  const refreshPermissions = useCallback(async (): Promise<RecorderPermissions> => {
+    if (typeof navigator === "undefined" || !navigator.permissions?.query) {
+      setPermissionsSupported(false);
+      setPermissions({ camera: null, microphone: null });
+      return { camera: null, microphone: null };
+    }
+
+    setPermissionsSupported(true);
+
+    const permissionNames: Array<"camera" | "microphone"> = ["camera", "microphone"];
+    const results = await Promise.all(
+      permissionNames.map(async (name) => {
+        try {
+          const status = await navigator.permissions.query({ name } as PermissionDescriptor);
+          permissionStatusRefs.current[name] = status;
+          status.onchange = () => {
+            setPermissions((current) => ({
+              ...current,
+              [name]: status.state,
+            }));
+          };
+          return { name, state: status.state } as const;
+        } catch {
+          permissionStatusRefs.current[name] = undefined;
+          return { name, state: null } as const;
+        }
+      })
+    );
+
+    const nextPermissions = results.reduce<RecorderPermissions>((accumulator, { name, state }) => {
+      accumulator[name] = state;
+      return accumulator;
+    }, { camera: null, microphone: null });
+
+    setPermissions(nextPermissions);
+    return nextPermissions;
+  }, []);
 
   const clearRecordings = useCallback(() => {
     if (frontUrlRef.current) {
@@ -151,6 +202,22 @@ export const useEmergencyRecorder = (): EmergencyRecorderState => {
     try {
       setError(null);
       clearRecordings();
+
+      const currentPermissions = await refreshPermissions();
+      if (permissionsSupported) {
+        if (currentPermissions.camera === "denied" && currentPermissions.microphone === "denied") {
+          setError("Camera and microphone access are blocked. Update your browser permissions to record.");
+          return false;
+        }
+        if (currentPermissions.camera === "denied") {
+          setError("Camera access is blocked. Allow camera permissions to start an emergency recording.");
+          return false;
+        }
+        if (currentPermissions.microphone === "denied") {
+          setError("Microphone access is blocked. Enable microphone permissions to capture audio during recording.");
+          return false;
+        }
+      }
 
       const frontStream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: { ideal: "user" } },
@@ -266,12 +333,28 @@ export const useEmergencyRecorder = (): EmergencyRecorderState => {
       setError(errorMessage);
       return false;
     }
-  }, [clearRecordings, recording, stopRecording, support]);
+  }, [clearRecordings, permissionsSupported, recording, refreshPermissions, stopRecording, support]);
 
   useEffect(() => () => {
     stopRecording();
     clearRecordings();
   }, [clearRecordings, stopRecording]);
+
+  useEffect(() => {
+    void refreshPermissions();
+  }, [refreshPermissions]);
+
+  useEffect(
+    () => () => {
+      Object.values(permissionStatusRefs.current).forEach((status) => {
+        if (status) {
+          status.onchange = null;
+        }
+      });
+      permissionStatusRefs.current = {};
+    },
+    []
+  );
 
   return {
     recording,
@@ -284,6 +367,9 @@ export const useEmergencyRecorder = (): EmergencyRecorderState => {
     recordingStartedAt,
     error,
     support,
+    permissionsSupported,
+    permissions,
+    refreshPermissions,
     startRecording,
     stopRecording,
     clearRecordings,

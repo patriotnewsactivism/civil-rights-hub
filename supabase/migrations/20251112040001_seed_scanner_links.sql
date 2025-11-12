@@ -109,5 +109,80 @@ INSERT INTO public.scanner_links (
 -- Indiana
 ('Indiana', 'IN', 'Indianapolis', 'Marion County', 'Indianapolis Metro Police', 'IMPD all districts', '154.950 MHz', 'https://www.broadcastify.com/webPlayer/2348', NULL, NULL, 'broadcastify', 410, true, NULL),
 
+-- Alaska
+('Alaska', 'AK', 'Anchorage', 'Anchorage Borough', 'Anchorage Police', 'Anchorage Police Department dispatch and tactical', '460.150 MHz', 'https://www.broadcastify.com/webPlayer/19829', NULL, NULL, 'broadcastify', 220, true, NULL),
+
+-- Arkansas
+('Arkansas', 'AR', 'Little Rock', 'Pulaski County', 'Little Rock Police', 'Little Rock PD citywide', '460.350 MHz', 'https://www.broadcastify.com/webPlayer/22131', NULL, NULL, 'broadcastify', 260, true, NULL),
+
+-- Connecticut
+('Connecticut', 'CT', 'Hartford', 'Hartford County', 'Hartford County Public Safety', 'Hartford Police, Fire, EMS', '453.350 MHz', 'https://www.broadcastify.com/webPlayer/3475', NULL, NULL, 'broadcastify', 310, true, NULL),
+
+-- Delaware
+('Delaware', 'DE', 'Wilmington', 'New Castle County', 'New Castle County Police', 'County police, fire, and EMS', '154.725 MHz', 'https://www.broadcastify.com/webPlayer/34871', NULL, NULL, 'broadcastify', 180, true, NULL),
+
+-- Hawaii
+('Hawaii', 'HI', 'Honolulu', 'Honolulu County', 'Honolulu Police', 'Honolulu PD dispatch', '453.950 MHz', 'https://www.broadcastify.com/webPlayer/33096', NULL, NULL, 'broadcastify', 210, true, NULL),
+
+-- Idaho
+('Idaho', 'ID', 'Boise', 'Ada County', 'Boise Police', 'Boise PD and Ada County Sheriff', '460.350 MHz', 'https://www.broadcastify.com/webPlayer/17324', NULL, NULL, 'broadcastify', 190, true, NULL),
+
+-- Iowa
+('Iowa', 'IA', 'Des Moines', 'Polk County', 'Polk County Sheriff and Des Moines Police', 'Joint city and county dispatch', '460.475 MHz', 'https://www.broadcastify.com/webPlayer/14456', NULL, NULL, 'broadcastify', 205, true, NULL),
+
+-- Kansas
+('Kansas', 'KS', 'Wichita', 'Sedgwick County', 'Wichita-Sedgwick County Public Safety', 'Wichita Police, Fire, and EMS', '154.935 MHz', 'https://www.broadcastify.com/webPlayer/25925', NULL, NULL, 'broadcastify', 215, true, NULL),
+
+-- Kentucky
+('Kentucky', 'KY', 'Louisville', 'Jefferson County', 'Louisville MetroSafe', 'Louisville Metro Police, Fire, EMS', '460.200 MHz', 'https://www.broadcastify.com/webPlayer/7823', NULL, NULL, 'broadcastify', 330, true, NULL),
+
+-- Maine
+('Maine', 'ME', 'Portland', 'Cumberland County', 'Cumberland County Public Safety', 'County sheriff and municipal police', '155.985 MHz', 'https://www.broadcastify.com/webPlayer/27944', NULL, NULL, 'broadcastify', 170, true, NULL),
+
+-- Mississippi
+('Mississippi', 'MS', 'Jackson', 'Hinds County', 'Jackson Police', 'Jackson PD and countywide operations', '460.425 MHz', 'https://www.broadcastify.com/webPlayer/37558', NULL, NULL, 'broadcastify', 185, true, NULL),
+
+-- Montana
+('Montana', 'MT', 'Billings', 'Yellowstone County', 'Yellowstone County Public Safety', 'Billings Police and Sheriff', '154.770 MHz', 'https://www.broadcastify.com/webPlayer/30242', NULL, NULL, 'broadcastify', 165, true, NULL),
+
+-- Nebraska
+('Nebraska', 'NE', 'Omaha', 'Douglas County', 'Douglas County Sheriff and Omaha Police', 'Omaha PD, Sheriff, and Fire', '460.400 MHz', 'https://www.broadcastify.com/webPlayer/7620', NULL, NULL, 'broadcastify', 240, true, NULL),
+
+-- New Hampshire
+('New Hampshire', 'NH', 'Manchester', 'Hillsborough County', 'Manchester Police', 'Manchester PD and Hillsborough County', '453.350 MHz', 'https://www.broadcastify.com/webPlayer/14298', NULL, NULL, 'broadcastify', 160, true, NULL),
+
+-- New Jersey
+('New Jersey', 'NJ', 'Newark', 'Essex County', 'Essex County and Newark Public Safety', 'Newark Police, Fire, and EMS', '470.5125 MHz', 'https://www.broadcastify.com/webPlayer/29675', NULL, NULL, 'broadcastify', 410, true, NULL),
+
+-- New Mexico
+('New Mexico', 'NM', 'Albuquerque', 'Bernalillo County', 'Albuquerque Police', 'Albuquerque PD dispatch', '460.400 MHz', 'https://www.broadcastify.com/webPlayer/2833', NULL, NULL, 'broadcastify', 260, true, NULL),
+
+-- North Dakota
+('North Dakota', 'ND', 'Fargo', 'Cass County', 'Red River Valley Public Safety', 'Fargo Police, West Fargo Police, Cass County Sheriff', '155.610 MHz', 'https://www.broadcastify.com/webPlayer/31156', NULL, NULL, 'broadcastify', 150, true, NULL),
+
+-- Oklahoma
+('Oklahoma', 'OK', 'Oklahoma City', 'Oklahoma County', 'Oklahoma City Police', 'Oklahoma City PD dispatch', '453.850 MHz', 'https://www.broadcastify.com/webPlayer/5995', NULL, NULL, 'broadcastify', 280, true, NULL),
+
+-- Rhode Island
+('Rhode Island', 'RI', 'Providence', 'Providence County', 'Providence Police', 'Providence PD and Fire', '154.770 MHz', 'https://www.broadcastify.com/webPlayer/35371', NULL, NULL, 'broadcastify', 175, true, NULL),
+
+-- South Carolina
+('South Carolina', 'SC', 'Columbia', 'Richland County', 'Richland County Public Safety', 'Richland County Sheriff and Columbia Police', '453.800 MHz', 'https://www.broadcastify.com/webPlayer/14709', NULL, NULL, 'broadcastify', 240, true, NULL),
+
+-- South Dakota
+('South Dakota', 'SD', 'Sioux Falls', 'Minnehaha County', 'Sioux Falls Public Safety', 'Sioux Falls Police, Fire, EMS', '460.275 MHz', 'https://www.broadcastify.com/webPlayer/31973', NULL, NULL, 'broadcastify', 145, true, NULL),
+
+-- Utah
+('Utah', 'UT', 'Salt Lake City', 'Salt Lake County', 'Salt Lake Valley Emergency Communications', 'Salt Lake City Police and Sheriff', '453.650 MHz', 'https://www.broadcastify.com/webPlayer/16492', NULL, NULL, 'broadcastify', 360, true, NULL),
+
+-- Vermont
+('Vermont', 'VT', 'Burlington', 'Chittenden County', 'Chittenden County Public Safety', 'Burlington Police and area departments', '460.350 MHz', 'https://www.broadcastify.com/webPlayer/14619', NULL, NULL, 'broadcastify', 140, true, NULL),
+
+-- West Virginia
+('West Virginia', 'WV', 'Charleston', 'Kanawha County', 'Kanawha County Metro 911', 'Charleston Police, Sheriff, Fire', '453.750 MHz', 'https://www.broadcastify.com/webPlayer/31658', NULL, NULL, 'broadcastify', 165, true, NULL),
+
+-- Wyoming
+('Wyoming', 'WY', 'Cheyenne', 'Laramie County', 'Laramie County Public Safety', 'Cheyenne Police and Laramie County Sheriff', '155.730 MHz', 'https://www.broadcastify.com/webPlayer/24187', NULL, NULL, 'broadcastify', 135, true, NULL),
+
 -- Alabama
 ('Alabama', 'AL', 'Birmingham', 'Jefferson County', 'Birmingham Police', 'Birmingham PD dispatch', '460.225 MHz', 'https://www.broadcastify.com/webPlayer/3827', NULL, NULL, 'broadcastify', 240, true, NULL);

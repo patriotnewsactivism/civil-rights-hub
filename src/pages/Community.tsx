@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SocialFeed } from "@/components/SocialFeed";
 import { DirectMessages } from "@/components/DirectMessages";
 import { UserProfile } from "@/components/UserProfile";
+import { SEO, SEOPresets } from "@/components/SEO";
 import { Users, MessageSquare, User } from "lucide-react";
 
 export default function Community() {
@@ -20,13 +21,15 @@ export default function Community() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-2">Community Network</h1>
-        <p className="text-muted-foreground">
-          Connect with journalists, activists, and attorneys across the civil rights movement
-        </p>
-      </div>
+    <>
+      <SEO {...SEOPresets.community} />
+      <div className="container mx-auto px-4 py-8">
+        <div className="mb-8">
+          <h1 className="text-4xl font-bold mb-2">Community Network</h1>
+          <p className="text-muted-foreground">
+            Connect with journalists, activists, and attorneys across the civil rights movement
+          </p>
+        </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="grid w-full max-w-md grid-cols-3">
@@ -58,6 +61,7 @@ export default function Community() {
           </TabsContent>
         </div>
       </Tabs>
-    </div>
+      </div>
+    </>
   );
 }

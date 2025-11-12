@@ -56,14 +56,19 @@
       "@context": "https://schema.org",
       "@type": "WebSite",
       "name": "Civil Rights Hub by We The People News",
-      "alternateName": "CRH",
+      "alternateName": ["CRH", "Civil Rights Hub", "Act Now Hub"],
       "url": "https://civilrightshub.org",
-      "description": "Comprehensive civil rights platform providing legal resources, attorney directory, and tools to protect constitutional rights",
-      "potentialAction": {
+      "description": "Comprehensive civil rights platform providing legal resources, attorney directory, violation reporting, FOIA requests, and tools to protect constitutional rights",
+      "inLanguage": "en-US",
+      "potentialAction": [{
         "@type": "SearchAction",
-        "target": "https://civilrightshub.org/search?q={search_term_string}",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://civilrightshub.org/#lawyers?search={search_term_string}"
+        },
         "query-input": "required name=search_term_string"
-      }
+      }],
+      "keywords": "civil rights, constitutional rights, know your rights, legal aid, attorney directory, state laws, police accountability, FOIA requests, violation reporting"
     }
     </script>
     <script type="application/ld+json">
@@ -72,17 +77,115 @@
       "@type": "Organization",
       "name": "Civil Rights Hub by We The People News",
       "url": "https://civilrightshub.org",
-      "logo": "https://civilrightshub.org/logo.png",
-      "description": "A comprehensive platform dedicated to civil rights education, legal resources, and community empowerment",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://civilrightshub.org/logo.png",
+        "width": 512,
+        "height": 512
+      },
+      "description": "A comprehensive platform dedicated to civil rights education, legal resources, community empowerment, and police accountability",
+      "foundingDate": "2024",
       "sameAs": [
         "https://twitter.com/civilrightshub",
         "https://facebook.com/civilrightshub"
       ],
-      "contactPoint": {
+      "contactPoint": [{
         "@type": "ContactPoint",
         "contactType": "Customer Support",
-        "email": "support@civilrightshub.org"
+        "email": "support@civilrightshub.org",
+        "areaServed": "US",
+        "availableLanguage": ["English"]
+      }],
+      "areaServed": {
+        "@type": "Country",
+        "name": "United States"
       }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Civil Rights Hub",
+      "url": "https://civilrightshub.org",
+      "applicationCategory": "LegalService",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "featureList": [
+        "Know Your Rights Guides",
+        "Attorney Directory Search",
+        "Civil Rights Violation Reporting",
+        "FOIA Request Builder",
+        "State Law Database",
+        "Police Scanner Directory",
+        "Legal Case Search",
+        "Community Forums",
+        "Officer Accountability Tracker",
+        "Legislative Action Center"
+      ],
+      "description": "Free web application for civil rights education, legal resources, and community organizing"
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [{
+        "@type": "Question",
+        "name": "Can I record police officers in public?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, the First Amendment protects your right to record police officers performing their duties in public spaces. This right has been affirmed by multiple federal courts. However, recording laws vary by state for private conversations."
+        }
+      }, {
+        "@type": "Question",
+        "name": "How do I file a FOIA request?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Use our FOIA Request Builder to create custom requests. Federal agencies must respond within 20 business days. State and local timelines vary. Our templates include submission instructions for federal, state, and local requests."
+        }
+      }, {
+        "@type": "Question",
+        "name": "Where can I find civil rights attorneys?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Our Attorney Directory includes civil rights lawyers searchable by state and practice area. We list national organizations like the ACLU, National Lawyers Guild, and state-specific resources."
+        }
+      }, {
+        "@type": "Question",
+        "name": "What are my rights during a police stop?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "You have the right to remain silent, refuse consent to searches, and record the interaction. You must provide identification in stop-and-identify states. Do not resist even if the stop is unlawful. Download our Know Your Rights guides for detailed information."
+        }
+      }]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "GovernmentService",
+      "name": "Civil Rights Violation Reporting",
+      "url": "https://civilrightshub.org/#report",
+      "serviceType": "Civil Rights Complaint Filing",
+      "provider": {
+        "@type": "Organization",
+        "name": "Civil Rights Hub by We The People News"
+      },
+      "areaServed": {
+        "@type": "Country",
+        "name": "United States"
+      },
+      "audience": {
+        "@type": "Audience",
+        "audienceType": "Citizens experiencing civil rights violations"
+      },
+      "termsOfService": "https://civilrightshub.org/terms",
+      "description": "Anonymous civil rights violation reporting system with geolocation support and community feed"
     }
     </script>
   </head>

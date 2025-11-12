@@ -12,6 +12,7 @@ import { AITools } from "@/components/AITools";
 import { PoliceScanner } from "@/components/PoliceScanner";
 import { LawyerFinder } from "@/components/LawyerFinder";
 import { FOIABuilder } from "@/components/FOIABuilder";
+import { ActivistDirectory } from "@/components/ActivistDirectory";
 import { Resources } from "@/components/Resources";
 import { Footer } from "@/components/Footer";
 
@@ -42,6 +43,7 @@ const Index = () => {
       <StateSelector selectedState={selectedState} onStateChange={setSelectedState} />
       <PoliceScanner />
       <LawyerFinder />
+      <ActivistDirectory />
       <FOIABuilder />
       <CaseSearch />
       <AITools />

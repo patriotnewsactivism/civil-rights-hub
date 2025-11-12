@@ -14,6 +14,54 @@ export type Database = {
   }
   public: {
     Tables: {
+      activists: {
+        Row: {
+          alias: string | null
+          bio: string | null
+          channel_url: string | null
+          created_at: string
+          focus_areas: string[] | null
+          home_state: string | null
+          id: string
+          name: string
+          primary_platform: string | null
+          profile_image_url: string | null
+          updated_at: string
+          user_submitted: boolean | null
+          verified: boolean | null
+        }
+        Insert: {
+          alias?: string | null
+          bio?: string | null
+          channel_url?: string | null
+          created_at?: string
+          focus_areas?: string[] | null
+          home_state?: string | null
+          id?: string
+          name: string
+          primary_platform?: string | null
+          profile_image_url?: string | null
+          updated_at?: string
+          user_submitted?: boolean | null
+          verified?: boolean | null
+        }
+        Update: {
+          alias?: string | null
+          bio?: string | null
+          channel_url?: string | null
+          created_at?: string
+          focus_areas?: string[] | null
+          home_state?: string | null
+          id?: string
+          name?: string
+          primary_platform?: string | null
+          profile_image_url?: string | null
+          updated_at?: string
+          user_submitted?: boolean | null
+          verified?: boolean | null
+        }
+        Relationships: []
+      }
       attorneys: {
         Row: {
           accepts_pro_bono: boolean | null

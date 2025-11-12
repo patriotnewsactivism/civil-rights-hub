@@ -1,12 +1,17 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   AlertCircle,
+  Camera,
+  CameraOff,
   BellRing,
   CheckCircle2,
+  Download,
   Loader2,
   MapPin,
   ShieldAlert,
   Smartphone,
+  Square,
+  Video,
 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -23,6 +28,7 @@ import { useEmergencyContacts } from "@/hooks/useEmergencyContacts";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 import { formatDistanceToNow } from "date-fns";
+import { useEmergencyRecorder } from "@/hooks/useEmergencyRecorder";
 
 const ALERT_TYPES = [
   { value: "detained", label: "I'm being detained", description: "Alert your contacts that police have stopped you." },
@@ -46,6 +52,25 @@ export const PanicButton = () => {
   const [alerts, setAlerts] = useState<PanicAlert[]>([]);
   const [alertsLoading, setAlertsLoading] = useState(false);
   const [testMode, setTestMode] = useState(false);
+  const [autoRecordEnabled, setAutoRecordEnabled] = useState(true);
+
+  const {
+    recording,
+    dualCameraActive,
+    supportsDualCamera,
+    frontRecordingUrl,
+    backRecordingUrl,
+    frontMimeType,
+    backMimeType,
+    recordingStartedAt,
+    error: recorderError,
+    support: recorderSupport,
+    startRecording,
+    stopRecording,
+    clearRecordings,
+    frontVideoRef,
+    backVideoRef,
+  } = useEmergencyRecorder();
 
   const coordinateSummary = useMemo(() => {
     if (location.loading) {
@@ -103,6 +128,51 @@ export const PanicButton = () => {
     void loadAlerts();
   }, [toast, user?.id]);
 
+  useEffect(() => {
+    if (recorderError) {
+      toast({
+        title: "Emergency recorder warning",
+        description: recorderError,
+        variant: "destructive",
+      });
+    }
+  }, [recorderError, toast]);
+
+  const recordingFileExtension = (mimeType: string) => (mimeType.includes("mp4") ? "mp4" : "webm");
+
+  const buildRecordingFilename = (label: string, mimeType: string) => {
+    const timestamp = (recordingStartedAt ?? new Date()).toISOString().replace(/[:.]/g, "-");
+    return `emergency-${label}-${timestamp}.${recordingFileExtension(mimeType)}`;
+  };
+
+  const handleManualRecordingStart = async () => {
+    const started = await startRecording();
+    if (!started) {
+      toast({
+        title: "Could not access cameras",
+        description:
+          recorderError ?? recorderSupport.reason ?? "Check your browser permissions and try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleManualRecordingStop = () => {
+    stopRecording();
+    toast({
+      title: "Recording saved",
+      description: "Camera streams have been stopped.",
+    });
+  };
+
+  const handleClearRecordings = () => {
+    clearRecordings();
+    toast({
+      title: "Recordings cleared",
+      description: "Temporary emergency files have been removed from this device.",
+    });
+  };
+
   const handleSendAlert = async () => {
     if (!user?.id) {
       toast({
@@ -137,6 +207,18 @@ export const PanicButton = () => {
     }
 
     setSending(true);
+
+    if (autoRecordEnabled && recorderSupport.supported) {
+      const started = await startRecording();
+      if (!started) {
+        toast({
+          title: "Emergency recorder unavailable",
+          description:
+            recorderError ?? "Camera access was blocked. Recording could not be started automatically.",
+          variant: "destructive",
+        });
+      }
+    }
 
     const notifiedContacts = contacts
       .filter((contact) => selectedContacts.includes(contact.id))
@@ -333,6 +415,123 @@ export const PanicButton = () => {
               />
             </div>
           </div>
+        </div>
+
+        <div className="space-y-4 rounded-lg border bg-card/60 p-4">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <p className="text-sm font-medium uppercase tracking-wide">Emergency recording</p>
+              <p className="text-xs text-muted-foreground">
+                Capture secure evidence from your device cameras the moment an alert is triggered.
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-muted-foreground">Auto-start</span>
+              <Switch
+                checked={autoRecordEnabled}
+                onCheckedChange={(checked) => setAutoRecordEnabled(Boolean(checked))}
+                disabled={!recorderSupport.supported}
+              />
+            </div>
+          </div>
+
+          {!recorderSupport.supported ? (
+            <p className="text-xs text-muted-foreground">
+              {recorderSupport.reason ??
+                "Your browser does not support in-browser recording. Use the external apps listed below."}
+            </p>
+          ) : (
+            <>
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-xs uppercase text-muted-foreground">
+                    <span>Front camera</span>
+                    <span>{recording ? "Recording" : frontRecordingUrl ? "Ready to download" : "Idle"}</span>
+                  </div>
+                  <div className="relative overflow-hidden rounded-lg border bg-muted">
+                    <video ref={frontVideoRef} className="h-full w-full object-cover" playsInline muted />
+                    {!recording && !frontRecordingUrl && (
+                      <div className="absolute inset-0 flex items-center justify-center text-xs text-muted-foreground">
+                        <Camera className="mr-2 h-4 w-4" />
+                        Waiting for permission
+                      </div>
+                    )}
+                  </div>
+                  {frontRecordingUrl && (
+                    <Button asChild size="sm" variant="outline">
+                      <a href={frontRecordingUrl} download={buildRecordingFilename("front", frontMimeType)}>
+                        <Download className="mr-2 h-4 w-4" /> Download front camera
+                      </a>
+                    </Button>
+                  )}
+                </div>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-xs uppercase text-muted-foreground">
+                    <span>Rear camera</span>
+                    <span>
+                      {supportsDualCamera === false
+                        ? "Unavailable"
+                        : dualCameraActive
+                        ? "Recording"
+                        : backRecordingUrl
+                        ? "Ready to download"
+                        : "Idle"}
+                    </span>
+                  </div>
+                  <div className="relative overflow-hidden rounded-lg border bg-muted">
+                    <video ref={backVideoRef} className="h-full w-full object-cover" playsInline muted />
+                    {!recording && !backRecordingUrl && (
+                      <div className="absolute inset-0 flex items-center justify-center text-xs text-muted-foreground">
+                        {supportsDualCamera === false ? (
+                          <>
+                            <CameraOff className="mr-2 h-4 w-4" />
+                            Dual camera not supported
+                          </>
+                        ) : (
+                          <>
+                            <Camera className="mr-2 h-4 w-4" />
+                            Waiting for permission
+                          </>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                  {backRecordingUrl && (
+                    <Button asChild size="sm" variant="outline">
+                      <a href={backRecordingUrl} download={buildRecordingFilename("rear", backMimeType)}>
+                        <Download className="mr-2 h-4 w-4" /> Download rear camera
+                      </a>
+                    </Button>
+                  )}
+                </div>
+              </div>
+              <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+                <Badge variant={recording ? "destructive" : "secondary"} className="flex items-center gap-1">
+                  {recording ? <Video className="h-3 w-3" /> : <Camera className="h-3 w-3" />}
+                  {recording ? "Recording" : "Recorder ready"}
+                </Badge>
+                {supportsDualCamera === false && (
+                  <span>Rear camera stream is unavailable on this device.</span>
+                )}
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {!recording ? (
+                  <Button onClick={() => void handleManualRecordingStart()} variant="secondary" size="sm">
+                    <Video className="mr-2 h-4 w-4" /> Start recording now
+                  </Button>
+                ) : (
+                  <Button onClick={handleManualRecordingStop} variant="destructive" size="sm">
+                    <Square className="mr-2 h-4 w-4" /> Stop recording
+                  </Button>
+                )}
+                {(frontRecordingUrl || backRecordingUrl) && (
+                  <Button onClick={handleClearRecordings} variant="outline" size="sm">
+                    Clear saved clips
+                  </Button>
+                )}
+              </div>
+            </>
+          )}
         </div>
       </CardContent>
       <CardFooter className="flex flex-col gap-6">

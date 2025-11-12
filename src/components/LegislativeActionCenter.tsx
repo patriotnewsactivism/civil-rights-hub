@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -22,30 +22,11 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
-
-interface Legislation {
-  id: string;
-  bill_number: string;
-  title: string;
-  description: string | null;
-  level: string;
-  state: string | null;
-  category: string[];
-  status: string;
-  introduced_date: string | null;
-  last_action_date: string | null;
-  last_action_description: string | null;
-  support_count: number;
-  oppose_count: number;
-}
-
-interface ActionTemplate {
-  id: string;
-  template_type: string;
-  position: string;
-  subject_line: string | null;
-  body_text: string;
-}
+import {
+  LEGISLATION_FALLBACK,
+  type LegislationItem,
+  type ActionTemplateItem,
+} from "@/lib/fallbackData";
 
 const US_STATES = [
   "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut",
@@ -70,12 +51,14 @@ const STATUS_CONFIG = {
 
 export function LegislativeActionCenter() {
   const { state: userState, loading: locationLoading } = useGeolocation();
-  const [legislation, setLegislation] = useState<Legislation[]>([]);
+  const [legislation, setLegislation] = useState<LegislationItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedState, setSelectedState] = useState<string>("all");
   const [selectedLevel, setSelectedLevel] = useState<string>("all");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [usingFallback, setUsingFallback] = useState(false);
+  const fallbackNoticeShown = useRef(false);
 
   useEffect(() => {
     if (userState && !locationLoading) {
@@ -108,14 +91,47 @@ export function LegislativeActionCenter() {
       }
 
       const { data, error } = await query;
-      if (error) throw error;
-      setLegislation(data || []);
+      if (error) {
+        console.warn('Falling back to sample legislation due to Supabase error:', error);
+        applyLegislationFallback();
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        applyLegislationFallback();
+        return;
+      }
+
+      setLegislation(data as LegislationItem[]);
+      setUsingFallback(false);
     } catch (error) {
       console.error('Error fetching legislation:', error);
       toast.error("Failed to load legislation");
+      applyLegislationFallback();
     } finally {
       setLoading(false);
     }
+  };
+
+  const showFallbackNotice = () => {
+    if (!fallbackNoticeShown.current) {
+      toast.info("Showing featured legislation examples while live updates load.");
+      fallbackNoticeShown.current = true;
+    }
+  };
+
+  const applyLegislationFallback = () => {
+    const filtered = LEGISLATION_FALLBACK.legislation.filter((bill) => {
+      const levelMatch = selectedLevel === "all" || bill.level === selectedLevel;
+      const stateMatch =
+        selectedState === "all" || bill.state === selectedState || bill.state === null;
+      const categoryMatch = selectedCategory === "all" || bill.category.includes(selectedCategory);
+      return levelMatch && stateMatch && categoryMatch;
+    });
+
+    setLegislation(filtered.length > 0 ? filtered : LEGISLATION_FALLBACK.legislation);
+    setUsingFallback(true);
+    showFallbackNotice();
   };
 
   const filteredLegislation = legislation.filter((bill) => {
@@ -225,6 +241,13 @@ export function LegislativeActionCenter() {
           </div>
         )}
 
+        {usingFallback && (
+          <div className="mt-6 flex items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900 dark:border-amber-800 dark:bg-amber-950/20 dark:text-amber-200">
+            <AlertCircle className="h-4 w-4" />
+            Displaying featured legislation examples until live tracking is connected.
+          </div>
+        )}
+
         <Card className="mt-8 bg-blue-50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-800">
           <CardHeader>
             <CardTitle>How to Take Action</CardTitle>
@@ -249,17 +272,33 @@ export function LegislativeActionCenter() {
   );
 }
 
-function BillCard({ bill }: { bill: Legislation }) {
-  const [showTemplate, setShowTemplate] = useState(false);
-  const [templates, setTemplates] = useState<ActionTemplate[]>([]);
+function BillCard({ bill }: { bill: LegislationItem }) {
+  const [templates, setTemplates] = useState<ActionTemplateItem[]>([]);
   const statusConfig = STATUS_CONFIG[bill.status as keyof typeof STATUS_CONFIG];
 
   const fetchTemplates = async () => {
-    const { data } = await supabase
-      .from('action_templates')
-      .select('*')
-      .eq('bill_id', bill.id);
-    if (data) setTemplates(data);
+    try {
+      const { data, error } = await supabase
+        .from('action_templates')
+        .select('*')
+        .eq('bill_id', bill.id);
+
+      if (error) {
+        console.warn('Falling back to sample action templates due to Supabase error:', error);
+        setTemplates(LEGISLATION_FALLBACK.actionTemplates[bill.id] || []);
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        setTemplates(LEGISLATION_FALLBACK.actionTemplates[bill.id] || []);
+        return;
+      }
+
+      setTemplates(data as ActionTemplateItem[]);
+    } catch (error) {
+      console.error('Unexpected error loading action templates:', error);
+      setTemplates(LEGISLATION_FALLBACK.actionTemplates[bill.id] || []);
+    }
   };
 
   const copyToClipboard = (text: string) => {

@@ -56,7 +56,11 @@ const sortContactsLocally = (userId: string | null) => {
   });
 };
 
-const createUpdateChain = (payload: Partial<EmergencyContact>) => {
+interface MockEqChain {
+  eq: (column: string, value: string) => MockEqChain | Promise<{ error: null }>;
+}
+
+const createUpdateChain = (payload: Partial<EmergencyContact>): MockEqChain => {
   let targetId: string | null = null;
   let userIdFilter: string | null = null;
 
@@ -78,11 +82,11 @@ const createUpdateChain = (payload: Partial<EmergencyContact>) => {
       return contact;
     });
 
-    return Promise.resolve({ error: null });
+    return Promise.resolve({ error: null as null });
   };
 
-  const chain: { eq: (column: string, value: string) => any } = {
-    eq: vi.fn((column: string, value: string) => {
+  const chain: MockEqChain = {
+    eq: (column: string, value: string) => {
       if (column === "id") {
         targetId = value;
         return chain;
@@ -94,17 +98,17 @@ const createUpdateChain = (payload: Partial<EmergencyContact>) => {
       }
 
       return chain;
-    }),
+    },
   };
 
   return chain;
 };
 
-const createDeleteChain = () => {
+const createDeleteChain = (): MockEqChain => {
   let targetId: string | null = null;
 
-  const chain: { eq: (column: string, value: string) => any } = {
-    eq: vi.fn((column: string, value: string) => {
+  const chain: MockEqChain = {
+    eq: (column: string, value: string) => {
       if (column === "id") {
         targetId = value;
         return chain;
@@ -114,29 +118,49 @@ const createDeleteChain = () => {
         contactsStore = contactsStore.filter(
           (contact) => !(contact.id === targetId && contact.user_id === value)
         );
-        return Promise.resolve({ error: null });
+        return Promise.resolve({ error: null as null });
       }
 
       return chain;
-    }),
+    },
   };
 
   return chain;
 };
 
-const createQueryBuilder = () => {
+type QueryResult<T> = Promise<{ data: T; error: null }>;
+
+interface MockQueryBuilder {
+  select: () => MockQueryBuilder;
+  eq: (column: string, value: string) => MockQueryBuilder;
+  order: (
+    column: string,
+    _options: { ascending: boolean; nullsFirst?: boolean }
+  ) => MockQueryBuilder | QueryResult<EmergencyContact[]>;
+  insert: (
+    payload: Partial<EmergencyContact>
+  ) => {
+    select: () => {
+      single: () => QueryResult<EmergencyContact | null>;
+    };
+  };
+  update: (payload: Partial<EmergencyContact>) => MockEqChain;
+  delete: () => MockEqChain;
+}
+
+const createQueryBuilder = (): MockQueryBuilder => {
   let selectUserId: string | null = null;
   let orderCount = 0;
 
-  const builder: Record<string, any> = {
-    select: vi.fn(() => builder),
-    eq: vi.fn((column: string, value: string) => {
+  const builder: MockQueryBuilder = {
+    select: () => builder,
+    eq: (column: string, value: string) => {
       if (column === "user_id") {
         selectUserId = value;
       }
       return builder;
-    }),
-    order: vi.fn(() => {
+    },
+    order: () => {
       orderCount += 1;
       if (orderCount < 2) {
         return builder;
@@ -144,12 +168,11 @@ const createQueryBuilder = () => {
 
       const data = sortContactsLocally(selectUserId);
       return Promise.resolve({ data, error: null });
-    }),
-    insert: vi.fn((payload: Partial<EmergencyContact>) => ({
-      select: vi.fn(() => ({
-        single: vi.fn(() => {
-          const targetUserId =
-            (payload.user_id as string | null) ?? selectUserId;
+    },
+    insert: (payload: Partial<EmergencyContact>) => ({
+      select: () => ({
+        single: () => {
+          const targetUserId = (payload.user_id as string | null) ?? selectUserId;
 
           if (!targetUserId) {
             return Promise.resolve({ data: null, error: null });
@@ -164,13 +187,11 @@ const createQueryBuilder = () => {
 
           contactsStore.push(newRow);
           return Promise.resolve({ data: newRow, error: null });
-        }),
-      })),
-    })),
-    update: vi.fn((payload: Partial<EmergencyContact>) =>
-      createUpdateChain(payload)
-    ),
-    delete: vi.fn(() => createDeleteChain()),
+        },
+      }),
+    }),
+    update: (payload: Partial<EmergencyContact>) => createUpdateChain(payload),
+    delete: () => createDeleteChain(),
   };
 
   return builder;

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   AlertCircle,
   Camera,
@@ -28,7 +28,7 @@ import { useEmergencyContacts } from "@/hooks/useEmergencyContacts";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 import { formatDistanceToNow } from "date-fns";
-import { useEmergencyRecorder } from "@/hooks/useEmergencyRecorder";
+import { type RecorderPermissions, useEmergencyRecorder } from "@/hooks/useEmergencyRecorder";
 
 const ALERT_TYPES = [
   { value: "detained", label: "I'm being detained", description: "Alert your contacts that police have stopped you." },
@@ -65,6 +65,9 @@ export const PanicButton = () => {
     recordingStartedAt,
     error: recorderError,
     support: recorderSupport,
+    permissionsSupported,
+    permissions,
+    refreshPermissions,
     startRecording,
     stopRecording,
     clearRecordings,
@@ -156,6 +159,39 @@ export const PanicButton = () => {
       });
     }
   };
+
+  useEffect(() => {
+    void refreshPermissions();
+  }, [refreshPermissions]);
+
+  const previousPermissionsRef = useRef<RecorderPermissions | null>(null);
+
+  useEffect(() => {
+    if (!permissionsSupported) {
+      previousPermissionsRef.current = null;
+      return;
+    }
+
+    const previous = previousPermissionsRef.current;
+    if (permissions.camera === "denied" && previous?.camera !== "denied") {
+      toast({
+        title: "Camera permissions blocked",
+        description:
+          "Allow camera access in your browser settings to automatically capture emergency footage.",
+        variant: "destructive",
+      });
+    }
+
+    if (permissions.microphone === "denied" && previous?.microphone !== "denied") {
+      toast({
+        title: "Microphone permissions blocked",
+        description: "Enable microphone access so your emergency recordings include audio evidence.",
+        variant: "destructive",
+      });
+    }
+
+    previousPermissionsRef.current = permissions;
+  }, [permissions, permissionsSupported, toast]);
 
   const handleManualRecordingStop = () => {
     stopRecording();

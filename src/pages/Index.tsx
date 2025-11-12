@@ -10,6 +10,8 @@ import { InteractiveMap } from "@/components/InteractiveMap";
 import { CaseSearch } from "@/components/CaseSearch";
 import { AITools } from "@/components/AITools";
 import { PoliceScanner } from "@/components/PoliceScanner";
+import { LawyerFinder } from "@/components/LawyerFinder";
+import { FOIABuilder } from "@/components/FOIABuilder";
 import { Resources } from "@/components/Resources";
 import { Footer } from "@/components/Footer";
 
@@ -39,16 +41,12 @@ const Index = () => {
       </section>
       <StateSelector selectedState={selectedState} onStateChange={setSelectedState} />
       <PoliceScanner />
+      <LawyerFinder />
+      <FOIABuilder />
       <CaseSearch />
       <AITools />
       <Resources />
       <Footer />
-      {/* New features commented out until migrations are applied */}
-      {/* <FederalLaws /> */}
-      {/* <LawyerFinder /> */}
-      {/* <CourtWatch /> */}
-      {/* <FOIABuilder /> */}
-      {/* <DiscussionBoard /> */}
     </div>
   );
 };

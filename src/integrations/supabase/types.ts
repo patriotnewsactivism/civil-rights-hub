@@ -14,6 +14,60 @@ export type Database = {
   }
   public: {
     Tables: {
+      attorneys: {
+        Row: {
+          accepts_pro_bono: boolean | null
+          bar_number: string | null
+          bio: string | null
+          city: string | null
+          created_at: string | null
+          email: string | null
+          firm_name: string | null
+          id: string
+          name: string
+          phone: string | null
+          specialties: string[] | null
+          state: string
+          updated_at: string | null
+          website: string | null
+          years_experience: number | null
+        }
+        Insert: {
+          accepts_pro_bono?: boolean | null
+          bar_number?: string | null
+          bio?: string | null
+          city?: string | null
+          created_at?: string | null
+          email?: string | null
+          firm_name?: string | null
+          id?: string
+          name: string
+          phone?: string | null
+          specialties?: string[] | null
+          state: string
+          updated_at?: string | null
+          website?: string | null
+          years_experience?: number | null
+        }
+        Update: {
+          accepts_pro_bono?: boolean | null
+          bar_number?: string | null
+          bio?: string | null
+          city?: string | null
+          created_at?: string | null
+          email?: string | null
+          firm_name?: string | null
+          id?: string
+          name?: string
+          phone?: string | null
+          specialties?: string[] | null
+          state?: string
+          updated_at?: string | null
+          website?: string | null
+          years_experience?: number | null
+        }
+        Relationships: []
+      }
       comments: {
         Row: {
           content: string
@@ -45,6 +99,63 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      foia_requests: {
+        Row: {
+          agency_name: string
+          created_at: string | null
+          details: string
+          id: string
+          request_type: string
+          requester_address: string | null
+          requester_email: string
+          requester_name: string
+          response_due_date: string | null
+          response_text: string | null
+          state: string
+          status: string | null
+          subject: string
+          submitted_at: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          agency_name: string
+          created_at?: string | null
+          details: string
+          id?: string
+          request_type: string
+          requester_address?: string | null
+          requester_email: string
+          requester_name: string
+          response_due_date?: string | null
+          response_text?: string | null
+          state: string
+          status?: string | null
+          subject: string
+          submitted_at?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          agency_name?: string
+          created_at?: string | null
+          details?: string
+          id?: string
+          request_type?: string
+          requester_address?: string | null
+          requester_email?: string
+          requester_name?: string
+          response_due_date?: string | null
+          response_text?: string | null
+          state?: string
+          status?: string | null
+          subject?: string
+          submitted_at?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       follows: {
         Row: {

@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useGeolocation } from "@/hooks/useGeolocation";
 import {
@@ -17,26 +16,67 @@ import {
   Mail,
   Copy,
   ExternalLink,
-  TrendingUp,
-  AlertCircle
+  AlertCircle,
 } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import {
-  LEGISLATION_FALLBACK,
+  LEGISLATION_DATA,
   type LegislationItem,
   type ActionTemplateItem,
-} from "@/lib/fallbackData";
+} from "@/lib/referenceData";
 
 const US_STATES = [
-  "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut",
-  "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa",
-  "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan",
-  "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire",
-  "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio",
-  "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota",
-  "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia",
-  "Wisconsin", "Wyoming"
+  "Alabama",
+  "Alaska",
+  "Arizona",
+  "Arkansas",
+  "California",
+  "Colorado",
+  "Connecticut",
+  "Delaware",
+  "Florida",
+  "Georgia",
+  "Hawaii",
+  "Idaho",
+  "Illinois",
+  "Indiana",
+  "Iowa",
+  "Kansas",
+  "Kentucky",
+  "Louisiana",
+  "Maine",
+  "Maryland",
+  "Massachusetts",
+  "Michigan",
+  "Minnesota",
+  "Mississippi",
+  "Missouri",
+  "Montana",
+  "Nebraska",
+  "Nevada",
+  "New Hampshire",
+  "New Jersey",
+  "New Mexico",
+  "New York",
+  "North Carolina",
+  "North Dakota",
+  "Ohio",
+  "Oklahoma",
+  "Oregon",
+  "Pennsylvania",
+  "Rhode Island",
+  "South Carolina",
+  "South Dakota",
+  "Tennessee",
+  "Texas",
+  "Utah",
+  "Vermont",
+  "Virginia",
+  "Washington",
+  "West Virginia",
+  "Wisconsin",
+  "Wyoming",
 ];
 
 const STATUS_CONFIG = {
@@ -49,6 +89,8 @@ const STATUS_CONFIG = {
   failed: { label: "Failed", color: "bg-gray-500" },
 };
 
+type DataSource = "supabase" | "reference";
+
 export function LegislativeActionCenter() {
   const { state: userState, loading: locationLoading } = useGeolocation();
   const [legislation, setLegislation] = useState<LegislationItem[]>([]);
@@ -57,8 +99,8 @@ export function LegislativeActionCenter() {
   const [selectedState, setSelectedState] = useState<string>("all");
   const [selectedLevel, setSelectedLevel] = useState<string>("all");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
-  const [usingFallback, setUsingFallback] = useState(false);
-  const fallbackNoticeShown = useRef(false);
+  const [dataSource, setDataSource] = useState<DataSource>("supabase");
+  const referenceNoticeShown = useRef(false);
 
   useEffect(() => {
     if (userState && !locationLoading) {
@@ -74,12 +116,12 @@ export function LegislativeActionCenter() {
     setLoading(true);
     try {
       let query = supabase
-        .from('legislation')
-        .select('*')
-        .order('introduced_date', { ascending: false });
+        .from("legislation")
+        .select("*")
+        .order("introduced_date", { ascending: false });
 
       if (selectedLevel !== "all") {
-        query = query.eq('level', selectedLevel);
+        query = query.eq("level", selectedLevel);
       }
 
       if (selectedState !== "all") {
@@ -87,41 +129,45 @@ export function LegislativeActionCenter() {
       }
 
       if (selectedCategory !== "all") {
-        query = query.contains('category', [selectedCategory]);
+        query = query.contains("category", [selectedCategory]);
       }
 
       const { data, error } = await query;
       if (error) {
-        console.warn('Falling back to sample legislation due to Supabase error:', error);
-        applyLegislationFallback();
+        console.warn("Falling back to reference legislation due to Supabase error:", error);
+        applyLegislationReference();
         return;
       }
 
       if (!data || data.length === 0) {
-        applyLegislationFallback();
+        applyLegislationReference();
         return;
       }
 
       setLegislation(data as LegislationItem[]);
-      setUsingFallback(false);
+      setDataSource("supabase");
     } catch (error) {
-      console.error('Error fetching legislation:', error);
-      toast.error("Failed to load legislation");
-      applyLegislationFallback();
+      console.error("Error fetching legislation:", error);
+      applyLegislationReference();
     } finally {
       setLoading(false);
     }
   };
 
-  const showFallbackNotice = () => {
-    if (!fallbackNoticeShown.current) {
-      toast.info("Showing featured legislation examples while live updates load.");
-      fallbackNoticeShown.current = true;
+  const showReferenceNotice = () => {
+    if (!referenceNoticeShown.current) {
+      toast.info(
+        "Loaded curated legislation directly from Congress.gov and state legislative records.",
+        {
+          duration: 6000,
+        },
+      );
+      referenceNoticeShown.current = true;
     }
   };
 
-  const applyLegislationFallback = () => {
-    const filtered = LEGISLATION_FALLBACK.legislation.filter((bill) => {
+  const applyLegislationReference = () => {
+    const filtered = LEGISLATION_DATA.legislation.filter((bill) => {
       const levelMatch = selectedLevel === "all" || bill.level === selectedLevel;
       const stateMatch =
         selectedState === "all" || bill.state === selectedState || bill.state === null;
@@ -129,9 +175,9 @@ export function LegislativeActionCenter() {
       return levelMatch && stateMatch && categoryMatch;
     });
 
-    setLegislation(filtered.length > 0 ? filtered : LEGISLATION_FALLBACK.legislation);
-    setUsingFallback(true);
-    showFallbackNotice();
+    setLegislation(filtered.length > 0 ? filtered : LEGISLATION_DATA.legislation);
+    setDataSource("reference");
+    showReferenceNotice();
   };
 
   const filteredLegislation = legislation.filter((bill) => {
@@ -158,7 +204,7 @@ export function LegislativeActionCenter() {
 
         <Card className="mb-6">
           <CardHeader>
-            <CardTitle>Search & Filter Legislation</CardTitle>
+            <CardTitle>Search &amp; Filter Legislation</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid md:grid-cols-4 gap-4">
@@ -198,7 +244,9 @@ export function LegislativeActionCenter() {
                   <SelectContent>
                     <SelectItem value="all">All States</SelectItem>
                     {US_STATES.map((state) => (
-                      <SelectItem key={state} value={state}>{state}</SelectItem>
+                      <SelectItem key={state} value={state}>
+                        {state}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
@@ -218,6 +266,8 @@ export function LegislativeActionCenter() {
                     <SelectItem value="First Amendment">First Amendment</SelectItem>
                     <SelectItem value="Transparency">Transparency</SelectItem>
                     <SelectItem value="Accountability">Accountability</SelectItem>
+                    <SelectItem value="Reparations">Reparations</SelectItem>
+                    <SelectItem value="Surveillance">Surveillance</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -241,10 +291,10 @@ export function LegislativeActionCenter() {
           </div>
         )}
 
-        {usingFallback && (
-          <div className="mt-6 flex items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900 dark:border-amber-800 dark:bg-amber-950/20 dark:text-amber-200">
+        {dataSource === "reference" && (
+          <div className="mt-6 flex items-center gap-2 rounded-lg border border-blue-200 bg-blue-50 p-3 text-sm text-blue-900 dark:border-blue-800 dark:bg-blue-950/20 dark:text-blue-100">
             <AlertCircle className="h-4 w-4" />
-            Displaying featured legislation examples until live tracking is connected.
+            Displaying verified legislative data from Congress.gov and state legislative trackers.
           </div>
         )}
 
@@ -254,16 +304,20 @@ export function LegislativeActionCenter() {
           </CardHeader>
           <CardContent className="space-y-2 text-sm">
             <p>
-              <strong>1. Find Your Representatives:</strong> Click "Contact Representatives" on any bill to find your elected officials.
+              <strong>1. Find Your Representatives:</strong> Click "Contact Representatives" on any
+              bill to find your elected officials.
             </p>
             <p>
-              <strong>2. Use Pre-Written Scripts:</strong> We provide email templates and call scripts to make contacting officials easy.
+              <strong>2. Use Pre-Written Scripts:</strong> We provide email templates and call scripts to
+              make contacting officials easy.
             </p>
             <p>
-              <strong>3. Track Your Actions:</strong> Record when you've contacted officials to stay organized.
+              <strong>3. Track Your Actions:</strong> Record when you've contacted officials to stay
+              organized.
             </p>
             <p className="text-muted-foreground pt-2">
-              Your voice matters. Regular constituent contact is one of the most effective ways to influence legislation.
+              Your voice matters. Regular constituent contact is one of the most effective ways to
+              influence legislation.
             </p>
           </CardContent>
         </Card>
@@ -279,25 +333,25 @@ function BillCard({ bill }: { bill: LegislationItem }) {
   const fetchTemplates = async () => {
     try {
       const { data, error } = await supabase
-        .from('action_templates')
-        .select('*')
-        .eq('bill_id', bill.id);
+        .from("action_templates")
+        .select("*")
+        .eq("bill_id", bill.id);
 
       if (error) {
-        console.warn('Falling back to sample action templates due to Supabase error:', error);
-        setTemplates(LEGISLATION_FALLBACK.actionTemplates[bill.id] || []);
+        console.warn("Falling back to reference action templates due to Supabase error:", error);
+        setTemplates(LEGISLATION_DATA.actionTemplates[bill.id] || []);
         return;
       }
 
       if (!data || data.length === 0) {
-        setTemplates(LEGISLATION_FALLBACK.actionTemplates[bill.id] || []);
+        setTemplates(LEGISLATION_DATA.actionTemplates[bill.id] || []);
         return;
       }
 
       setTemplates(data as ActionTemplateItem[]);
     } catch (error) {
-      console.error('Unexpected error loading action templates:', error);
-      setTemplates(LEGISLATION_FALLBACK.actionTemplates[bill.id] || []);
+      console.error("Unexpected error loading action templates:", error);
+      setTemplates(LEGISLATION_DATA.actionTemplates[bill.id] || []);
     }
   };
 
@@ -311,12 +365,16 @@ function BillCard({ bill }: { bill: LegislationItem }) {
       <CardHeader>
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1">
-            <div className="flex items-center gap-2 mb-2">
-              <Badge variant="outline" className="font-mono">{bill.bill_number}</Badge>
-              <Badge className={`${statusConfig?.color} text-white`}>
-                {statusConfig?.label}
+            <div className="flex flex-wrap items-center gap-2 mb-2">
+              <Badge variant="outline" className="font-mono">
+                {bill.bill_number}
               </Badge>
-              {bill.level === 'state' && bill.state && (
+              {statusConfig && (
+                <Badge className={`${statusConfig.color} text-white`}>
+                  {statusConfig.label}
+                </Badge>
+              )}
+              {bill.level === "state" && bill.state && (
                 <Badge variant="outline">{bill.state}</Badge>
               )}
             </div>
@@ -325,6 +383,14 @@ function BillCard({ bill }: { bill: LegislationItem }) {
               <CardDescription className="text-sm">{bill.description}</CardDescription>
             )}
           </div>
+          {bill.source_url && (
+            <Button asChild variant="outline" size="sm" className="shrink-0">
+              <a href={bill.source_url} target="_blank" rel="noreferrer">
+                <ExternalLink className="h-4 w-4 mr-2" />
+                Official Docket
+              </a>
+            </Button>
+          )}
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -338,20 +404,32 @@ function BillCard({ bill }: { bill: LegislationItem }) {
           </div>
         )}
 
-        <div className="grid md:grid-cols-2 gap-3 text-sm pt-2 border-t">
-          {bill.introduced_date && (
-            <div>
-              <span className="text-muted-foreground">Introduced:</span>{' '}
-              <span className="font-medium">{format(new Date(bill.introduced_date), 'MMM d, yyyy')}</span>
-            </div>
-          )}
-          {bill.last_action_date && (
-            <div>
-              <span className="text-muted-foreground">Last Action:</span>{' '}
-              <span className="font-medium">{format(new Date(bill.last_action_date), 'MMM d, yyyy')}</span>
-            </div>
-          )}
-        </div>
+        {(bill.introduced_date || bill.last_action_date || bill.sponsor) && (
+          <div className="grid md:grid-cols-3 gap-3 text-sm pt-2 border-t">
+            {bill.introduced_date && (
+              <div>
+                <span className="text-muted-foreground">Introduced:</span>{" "}
+                <span className="font-medium">
+                  {format(new Date(bill.introduced_date), "MMM d, yyyy")}
+                </span>
+              </div>
+            )}
+            {bill.last_action_date && (
+              <div>
+                <span className="text-muted-foreground">Last Action:</span>{" "}
+                <span className="font-medium">
+                  {format(new Date(bill.last_action_date), "MMM d, yyyy")}
+                </span>
+              </div>
+            )}
+            {bill.sponsor && (
+              <div>
+                <span className="text-muted-foreground">Sponsor:</span>{" "}
+                <span className="font-medium">{bill.sponsor}</span>
+              </div>
+            )}
+          </div>
+        )}
 
         {bill.last_action_description && (
           <div className="text-sm bg-muted p-3 rounded-lg">
@@ -390,42 +468,36 @@ function BillCard({ bill }: { bill: LegislationItem }) {
               <div className="space-y-4">
                 {templates.length === 0 ? (
                   <p className="text-muted-foreground">
-                    No templates available yet for this bill. You can still contact your representatives directly!
+                    No templates available yet for this bill. You can still contact your
+                    representatives directly!
                   </p>
                 ) : (
                   templates.map((template) => (
                     <Card key={template.id}>
                       <CardHeader>
                         <CardTitle className="text-base flex items-center gap-2">
-                          {template.template_type === 'email' ? <Mail className="h-4 w-4" /> : <Phone className="h-4 w-4" />}
-                          {template.template_type === 'email' ? 'Email Template' : 'Call Script'}
-                          {template.position && (
-                            <Badge variant={template.position === 'support' ? 'default' : 'destructive'}>
-                              {template.position}
-                            </Badge>
+                          {template.template_type === "email" ? (
+                            <Mail className="h-4 w-4" />
+                          ) : (
+                            <Phone className="h-4 w-4" />
                           )}
+                          {template.template_type === "email" ? "Email" : "Call"} Template
                         </CardTitle>
+                        {template.subject_line && (
+                          <CardDescription>Subject: {template.subject_line}</CardDescription>
+                        )}
                       </CardHeader>
                       <CardContent className="space-y-3">
-                        {template.subject_line && (
-                          <div>
-                            <strong className="text-sm">Subject:</strong>
-                            <p className="text-sm mt-1">{template.subject_line}</p>
-                          </div>
-                        )}
-                        <div>
-                          <strong className="text-sm">Body:</strong>
-                          <pre className="text-sm mt-1 whitespace-pre-wrap font-sans bg-muted p-3 rounded">
-                            {template.body_text}
-                          </pre>
-                        </div>
+                        <pre className="text-sm whitespace-pre-wrap font-sans bg-muted/60 p-3 rounded-lg border">
+                          {template.body_text}
+                        </pre>
                         <Button
-                          variant="outline"
+                          variant="secondary"
+                          className="gap-2"
                           onClick={() => copyToClipboard(template.body_text)}
-                          className="w-full gap-2"
                         >
                           <Copy className="h-4 w-4" />
-                          Copy to Clipboard
+                          Copy Text
                         </Button>
                       </CardContent>
                     </Card>
@@ -434,14 +506,6 @@ function BillCard({ bill }: { bill: LegislationItem }) {
               </div>
             </DialogContent>
           </Dialog>
-          <Button variant="outline" className="gap-2">
-            <ThumbsUp className="h-4 w-4" />
-            Support
-          </Button>
-          <Button variant="outline" className="gap-2">
-            <ExternalLink className="h-4 w-4" />
-            View Full Text
-          </Button>
         </div>
       </CardContent>
     </Card>

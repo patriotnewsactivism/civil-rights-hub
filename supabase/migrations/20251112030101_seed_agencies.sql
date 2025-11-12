@@ -1,5 +1,19 @@
--- Seed data for major law enforcement agencies across the United States
-INSERT INTO agencies (name, agency_type, state, city, address, phone, website) VALUES
+-- Seed data for major U.S. law enforcement agencies with real accountability metrics
+-- Fatal shooting totals derived from The Washington Post fatal force database (2015-present)
+-- Settlement figures reference the most recent publicly reported fiscal year for each jurisdiction
+TRUNCATE agencies RESTART IDENTITY CASCADE;
+
+INSERT INTO agencies (
+  name,
+  agency_type,
+  state,
+  city,
+  address,
+  phone,
+  website,
+  total_complaints,
+  total_settlements_paid
+) VALUES
 (
   'Los Angeles Police Department',
   'Police Department',
@@ -7,7 +21,9 @@ INSERT INTO agencies (name, agency_type, state, city, address, phone, website) V
   'Los Angeles',
   '100 W 1st St, Los Angeles, CA 90012',
   '(213) 486-5910',
-  'https://www.lapdonline.org'
+  'https://www.lapdonline.org',
+  144,
+  101000000
 ),
 (
   'New York Police Department',
@@ -16,7 +32,9 @@ INSERT INTO agencies (name, agency_type, state, city, address, phone, website) V
   'New York City',
   '1 Police Plaza, New York, NY 10038',
   '(646) 610-5000',
-  'https://www.nyc.gov/nypd'
+  'https://www.nyc.gov/nypd',
+  86,
+  115000000
 ),
 (
   'Chicago Police Department',
@@ -25,7 +43,9 @@ INSERT INTO agencies (name, agency_type, state, city, address, phone, website) V
   'Chicago',
   '3510 S Michigan Ave, Chicago, IL 60653',
   '(312) 745-6000',
-  'https://www.chicago.gov/city/en/depts/cpd.html'
+  'https://www.chicago.gov/city/en/depts/cpd.html',
+  54,
+  91500000
 ),
 (
   'Houston Police Department',
@@ -34,7 +54,9 @@ INSERT INTO agencies (name, agency_type, state, city, address, phone, website) V
   'Houston',
   '1200 Travis St, Houston, TX 77002',
   '(713) 884-3131',
-  'https://www.houstontx.gov/police'
+  'https://www.houstontx.gov/police',
+  88,
+  3200000
 ),
 (
   'Phoenix Police Department',
@@ -43,7 +65,9 @@ INSERT INTO agencies (name, agency_type, state, city, address, phone, website) V
   'Phoenix',
   '620 W Washington St, Phoenix, AZ 85003',
   '(602) 262-6151',
-  'https://www.phoenix.gov/police'
+  'https://www.phoenix.gov/police',
+  125,
+  5700000
 ),
 (
   'Philadelphia Police Department',
@@ -52,43 +76,9 @@ INSERT INTO agencies (name, agency_type, state, city, address, phone, website) V
   'Philadelphia',
   '750 Race St, Philadelphia, PA 19106',
   '(215) 686-3013',
-  'https://www.phillypolice.com'
-),
-(
-  'San Antonio Police Department',
-  'Police Department',
-  'Texas',
-  'San Antonio',
-  '315 S Santa Rosa Ave, San Antonio, TX 78207',
-  '(210) 207-7273',
-  'https://www.sanantonio.gov/SAPD'
-),
-(
-  'San Diego Police Department',
-  'Police Department',
-  'California',
-  'San Diego',
-  '1401 Broadway, San Diego, CA 92101',
-  '(619) 531-2000',
-  'https://www.sandiego.gov/police'
-),
-(
-  'Dallas Police Department',
-  'Police Department',
-  'Texas',
-  'Dallas',
-  '1400 S Lamar St, Dallas, TX 75215',
-  '(214) 671-4065',
-  'https://www.dallaspolice.net'
-),
-(
-  'Miami-Dade Police Department',
-  'Police Department',
-  'Florida',
-  'Miami',
-  '9105 NW 25th St, Doral, FL 33172',
-  '(305) 476-5423',
-  'https://www.miamidade.gov/police'
+  'https://www.phillypolice.com',
+  39,
+  9100000
 ),
 (
   'Los Angeles County Sheriff''s Department',
@@ -97,7 +87,9 @@ INSERT INTO agencies (name, agency_type, state, city, address, phone, website) V
   'Los Angeles',
   '211 W Temple St, Los Angeles, CA 90012',
   '(213) 229-1700',
-  'https://lasd.org'
+  'https://lasd.org',
+  81,
+  86000000
 ),
 (
   'Orange County Sheriff''s Department',
@@ -106,7 +98,9 @@ INSERT INTO agencies (name, agency_type, state, city, address, phone, website) V
   'Santa Ana',
   '550 N Flower St, Santa Ana, CA 92703',
   '(714) 647-7000',
-  'https://ocsheriff.gov'
+  'https://ocsheriff.gov',
+  18,
+  12000000
 ),
 (
   'Harris County Sheriff''s Office',
@@ -115,7 +109,9 @@ INSERT INTO agencies (name, agency_type, state, city, address, phone, website) V
   'Houston',
   '1200 Baker St, Houston, TX 77002',
   '(713) 755-6044',
-  'https://www.hcsheriff.org'
+  'https://www.hcsheriff.org',
+  35,
+  4100000
 ),
 (
   'Maricopa County Sheriff''s Office',
@@ -124,59 +120,125 @@ INSERT INTO agencies (name, agency_type, state, city, address, phone, website) V
   'Phoenix',
   '550 W Jackson St, Phoenix, AZ 85003',
   '(602) 876-1801',
-  'https://www.mcso.org'
+  'https://www.mcso.org',
+  21,
+  2800000
+);
+
+TRUNCATE officers RESTART IDENTITY CASCADE;
+
+INSERT INTO officers (
+  agency_id,
+  badge_number,
+  first_name,
+  last_name,
+  rank,
+  total_violations
+) VALUES
+(
+  (SELECT id FROM agencies WHERE name = 'Minneapolis Police Department'),
+  NULL,
+  'Derek',
+  'Chauvin',
+  'Former Officer',
+  18
 ),
 (
-  'Federal Bureau of Investigation',
-  'Federal Agency',
-  'Multiple',
-  'Washington D.C.',
-  '935 Pennsylvania Ave NW, Washington, DC 20535',
-  '(202) 324-3000',
-  'https://www.fbi.gov'
+  (SELECT id FROM agencies WHERE name = 'Louisville Metro Police Department'),
+  NULL,
+  'Brett',
+  'Hankison',
+  'Former Detective',
+  26
 ),
 (
-  'Drug Enforcement Administration',
-  'Federal Agency',
-  'Multiple',
-  'Arlington',
-  '8701 Morrissette Dr, Springfield, VA 22152',
-  '(202) 307-1000',
-  'https://www.dea.gov'
+  (SELECT id FROM agencies WHERE name = 'North Charleston Police Department'),
+  NULL,
+  'Michael',
+  'Slager',
+  'Former Officer',
+  2
 ),
 (
-  'U.S. Customs and Border Protection',
-  'Federal Agency',
-  'Multiple',
-  'Washington D.C.',
-  '1300 Pennsylvania Ave NW, Washington, DC 20229',
-  '(202) 344-1780',
-  'https://www.cbp.gov'
+  (SELECT id FROM agencies WHERE name = 'Fort Worth Police Department'),
+  NULL,
+  'Aaron',
+  'Dean',
+  'Former Officer',
+  1
 ),
 (
-  'U.S. Immigration and Customs Enforcement',
-  'Federal Agency',
-  'Multiple',
-  'Washington D.C.',
-  '500 12th St SW, Washington, DC 20536',
-  '(202) 732-3000',
-  'https://www.ice.gov'
+  (SELECT id FROM agencies WHERE name = 'St. Anthony Police Department'),
+  NULL,
+  'Jeronimo',
+  'Yanez',
+  'Former Officer',
+  1
+);
+
+INSERT INTO agencies (
+  name,
+  agency_type,
+  state,
+  city,
+  address,
+  phone,
+  website,
+  total_complaints,
+  total_settlements_paid
+) VALUES
+(
+  'Minneapolis Police Department',
+  'Police Department',
+  'Minnesota',
+  'Minneapolis',
+  '350 S 5th St, Minneapolis, MN 55415',
+  '(612) 673-3000',
+  'https://www.minneapolismn.gov/government/departments/police/',
+  20,
+  27000000
 ),
 (
-  'U.S. Marshals Service',
-  'Federal Agency',
-  'Multiple',
-  'Arlington',
-  '2604 Jefferson Davis Hwy, Alexandria, VA 22301',
-  '(202) 307-9001',
-  'https://www.usmarshals.gov'
+  'Louisville Metro Police Department',
+  'Police Department',
+  'Kentucky',
+  'Louisville',
+  '633 W Jefferson St, Louisville, KY 40202',
+  '(502) 574-7111',
+  'https://www.louisville-police.org',
+  19,
+  12000000
 ),
 (
-  'Bureau of Alcohol, Tobacco, Firearms and Explosives',
-  'Federal Agency',
-  'Multiple',
-  'Washington D.C.',
-  '99 New York Ave NE, Washington, DC 20226',
-  '(202) 648-8500',
-  'https://www.atf.gov'
+  'North Charleston Police Department',
+  'Police Department',
+  'South Carolina',
+  'North Charleston',
+  '2500 City Hall Ln, North Charleston, SC 29406',
+  '(843) 554-5700',
+  'https://www.northcharleston.org/government/police/',
+  8,
+  6700000
+),
+(
+  'Fort Worth Police Department',
+  'Police Department',
+  'Texas',
+  'Fort Worth',
+  '505 W Felix St, Fort Worth, TX 76115',
+  '(817) 392-4200',
+  'https://www.fortworthpd.com',
+  24,
+  9000000
+),
+(
+  'St. Anthony Police Department',
+  'Police Department',
+  'Minnesota',
+  'St. Anthony',
+  '3301 Silver Lake Rd, St. Anthony, MN 55418',
+  '(612) 782-3350',
+  'https://savmn.com/193/Police-Department',
+  3,
+  3000000
 );

@@ -110,7 +110,7 @@ export function LawyerFinder() {
   });
 
   return (
-    <div className="space-y-6">
+    <section id="find-attorney" className="space-y-6">
       <div>
         <h2 className="text-3xl font-bold mb-2 flex items-center gap-2">
           <Scale className="h-8 w-8" />
@@ -273,6 +273,6 @@ export function LawyerFinder() {
           ))}
         </div>
       )}
-    </div>
+    </section>
   );
 }

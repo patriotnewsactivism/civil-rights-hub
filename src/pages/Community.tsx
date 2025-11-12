@@ -5,6 +5,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SocialFeed } from "@/components/SocialFeed";
 import { DirectMessages } from "@/components/DirectMessages";
 import { UserProfile } from "@/components/UserProfile";
+import { PanicButton } from "@/components/PanicButton";
+import { EmergencyContacts } from "@/components/EmergencyContacts";
+import { DiscussionBoard } from "@/components/DiscussionBoard";
+import { EventsCalendar } from "@/components/EventsCalendar";
+import { ResourceLibrary } from "@/components/ResourceLibrary";
+import { SuccessStories } from "@/components/SuccessStories";
 import { Users, MessageSquare, User } from "lucide-react";
 import { SEO } from "@/components/SEO";
 
@@ -65,7 +71,17 @@ export default function Community() {
 
         <div className="mt-8">
           <TabsContent value="feed">
-            <SocialFeed />
+            <div className="space-y-10">
+              <div className="grid gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
+                <PanicButton />
+                <EmergencyContacts />
+              </div>
+              <SocialFeed />
+              <DiscussionBoard />
+              <EventsCalendar />
+              <ResourceLibrary />
+              <SuccessStories />
+            </div>
           </TabsContent>
 
           <TabsContent value="messages">

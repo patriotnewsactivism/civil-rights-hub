@@ -205,6 +205,696 @@ export type Database = {
         }
         Relationships: []
       }
+      community_events: {
+        Row: {
+          address: string | null
+          attendee_count: number | null
+          cancellation_reason: string | null
+          capacity: number | null
+          city: string
+          created_at: string
+          created_by: string | null
+          description: string
+          end_date: string | null
+          event_type: string
+          id: string
+          is_cancelled: boolean | null
+          is_published: boolean | null
+          is_virtual: boolean | null
+          latitude: string | null
+          location_name: string | null
+          longitude: string | null
+          organizer_contact: string | null
+          organizer_name: string | null
+          registration_link: string | null
+          registration_required: boolean | null
+          rsvp_count: number | null
+          start_date: string
+          state: string
+          tags: string[] | null
+          title: string
+          updated_at: string
+          virtual_link: string | null
+        }
+        Insert: {
+          address?: string | null
+          attendee_count?: number | null
+          cancellation_reason?: string | null
+          capacity?: number | null
+          city: string
+          created_at?: string
+          created_by?: string | null
+          description: string
+          end_date?: string | null
+          event_type: string
+          id?: string
+          is_cancelled?: boolean | null
+          is_published?: boolean | null
+          is_virtual?: boolean | null
+          latitude?: string | null
+          location_name?: string | null
+          longitude?: string | null
+          organizer_contact?: string | null
+          organizer_name?: string | null
+          registration_link?: string | null
+          registration_required?: boolean | null
+          rsvp_count?: number | null
+          start_date: string
+          state: string
+          tags?: string[] | null
+          title: string
+          updated_at?: string
+          virtual_link?: string | null
+        }
+        Update: {
+          address?: string | null
+          attendee_count?: number | null
+          cancellation_reason?: string | null
+          capacity?: number | null
+          city?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string
+          end_date?: string | null
+          event_type?: string
+          id?: string
+          is_cancelled?: boolean | null
+          is_published?: boolean | null
+          is_virtual?: boolean | null
+          latitude?: string | null
+          location_name?: string | null
+          longitude?: string | null
+          organizer_contact?: string | null
+          organizer_name?: string | null
+          registration_link?: string | null
+          registration_required?: boolean | null
+          rsvp_count?: number | null
+          start_date?: string
+          state?: string
+          tags?: string[] | null
+          title?: string
+          updated_at?: string
+          virtual_link?: string | null
+        }
+        Relationships: []
+      }
+      event_rsvps: {
+        Row: {
+          created_at: string
+          email: string | null
+          event_id: string
+          id: string
+          name: string | null
+          status: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          event_id: string
+          id?: string
+          name?: string | null
+          status?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          event_id?: string
+          id?: string
+          name?: string | null
+          status?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      resource_library: {
+        Row: {
+          approved_by: string | null
+          author: string | null
+          category: string
+          created_at: string
+          description: string | null
+          download_count: number | null
+          external_url: string | null
+          file_size: number | null
+          file_url: string | null
+          id: string
+          is_approved: boolean | null
+          language: string | null
+          rating: string | null
+          rating_count: number | null
+          resource_type: string
+          source: string | null
+          tags: string[] | null
+          title: string
+          updated_at: string
+          uploaded_by: string | null
+          view_count: number | null
+        }
+        Insert: {
+          approved_by?: string | null
+          author?: string | null
+          category: string
+          created_at?: string
+          description?: string | null
+          download_count?: number | null
+          external_url?: string | null
+          file_size?: number | null
+          file_url?: string | null
+          id?: string
+          is_approved?: boolean | null
+          language?: string | null
+          rating?: string | null
+          rating_count?: number | null
+          resource_type: string
+          source?: string | null
+          tags?: string[] | null
+          title: string
+          updated_at?: string
+          uploaded_by?: string | null
+          view_count?: number | null
+        }
+        Update: {
+          approved_by?: string | null
+          author?: string | null
+          category?: string
+          created_at?: string
+          description?: string | null
+          download_count?: number | null
+          external_url?: string | null
+          file_size?: number | null
+          file_url?: string | null
+          id?: string
+          is_approved?: boolean | null
+          language?: string | null
+          rating?: string | null
+          rating_count?: number | null
+          resource_type?: string
+          source?: string | null
+          tags?: string[] | null
+          title?: string
+          updated_at?: string
+          uploaded_by?: string | null
+          view_count?: number | null
+        }
+        Relationships: []
+      }
+      resource_ratings: {
+        Row: {
+          created_at: string
+          id: string
+          rating: number
+          resource_id: string
+          review: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          rating: number
+          resource_id: string
+          review?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          rating?: number
+          resource_id?: string
+          review?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      success_stories: {
+        Row: {
+          approved_by: string | null
+          city: string | null
+          created_at: string
+          id: string
+          incident_type: string | null
+          is_anonymous: boolean | null
+          is_approved: boolean | null
+          is_featured: boolean | null
+          like_count: number | null
+          organizations_involved: string[] | null
+          outcome: string
+          resolution_date: string | null
+          share_count: number | null
+          state: string | null
+          story: string
+          submitter_name: string | null
+          submitted_by: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          approved_by?: string | null
+          city?: string | null
+          created_at?: string
+          id?: string
+          incident_type?: string | null
+          is_anonymous?: boolean | null
+          is_approved?: boolean | null
+          is_featured?: boolean | null
+          like_count?: number | null
+          organizations_involved?: string[] | null
+          outcome: string
+          resolution_date?: string | null
+          share_count?: number | null
+          state?: string | null
+          story: string
+          submitter_name?: string | null
+          submitted_by?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          approved_by?: string | null
+          city?: string | null
+          created_at?: string
+          id?: string
+          incident_type?: string | null
+          is_anonymous?: boolean | null
+          is_approved?: boolean | null
+          is_featured?: boolean | null
+          like_count?: number | null
+          organizations_involved?: string[] | null
+          outcome?: string
+          resolution_date?: string | null
+          share_count?: number | null
+          state?: string | null
+          story?: string
+          submitter_name?: string | null
+          submitted_by?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      direct_messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          is_deleted_by_recipient: boolean | null
+          is_deleted_by_sender: boolean | null
+          is_read: boolean | null
+          read_at: string | null
+          recipient_id: string
+          sender_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          is_deleted_by_recipient?: boolean | null
+          is_deleted_by_sender?: boolean | null
+          is_read?: boolean | null
+          read_at?: string | null
+          recipient_id: string
+          sender_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          is_deleted_by_recipient?: boolean | null
+          is_deleted_by_sender?: boolean | null
+          is_read?: boolean | null
+          read_at?: string | null
+          recipient_id?: string
+          sender_id?: string
+        }
+        Relationships: []
+      }
+      emergency_contacts: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: string
+          is_primary: boolean | null
+          name: string
+          notes: string | null
+          phone: string
+          priority_order: number | null
+          relationship: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          is_primary?: boolean | null
+          name: string
+          notes?: string | null
+          phone: string
+          priority_order?: number | null
+          relationship?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          is_primary?: boolean | null
+          name?: string
+          notes?: string | null
+          phone?: string
+          priority_order?: number | null
+          relationship?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      panic_alerts: {
+        Row: {
+          address: string | null
+          alert_type: string
+          contacts_notified: string[] | null
+          created_at: string
+          id: string
+          latitude: string
+          longitude: string
+          message: string | null
+          resolved_at: string | null
+          status: string | null
+          user_id: string
+        }
+        Insert: {
+          address?: string | null
+          alert_type: string
+          contacts_notified?: string[] | null
+          created_at?: string
+          id?: string
+          latitude: string
+          longitude: string
+          message?: string | null
+          resolved_at?: string | null
+          status?: string | null
+          user_id: string
+        }
+        Update: {
+          address?: string | null
+          alert_type?: string
+          contacts_notified?: string[] | null
+          created_at?: string
+          id?: string
+          latitude?: string
+          longitude?: string
+          message?: string | null
+          resolved_at?: string | null
+          status?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      comment_upvotes: {
+        Row: {
+          comment_id: string
+          created_at: string
+          id: string
+          user_id: string | null
+        }
+        Insert: {
+          comment_id: string
+          created_at?: string
+          id?: string
+          user_id?: string | null
+        }
+        Update: {
+          comment_id?: string
+          created_at?: string
+          id?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      content_reports: {
+        Row: {
+          content_id: string
+          content_type: string
+          created_at: string
+          details: string | null
+          id: string
+          reason: string
+          reporter_id: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string | null
+        }
+        Insert: {
+          content_id: string
+          content_type: string
+          created_at?: string
+          details?: string | null
+          id?: string
+          reason: string
+          reporter_id?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string | null
+        }
+        Update: {
+          content_id?: string
+          content_type?: string
+          created_at?: string
+          details?: string | null
+          id?: string
+          reason?: string
+          reporter_id?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string | null
+        }
+        Relationships: []
+      }
+      forum_posts: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          is_deleted: boolean | null
+          is_edited: boolean | null
+          like_count: number | null
+          parent_post_id: string | null
+          thread_id: string
+          updated_at: string
+          user_id: string | null
+          username: string | null
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          is_deleted?: boolean | null
+          is_edited?: boolean | null
+          like_count?: number | null
+          parent_post_id?: string | null
+          thread_id: string
+          updated_at?: string
+          user_id?: string | null
+          username?: string | null
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          is_deleted?: boolean | null
+          is_edited?: boolean | null
+          like_count?: number | null
+          parent_post_id?: string | null
+          thread_id?: string
+          updated_at?: string
+          user_id?: string | null
+          username?: string | null
+        }
+        Relationships: []
+      }
+      forum_threads: {
+        Row: {
+          category: string
+          content: string
+          created_at: string
+          id: string
+          is_deleted: boolean | null
+          is_locked: boolean | null
+          is_pinned: boolean | null
+          last_post_at: string | null
+          like_count: number | null
+          post_count: number | null
+          title: string
+          updated_at: string
+          user_id: string | null
+          username: string | null
+          view_count: number | null
+        }
+        Insert: {
+          category: string
+          content: string
+          created_at?: string
+          id?: string
+          is_deleted?: boolean | null
+          is_locked?: boolean | null
+          is_pinned?: boolean | null
+          last_post_at?: string | null
+          like_count?: number | null
+          post_count?: number | null
+          title: string
+          updated_at?: string
+          user_id?: string | null
+          username?: string | null
+          view_count?: number | null
+        }
+        Update: {
+          category?: string
+          content?: string
+          created_at?: string
+          id?: string
+          is_deleted?: boolean | null
+          is_locked?: boolean | null
+          is_pinned?: boolean | null
+          last_post_at?: string | null
+          like_count?: number | null
+          post_count?: number | null
+          title?: string
+          updated_at?: string
+          user_id?: string | null
+          username?: string | null
+          view_count?: number | null
+        }
+        Relationships: []
+      }
+      popular_tags: {
+        Row: {
+          last_used: string
+          tag: string
+          use_count: number | null
+        }
+        Insert: {
+          last_used?: string
+          tag: string
+          use_count?: number | null
+        }
+        Update: {
+          last_used?: string
+          tag?: string
+          use_count?: number | null
+        }
+        Relationships: []
+      }
+      post_upvotes: {
+        Row: {
+          created_at: string
+          id: string
+          post_id: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          post_id: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          post_id?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      thread_bookmarks: {
+        Row: {
+          created_at: string
+          id: string
+          thread_id: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          thread_id: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          thread_id?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      thread_tags: {
+        Row: {
+          created_at: string
+          id: string
+          tag: string
+          thread_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          tag: string
+          thread_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          tag?: string
+          thread_id?: string
+        }
+        Relationships: []
+      }
+      thread_upvotes: {
+        Row: {
+          created_at: string
+          id: string
+          thread_id: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          thread_id: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          thread_id?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      thread_subscriptions: {
+        Row: {
+          created_at: string
+          email_notifications: boolean | null
+          id: string
+          thread_id: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          email_notifications?: boolean | null
+          id?: string
+          thread_id: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          email_notifications?: boolean | null
+          id?: string
+          thread_id?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       follows: {
         Row: {
           created_at: string | null

@@ -6,6 +6,25 @@ import { Download, FileText, Scale, AlertCircle, Phone, Shield, HelpCircle } fro
 import { useGeolocation } from "@/hooks/useGeolocation";
 import jsPDF from "jspdf";
 
+type EmergencyContactLink = {
+  label: string;
+  url: string;
+  external?: boolean;
+};
+
+type EmergencyContactResource = {
+  name: string;
+  number: string;
+  description: string;
+  website?: string;
+  links?: EmergencyContactLink[];
+};
+
+type EmergencyContactCategory = {
+  category: string;
+  contacts: EmergencyContactResource[];
+};
+
 const rightsData = {
   "First Amendment": {
     summary: "Freedom of religion, speech, press, assembly, and petition",
@@ -192,7 +211,7 @@ const whatToDoScenarios = [
   }
 ];
 
-const emergencyContacts = [
+const emergencyContacts: EmergencyContactCategory[] = [
   {
     category: "Legal Assistance",
     contacts: [
@@ -223,8 +242,37 @@ const emergencyContacts = [
   {
     category: "Documentation & Support",
     contacts: [
-      { name: "Cop Recorder App", number: "iOS & Android", description: "Record audio of police encounters (background recording available)", website: "apps.apple.com" },
-      { name: "Cop Block App", number: "iOS & Android", description: "Film and upload police interactions to community", website: "www.copblock.org" },
+      {
+        name: "Cop Recorder App",
+        number: "Built-in & External",
+        description: "Start the Civil Rights Hub emergency recorder or download trusted mobile recorder apps.",
+        links: [
+          { label: "Use Emergency Recorder", url: "/community#panic-button", external: false },
+          {
+            label: "iOS App Store",
+            url: "https://apps.apple.com/us/app/cop-watch-video-recorder/id757572626",
+          },
+          {
+            label: "Android (ProofMode)",
+            url: "https://play.google.com/store/apps/details?id=org.witness.proofmode",
+          },
+        ],
+      },
+      {
+        name: "Cop Block App (Citizen)",
+        number: "iOS & Android",
+        description: "Real-time safety alerts and community incident reporting with location sharing.",
+        links: [
+          {
+            label: "Download on iOS",
+            url: "https://apps.apple.com/us/app/citizen-protect-the-world/id1039889567",
+          },
+          {
+            label: "Download on Android",
+            url: "https://play.google.com/store/apps/details?id=sp0n.citizen",
+          },
+        ],
+      },
       { name: "Witness LA", number: "Visit website", description: "Criminal justice reform", website: "www.witnessla.com" },
       { name: "Cop Watch", number: "Find local chapter", description: "Community police monitoring", website: "www.berkeleycopwatch.org" }
     ]
@@ -525,7 +573,24 @@ export const KnowYourRights = () => {
                             )}
                           </div>
                           <div className="text-xs text-muted-foreground">{contact.description}</div>
-                          {contact.website && (
+                          {contact.links?.length ? (
+                            <div className="mt-2 flex flex-wrap gap-2">
+                              {contact.links.map((link) => {
+                                const isExternal = link.external !== false;
+                                return (
+                                  <a
+                                    key={`${contact.name}-${link.label}`}
+                                    href={link.url}
+                                    target={isExternal ? "_blank" : undefined}
+                                    rel={isExternal ? "noopener noreferrer" : undefined}
+                                    className="inline-flex items-center gap-1 rounded border border-primary px-2 py-1 text-xs font-semibold text-primary transition hover:bg-primary/10"
+                                  >
+                                    {link.label}
+                                  </a>
+                                );
+                              })}
+                            </div>
+                          ) : contact.website ? (
                             <div className="text-xs mt-1">
                               <a
                                 href={`https://${contact.website}`}
@@ -536,7 +601,7 @@ export const KnowYourRights = () => {
                                 {contact.website}
                               </a>
                             </div>
-                          )}
+                          ) : null}
                         </div>
                       ))}
                     </div>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import { AlertCircle, Send } from "lucide-react";
+import { AlertCircle, Send, Building2 } from "lucide-react";
 import { useGeolocation } from "@/hooks/useGeolocation";
 
 const US_STATES = [
@@ -20,34 +20,109 @@ const US_STATES = [
   "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"
 ];
 
+interface Agency {
+  id: string;
+  name: string;
+  state: string;
+}
+
 export const ViolationReport = () => {
   const { toast } = useToast();
   const location = useGeolocation();
   const [loading, setLoading] = useState(false);
+  const [agencies, setAgencies] = useState<Agency[]>([]);
   const [formData, setFormData] = useState({
     title: "",
     description: "",
     locationState: location.state || "",
     locationCity: location.city || "",
     incidentDate: "",
+    agencyId: "",
+    officerBadge: "",
+    officerFirstName: "",
+    officerLastName: "",
+    officerRank: "",
   });
+
+  useEffect(() => {
+    fetchAgencies();
+  }, []);
+
+  const fetchAgencies = async () => {
+    const { data } = await supabase
+      .from('agencies')
+      .select('id, name, state')
+      .order('name');
+    if (data) setAgencies(data);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      const { error } = await supabase.from("violations").insert({
-        title: formData.title,
-        description: formData.description,
-        location_state: formData.locationState,
-        location_city: formData.locationCity || null,
-        incident_date: new Date(formData.incidentDate).toISOString(),
-        latitude: location.latitude,
-        longitude: location.longitude,
-      });
+      // Insert violation
+      const { data: violationData, error: violationError } = await supabase
+        .from("violations")
+        .insert({
+          title: formData.title,
+          description: formData.description,
+          location_state: formData.locationState,
+          location_city: formData.locationCity || null,
+          incident_date: new Date(formData.incidentDate).toISOString(),
+          latitude: location.latitude,
+          longitude: location.longitude,
+        })
+        .select()
+        .single();
 
-      if (error) throw error;
+      if (violationError) throw violationError;
+
+      // Link agency if selected
+      if (formData.agencyId && violationData) {
+        await supabase.from("violation_agencies").insert({
+          violation_id: violationData.id,
+          agency_id: formData.agencyId,
+        });
+      }
+
+      // Create and link officer if badge number provided
+      if (formData.officerBadge && formData.agencyId && violationData) {
+        // Try to find existing officer
+        const { data: existingOfficer } = await supabase
+          .from("officers")
+          .select("id")
+          .eq("agency_id", formData.agencyId)
+          .eq("badge_number", formData.officerBadge)
+          .maybeSingle();
+
+        let officerId = existingOfficer?.id;
+
+        // Create new officer if doesn't exist
+        if (!officerId) {
+          const { data: newOfficer } = await supabase
+            .from("officers")
+            .insert({
+              agency_id: formData.agencyId,
+              badge_number: formData.officerBadge,
+              first_name: formData.officerFirstName || null,
+              last_name: formData.officerLastName || null,
+              rank: formData.officerRank || null,
+            })
+            .select()
+            .single();
+
+          officerId = newOfficer?.id;
+        }
+
+        // Link officer to violation
+        if (officerId) {
+          await supabase.from("violation_officers").insert({
+            violation_id: violationData.id,
+            officer_id: officerId,
+          });
+        }
+      }
 
       toast({
         title: "Report Submitted",
@@ -60,6 +135,11 @@ export const ViolationReport = () => {
         locationState: location.state || "",
         locationCity: location.city || "",
         incidentDate: "",
+        agencyId: "",
+        officerBadge: "",
+        officerFirstName: "",
+        officerLastName: "",
+        officerRank: "",
       });
     } catch (error) {
       console.error("Error submitting report:", error);
@@ -160,6 +240,86 @@ export const ViolationReport = () => {
                     max={new Date().toISOString().slice(0, 16)}
                   />
                 </div>
+
+                <Card className="border-primary/30 bg-primary/5">
+                  <CardHeader className="pb-3">
+                    <div className="flex items-center gap-2">
+                      <Building2 className="h-5 w-5 text-primary" />
+                      <CardTitle className="text-lg">Agency & Officer Information (Optional)</CardTitle>
+                    </div>
+                    <CardDescription>
+                      Help track patterns of misconduct by linking this report to a law enforcement agency and/or officer.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="agency">Law Enforcement Agency</Label>
+                      <Select
+                        value={formData.agencyId}
+                        onValueChange={(value) => setFormData({ ...formData, agencyId: value })}
+                      >
+                        <SelectTrigger id="agency">
+                          <SelectValue placeholder="Select agency (optional)" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="">None</SelectItem>
+                          {agencies
+                            .filter(a => !formData.locationState || a.state === formData.locationState || a.state === "Multiple")
+                            .map((agency) => (
+                              <SelectItem key={agency.id} value={agency.id}>
+                                {agency.name} ({agency.state})
+                              </SelectItem>
+                            ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {formData.agencyId && (
+                      <>
+                        <div className="space-y-2">
+                          <Label htmlFor="badge">Officer Badge Number</Label>
+                          <Input
+                            id="badge"
+                            value={formData.officerBadge}
+                            onChange={(e) => setFormData({ ...formData, officerBadge: e.target.value })}
+                            placeholder="e.g., 12345"
+                          />
+                        </div>
+
+                        <div className="grid md:grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="officerFirst">Officer First Name</Label>
+                            <Input
+                              id="officerFirst"
+                              value={formData.officerFirstName}
+                              onChange={(e) => setFormData({ ...formData, officerFirstName: e.target.value })}
+                              placeholder="First name"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="officerLast">Officer Last Name</Label>
+                            <Input
+                              id="officerLast"
+                              value={formData.officerLastName}
+                              onChange={(e) => setFormData({ ...formData, officerLastName: e.target.value })}
+                              placeholder="Last name"
+                            />
+                          </div>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="rank">Officer Rank</Label>
+                          <Input
+                            id="rank"
+                            value={formData.officerRank}
+                            onChange={(e) => setFormData({ ...formData, officerRank: e.target.value })}
+                            placeholder="e.g., Officer, Sergeant, Lieutenant"
+                          />
+                        </div>
+                      </>
+                    )}
+                  </CardContent>
+                </Card>
 
                 <Card className="border-amber-500/50 bg-amber-500/5">
                   <CardContent className="pt-4">

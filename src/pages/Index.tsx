@@ -12,7 +12,10 @@ import { AITools } from "@/components/AITools";
 import { PoliceScanner } from "@/components/PoliceScanner";
 import { LawyerFinder } from "@/components/LawyerFinder";
 import { FOIABuilder } from "@/components/FOIABuilder";
+import { FOIATracker } from "@/components/FOIATracker";
 import { ActivistDirectory } from "@/components/ActivistDirectory";
+import { OfficerAccountability } from "@/components/OfficerAccountability";
+import { LegislativeActionCenter } from "@/components/LegislativeActionCenter";
 import { Resources } from "@/components/Resources";
 import { Footer } from "@/components/Footer";
 
@@ -44,7 +47,10 @@ const Index = () => {
       <PoliceScanner />
       <LawyerFinder />
       <ActivistDirectory />
+      <OfficerAccountability />
       <FOIABuilder />
+      <FOIATracker />
+      <LegislativeActionCenter />
       <CaseSearch />
       <AITools />
       <Resources />

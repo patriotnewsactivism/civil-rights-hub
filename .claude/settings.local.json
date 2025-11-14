@@ -1,7 +1,10 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npx supabase:*)"
+      "Bash(npx supabase:*)",
+      "WebSearch",
+      "WebFetch(domain:www.rcfp.org)",
+      "WebFetch(domain:en.wikipedia.org)"
     ],
     "deny": [],
     "ask": []

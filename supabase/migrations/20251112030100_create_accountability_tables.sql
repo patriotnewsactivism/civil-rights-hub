@@ -49,21 +49,21 @@ CREATE TABLE IF NOT EXISTS violation_agencies (
 );
 
 -- Create indexes for efficient querying
-CREATE INDEX idx_agencies_state ON agencies(state);
-CREATE INDEX idx_agencies_city ON agencies(city);
-CREATE INDEX idx_agencies_type ON agencies(agency_type);
-CREATE INDEX idx_agencies_complaints ON agencies(total_complaints DESC);
+CREATE INDEX IF NOT EXISTS idx_agencies_state ON agencies(state);
+CREATE INDEX IF NOT EXISTS idx_agencies_city ON agencies(city);
+CREATE INDEX IF NOT EXISTS idx_agencies_type ON agencies(agency_type);
+CREATE INDEX IF NOT EXISTS idx_agencies_complaints ON agencies(total_complaints DESC);
 
-CREATE INDEX idx_officers_agency ON officers(agency_id);
-CREATE INDEX idx_officers_badge ON officers(badge_number);
-CREATE INDEX idx_officers_last_name ON officers(last_name);
-CREATE INDEX idx_officers_complaints ON officers(total_complaints DESC);
+CREATE INDEX IF NOT EXISTS idx_officers_agency ON officers(agency_id);
+CREATE INDEX IF NOT EXISTS idx_officers_badge ON officers(badge_number);
+CREATE INDEX IF NOT EXISTS idx_officers_last_name ON officers(last_name);
+CREATE INDEX IF NOT EXISTS idx_officers_complaints ON officers(total_complaints DESC);
 
-CREATE INDEX idx_violation_officers_violation ON violation_officers(violation_id);
-CREATE INDEX idx_violation_officers_officer ON violation_officers(officer_id);
+CREATE INDEX IF NOT EXISTS idx_violation_officers_violation ON violation_officers(violation_id);
+CREATE INDEX IF NOT EXISTS idx_violation_officers_officer ON violation_officers(officer_id);
 
-CREATE INDEX idx_violation_agencies_violation ON violation_agencies(violation_id);
-CREATE INDEX idx_violation_agencies_agency ON violation_agencies(agency_id);
+CREATE INDEX IF NOT EXISTS idx_violation_agencies_violation ON violation_agencies(violation_id);
+CREATE INDEX IF NOT EXISTS idx_violation_agencies_agency ON violation_agencies(agency_id);
 
 -- Enable Row Level Security
 ALTER TABLE agencies ENABLE ROW LEVEL SECURITY;
@@ -72,19 +72,24 @@ ALTER TABLE violation_officers ENABLE ROW LEVEL SECURITY;
 ALTER TABLE violation_agencies ENABLE ROW LEVEL SECURITY;
 
 -- Policies: Anyone can view all accountability data (public transparency)
+DROP POLICY IF EXISTS "Anyone can view agencies" ON agencies;
 CREATE POLICY "Anyone can view agencies"
   ON agencies FOR SELECT USING (true);
 
+DROP POLICY IF EXISTS "Anyone can view officers" ON officers;
 CREATE POLICY "Anyone can view officers"
   ON officers FOR SELECT USING (true);
 
+DROP POLICY IF EXISTS "Anyone can view violation_officers links" ON violation_officers;
 CREATE POLICY "Anyone can view violation_officers links"
   ON violation_officers FOR SELECT USING (true);
 
+DROP POLICY IF EXISTS "Anyone can view violation_agencies links" ON violation_agencies;
 CREATE POLICY "Anyone can view violation_agencies links"
   ON violation_agencies FOR SELECT USING (true);
 
 -- Policies: Authenticated users can add officer/agency links to their own violations
+DROP POLICY IF EXISTS "Users can link officers to violations" ON violation_officers;
 CREATE POLICY "Users can link officers to violations"
   ON violation_officers
   FOR INSERT
@@ -97,6 +102,7 @@ CREATE POLICY "Users can link officers to violations"
     )
   );
 
+DROP POLICY IF EXISTS "Users can link agencies to violations" ON violation_agencies;
 CREATE POLICY "Users can link agencies to violations"
   ON violation_agencies
   FOR INSERT
@@ -110,11 +116,13 @@ CREATE POLICY "Users can link agencies to violations"
   );
 
 -- Create triggers for updated_at
+DROP TRIGGER IF EXISTS update_agencies_updated_at ON agencies;
 CREATE TRIGGER update_agencies_updated_at
   BEFORE UPDATE ON agencies
   FOR EACH ROW
   EXECUTE FUNCTION update_updated_at_column();
 
+DROP TRIGGER IF EXISTS update_officers_updated_at ON officers;
 CREATE TRIGGER update_officers_updated_at
   BEFORE UPDATE ON officers
   FOR EACH ROW
@@ -162,11 +170,13 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- Create triggers to update counts
+DROP TRIGGER IF EXISTS trigger_update_officer_count ON violation_officers;
 CREATE TRIGGER trigger_update_officer_count
   AFTER INSERT OR DELETE ON violation_officers
   FOR EACH ROW
   EXECUTE FUNCTION update_officer_complaint_count();
 
+DROP TRIGGER IF EXISTS trigger_update_agency_count ON violation_agencies;
 CREATE TRIGGER trigger_update_agency_count
   AFTER INSERT OR DELETE ON violation_agencies
   FOR EACH ROW

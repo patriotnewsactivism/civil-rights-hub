@@ -12,10 +12,10 @@ import { AITools } from "@/components/AITools";
 import { PoliceScanner } from "@/components/PoliceScanner";
 import { LawyerFinder } from "@/components/LawyerFinder";
 import { FOIABuilder } from "@/components/FOIABuilder";
-// import { FOIATracker } from "@/components/FOIATracker";
+import { FOIATracker } from "@/components/FOIATracker";
 import { ActivistDirectory } from "@/components/ActivistDirectory";
-// import { OfficerAccountability } from "@/components/OfficerAccountability";
-// import { LegislativeActionCenter } from "@/components/LegislativeActionCenter";
+import { OfficerAccountability } from "@/components/OfficerAccountability";
+import { LegislativeActionCenter } from "@/components/LegislativeActionCenter";
 import { Resources } from "@/components/Resources";
 import { Footer } from "@/components/Footer";
 import { SEO } from "@/components/SEO";
@@ -38,10 +38,10 @@ const SECTION_NAV_ITEMS: SectionNavItem[] = [
   { id: "police-scanner", label: "Police Scanner" },
   { id: "find-attorney", label: "Find an Attorney" },
   { id: "activist-directory", label: "Activist Directory" },
-  // { id: "accountability", label: "Accountability Tools" },
+  { id: "accountability", label: "Accountability Tools" },
   { id: "foia-builder", label: "FOIA Builder" },
-  // { id: "foia-tracker", label: "FOIA Tracker" },
-  // { id: "legislative-action", label: "Legislative Action" },
+  { id: "foia-tracker", label: "FOIA Tracker" },
+  { id: "legislative-action", label: "Legislative Action" },
   { id: "case-search", label: "Case Search" },
   { id: "ai-tools", label: "AI Tools" },
   { id: "resources", label: "Resources" }
@@ -140,10 +140,10 @@ const Index = () => {
       <LawyerFinder />
       <AttorneySeoContent />
       <ActivistDirectory />
-      {/* <OfficerAccountability /> */}
+      <OfficerAccountability />
       <FOIABuilder />
-      {/* <FOIATracker /> */}
-      {/* <LegislativeActionCenter /> */}
+      <FOIATracker />
+      <LegislativeActionCenter />
       <CaseSearch />
       <AITools />
       <Resources />

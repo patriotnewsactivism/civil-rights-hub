@@ -109,50 +109,8 @@ export function LegislativeActionCenter() {
   }, [userState, locationLoading]);
 
   useEffect(() => {
-    fetchLegislation();
+    applyLegislationReference();
   }, [selectedState, selectedLevel, selectedCategory]);
-
-  const fetchLegislation = async () => {
-    setLoading(true);
-    try {
-      let query = supabase
-        .from("legislation")
-        .select("*")
-        .order("introduced_date", { ascending: false });
-
-      if (selectedLevel !== "all") {
-        query = query.eq("level", selectedLevel);
-      }
-
-      if (selectedState !== "all") {
-        query = query.or(`state.eq.${selectedState},state.is.null`);
-      }
-
-      if (selectedCategory !== "all") {
-        query = query.contains("category", [selectedCategory]);
-      }
-
-      const { data, error } = await query;
-      if (error) {
-        console.warn("Falling back to reference legislation due to Supabase error:", error);
-        applyLegislationReference();
-        return;
-      }
-
-      if (!data || data.length === 0) {
-        applyLegislationReference();
-        return;
-      }
-
-      setLegislation(data as LegislationItem[]);
-      setDataSource("supabase");
-    } catch (error) {
-      console.error("Error fetching legislation:", error);
-      applyLegislationReference();
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const showReferenceNotice = () => {
     if (!referenceNoticeShown.current) {
@@ -330,30 +288,10 @@ function BillCard({ bill }: { bill: LegislationItem }) {
   const [templates, setTemplates] = useState<ActionTemplateItem[]>([]);
   const statusConfig = STATUS_CONFIG[bill.status as keyof typeof STATUS_CONFIG];
 
-  const fetchTemplates = async () => {
-    try {
-      const { data, error } = await supabase
-        .from("action_templates")
-        .select("*")
-        .eq("bill_id", bill.id);
-
-      if (error) {
-        console.warn("Falling back to reference action templates due to Supabase error:", error);
-        setTemplates(LEGISLATION_DATA.actionTemplates[bill.id] || []);
-        return;
-      }
-
-      if (!data || data.length === 0) {
-        setTemplates(LEGISLATION_DATA.actionTemplates[bill.id] || []);
-        return;
-      }
-
-      setTemplates(data as ActionTemplateItem[]);
-    } catch (error) {
-      console.error("Unexpected error loading action templates:", error);
-      setTemplates(LEGISLATION_DATA.actionTemplates[bill.id] || []);
-    }
-  };
+  useEffect(() => {
+    // Load templates from reference data only
+    setTemplates(LEGISLATION_DATA.actionTemplates[bill.id] || []);
+  }, [bill.id]);
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);

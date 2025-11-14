@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
-import { Shield, Users } from "lucide-react";
+import { Shield, Users, Scale, Megaphone, BookOpen } from "lucide-react";
 
 export function Header() {
   const { user } = useAuth();
@@ -17,7 +17,25 @@ export function Header() {
           </div>
         </Link>
         
-        <nav className="flex items-center gap-4">
+        <nav className="flex items-center gap-2 md:gap-4">
+          <Button variant="ghost" size="sm" asChild className="hidden sm:flex">
+            <Link to="/attorneys">
+              <Scale className="h-4 w-4 mr-2" />
+              Attorneys
+            </Link>
+          </Button>
+          <Button variant="ghost" size="sm" asChild className="hidden sm:flex">
+            <Link to="/activists">
+              <Megaphone className="h-4 w-4 mr-2" />
+              Activists
+            </Link>
+          </Button>
+          <Button variant="ghost" size="sm" asChild className="hidden sm:flex">
+            <Link to="/resources">
+              <BookOpen className="h-4 w-4 mr-2" />
+              Resources
+            </Link>
+          </Button>
           {user ? (
             <Button asChild>
               <Link to="/community">

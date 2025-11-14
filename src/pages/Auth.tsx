@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { Shield } from "lucide-react";
+import { SEO } from "@/components/SEO";
 
 export default function Auth() {
   const navigate = useNavigate();
@@ -56,6 +57,15 @@ export default function Auth() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-primary/5 p-4">
+      <SEO
+        title="Sign In - Civil Rights Hub | Join Our Network"
+        description="Join journalists, activists, and attorneys fighting for civil rights and justice. Create an account to access exclusive features and connect with the community."
+        keywords="civil rights login, activist network signup, attorney network, civil rights community, social justice login"
+        canonicalUrl="https://civilrightshub.org/auth"
+        ogUrl="https://civilrightshub.org/auth"
+        ogTitle="Sign In - Civil Rights Hub"
+        ogDescription="Join journalists, activists, and attorneys fighting for justice"
+      />
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">

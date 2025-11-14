@@ -45,16 +45,9 @@ export const ViolationReport = () => {
   });
 
   useEffect(() => {
-    fetchAgencies();
+    // Agencies table doesn't exist yet - will be added in future migration
+    setAgencies([]);
   }, []);
-
-  const fetchAgencies = async () => {
-    const { data } = await supabase
-      .from('agencies')
-      .select('id, name, state')
-      .order('name');
-    if (data) setAgencies(data);
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -78,51 +71,8 @@ export const ViolationReport = () => {
 
       if (violationError) throw violationError;
 
-      // Link agency if selected
-      if (formData.agencyId && violationData) {
-        await supabase.from("violation_agencies").insert({
-          violation_id: violationData.id,
-          agency_id: formData.agencyId,
-        });
-      }
-
-      // Create and link officer if badge number provided
-      if (formData.officerBadge && formData.agencyId && violationData) {
-        // Try to find existing officer
-        const { data: existingOfficer } = await supabase
-          .from("officers")
-          .select("id")
-          .eq("agency_id", formData.agencyId)
-          .eq("badge_number", formData.officerBadge)
-          .maybeSingle();
-
-        let officerId = existingOfficer?.id;
-
-        // Create new officer if doesn't exist
-        if (!officerId) {
-          const { data: newOfficer } = await supabase
-            .from("officers")
-            .insert({
-              agency_id: formData.agencyId,
-              badge_number: formData.officerBadge,
-              first_name: formData.officerFirstName || null,
-              last_name: formData.officerLastName || null,
-              rank: formData.officerRank || null,
-            })
-            .select()
-            .single();
-
-          officerId = newOfficer?.id;
-        }
-
-        // Link officer to violation
-        if (officerId) {
-          await supabase.from("violation_officers").insert({
-            violation_id: violationData.id,
-            officer_id: officerId,
-          });
-        }
-      }
+      // Agency and officer linking disabled until database tables are created
+      // Tables needed: agencies, officers, violation_agencies, violation_officers
 
       toast({
         title: "Report Submitted",

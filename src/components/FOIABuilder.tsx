@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useGeolocation } from "@/hooks/useGeolocation";
@@ -73,21 +73,9 @@ export function FOIABuilder() {
   const [myRequests, setMyRequests] = useState<FOIARequest[]>([]);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (userState) {
-      setSelectedState(userState);
-    }
-  }, [userState]);
-
-  useEffect(() => {
-    if (user) {
-      fetchMyRequests();
-    }
-  }, [user]);
-
-  const fetchMyRequests = async () => {
+  const fetchMyRequests = useCallback(async () => {
     if (!user) return;
-    
+
     setLoading(true);
     try {
       const { data, error } = await supabase
@@ -104,7 +92,19 @@ export function FOIABuilder() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    if (userState) {
+      setSelectedState(userState);
+    }
+  }, [userState]);
+
+  useEffect(() => {
+    if (user) {
+      void fetchMyRequests();
+    }
+  }, [user, fetchMyRequests]);
 
   const generateRequestLetter = () => {
     const today = new Date().toLocaleDateString('en-US', { 
@@ -192,29 +192,30 @@ ${requesterAddress || ''}`;
   };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-3xl font-bold mb-2 flex items-center gap-2">
-          <FileText className="h-8 w-8" />
-          FOIA / Public Records Request Builder
-        </h2>
-        <p className="text-muted-foreground">
-          Create state-specific public records requests with pre-populated legal language
-        </p>
-      </div>
+    <section id="foia-builder" className="py-20 bg-background">
+      <div className="container mx-auto px-4 space-y-6">
+        <div>
+          <h2 className="text-3xl font-bold mb-2 flex items-center gap-2">
+            <FileText className="h-8 w-8" />
+            FOIA / Public Records Request Builder
+          </h2>
+          <p className="text-muted-foreground">
+            Create state-specific public records requests with pre-populated legal language
+          </p>
+        </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList>
-          <TabsTrigger value="create">Create Request</TabsTrigger>
-          <TabsTrigger value="my-requests">My Requests</TabsTrigger>
-        </TabsList>
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <TabsList>
+            <TabsTrigger value="create">Create Request</TabsTrigger>
+            <TabsTrigger value="my-requests">My Requests</TabsTrigger>
+          </TabsList>
 
-        <TabsContent value="create" className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Request Information</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
+          <TabsContent value="create" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Request Information</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="state">State *</Label>
@@ -281,14 +282,14 @@ ${requesterAddress || ''}`;
                   rows={6}
                 />
               </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Your Information</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Your Information</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="name">Full Name *</Label>
@@ -321,71 +322,72 @@ ${requesterAddress || ''}`;
                   onChange={(e) => setRequesterAddress(e.target.value)}
                 />
               </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
 
-          <div className="flex gap-3">
-            <Button onClick={handleDownload} className="flex-1">
-              <Download className="h-4 w-4 mr-2" />
-              Download Request Letter
-            </Button>
-            <Button onClick={handleSaveDraft} variant="outline" className="flex-1">
-              Save as Draft
-            </Button>
-          </div>
-        </TabsContent>
-
-        <TabsContent value="my-requests">
-          {!user ? (
-            <Card>
-              <CardContent className="py-12 text-center">
-                <p className="text-muted-foreground">Sign in to view your saved requests</p>
-              </CardContent>
-            </Card>
-          ) : loading ? (
-            <Card>
-              <CardContent className="py-12 text-center">
-                <p className="text-muted-foreground">Loading your requests...</p>
-              </CardContent>
-            </Card>
-          ) : myRequests.length === 0 ? (
-            <Card>
-              <CardContent className="py-12 text-center">
-                <p className="text-muted-foreground">You haven't created any requests yet</p>
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="space-y-4">
-              {myRequests.map((request) => (
-                <Card key={request.id}>
-                  <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <CardTitle className="text-lg">{request.subject}</CardTitle>
-                        <p className="text-sm text-muted-foreground mt-1">
-                          {request.agency_name} • {request.state}
-                        </p>
-                      </div>
-                      <Badge variant={request.status === 'draft' ? 'secondary' : 'default'}>
-                        {request.status}
-                      </Badge>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
-                      {request.details}
-                    </p>
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                      <Clock className="h-3 w-3" />
-                      Updated {formatDistanceToNow(new Date(request.updated_at), { addSuffix: true })}
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+            <div className="flex gap-3">
+              <Button onClick={handleDownload} className="flex-1">
+                <Download className="h-4 w-4 mr-2" />
+                Download Request Letter
+              </Button>
+              <Button onClick={handleSaveDraft} variant="outline" className="flex-1">
+                Save as Draft
+              </Button>
             </div>
-          )}
-        </TabsContent>
-      </Tabs>
-    </div>
+          </TabsContent>
+
+          <TabsContent value="my-requests">
+            {!user ? (
+              <Card>
+                <CardContent className="py-12 text-center">
+                  <p className="text-muted-foreground">Sign in to view your saved requests</p>
+                </CardContent>
+              </Card>
+            ) : loading ? (
+              <Card>
+                <CardContent className="py-12 text-center">
+                  <p className="text-muted-foreground">Loading your requests...</p>
+                </CardContent>
+              </Card>
+            ) : myRequests.length === 0 ? (
+              <Card>
+                <CardContent className="py-12 text-center">
+                  <p className="text-muted-foreground">You haven't created any requests yet</p>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="space-y-4">
+                {myRequests.map((request) => (
+                  <Card key={request.id}>
+                    <CardHeader>
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <CardTitle className="text-lg">{request.subject}</CardTitle>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            {request.agency_name} • {request.state}
+                          </p>
+                        </div>
+                        <Badge variant={request.status === 'draft' ? 'secondary' : 'default'}>
+                          {request.status}
+                        </Badge>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
+                        {request.details}
+                      </p>
+                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                        <Clock className="h-3 w-3" />
+                        Updated {formatDistanceToNow(new Date(request.updated_at), { addSuffix: true })}
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </TabsContent>
+        </Tabs>
+      </div>
+    </section>
   );
 }

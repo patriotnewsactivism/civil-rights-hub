@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -43,17 +43,7 @@ export const PoliceScanner = () => {
   const [loading, setLoading] = useState(true);
   const [selectedState, setSelectedState] = useState<string>("all");
 
-  useEffect(() => {
-    if (location.state && !selectedState) {
-      setSelectedState(location.state);
-    }
-  }, [location.state]);
-
-  useEffect(() => {
-    fetchScanners();
-  }, [selectedState]);
-
-  const fetchScanners = async () => {
+  const fetchScanners = useCallback(async () => {
     setLoading(true);
     try {
       let query = supabase
@@ -81,7 +71,17 @@ export const PoliceScanner = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedState, toast]);
+
+  useEffect(() => {
+    if (location.state && selectedState === "all") {
+      setSelectedState(location.state);
+    }
+  }, [location.state, selectedState]);
+
+  useEffect(() => {
+    void fetchScanners();
+  }, [fetchScanners]);
 
   const getScannerUrl = (scanner: ScannerLink): string | null => {
     return scanner.broadcastify_url || scanner.scanner_radio_url || scanner.other_url;

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -58,17 +58,7 @@ export function LawyerFinder() {
   const [selectedSpecialty, setSelectedSpecialty] = useState<string>("all");
   const [proBonoOnly, setProBonoOnly] = useState(false);
 
-  useEffect(() => {
-    if (userState && !locationLoading) {
-      setSelectedState(userState);
-    }
-  }, [userState, locationLoading]);
-
-  useEffect(() => {
-    fetchAttorneys();
-  }, [selectedState, selectedSpecialty, proBonoOnly]);
-
-  const fetchAttorneys = async () => {
+  const fetchAttorneys = useCallback(async () => {
     setLoading(true);
     try {
       let query = supabase
@@ -98,7 +88,17 @@ export function LawyerFinder() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [proBonoOnly, selectedSpecialty, selectedState]);
+
+  useEffect(() => {
+    if (userState && !locationLoading) {
+      setSelectedState(userState);
+    }
+  }, [userState, locationLoading]);
+
+  useEffect(() => {
+    void fetchAttorneys();
+  }, [fetchAttorneys]);
 
   const filteredAttorneys = attorneys.filter((attorney) => {
     const searchLower = searchTerm.toLowerCase();
@@ -110,7 +110,7 @@ export function LawyerFinder() {
   });
 
   return (
-    <div className="space-y-6">
+    <section id="find-attorney" className="space-y-6">
       <div>
         <h2 className="text-3xl font-bold mb-2 flex items-center gap-2">
           <Scale className="h-8 w-8" />
@@ -273,6 +273,6 @@ export function LawyerFinder() {
           ))}
         </div>
       )}
-    </div>
+    </section>
   );
 }

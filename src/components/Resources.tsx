@@ -1,8 +1,21 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ExternalLink, Phone, Mail, Scale, Users, Shield } from "lucide-react";
+import { ExternalLink, Phone, Mail, Scale, Users, Shield, Gavel, Megaphone } from "lucide-react";
 
 export const Resources = () => {
+  const featuredResource = {
+    name: "Attorney Shield",
+    tagline: "On-demand legal backup for accountability advocates",
+    description:
+      "Attorney Shield connects residents, journalists, and community organizations with rapid-response lawyers who can intervene when encounters escalate.",
+    website: "https://attorney-shield.com",
+    benefits: [
+      "Immediate access to vetted civil rights attorneys when documenting incidents",
+      "Secure evidence vault for storing videos, statements, and timelines",
+      "Affordable memberships for individuals, grassroots organizers, and small businesses",
+    ],
+  };
+
   const organizations = [
     {
       name: "American Civil Liberties Union (ACLU)",
@@ -23,10 +36,16 @@ export const Resources = () => {
       icon: Scale
     },
     {
-      name: "Attorney-Shield",
-      description: "Legal protection and support for citizens recording police and public officials",
-      website: "https://attorney-shield.com",
+      name: "Know Your Rights Camp Legal Defense Initiative",
+      description: "Emergency legal support and bail assistance for communities impacted by racial injustice",
+      website: "https://www.knowyourrightscamp.com/legal",
       icon: Shield
+    },
+    {
+      name: "Community Justice Exchange",
+      description: "National directory of community bail funds and rapid-response legal collectives",
+      website: "https://communityjusticeexchange.org",
+      icon: Users
     }
   ];
 
@@ -45,6 +64,12 @@ export const Resources = () => {
     }
   ];
 
+  const advertisingHighlights = [
+    "Spotlight trusted legal partners like Attorney Shield directly within community safety tools",
+    "Reach residents who actively seek attorneys for civil rights, employment, and personal injury cases",
+    "Custom packages for law firms, legal clinics, and pro bono networks to feature educational content",
+  ];
+
   return (
     <section id="resources" className="py-20 bg-secondary">
       <div className="container mx-auto px-4">
@@ -59,6 +84,50 @@ export const Resources = () => {
         </div>
 
         <div className="max-w-6xl mx-auto space-y-8">
+          <Card className="border-primary/30 bg-gradient-to-br from-primary/10 via-background to-background shadow-soft">
+            <CardHeader>
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div>
+                  <CardTitle className="text-3xl flex items-center gap-3">
+                    <Shield className="h-8 w-8 text-primary" />
+                    {featuredResource.name}
+                  </CardTitle>
+                  <CardDescription className="text-base mt-2">
+                    {featuredResource.tagline}
+                  </CardDescription>
+                </div>
+                <Button
+                  onClick={() => window.open(featuredResource.website, '_blank')}
+                  className="w-full md:w-auto"
+                >
+                  Explore Attorney Shield
+                  <ExternalLink className="ml-2 h-4 w-4" />
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent className="grid md:grid-cols-[1fr_1fr] gap-6">
+              <div>
+                <p className="text-muted-foreground leading-relaxed">
+                  {featuredResource.description}
+                </p>
+              </div>
+              <div>
+                <h4 className="font-semibold mb-3 flex items-center gap-2">
+                  <Gavel className="h-5 w-5 text-primary" />
+                  What members receive
+                </h4>
+                <ul className="space-y-2 text-sm text-muted-foreground">
+                  {featuredResource.benefits.map((benefit, index) => (
+                    <li key={index} className="flex items-start gap-2">
+                      <span className="mt-1 text-primary">•</span>
+                      <span>{benefit}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </CardContent>
+          </Card>
+
           <div>
             <h3 className="text-2xl font-semibold text-foreground mb-6">Prevention, Safety & Legal Aid Organizations</h3>
             <div className="grid md:grid-cols-4 gap-6">
@@ -107,6 +176,39 @@ export const Resources = () => {
               ))}
             </div>
           </div>
+
+          <Card className="border-dashed border-primary/40 bg-background">
+            <CardHeader>
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div>
+                  <CardTitle className="text-2xl flex items-center gap-3">
+                    <Megaphone className="h-6 w-6 text-primary" />
+                    Legal Advertising & Partnership Opportunities
+                  </CardTitle>
+                  <CardDescription className="text-base mt-2">
+                    Help residents find trustworthy attorneys while funding civil rights programming.
+                  </CardDescription>
+                </div>
+                <Button
+                  variant="outline"
+                  onClick={() => window.open('mailto:partners@civilrightshub.org?subject=Legal%20Advertising%20Inquiry')}
+                  className="w-full md:w-auto"
+                >
+                  Start a Conversation
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                {advertisingHighlights.map((highlight, index) => (
+                  <li key={index} className="flex items-start gap-2">
+                    <span className="mt-1 text-primary">•</span>
+                    <span>{highlight}</span>
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+          </Card>
 
           <Card className="bg-primary text-primary-foreground shadow-strong border-primary">
             <CardHeader>

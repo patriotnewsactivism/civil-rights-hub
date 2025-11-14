@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -28,18 +28,20 @@ export function UserProfile() {
   const [location, setLocation] = useState("");
   const [uploading, setUploading] = useState(false);
 
-  useEffect(() => {
-    if (user) {
-      fetchProfile();
-    }
-  }, [user]);
+  const fetchProfile = useCallback(async () => {
+    if (!user?.id) return;
 
-  const fetchProfile = async () => {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('profiles')
       .select('*')
-      .eq('id', user?.id)
+      .eq('id', user.id)
       .single();
+
+    if (error) {
+      console.error('Error fetching profile:', error);
+      toast.error("Failed to load profile");
+      return;
+    }
 
     if (data) {
       setProfile(data);
@@ -47,7 +49,13 @@ export function UserProfile() {
       setBio(data.bio || "");
       setLocation(data.location || "");
     }
-  };
+  }, [user?.id]);
+
+  useEffect(() => {
+    if (user) {
+      void fetchProfile();
+    }
+  }, [user, fetchProfile]);
 
   const updateProfile = async () => {
     const { error } = await supabase
@@ -64,7 +72,7 @@ export function UserProfile() {
     } else {
       toast.success("Profile updated!");
       setEditing(false);
-      fetchProfile();
+      await fetchProfile();
     }
   };
 
@@ -99,7 +107,7 @@ export function UserProfile() {
       toast.error("Failed to update avatar");
     } else {
       toast.success("Avatar updated!");
-      fetchProfile();
+      await fetchProfile();
     }
 
     setUploading(false);

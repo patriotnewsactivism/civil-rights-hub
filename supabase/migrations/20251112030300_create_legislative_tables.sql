@@ -97,24 +97,24 @@ CREATE TABLE IF NOT EXISTS action_templates (
 );
 
 -- Create indexes
-CREATE INDEX idx_representatives_state ON representatives(state);
-CREATE INDEX idx_representatives_level ON representatives(level);
-CREATE INDEX idx_representatives_position ON representatives(position);
+CREATE INDEX IF NOT EXISTS idx_representatives_state ON representatives(state);
+CREATE INDEX IF NOT EXISTS idx_representatives_level ON representatives(level);
+CREATE INDEX IF NOT EXISTS idx_representatives_position ON representatives(position);
 
-CREATE INDEX idx_legislation_status ON legislation(status);
-CREATE INDEX idx_legislation_state ON legislation(state);
-CREATE INDEX idx_legislation_level ON legislation(level);
-CREATE INDEX idx_legislation_category ON legislation USING GIN(category);
-CREATE INDEX idx_legislation_introduced ON legislation(introduced_date DESC);
+CREATE INDEX IF NOT EXISTS idx_legislation_status ON legislation(status);
+CREATE INDEX IF NOT EXISTS idx_legislation_state ON legislation(state);
+CREATE INDEX IF NOT EXISTS idx_legislation_level ON legislation(level);
+CREATE INDEX IF NOT EXISTS idx_legislation_category ON legislation USING GIN(category);
+CREATE INDEX IF NOT EXISTS idx_legislation_introduced ON legislation(introduced_date DESC);
 
-CREATE INDEX idx_bill_sponsors_bill ON bill_sponsors(bill_id);
-CREATE INDEX idx_bill_sponsors_rep ON bill_sponsors(representative_id);
+CREATE INDEX IF NOT EXISTS idx_bill_sponsors_bill ON bill_sponsors(bill_id);
+CREATE INDEX IF NOT EXISTS idx_bill_sponsors_rep ON bill_sponsors(representative_id);
 
-CREATE INDEX idx_legislative_actions_user ON legislative_actions(user_id);
-CREATE INDEX idx_legislative_actions_bill ON legislative_actions(bill_id);
-CREATE INDEX idx_legislative_actions_rep ON legislative_actions(representative_id);
+CREATE INDEX IF NOT EXISTS idx_legislative_actions_user ON legislative_actions(user_id);
+CREATE INDEX IF NOT EXISTS idx_legislative_actions_bill ON legislative_actions(bill_id);
+CREATE INDEX IF NOT EXISTS idx_legislative_actions_rep ON legislative_actions(representative_id);
 
-CREATE INDEX idx_action_templates_bill ON action_templates(bill_id);
+CREATE INDEX IF NOT EXISTS idx_action_templates_bill ON action_templates(bill_id);
 
 -- Enable Row Level Security
 ALTER TABLE representatives ENABLE ROW LEVEL SECURITY;
@@ -124,46 +124,57 @@ ALTER TABLE legislative_actions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE action_templates ENABLE ROW LEVEL SECURITY;
 
 -- Policies: Everyone can view representatives and legislation (public data)
+DROP POLICY IF EXISTS "Anyone can view representatives" ON representatives;
 CREATE POLICY "Anyone can view representatives"
   ON representatives FOR SELECT USING (true);
 
+DROP POLICY IF EXISTS "Anyone can view legislation" ON legislation;
 CREATE POLICY "Anyone can view legislation"
   ON legislation FOR SELECT USING (true);
 
+DROP POLICY IF EXISTS "Anyone can view bill sponsors" ON bill_sponsors;
 CREATE POLICY "Anyone can view bill sponsors"
   ON bill_sponsors FOR SELECT USING (true);
 
+DROP POLICY IF EXISTS "Anyone can view action templates" ON action_templates;
 CREATE POLICY "Anyone can view action templates"
   ON action_templates FOR SELECT USING (true);
 
 -- Policies: Users can manage their own actions
+DROP POLICY IF EXISTS "Users can view their own actions" ON legislative_actions;
 CREATE POLICY "Users can view their own actions"
   ON legislative_actions FOR SELECT
   USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can create their own actions" ON legislative_actions;
 CREATE POLICY "Users can create their own actions"
   ON legislative_actions FOR INSERT
   WITH CHECK (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can update their own actions" ON legislative_actions;
 CREATE POLICY "Users can update their own actions"
   ON legislative_actions FOR UPDATE
   USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can delete their own actions" ON legislative_actions;
 CREATE POLICY "Users can delete their own actions"
   ON legislative_actions FOR DELETE
   USING (auth.uid() = user_id);
 
 -- Create triggers for updated_at
+DROP TRIGGER IF EXISTS update_representatives_updated_at ON representatives;
 CREATE TRIGGER update_representatives_updated_at
   BEFORE UPDATE ON representatives
   FOR EACH ROW
   EXECUTE FUNCTION update_updated_at_column();
 
+DROP TRIGGER IF EXISTS update_legislation_updated_at ON legislation;
 CREATE TRIGGER update_legislation_updated_at
   BEFORE UPDATE ON legislation
   FOR EACH ROW
   EXECUTE FUNCTION update_updated_at_column();
 
+DROP TRIGGER IF EXISTS update_action_templates_updated_at ON action_templates;
 CREATE TRIGGER update_action_templates_updated_at
   BEFORE UPDATE ON action_templates
   FOR EACH ROW
@@ -190,8 +201,16 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER trigger_update_legislation_counts
-  AFTER INSERT OR DELETE ON legislative_actions
+DROP TRIGGER IF EXISTS trigger_update_legislation_counts_insert ON legislative_actions;
+CREATE TRIGGER trigger_update_legislation_counts_insert
+  AFTER INSERT ON legislative_actions
   FOR EACH ROW
-  WHEN (NEW.action_type IN ('support', 'oppose') OR OLD.action_type IN ('support', 'oppose'))
+  WHEN (NEW.action_type IN ('support', 'oppose'))
+  EXECUTE FUNCTION update_legislation_counts();
+
+DROP TRIGGER IF EXISTS trigger_update_legislation_counts_delete ON legislative_actions;
+CREATE TRIGGER trigger_update_legislation_counts_delete
+  AFTER DELETE ON legislative_actions
+  FOR EACH ROW
+  WHEN (OLD.action_type IN ('support', 'oppose'))
   EXECUTE FUNCTION update_legislation_counts();

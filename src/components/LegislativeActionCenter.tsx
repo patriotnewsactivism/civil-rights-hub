@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -102,17 +102,7 @@ export function LegislativeActionCenter() {
   const [dataSource, setDataSource] = useState<DataSource>("supabase");
   const referenceNoticeShown = useRef(false);
 
-  useEffect(() => {
-    if (userState && !locationLoading) {
-      setSelectedState(userState);
-    }
-  }, [userState, locationLoading]);
-
-  useEffect(() => {
-    applyLegislationReference();
-  }, [selectedState, selectedLevel, selectedCategory]);
-
-  const showReferenceNotice = () => {
+  const showReferenceNotice = useCallback(() => {
     if (!referenceNoticeShown.current) {
       toast.info(
         "Loaded curated legislation directly from Congress.gov and state legislative records.",
@@ -122,9 +112,9 @@ export function LegislativeActionCenter() {
       );
       referenceNoticeShown.current = true;
     }
-  };
+  }, []);
 
-  const applyLegislationReference = () => {
+  const applyLegislationReference = useCallback(() => {
     const filtered = LEGISLATION_DATA.legislation.filter((bill) => {
       const levelMatch = selectedLevel === "all" || bill.level === selectedLevel;
       const stateMatch =
@@ -136,7 +126,17 @@ export function LegislativeActionCenter() {
     setLegislation(filtered.length > 0 ? filtered : LEGISLATION_DATA.legislation);
     setDataSource("reference");
     showReferenceNotice();
-  };
+  }, [selectedCategory, selectedLevel, selectedState, showReferenceNotice]);
+
+  useEffect(() => {
+    if (userState && !locationLoading) {
+      setSelectedState(userState);
+    }
+  }, [userState, locationLoading]);
+
+  useEffect(() => {
+    applyLegislationReference();
+  }, [applyLegislationReference]);
 
   const filteredLegislation = legislation.filter((bill) => {
     const searchLower = searchTerm.toLowerCase();

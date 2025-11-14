@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -52,17 +52,7 @@ export function ActivistDirectory() {
   const [selectedState, setSelectedState] = useState<string>("all");
   const [selectedFocus, setSelectedFocus] = useState<string>("all");
 
-  useEffect(() => {
-    if (userState && !locationLoading) {
-      setSelectedState(userState);
-    }
-  }, [userState, locationLoading]);
-
-  useEffect(() => {
-    fetchActivists();
-  }, [selectedState, selectedFocus]);
-
-  const fetchActivists = async () => {
+  const fetchActivists = useCallback(async () => {
     setLoading(true);
     try {
       let query = supabase
@@ -89,7 +79,17 @@ export function ActivistDirectory() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedState, selectedFocus]);
+
+  useEffect(() => {
+    if (userState && !locationLoading) {
+      setSelectedState(userState);
+    }
+  }, [userState, locationLoading]);
+
+  useEffect(() => {
+    void fetchActivists();
+  }, [fetchActivists]);
 
   const filteredActivists = activists.filter((activist) => {
     const searchLower = searchTerm.toLowerCase();

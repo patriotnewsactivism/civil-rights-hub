@@ -76,7 +76,6 @@ describe("useEmergencyRecorder", () => {
       ondataavailable: ((event: BlobEvent) => void) | null = null;
       onstop: (() => void) | null = null;
       onerror: ((event: MediaRecorderErrorEvent) => void) | null = null;
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       constructor(_stream: MediaStream, _options?: MediaRecorderOptions) {}
       start() {
         this.state = "recording";

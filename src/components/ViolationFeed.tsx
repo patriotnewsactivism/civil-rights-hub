@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -24,7 +24,7 @@ export const ViolationFeed = () => {
   const [filterState, setFilterState] = useState<string>("all");
   const location = useGeolocation();
 
-  const fetchViolations = async () => {
+  const fetchViolations = useCallback(async () => {
     setLoading(true);
     try {
       let query = supabase
@@ -46,11 +46,11 @@ export const ViolationFeed = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filterState]);
 
   useEffect(() => {
-    fetchViolations();
-    
+    void fetchViolations();
+
     const channel = supabase
       .channel("violations-changes")
       .on(
@@ -61,7 +61,7 @@ export const ViolationFeed = () => {
           table: "violations",
         },
         () => {
-          fetchViolations();
+          void fetchViolations();
         }
       )
       .subscribe();
@@ -69,13 +69,13 @@ export const ViolationFeed = () => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [filterState]);
+  }, [fetchViolations]);
 
   useEffect(() => {
     if (location.state && filterState === "all") {
       setFilterState(location.state);
     }
-  }, [location.state]);
+  }, [filterState, location.state]);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
@@ -101,7 +101,7 @@ export const ViolationFeed = () => {
                 Recent violation reports from the community
               </p>
             </div>
-            <Button variant="outline" onClick={fetchViolations} disabled={loading}>
+            <Button variant="outline" onClick={() => { void fetchViolations(); }} disabled={loading}>
               <RefreshCw className={`h-4 w-4 mr-2 ${loading ? "animate-spin" : ""}`} />
               Refresh
             </Button>

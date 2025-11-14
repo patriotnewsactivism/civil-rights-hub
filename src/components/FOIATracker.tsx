@@ -116,7 +116,7 @@ export function FOIATracker() {
     try {
       const { data, error } = await supabase
         .from("foia_requests")
-        .select<FOIARequest[]>("*")
+        .select("*")
         .eq("user_id", user.id)
         .order("updated_at", { ascending: false });
 

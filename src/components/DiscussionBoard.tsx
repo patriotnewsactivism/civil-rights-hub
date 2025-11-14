@@ -88,7 +88,7 @@ export const DiscussionBoard = () => {
       )
       .eq("is_deleted", false)
       .order("is_pinned", { ascending: false })
-      .order("last_post_at", { ascending: false, nullsLast: true })
+      .order("last_post_at", { ascending: false, nullsFirst: false })
       .limit(20);
 
     if (error) {

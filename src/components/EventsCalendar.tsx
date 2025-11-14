@@ -25,7 +25,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 
-import enUS from "date-fns/locale/en-US";
+import { enUS } from "date-fns/locale/en-US";
 
 const locales = {
   "en-US": enUS,

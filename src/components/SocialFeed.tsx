@@ -35,7 +35,7 @@ export function SocialFeed() {
   const fetchPosts = useCallback(async () => {
     const { data, error } = await supabase
       .from("posts")
-      .select<PostQueryResult[]>(`
+      .select(`
         id,
         content,
         media_urls,
@@ -55,7 +55,7 @@ export function SocialFeed() {
       return;
     }
 
-    setPosts(data ?? []);
+    setPosts((data ?? []) as PostQueryResult[]);
   }, []);
 
   const handleFileSelect = (event: ChangeEvent<HTMLInputElement>) => {

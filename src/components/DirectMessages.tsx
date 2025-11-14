@@ -11,7 +11,7 @@ import { formatDistanceToNow } from "date-fns";
 import type { Database } from "@/integrations/supabase/types";
 
 type ProfileRow = Database["public"]["Tables"]["profiles"]["Row"];
-type DirectMessageRow = Database["public"]["Tables"]["direct_messages"]["Row"];
+type MessageRow = Database["public"]["Tables"]["messages"]["Row"];
 
 interface ProfileSummary {
   id: string;
@@ -20,7 +20,7 @@ interface ProfileSummary {
   role: ProfileRow["role"];
 }
 
-type Message = DirectMessageRow;
+type Message = MessageRow;
 
 export function DirectMessages() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -58,12 +58,7 @@ export function DirectMessages() {
     }
 
     return messages.filter((message) => {
-      if (message.sender_id === currentUserId && message.is_deleted_by_sender) {
-        return false;
-      }
-      if (message.recipient_id === currentUserId && message.is_deleted_by_recipient) {
-        return false;
-      }
+      // Messages table doesn't have soft delete columns, show all messages
       return true;
     });
   }, [currentUserId, messages]);
@@ -83,7 +78,7 @@ export function DirectMessages() {
 
     const { data, error } = await supabase
       .from("profiles")
-      .select<ProfileSummary[]>("id, display_name, avatar_url, role")
+      .select("id, display_name, avatar_url, role")
       .in("id", participantIds);
 
     if (error) {
@@ -105,7 +100,7 @@ export function DirectMessages() {
 
     const { data, error } = await supabase
       .from("profiles")
-      .select<ProfileSummary[]>("id, display_name, avatar_url, role")
+      .select("id, display_name, avatar_url, role")
       .neq("id", currentUserId);
 
     if (error) {
@@ -126,8 +121,8 @@ export function DirectMessages() {
     if (!currentUserId) return;
 
     const { data, error } = await supabase
-      .from("direct_messages")
-      .select<Message[]>("*")
+      .from("messages")
+      .select("*")
       .or(`sender_id.eq.${currentUserId},recipient_id.eq.${currentUserId}`)
       .order("created_at", { ascending: true });
 

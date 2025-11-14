@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useGeolocation } from "@/hooks/useGeolocation";
@@ -73,21 +73,9 @@ export function FOIABuilder() {
   const [myRequests, setMyRequests] = useState<FOIARequest[]>([]);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (userState) {
-      setSelectedState(userState);
-    }
-  }, [userState]);
-
-  useEffect(() => {
-    if (user) {
-      fetchMyRequests();
-    }
-  }, [user]);
-
-  const fetchMyRequests = async () => {
+  const fetchMyRequests = useCallback(async () => {
     if (!user) return;
-    
+
     setLoading(true);
     try {
       const { data, error } = await supabase
@@ -104,7 +92,19 @@ export function FOIABuilder() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    if (userState) {
+      setSelectedState(userState);
+    }
+  }, [userState]);
+
+  useEffect(() => {
+    if (user) {
+      void fetchMyRequests();
+    }
+  }, [user, fetchMyRequests]);
 
   const generateRequestLetter = () => {
     const today = new Date().toLocaleDateString('en-US', { 

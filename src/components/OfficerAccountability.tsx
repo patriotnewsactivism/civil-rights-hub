@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -80,30 +80,7 @@ export function OfficerAccountability() {
   const [dataSource, setDataSource] = useState<AccountabilityDataSource>("supabase");
   const referenceNoticeShown = useRef(false);
 
-  useEffect(() => {
-    if (userState && !locationLoading) {
-      setSelectedState(userState);
-    }
-  }, [userState, locationLoading]);
-
-  useEffect(() => {
-    fetchData();
-  }, [selectedState, activeTab]);
-
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      if (activeTab === "agencies") {
-        await fetchAgencies();
-      } else {
-        await fetchOfficers();
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const showReferenceNotice = () => {
+  const showReferenceNotice = useCallback(() => {
     if (!referenceNoticeShown.current) {
       toast.info(
         "Loaded accountability data compiled from The Washington Post fatal force database and public court records.",
@@ -113,9 +90,9 @@ export function OfficerAccountability() {
       );
       referenceNoticeShown.current = true;
     }
-  };
+  }, []);
 
-  const applyAgencyReference = () => {
+  const applyAgencyReference = useCallback(() => {
     const filtered =
       selectedState === "all"
         ? ACCOUNTABILITY_DATA.agencies
@@ -123,9 +100,9 @@ export function OfficerAccountability() {
     setAgencies(filtered.length > 0 ? filtered : ACCOUNTABILITY_DATA.agencies);
     setDataSource("reference");
     showReferenceNotice();
-  };
+  }, [selectedState, showReferenceNotice]);
 
-  const applyOfficerReference = () => {
+  const applyOfficerReference = useCallback(() => {
     const filtered =
       selectedState === "all"
         ? ACCOUNTABILITY_DATA.officers
@@ -133,9 +110,9 @@ export function OfficerAccountability() {
     setOfficers(filtered.length > 0 ? filtered : ACCOUNTABILITY_DATA.officers);
     setDataSource("reference");
     showReferenceNotice();
-  };
+  }, [selectedState, showReferenceNotice]);
 
-  const fetchAgencies = async () => {
+  const fetchAgencies = useCallback(async () => {
     try {
       let query = supabase
         .from("agencies")
@@ -164,9 +141,9 @@ export function OfficerAccountability() {
       console.error("Unexpected error fetching agencies:", error);
       applyAgencyReference();
     }
-  };
+  }, [applyAgencyReference, selectedState]);
 
-  const fetchOfficers = async () => {
+  const fetchOfficers = useCallback(async () => {
     try {
       let query = supabase
         .from("officers")
@@ -199,7 +176,30 @@ export function OfficerAccountability() {
       console.error("Unexpected error fetching officers:", error);
       applyOfficerReference();
     }
-  };
+  }, [applyOfficerReference, selectedState]);
+
+  const fetchData = useCallback(async () => {
+    setLoading(true);
+    try {
+      if (activeTab === "agencies") {
+        await fetchAgencies();
+      } else {
+        await fetchOfficers();
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, [activeTab, fetchAgencies, fetchOfficers]);
+
+  useEffect(() => {
+    if (userState && !locationLoading) {
+      setSelectedState(userState);
+    }
+  }, [userState, locationLoading]);
+
+  useEffect(() => {
+    void fetchData();
+  }, [fetchData]);
 
   const filteredAgencies = agencies.filter((agency) => {
     const searchLower = searchTerm.toLowerCase();

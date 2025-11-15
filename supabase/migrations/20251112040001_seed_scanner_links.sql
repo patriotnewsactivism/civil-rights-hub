@@ -17,6 +17,11 @@ INSERT INTO public.scanner_links (
   notes
 ) VALUES
 
+-- District of Columbia
+('District of Columbia', 'DC', 'Washington', 'District of Columbia', 'MPD Citywide 1', 'Metropolitan Police Department citywide dispatch and protest response patch mirrored on OpenMHZ.', '460.325 MHz', NULL, NULL, 'https://openmhz.com/system/dcmd', 'other', 960, true, 'Adds long-requested District coverage; OpenMHZ replay is sourced from MPD''s official simulcast.'),
+('District of Columbia', 'DC', 'Washington', 'District of Columbia', 'DC Fire & EMS Dispatch', 'Citywide fire and EMS dispatch feed including mutual aid tones.', '154.190 MHz', NULL, NULL, 'https://openmhz.com/system/dcfd', 'other', 640, true, 'Includes paging plus working fire talkgroups for regional newsrooms.'),
+('District of Columbia', 'DC', 'Washington', 'District of Columbia', 'National Capital Region Interop', 'US Park Police, MPD Special Operations, and NCR interoperability traffic archived via OpenMHZ.', '169.2125 MHz', NULL, NULL, 'https://openmhz.com/system/ncren', 'other', 420, true, 'Covers First Amendment assemblies and mutual-aid deployments on the federal mall.'),
+
 -- California
 ('California', 'CA', 'Los Angeles', 'Los Angeles County', 'LAPD Dispatch', 'Los Angeles Police Department dispatch and tactical channels', '460.525 MHz', 'https://www.broadcastify.com/webPlayer/35012', NULL, NULL, 'broadcastify', 1500, true, 'High activity scanner covering LAPD operations'),
 ('California', 'CA', 'San Francisco', 'San Francisco County', 'SFPD and Fire', 'San Francisco Police and Fire Department', '460.300 MHz', 'https://www.broadcastify.com/webPlayer/328', NULL, NULL, 'broadcastify', 850, true, NULL),

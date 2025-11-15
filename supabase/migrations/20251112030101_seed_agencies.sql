@@ -123,70 +123,7 @@ INSERT INTO agencies (
   'https://www.mcso.org',
   21,
   2800000
-);
-
-TRUNCATE officers RESTART IDENTITY CASCADE;
-
-INSERT INTO officers (
-  agency_id,
-  badge_number,
-  first_name,
-  last_name,
-  rank,
-  total_violations
-) VALUES
-(
-  (SELECT id FROM agencies WHERE name = 'Minneapolis Police Department'),
-  NULL,
-  'Derek',
-  'Chauvin',
-  'Former Officer',
-  18
 ),
-(
-  (SELECT id FROM agencies WHERE name = 'Louisville Metro Police Department'),
-  NULL,
-  'Brett',
-  'Hankison',
-  'Former Detective',
-  26
-),
-(
-  (SELECT id FROM agencies WHERE name = 'North Charleston Police Department'),
-  NULL,
-  'Michael',
-  'Slager',
-  'Former Officer',
-  2
-),
-(
-  (SELECT id FROM agencies WHERE name = 'Fort Worth Police Department'),
-  NULL,
-  'Aaron',
-  'Dean',
-  'Former Officer',
-  1
-),
-(
-  (SELECT id FROM agencies WHERE name = 'St. Anthony Police Department'),
-  NULL,
-  'Jeronimo',
-  'Yanez',
-  'Former Officer',
-  1
-);
-
-INSERT INTO agencies (
-  name,
-  agency_type,
-  state,
-  city,
-  address,
-  phone,
-  website,
-  total_complaints,
-  total_settlements_paid
-) VALUES
 (
   'Minneapolis Police Department',
   'Police Department',
@@ -241,4 +178,55 @@ INSERT INTO agencies (
   'https://savmn.com/193/Police-Department',
   3,
   3000000
+);
+
+TRUNCATE officers RESTART IDENTITY CASCADE;
+
+INSERT INTO officers (
+  agency_id,
+  badge_number,
+  first_name,
+  last_name,
+  rank,
+  total_violations
+) VALUES
+(
+  (SELECT id FROM agencies WHERE name = 'Minneapolis Police Department'),
+  NULL,
+  'Derek',
+  'Chauvin',
+  'Former Officer',
+  18
+),
+(
+  (SELECT id FROM agencies WHERE name = 'Louisville Metro Police Department'),
+  NULL,
+  'Brett',
+  'Hankison',
+  'Former Detective',
+  26
+),
+(
+  (SELECT id FROM agencies WHERE name = 'North Charleston Police Department'),
+  NULL,
+  'Michael',
+  'Slager',
+  'Former Officer',
+  2
+),
+(
+  (SELECT id FROM agencies WHERE name = 'Fort Worth Police Department'),
+  NULL,
+  'Aaron',
+  'Dean',
+  'Former Officer',
+  1
+),
+(
+  (SELECT id FROM agencies WHERE name = 'St. Anthony Police Department'),
+  NULL,
+  'Jeronimo',
+  'Yanez',
+  'Former Officer',
+  1
 );

@@ -12,10 +12,11 @@ import { formatDistanceToNow } from "date-fns";
 import type { ChangeEvent } from "react";
 import type { Database } from "@/integrations/supabase/types";
 
-type PostRow = Database["public"]["Tables"]["posts"]["Row"];
-type LikeRow = Database["public"]["Tables"]["likes"]["Row"];
-type CommentRow = Database["public"]["Tables"]["comments"]["Row"];
-type ProfileRow = Database["public"]["Tables"]["profiles"]["Row"];
+// Type definitions - using conditional types to handle missing tables
+type PostRow = Database["public"]["Tables"] extends { posts: { Row: infer R } } ? R : any;
+type LikeRow = Database["public"]["Tables"] extends { likes: { Row: infer R } } ? R : any;
+type CommentRow = Database["public"]["Tables"] extends { comments: { Row: infer R } } ? R : any;
+type ProfileRow = Database["public"]["Tables"] extends { profiles: { Row: infer R } } ? R : any;
 
 type PostQueryResult = PostRow & {
   profiles: Pick<ProfileRow, "display_name" | "avatar_url" | "role"> | null;

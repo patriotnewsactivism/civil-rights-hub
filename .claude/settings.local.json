@@ -4,7 +4,10 @@
       "Bash(npx supabase:*)",
       "WebSearch",
       "WebFetch(domain:www.rcfp.org)",
-      "WebFetch(domain:en.wikipedia.org)"
+      "WebFetch(domain:en.wikipedia.org)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push)"
     ],
     "deny": [],
     "ask": []

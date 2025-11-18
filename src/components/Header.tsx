@@ -1,10 +1,65 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
-import { Shield, Users, Scale, Megaphone, BookOpen } from "lucide-react";
+import { Shield, Users, Scale, Megaphone, BookOpen, Bell, MessageCircle } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 export function Header() {
   const { user } = useAuth();
+  const [unreadNotifications, setUnreadNotifications] = useState(0);
+  const [unreadMessages, setUnreadMessages] = useState(0);
+
+  useEffect(() => {
+    if (!user) {
+      setUnreadMessages(0);
+      setUnreadNotifications(0);
+      return;
+    }
+
+    const loadCounts = async () => {
+      const [{ count: notifCount }, { count: msgCount }] = await Promise.all([
+        supabase
+          .from("notifications")
+          .select("*", { count: "exact", head: true })
+          .eq("user_id", user.id)
+          .eq("is_read", false),
+        supabase
+          .from("direct_messages")
+          .select("*", { count: "exact", head: true })
+          .eq("recipient_id", user.id)
+          .eq("is_read", false)
+          .eq("is_deleted_by_recipient", false),
+      ]);
+
+      setUnreadNotifications(notifCount ?? 0);
+      setUnreadMessages(msgCount ?? 0);
+    };
+
+    void loadCounts();
+
+    const channel = supabase
+      .channel(`header-counts-${user.id}`)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "notifications", filter: `user_id=eq.${user.id}` },
+        () => {
+          void loadCounts();
+        }
+      )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "direct_messages", filter: `recipient_id=eq.${user.id}` },
+        () => {
+          void loadCounts();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user]);
 
   return (
     <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
@@ -36,6 +91,30 @@ export function Header() {
               Resources
             </Link>
           </Button>
+          {user && (
+            <>
+              <Button variant="ghost" size="icon" asChild className="relative">
+                <Link to="/community?tab=notifications" aria-label="Notifications">
+                  <Bell className="h-5 w-5" />
+                  {unreadNotifications > 0 && (
+                    <span className="absolute -top-1 -right-1 inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white">
+                      {Math.min(unreadNotifications, 99)}
+                    </span>
+                  )}
+                </Link>
+              </Button>
+              <Button variant="ghost" size="icon" asChild className="relative">
+                <Link to="/community?tab=messages" aria-label="Messages">
+                  <MessageCircle className="h-5 w-5" />
+                  {unreadMessages > 0 && (
+                    <span className="absolute -top-1 -right-1 inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold text-primary-foreground">
+                      {Math.min(unreadMessages, 99)}
+                    </span>
+                  )}
+                </Link>
+              </Button>
+            </>
+          )}
           {user ? (
             <Button asChild>
               <Link to="/community">

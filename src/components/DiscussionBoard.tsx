@@ -127,7 +127,7 @@ export const DiscussionBoard = () => {
       return;
     }
 
-    const hasUpvoted = reactions.upvotes.has(threadId);
+    const hasUpvoted = reactions?.upvotes?.has(threadId) ?? false;
 
     if (hasUpvoted) {
       const { error } = await supabase
@@ -146,7 +146,7 @@ export const DiscussionBoard = () => {
       }
 
       setReactions((current) => {
-        const updated = new Set(current.upvotes);
+        const updated = new Set(current?.upvotes || []);
         updated.delete(threadId);
         return { ...current, upvotes: updated };
       });
@@ -173,7 +173,7 @@ export const DiscussionBoard = () => {
       }
 
       setReactions((current) => {
-        const updated = new Set(current.upvotes);
+        const updated = new Set(current?.upvotes || []);
         updated.add(threadId);
         return { ...current, upvotes: updated };
       });
@@ -198,7 +198,7 @@ export const DiscussionBoard = () => {
       return;
     }
 
-    const hasBookmark = reactions.bookmarks.has(threadId);
+    const hasBookmark = reactions?.bookmarks?.has(threadId) ?? false;
 
     if (hasBookmark) {
       const { error } = await supabase
@@ -217,7 +217,7 @@ export const DiscussionBoard = () => {
       }
 
       setReactions((current) => {
-        const updated = new Set(current.bookmarks);
+        const updated = new Set(current?.bookmarks || []);
         updated.delete(threadId);
         return { ...current, bookmarks: updated };
       });
@@ -236,7 +236,7 @@ export const DiscussionBoard = () => {
       }
 
       setReactions((current) => {
-        const updated = new Set(current.bookmarks);
+        const updated = new Set(current?.bookmarks || []);
         updated.add(threadId);
         return { ...current, bookmarks: updated };
       });
@@ -253,7 +253,7 @@ export const DiscussionBoard = () => {
       return;
     }
 
-    const subscriptionId = reactions.subscriptions.get(threadId);
+    const subscriptionId = reactions?.subscriptions?.get(threadId);
 
     if (subscriptionId) {
       const { error } = await supabase
@@ -272,7 +272,7 @@ export const DiscussionBoard = () => {
       }
 
       setReactions((current) => {
-        const updated = new Map(current.subscriptions);
+        const updated = new Map(current?.subscriptions || []);
         updated.delete(threadId);
         return { ...current, subscriptions: updated };
       });
@@ -293,7 +293,7 @@ export const DiscussionBoard = () => {
       }
 
       setReactions((current) => {
-        const updated = new Map(current.subscriptions);
+        const updated = new Map(current?.subscriptions || []);
         if (data?.id) {
           updated.set(threadId, data.id);
         }
@@ -528,9 +528,9 @@ const ThreadCard = ({
   onTagInputChange,
   onReport,
 }: ThreadCardProps) => {
-  const hasUpvoted = reactions.upvotes.has(thread.id);
-  const hasBookmarked = reactions.bookmarks.has(thread.id);
-  const hasSubscription = reactions.subscriptions.has(thread.id);
+  const hasUpvoted = reactions?.upvotes?.has(thread.id) ?? false;
+  const hasBookmarked = reactions?.bookmarks?.has(thread.id) ?? false;
+  const hasSubscription = reactions?.subscriptions?.has(thread.id) ?? false;
 
   const excerpt = useMemo(() => {
     if (!thread.content) return "";

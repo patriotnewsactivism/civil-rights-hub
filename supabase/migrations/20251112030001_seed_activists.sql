@@ -144,7 +144,7 @@ INSERT INTO activists (name, alias, primary_platform, channel_url, focus_areas, 
 ),
 (
   'Armed Fisherman',
-  'Armed Fisherman',
+  'The Armed Fisherman',
   'YouTube',
   'https://www.youtube.com/@ArmedFisherman',
   ARRAY['First Amendment Audits', 'Second Amendment Advocacy', 'Police Accountability'],

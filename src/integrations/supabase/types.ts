@@ -501,9 +501,14 @@ export type Database = {
           is_deleted_by_recipient: boolean | null
           is_deleted_by_sender: boolean | null
           is_read: boolean | null
+          is_starred_by_recipient: boolean | null
+          is_starred_by_sender: boolean | null
+          parent_message_id: string | null
           read_at: string | null
           recipient_id: string
           sender_id: string
+          subject: string | null
+          updated_at: string | null
         }
         Insert: {
           content: string
@@ -512,9 +517,14 @@ export type Database = {
           is_deleted_by_recipient?: boolean | null
           is_deleted_by_sender?: boolean | null
           is_read?: boolean | null
+          is_starred_by_recipient?: boolean | null
+          is_starred_by_sender?: boolean | null
+          parent_message_id?: string | null
           read_at?: string | null
           recipient_id: string
           sender_id: string
+          subject?: string | null
+          updated_at?: string | null
         }
         Update: {
           content?: string
@@ -523,9 +533,14 @@ export type Database = {
           is_deleted_by_recipient?: boolean | null
           is_deleted_by_sender?: boolean | null
           is_read?: boolean | null
+          is_starred_by_recipient?: boolean | null
+          is_starred_by_sender?: boolean | null
+          parent_message_id?: string | null
           read_at?: string | null
           recipient_id?: string
           sender_id?: string
+          subject?: string | null
+          updated_at?: string | null
         }
         Relationships: []
       }
@@ -1161,6 +1176,189 @@ export type Database = {
           title?: string
           updated_at?: string
           user_id?: string | null
+        }
+        Relationships: []
+      }
+      notifications: {
+        Row: {
+          comment_id: string | null
+          content: string | null
+          created_at: string | null
+          from_user_id: string | null
+          id: string
+          is_read: boolean | null
+          message_id: string | null
+          post_id: string | null
+          thread_id: string | null
+          type:
+            | "like"
+            | "comment"
+            | "share"
+            | "follow"
+            | "mention"
+            | "reply"
+            | "message"
+            | "violation_comment"
+            | "thread_reply"
+            | "badge_earned"
+          user_id: string
+          violation_comment_id: string | null
+          violation_id: string | null
+        }
+        Insert: {
+          comment_id?: string | null
+          content?: string | null
+          created_at?: string | null
+          from_user_id?: string | null
+          id?: string
+          is_read?: boolean | null
+          message_id?: string | null
+          post_id?: string | null
+          thread_id?: string | null
+          type:
+            | "like"
+            | "comment"
+            | "share"
+            | "follow"
+            | "mention"
+            | "reply"
+            | "message"
+            | "violation_comment"
+            | "thread_reply"
+            | "badge_earned"
+          user_id: string
+          violation_comment_id?: string | null
+          violation_id?: string | null
+        }
+        Update: {
+          comment_id?: string | null
+          content?: string | null
+          created_at?: string | null
+          from_user_id?: string | null
+          id?: string
+          is_read?: boolean | null
+          message_id?: string | null
+          post_id?: string | null
+          thread_id?: string | null
+          type?:
+            | "like"
+            | "comment"
+            | "share"
+            | "follow"
+            | "mention"
+            | "reply"
+            | "message"
+            | "violation_comment"
+            | "thread_reply"
+            | "badge_earned"
+          user_id?: string
+          violation_comment_id?: string | null
+          violation_id?: string | null
+        }
+        Relationships: []
+      }
+      user_connections: {
+        Row: {
+          created_at: string | null
+          follower_id: string
+          following_id: string
+          id: string
+        }
+        Insert: {
+          created_at?: string | null
+          follower_id: string
+          following_id: string
+          id?: string
+        }
+        Update: {
+          created_at?: string | null
+          follower_id?: string
+          following_id?: string
+          id?: string
+        }
+        Relationships: []
+      }
+      user_profiles: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          created_at: string
+          display_name: string | null
+          helper_score: number | null
+          helpful_answers: number | null
+          id: string
+          is_public: boolean | null
+          is_verified: boolean | null
+          last_seen_at: string | null
+          location_city: string | null
+          location_state: string | null
+          messages_sent_count: number | null
+          posts_created: number | null
+          reputation_points: number | null
+          role: Database["public"]["Enums"]["app_role"] | null
+          show_email: boolean | null
+          show_location: boolean | null
+          threads_created: number | null
+          twitter_handle: string | null
+          updated_at: string
+          user_id: string
+          username: string | null
+          violations_count: number | null
+          website_url: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          display_name?: string | null
+          helper_score?: number | null
+          helpful_answers?: number | null
+          id?: string
+          is_public?: boolean | null
+          is_verified?: boolean | null
+          last_seen_at?: string | null
+          location_city?: string | null
+          location_state?: string | null
+          messages_sent_count?: number | null
+          posts_created?: number | null
+          reputation_points?: number | null
+          role?: Database["public"]["Enums"]["app_role"] | null
+          show_email?: boolean | null
+          show_location?: boolean | null
+          threads_created?: number | null
+          twitter_handle?: string | null
+          updated_at?: string
+          user_id: string
+          username?: string | null
+          violations_count?: number | null
+          website_url?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          display_name?: string | null
+          helper_score?: number | null
+          helpful_answers?: number | null
+          id?: string
+          is_public?: boolean | null
+          is_verified?: boolean | null
+          last_seen_at?: string | null
+          location_city?: string | null
+          location_state?: string | null
+          messages_sent_count?: number | null
+          posts_created?: number | null
+          reputation_points?: number | null
+          role?: Database["public"]["Enums"]["app_role"] | null
+          show_email?: boolean | null
+          show_location?: boolean | null
+          threads_created?: number | null
+          twitter_handle?: string | null
+          updated_at?: string
+          user_id?: string
+          username?: string | null
+          violations_count?: number | null
+          website_url?: string | null
         }
         Relationships: []
       }

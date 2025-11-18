@@ -47,7 +47,8 @@ export function SocialFeed() {
         comments(id, content, user_id, profiles!comments_user_id_fkey(display_name))
       `)
       .order("created_at", { ascending: false })
-      .limit(50);
+      .limit(50)
+      .returns<PostQueryResult[]>();
 
     if (error) {
       toast.error("Failed to load posts");
@@ -55,7 +56,7 @@ export function SocialFeed() {
       return;
     }
 
-    setPosts((data ?? []) as PostQueryResult[]);
+    setPosts(data ?? []);
   }, []);
 
   const handleFileSelect = (event: ChangeEvent<HTMLInputElement>) => {

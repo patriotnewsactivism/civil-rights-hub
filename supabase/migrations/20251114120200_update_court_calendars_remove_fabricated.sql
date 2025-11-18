@@ -5,6 +5,11 @@
 -- Delete all existing court calendar entries (they were fabricated)
 DELETE FROM public.court_calendars;
 
+-- Add 'template' to the status check constraint
+ALTER TABLE public.court_calendars DROP CONSTRAINT IF EXISTS court_calendars_status_check;
+ALTER TABLE public.court_calendars ADD CONSTRAINT court_calendars_status_check
+  CHECK (status IN ('scheduled', 'postponed', 'completed', 'cancelled', 'template'));
+
 -- Add table comment explaining the purpose
 COMMENT ON TABLE public.court_calendars IS 'Civil rights court hearings and trials calendar. Note: This table is for tracking real public court cases. Entries should be verified from official court sources like PACER, court websites, or legal databases. Do not add fictional or example cases without clearly marking them as such.';
 

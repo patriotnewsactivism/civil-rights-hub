@@ -1,0 +1,1012 @@
+[
+  {
+    "id": "aclu-national-legal-department",
+    "name": "ACLU National Legal Department",
+    "firm_name": "American Civil Liberties Union",
+    "state": "National",
+    "city": "New York",
+    "email": "legal@aclu.org",
+    "phone": "212-549-2500",
+    "website": "https://www.aclu.org",
+    "specialties": [
+      "Police Misconduct",
+      "Voting Rights",
+      "LGBTQ Rights",
+      "Reproductive Rights",
+      "Free Speech"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "The ACLU works in courts, legislatures, and communities to defend and preserve individual rights and liberties guaranteed by the Constitution and laws. Handles cases nationwide involving police misconduct, free speech, voting rights, and more."
+  },
+  {
+    "id": "aclu-of-california",
+    "name": "ACLU of California",
+    "firm_name": "American Civil Liberties Union",
+    "state": "California",
+    "city": "San Francisco",
+    "email": "info@aclunc.org",
+    "phone": "415-621-2493",
+    "website": "https://www.aclunc.org",
+    "specialties": [
+      "Police Reform",
+      "Mass Incarceration",
+      "Surveillance",
+      "Racial Justice"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "ACLU of Northern California fights for civil liberties and civil rights through litigation, advocacy, and public education. Strong focus on police accountability and criminal justice reform."
+  },
+  {
+    "id": "aclu-of-southern-california",
+    "name": "ACLU of Southern California",
+    "firm_name": "American Civil Liberties Union",
+    "state": "California",
+    "city": "Los Angeles",
+    "email": "aclusocal@aclusocal.org",
+    "phone": "213-977-9500",
+    "website": "https://www.aclusocal.org",
+    "specialties": [
+      "Jail Conditions",
+      "Surveillance",
+      "Racial Profiling"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Protects civil liberties in Southern California through impact litigation, policy advocacy, and community engagement. Major cases involving LAPD reform and jail conditions."
+  },
+  {
+    "id": "aclu-of-texas",
+    "name": "ACLU of Texas",
+    "firm_name": "American Civil Liberties Union",
+    "state": "Texas",
+    "city": "Houston",
+    "email": "info@aclutx.org",
+    "phone": "713-942-8146",
+    "website": "https://www.aclutx.org",
+    "specialties": [
+      "Border Rights",
+      "Death Penalty",
+      "Police Accountability"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Defends civil liberties in Texas with focus on border rights, criminal justice reform, and voting access."
+  },
+  {
+    "id": "aclu-of-florida",
+    "name": "ACLU of Florida",
+    "firm_name": "American Civil Liberties Union",
+    "state": "Florida",
+    "city": "Miami",
+    "email": "info@aclufl.org",
+    "phone": "786-363-1769",
+    "website": "https://www.aclufl.org",
+    "specialties": [
+      "Felon Disenfranchisement",
+      "Prison Reform",
+      "Free Speech"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Champions individual rights and liberties throughout Florida, with significant work on voting rights restoration and criminal justice reform."
+  },
+  {
+    "id": "aclu-of-illinois",
+    "name": "ACLU of Illinois",
+    "firm_name": "American Civil Liberties Union",
+    "state": "Illinois",
+    "city": "Chicago",
+    "email": "info@aclu-il.org",
+    "phone": "312-201-9740",
+    "website": "https://www.aclu-il.org",
+    "specialties": [
+      "Police Misconduct",
+      "Surveillance",
+      "Wrongful Convictions"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Protects civil liberties in Illinois with major focus on Chicago police reform and criminal justice issues."
+  },
+  {
+    "id": "aclu-of-new-york",
+    "name": "ACLU of New York",
+    "firm_name": "American Civil Liberties Union",
+    "state": "New York",
+    "city": "New York",
+    "email": "info@nyclu.org",
+    "phone": "212-549-2500",
+    "website": "https://www.nyclu.org",
+    "specialties": [
+      "Stop and Frisk",
+      "Surveillance",
+      "Jail Reform"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Defends civil liberties for New Yorkers through litigation and advocacy. Successfully challenged NYPD stop-and-frisk practices."
+  },
+  {
+    "id": "aclu-voting-rights-project",
+    "name": "ACLU Voting Rights Project",
+    "firm_name": "ACLU",
+    "state": "National",
+    "city": "Atlanta",
+    "email": "votingrights@aclu.org",
+    "phone": "404-523-2721",
+    "website": "https://www.aclu.org/issues/voting-rights",
+    "specialties": [
+      "Voter Suppression",
+      "Redistricting",
+      "Voter ID Laws"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "ACLU's premier voting rights team works nationwide to protect and expand the right to vote through litigation and advocacy."
+  },
+  {
+    "id": "aclu-of-alaska",
+    "name": "ACLU of Alaska",
+    "firm_name": "American Civil Liberties Union",
+    "state": "Alaska",
+    "city": "Anchorage",
+    "email": "info@acluak.org",
+    "phone": "907-258-0044",
+    "website": "https://www.acluak.org",
+    "specialties": [
+      "Indigenous Rights",
+      "Rural Justice",
+      "Police Practices"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Defends civil liberties in Alaska with focus on indigenous rights and rural access to justice."
+  },
+  {
+    "id": "aclu-of-arizona",
+    "name": "ACLU of Arizona",
+    "firm_name": "American Civil Liberties Union",
+    "state": "Arizona",
+    "city": "Phoenix",
+    "email": "info@acluaz.org",
+    "phone": "602-650-1854",
+    "website": "https://www.acluaz.org",
+    "specialties": [
+      "Border Rights",
+      "SB 1070",
+      "Racial Profiling"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Fights for civil liberties in Arizona with major focus on immigration and border rights."
+  },
+  {
+    "id": "aclu-of-arkansas",
+    "name": "ACLU of Arkansas",
+    "firm_name": "American Civil Liberties Union",
+    "state": "Arkansas",
+    "city": "Little Rock",
+    "email": "info@acluarkansas.org",
+    "phone": "501-374-2660",
+    "website": "https://www.acluarkansas.org",
+    "specialties": [
+      "Discrimination",
+      "Police Reform",
+      "Reproductive Rights"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Protects constitutional rights of Arkansans through litigation and advocacy."
+  },
+  {
+    "id": "aclu-of-colorado",
+    "name": "ACLU of Colorado",
+    "firm_name": "American Civil Liberties Union",
+    "state": "Colorado",
+    "city": "Denver",
+    "email": "info@aclu-co.org",
+    "phone": "303-777-5482",
+    "website": "https://aclu-co.org",
+    "specialties": [
+      "Police Accountability",
+      "Surveillance",
+      "Drug Policy Reform"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Fights for individual rights and liberties in Colorado, strong record on police reform."
+  },
+  {
+    "id": "aclu-of-connecticut",
+    "name": "ACLU of Connecticut",
+    "firm_name": "American Civil Liberties Union",
+    "state": "Connecticut",
+    "city": "Hartford",
+    "email": "info@acluct.org",
+    "phone": "860-570-9830",
+    "website": "https://www.acluct.org",
+    "specialties": [
+      "Police Accountability",
+      "Smart Justice",
+      "Students Rights"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Defends civil liberties and civil rights for all Connecticut residents."
+  },
+  {
+    "id": "aclu-of-delaware",
+    "name": "ACLU of Delaware",
+    "firm_name": "American Civil Liberties Union",
+    "state": "Delaware",
+    "city": "Wilmington",
+    "email": "legal@aclu-de.org",
+    "phone": "302-654-5326",
+    "website": "https://www.aclu-de.org",
+    "specialties": [
+      "Police Reform",
+      "Bail Reform",
+      "Students Rights"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Protects constitutional freedoms of Delaware residents through litigation and advocacy."
+  },
+  {
+    "id": "aclu-of-georgia",
+    "name": "ACLU of Georgia",
+    "firm_name": "American Civil Liberties Union",
+    "state": "Georgia",
+    "city": "Atlanta",
+    "email": "acluga@acluga.org",
+    "phone": "404-523-2721",
+    "website": "https://www.acluga.org",
+    "specialties": [
+      "Voter Suppression",
+      "Police Practices",
+      "Mass Incarceration"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Champions individual rights and liberties in Georgia with major focus on voting rights."
+  },
+  {
+    "id": "aclu-of-hawaii",
+    "name": "ACLU of Hawaii",
+    "firm_name": "American Civil Liberties Union",
+    "state": "Hawaii",
+    "city": "Honolulu",
+    "email": "office@acluhawaii.org",
+    "phone": "808-522-5900",
+    "website": "https://www.acluhawaii.org",
+    "specialties": [
+      "Surveillance",
+      "Native Hawaiian Rights",
+      "Police Practices"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Defends civil liberties in Hawaii with attention to Native Hawaiian rights and privacy."
+  },
+  {
+    "id": "aclu-of-idaho",
+    "name": "ACLU of Idaho",
+    "firm_name": "American Civil Liberties Union",
+    "state": "Idaho",
+    "city": "Boise",
+    "email": "info@acluidaho.org",
+    "phone": "208-344-9750",
+    "website": "https://www.acluidaho.org",
+    "specialties": [
+      "Police Accountability",
+      "Surveillance",
+      "Reproductive Rights"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Protects constitutional rights of Idaho residents through legal action and advocacy."
+  },
+  {
+    "id": "aclu-of-indiana",
+    "name": "ACLU of Indiana",
+    "firm_name": "American Civil Liberties Union",
+    "state": "Indiana",
+    "city": "Indianapolis",
+    "email": "info@aclu-in.org",
+    "phone": "317-635-4059",
+    "website": "https://www.aclu-in.org",
+    "specialties": [
+      "Police Reform",
+      "Mass Incarceration",
+      "Voting Rights"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Defends individual rights and liberties guaranteed by Constitution for all Hoosiers."
+  },
+  {
+    "id": "aclu-of-iowa",
+    "name": "ACLU of Iowa",
+    "firm_name": "American Civil Liberties Union",
+    "state": "Iowa",
+    "city": "Des Moines",
+    "email": "info@aclu-ia.org",
+    "phone": "515-243-3988",
+    "website": "https://www.aclu-ia.org",
+    "specialties": [
+      "Felon Disenfranchisement",
+      "Police Practices",
+      "Surveillance"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Protects civil liberties and civil rights of Iowans through litigation and advocacy."
+  },
+  {
+    "id": "aclu-of-kansas",
+    "name": "ACLU of Kansas",
+    "firm_name": "American Civil Liberties Union",
+    "state": "Kansas",
+    "city": "Wichita",
+    "email": "info@aclukansas.org",
+    "phone": "316-267-0310",
+    "website": "https://www.aclukansas.org",
+    "specialties": [
+      "Police Reform",
+      "Abortion Rights",
+      "Free Speech"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Defends constitutional rights of Kansans through strategic litigation and advocacy."
+  },
+  {
+    "id": "aclu-of-kentucky",
+    "name": "ACLU of Kentucky",
+    "firm_name": "American Civil Liberties Union",
+    "state": "Kentucky",
+    "city": "Louisville",
+    "email": "info@aclu-ky.org",
+    "phone": "502-581-9746",
+    "website": "https://www.aclu-ky.org",
+    "specialties": [
+      "Police Accountability",
+      "Breonna Taylor Case",
+      "Cash Bail Reform"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Fights for civil liberties in Kentucky, prominent role in Breonna Taylor justice movement."
+  },
+  {
+    "id": "aclu-of-louisiana",
+    "name": "ACLU of Louisiana",
+    "firm_name": "American Civil Liberties Union",
+    "state": "Louisiana",
+    "city": "New Orleans",
+    "email": "info@laaclu.org",
+    "phone": "504-522-0628",
+    "website": "https://www.laaclu.org",
+    "specialties": [
+      "Mass Incarceration",
+      "Death Penalty",
+      "Prison Conditions"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Defends civil liberties in Louisiana, state with highest incarceration rate in nation."
+  },
+  {
+    "id": "aclu-of-maine",
+    "name": "ACLU of Maine",
+    "firm_name": "American Civil Liberties Union",
+    "state": "Maine",
+    "city": "Portland",
+    "email": "info@aclumaine.org",
+    "phone": "207-774-5444",
+    "website": "https://www.aclumaine.org",
+    "specialties": [
+      "Surveillance",
+      "Police Practices",
+      "Reproductive Rights"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Protects civil liberties and civil rights of people in Maine."
+  },
+  {
+    "id": "aclu-of-maryland",
+    "name": "ACLU of Maryland",
+    "firm_name": "American Civil Liberties Union",
+    "state": "Maryland",
+    "city": "Baltimore",
+    "email": "action@aclu-md.org",
+    "phone": "410-889-8555",
+    "website": "https://www.aclu-md.org",
+    "specialties": [
+      "Baltimore Police Consent Decree",
+      "Mass Incarceration",
+      "Surveillance"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Champions individual rights in Maryland with major focus on Baltimore police reform."
+  },
+  {
+    "id": "aclu-of-massachusetts",
+    "name": "ACLU of Massachusetts",
+    "firm_name": "American Civil Liberties Union",
+    "state": "Massachusetts",
+    "city": "Boston",
+    "email": "info@aclum.org",
+    "phone": "617-482-3170",
+    "website": "https://www.aclum.org",
+    "specialties": [
+      "Police Surveillance",
+      "Facial Recognition",
+      "Drug Policy"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Protects civil liberties in Massachusetts with pioneering work on surveillance technology."
+  },
+  {
+    "id": "aclu-of-michigan",
+    "name": "ACLU of Michigan",
+    "firm_name": "American Civil Liberties Union",
+    "state": "Michigan",
+    "city": "Detroit",
+    "email": "aclu@aclumich.org",
+    "phone": "313-578-6800",
+    "website": "https://www.aclumich.org",
+    "specialties": [
+      "Police Practices",
+      "Flint Water Crisis",
+      "Surveillance"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Defends constitutional rights of Michiganders, major work on Flint water crisis."
+  },
+  {
+    "id": "aclu-of-minnesota",
+    "name": "ACLU of Minnesota",
+    "firm_name": "American Civil Liberties Union",
+    "state": "Minnesota",
+    "city": "Minneapolis",
+    "email": "aclu-mn@aclu-mn.org",
+    "phone": "651-645-4097",
+    "website": "https://www.aclu-mn.org",
+    "specialties": [
+      "George Floyd Case",
+      "Police Reform",
+      "Surveillance"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Protects civil liberties in Minnesota, central role in police reform after George Floyd."
+  },
+  {
+    "id": "aclu-of-mississippi",
+    "name": "ACLU of Mississippi",
+    "firm_name": "American Civil Liberties Union",
+    "state": "Mississippi",
+    "city": "Jackson",
+    "email": "info@aclu-ms.org",
+    "phone": "601-354-3408",
+    "website": "https://www.aclu-ms.org",
+    "specialties": [
+      "Voting Suppression",
+      "Police Practices",
+      "Discrimination"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Fights for civil rights in Mississippi with focus on voting rights and criminal justice."
+  },
+  {
+    "id": "aclu-of-missouri",
+    "name": "ACLU of Missouri",
+    "firm_name": "American Civil Liberties Union",
+    "state": "Missouri",
+    "city": "St. Louis",
+    "email": "educate@aclu-mo.org",
+    "phone": "314-652-3114",
+    "website": "https://www.aclu-mo.org",
+    "specialties": [
+      "Ferguson",
+      "Police Militarization",
+      "Mass Incarceration"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Defends civil liberties in Missouri, prominent role in Ferguson protests and police reform."
+  },
+  {
+    "id": "aclu-of-montana",
+    "name": "ACLU of Montana",
+    "firm_name": "American Civil Liberties Union",
+    "state": "Montana",
+    "city": "Missoula",
+    "email": "info@aclumontana.org",
+    "phone": "406-443-8590",
+    "website": "https://www.aclumontana.org",
+    "specialties": [
+      "Native American Rights",
+      "Surveillance",
+      "Free Speech"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Protects constitutional freedoms of Montanans with attention to indigenous rights."
+  },
+  {
+    "id": "aclu-of-nebraska",
+    "name": "ACLU of Nebraska",
+    "firm_name": "American Civil Liberties Union",
+    "state": "Nebraska",
+    "city": "Omaha",
+    "email": "info@aclunebraska.org",
+    "phone": "402-476-8091",
+    "website": "https://www.aclunebraska.org",
+    "specialties": [
+      "Police Practices",
+      "Mass Incarceration",
+      "Reproductive Rights"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Defends civil liberties and civil rights of Nebraskans through litigation."
+  },
+  {
+    "id": "aclu-of-nevada",
+    "name": "ACLU of Nevada",
+    "firm_name": "American Civil Liberties Union",
+    "state": "Nevada",
+    "city": "Reno",
+    "email": "info@aclunv.org",
+    "phone": "775-786-1033",
+    "website": "https://www.aclunv.org",
+    "specialties": [
+      "Police Accountability",
+      "Immigration Enforcement",
+      "Surveillance"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Protects constitutional rights of Nevadans through advocacy and litigation."
+  },
+  {
+    "id": "aclu-of-new-hampshire",
+    "name": "ACLU of New Hampshire",
+    "firm_name": "American Civil Liberties Union",
+    "state": "New Hampshire",
+    "city": "Concord",
+    "email": "info@aclu-nh.org",
+    "phone": "603-224-5591",
+    "website": "https://www.aclu-nh.org",
+    "specialties": [
+      "Police Practices",
+      "Surveillance",
+      "Reproductive Rights"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Protects civil liberties in New Hampshire through litigation and advocacy."
+  },
+  {
+    "id": "aclu-of-new-jersey",
+    "name": "ACLU of New Jersey",
+    "firm_name": "American Civil Liberties Union",
+    "state": "New Jersey",
+    "city": "Newark",
+    "email": "info@aclu-nj.org",
+    "phone": "973-642-2086",
+    "website": "https://www.aclu-nj.org",
+    "specialties": [
+      "Racial Profiling",
+      "Police Consent Decree",
+      "Surveillance"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Champions individual rights in New Jersey, pioneering work on racial profiling."
+  },
+  {
+    "id": "aclu-of-new-mexico",
+    "name": "ACLU of New Mexico",
+    "firm_name": "American Civil Liberties Union",
+    "state": "New Mexico",
+    "city": "Albuquerque",
+    "email": "legal@aclu-nm.org",
+    "phone": "505-266-5915",
+    "website": "https://www.aclu-nm.org",
+    "specialties": [
+      "Border Rights",
+      "Police Practices",
+      "Indigenous Rights"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Defends constitutional rights in New Mexico with focus on border and indigenous issues."
+  },
+  {
+    "id": "aclu-of-north-carolina",
+    "name": "ACLU of North Carolina",
+    "firm_name": "American Civil Liberties Union",
+    "state": "North Carolina",
+    "city": "Raleigh",
+    "email": "info@acluofnc.org",
+    "phone": "919-354-5097",
+    "website": "https://www.acluofnc.org",
+    "specialties": [
+      "Voter Suppression",
+      "Bathroom Bill",
+      "Police Practices"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Protects civil liberties in North Carolina, major battles over voting rights and HB2."
+  },
+  {
+    "id": "aclu-of-north-dakota",
+    "name": "ACLU of North Dakota",
+    "firm_name": "American Civil Liberties Union",
+    "state": "North Dakota",
+    "city": "Bismarck",
+    "email": "ndaclu@aclu.org",
+    "phone": null,
+    "website": "https://www.aclu-nd.org",
+    "specialties": [
+      "Standing Rock",
+      "Native American Rights",
+      "Police Practices"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Defends constitutional rights in North Dakota, prominent role in Standing Rock protests."
+  },
+  {
+    "id": "aclu-of-ohio",
+    "name": "ACLU of Ohio",
+    "firm_name": "American Civil Liberties Union",
+    "state": "Ohio",
+    "city": "Cleveland",
+    "email": "info@acluohio.org",
+    "phone": "216-472-2220",
+    "website": "https://www.acluohio.org",
+    "specialties": [
+      "Police Consent Decrees",
+      "Voting Access",
+      "Mass Incarceration"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Fights for civil liberties in Ohio with major work on police reform in Cleveland."
+  },
+  {
+    "id": "aclu-of-oklahoma",
+    "name": "ACLU of Oklahoma",
+    "firm_name": "American Civil Liberties Union",
+    "state": "Oklahoma",
+    "city": "Oklahoma City",
+    "email": "info@acluok.org",
+    "phone": "405-524-8511",
+    "website": "https://www.acluok.org",
+    "specialties": [
+      "Mass Incarceration",
+      "Death Penalty",
+      "Police Practices"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Protects constitutional rights in Oklahoma, state with highest female incarceration rate."
+  },
+  {
+    "id": "aclu-of-oregon",
+    "name": "ACLU of Oregon",
+    "firm_name": "American Civil Liberties Union",
+    "state": "Oregon",
+    "city": "Portland",
+    "email": "info@aclu-or.org",
+    "phone": "503-227-3186",
+    "website": "https://www.aclu-or.org",
+    "specialties": [
+      "Police Practices",
+      "Surveillance",
+      "Protest Rights"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Defends civil liberties in Oregon with strong focus on privacy and free speech."
+  },
+  {
+    "id": "aclu-of-pennsylvania",
+    "name": "ACLU of Pennsylvania",
+    "firm_name": "American Civil Liberties Union",
+    "state": "Pennsylvania",
+    "city": "Philadelphia",
+    "email": "info@aclupa.org",
+    "phone": "215-592-1513",
+    "website": "https://www.aclupa.org",
+    "specialties": [
+      "Police Reform",
+      "Mass Incarceration",
+      "Voting Access"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Protects constitutional rights of Pennsylvanians through litigation and advocacy."
+  },
+  {
+    "id": "aclu-of-rhode-island",
+    "name": "ACLU of Rhode Island",
+    "firm_name": "American Civil Liberties Union",
+    "state": "Rhode Island",
+    "city": "Providence",
+    "email": "info@riaclu.org",
+    "phone": "401-831-7171",
+    "website": "https://www.riaclu.org",
+    "specialties": [
+      "Police Practices",
+      "Surveillance",
+      "ICE Enforcement"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Defends civil liberties in Rhode Island through litigation, advocacy, and education."
+  },
+  {
+    "id": "aclu-of-south-carolina",
+    "name": "ACLU of South Carolina",
+    "firm_name": "American Civil Liberties Union",
+    "state": "South Carolina",
+    "city": "Charleston",
+    "email": "info@aclusc.org",
+    "phone": "843-720-1423",
+    "website": "https://www.aclusc.org",
+    "specialties": [
+      "Police Practices",
+      "Voting Access",
+      "Discrimination"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Protects constitutional rights of South Carolinians through strategic litigation."
+  },
+  {
+    "id": "aclu-of-south-dakota",
+    "name": "ACLU of South Dakota",
+    "firm_name": "American Civil Liberties Union",
+    "state": "South Dakota",
+    "city": "Sioux Falls",
+    "email": "info@aclusd.org",
+    "phone": "605-332-2508",
+    "website": "https://www.aclusd.org",
+    "specialties": [
+      "Native American Rights",
+      "Police Practices",
+      "Voting Rights"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Defends civil liberties in South Dakota with attention to indigenous rights."
+  },
+  {
+    "id": "aclu-of-tennessee",
+    "name": "ACLU of Tennessee",
+    "firm_name": "American Civil Liberties Union",
+    "state": "Tennessee",
+    "city": "Nashville",
+    "email": "info@aclu-tn.org",
+    "phone": "615-320-7142",
+    "website": "https://www.aclu-tn.org",
+    "specialties": [
+      "Police Practices",
+      "Mass Incarceration",
+      "Protest Rights"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Protects constitutional freedoms of Tennesseans through litigation and advocacy."
+  },
+  {
+    "id": "aclu-of-utah",
+    "name": "ACLU of Utah",
+    "firm_name": "American Civil Liberties Union",
+    "state": "Utah",
+    "city": "Salt Lake City",
+    "email": "info@acluutah.org",
+    "phone": "801-521-9289",
+    "website": "https://www.acluutah.org",
+    "specialties": [
+      "Police Practices",
+      "Surveillance",
+      "Religious Freedom"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Defends individual rights and liberties in Utah through litigation and advocacy."
+  },
+  {
+    "id": "aclu-of-vermont",
+    "name": "ACLU of Vermont",
+    "firm_name": "American Civil Liberties Union",
+    "state": "Vermont",
+    "city": "Montpelier",
+    "email": "info@acluvt.org",
+    "phone": "802-223-6304",
+    "website": "https://www.acluvt.org",
+    "specialties": [
+      "Police Practices",
+      "Surveillance",
+      "Drug Policy"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Protects constitutional rights of Vermonters through litigation and advocacy."
+  },
+  {
+    "id": "aclu-of-virginia",
+    "name": "ACLU of Virginia",
+    "firm_name": "American Civil Liberties Union",
+    "state": "Virginia",
+    "city": "Richmond",
+    "email": "acluva@acluva.org",
+    "phone": "804-644-8080",
+    "website": "https://www.acluva.org",
+    "specialties": [
+      "Police Reform",
+      "Felon Disenfranchisement",
+      "Charlottesville"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Defends civil liberties in Virginia, major work after Charlottesville Unite the Right rally."
+  },
+  {
+    "id": "aclu-of-washington",
+    "name": "ACLU of Washington",
+    "firm_name": "American Civil Liberties Union",
+    "state": "Washington",
+    "city": "Seattle",
+    "email": "info@aclu-wa.org",
+    "phone": "206-624-2184",
+    "website": "https://www.aclu-wa.org",
+    "specialties": [
+      "Police Surveillance",
+      "Facial Recognition",
+      "Immigration Enforcement"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Protects civil liberties in Washington with cutting-edge work on technology and privacy."
+  },
+  {
+    "id": "aclu-of-west-virginia",
+    "name": "ACLU of West Virginia",
+    "firm_name": "American Civil Liberties Union",
+    "state": "West Virginia",
+    "city": "Charleston",
+    "email": "contactus@acluwv.org",
+    "phone": "304-345-9246",
+    "website": "https://www.acluwv.org",
+    "specialties": [
+      "Police Practices",
+      "Drug Policy",
+      "Surveillance"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Defends constitutional rights of West Virginians through litigation and advocacy."
+  },
+  {
+    "id": "aclu-of-wisconsin",
+    "name": "ACLU of Wisconsin",
+    "firm_name": "American Civil Liberties Union",
+    "state": "Wisconsin",
+    "city": "Milwaukee",
+    "email": "info@aclu-wi.org",
+    "phone": "414-272-4032",
+    "website": "https://www.aclu-wi.org",
+    "specialties": [
+      "Police Reform",
+      "Voter ID Laws",
+      "School Discipline"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Protects civil liberties in Wisconsin with major work on voting rights and criminal justice."
+  },
+  {
+    "id": "aclu-of-wyoming",
+    "name": "ACLU of Wyoming",
+    "firm_name": "American Civil Liberties Union",
+    "state": "Wyoming",
+    "city": "Laramie",
+    "email": "info@aclu-wy.org",
+    "phone": "307-637-4565",
+    "website": "https://www.aclu-wy.org",
+    "specialties": [
+      "Police Practices",
+      "Surveillance",
+      "Discrimination"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Defends constitutional freedoms of Wyoming residents through litigation and advocacy."
+  },
+  {
+    "id": "aclu-of-the-district-of-columbia",
+    "name": "ACLU of the District of Columbia",
+    "firm_name": "American Civil Liberties Union",
+    "state": "District of Columbia",
+    "city": "Washington",
+    "email": "info@acludc.org",
+    "phone": "202-457-0800",
+    "website": "https://www.acludc.org",
+    "specialties": [
+      "Police Practices",
+      "Statehood",
+      "Surveillance"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Protects civil liberties in nation's capital with focus on police reform and statehood."
+  }
+]

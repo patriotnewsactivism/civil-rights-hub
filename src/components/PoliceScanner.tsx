@@ -1,30 +1,15 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { supabase } from "@/integrations/supabase/client";
-import { Radio, MapPin, ExternalLink, Loader2, Users } from "lucide-react";
+import { Radio, MapPin, ExternalLink, Loader2, Users, Database } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useGeolocation } from "@/hooks/useGeolocation";
-
-interface ScannerLink {
-  id: string;
-  state: string;
-  state_code: string;
-  city: string | null;
-  county: string | null;
-  scanner_name: string;
-  description: string | null;
-  frequency: string | null;
-  broadcastify_url: string | null;
-  scanner_radio_url: string | null;
-  other_url: string | null;
-  link_type: string | null;
-  listener_count: number;
-  is_active: boolean;
-  notes: string | null;
-}
+import { SCANNER_FALLBACK_DATA } from "@/lib/scannerFallback";
+import { ScannerLinkRecord } from "@/types/scanner";
 
 const US_STATES = [
   "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware",
@@ -39,39 +24,43 @@ const US_STATES = [
 export const PoliceScanner = () => {
   const { toast } = useToast();
   const location = useGeolocation();
-  const [scanners, setScanners] = useState<ScannerLink[]>([]);
+  const [scanners, setScanners] = useState<ScannerLinkRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedState, setSelectedState] = useState<string>("all");
+  const [usingFallback, setUsingFallback] = useState(false);
 
   const fetchScanners = useCallback(async () => {
     setLoading(true);
     try {
-      let query = supabase
+      const { data, error } = await supabase
         .from("scanner_links")
         .select("*")
         .eq("is_active", true)
         .order("listener_count", { ascending: false })
         .order("scanner_name");
 
-      if (selectedState && selectedState !== "all") {
-        query = query.eq("state", selectedState);
-      }
-
-      const { data, error } = await query;
-
       if (error) throw error;
-      setScanners(data || []);
+
+      if (data && data.length > 0) {
+        setScanners(data as ScannerLinkRecord[]);
+        setUsingFallback(false);
+      } else {
+        setScanners(SCANNER_FALLBACK_DATA);
+        setUsingFallback(true);
+      }
     } catch (error) {
       console.error("Error fetching scanner links:", error);
+      setScanners(SCANNER_FALLBACK_DATA);
+      setUsingFallback(true);
       toast({
         title: "Failed to load scanner links",
-        description: "Unable to fetch police scanner information. Please try again.",
+        description: "Showing cached Broadcastify feeds instead.",
         variant: "destructive",
       });
     } finally {
       setLoading(false);
     }
-  }, [selectedState, toast]);
+  }, [toast]);
 
   useEffect(() => {
     if (location.state && selectedState === "all") {
@@ -83,7 +72,14 @@ export const PoliceScanner = () => {
     void fetchScanners();
   }, [fetchScanners]);
 
-  const getScannerUrl = (scanner: ScannerLink): string | null => {
+  const filteredScanners = useMemo(() => {
+    if (selectedState === "all") {
+      return scanners;
+    }
+    return scanners.filter((scanner) => scanner.state === selectedState);
+  }, [scanners, selectedState]);
+
+  const getScannerUrl = (scanner: ScannerLinkRecord): string | null => {
     return scanner.broadcastify_url || scanner.scanner_radio_url || scanner.other_url;
   };
 
@@ -144,11 +140,22 @@ export const PoliceScanner = () => {
           </Card>
 
           {/* Scanner Links */}
+          {usingFallback && (
+            <Alert className="border-dashed">
+              <Database className="h-4 w-4" />
+              <AlertTitle>Loaded cached scanner feeds</AlertTitle>
+              <AlertDescription>
+                Supabase is offline right now. These Broadcastify and OpenMHZ feeds come from the
+                bundled seed data so you can still monitor activity.
+              </AlertDescription>
+            </Alert>
+          )}
+
           {loading ? (
             <div className="flex justify-center items-center py-12">
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
             </div>
-          ) : scanners.length === 0 ? (
+          ) : filteredScanners.length === 0 ? (
             <Card>
               <CardContent className="py-12 text-center">
                 <Radio className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
@@ -174,10 +181,10 @@ export const PoliceScanner = () => {
           ) : (
             <div className="grid gap-4">
               <p className="text-sm text-muted-foreground">
-                Found {scanners.length} active {scanners.length === 1 ? "feed" : "feeds"}
+                Found {filteredScanners.length} active {filteredScanners.length === 1 ? "feed" : "feeds"}
               </p>
 
-              {scanners.map((scanner) => {
+              {filteredScanners.map((scanner) => {
                 const url = getScannerUrl(scanner);
                 return (
                   <Card key={scanner.id} className="hover:shadow-lg transition-shadow">

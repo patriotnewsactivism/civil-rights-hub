@@ -99,14 +99,14 @@ const Index = () => {
       <Header />
       <SectionQuickNav sections={SECTION_NAV_ITEMS} />
       <Hero />
-      <KnowYourRights />
-      <IncidentGuide />
-      <ViolationReport />
       <FeaturedNews />
       <ResourceCommandCenter />
-      <AttorneySeoContent />
+      <KnowYourRights />
+      <ViolationReport />
+      <IncidentGuide />
       <SocialSpotlight />
       <MonetizationShowcase />
+      <AttorneySeoContent />
       <Footer />
     </div>
   );

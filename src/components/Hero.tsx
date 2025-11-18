@@ -34,47 +34,47 @@ export const Hero = () => {
         </div>
       </nav>
 
-      <div className="relative z-10 container mx-auto px-4 py-20 md:py-32">
+      <div className="relative z-10 container mx-auto px-4 py-12 md:py-20">
         <div className="max-w-4xl mx-auto text-center animate-fade-in">
-          <div className="flex justify-center mb-8">
-            <img src="/wtpn-logo.png" alt="WTPN Logo" className="h-32 w-auto md:h-40 drop-shadow-lg" />
+          <div className="flex justify-center mb-4 md:mb-6">
+            <img src="/wtpn-logo.png" alt="WTPN Logo" className="h-20 w-auto md:h-32 drop-shadow-lg" />
           </div>
-          <h1 className="text-4xl md:text-6xl font-bold text-primary-foreground mb-6 leading-tight">
-            Know Your Rights.<br />Protect Your Freedom.
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground mb-4 md:mb-6 leading-tight px-4">
+            Know Your Rights.<br className="hidden sm:block" /> Protect Your Freedom.
           </h1>
-          <p className="text-xl md:text-2xl text-primary-foreground/90 mb-8 leading-relaxed">
+          <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-primary-foreground/90 mb-6 md:mb-8 leading-relaxed px-4 max-w-3xl mx-auto">
             Access comprehensive civil rights information, state-specific laws, and legal resources
             to understand and defend your constitutional rights.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button 
-              size="lg" 
-              onClick={() => scrollToSection('states')}
-              className="bg-primary-foreground text-primary hover:bg-primary-foreground/90 shadow-strong text-lg px-8 py-6"
+          <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center px-4">
+            <Button
+              size="lg"
+              onClick={() => scrollToSection('resource-command')}
+              className="bg-primary-foreground text-primary hover:bg-primary-foreground/90 shadow-strong text-base md:text-lg px-6 md:px-8 py-5 md:py-6 w-full sm:w-auto"
             >
-              Find Your State Laws
+              Explore Resources
             </Button>
-            <Button 
-              size="lg" 
+            <Button
+              size="lg"
               variant="outline"
-              onClick={() => scrollToSection('resources')}
-              className="border-2 border-primary-foreground text-primary-foreground hover:bg-primary-foreground/10 text-lg px-8 py-6"
+              onClick={() => scrollToSection('rights')}
+              className="border-2 border-primary-foreground text-primary-foreground hover:bg-primary-foreground/10 text-base md:text-lg px-6 md:px-8 py-5 md:py-6 w-full sm:w-auto"
             >
-              Get Legal Help
+              Your Rights
             </Button>
           </div>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6 mt-20 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 mt-10 md:mt-16 max-w-5xl mx-auto px-4">
           {[
             { icon: Shield, title: "Constitutional Rights", desc: "First, Fourth, and Fifth Amendment protections" },
             { icon: Scale, title: "Legal Resources", desc: "Connect with qualified legal aid organizations" },
             { icon: Users, title: "State-Specific Laws", desc: "Recording laws and regulations by state" }
           ].map((feature, i) => (
-            <div key={i} className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20 hover:bg-white/15 transition-all duration-300 hover:shadow-strong">
-              <feature.icon className="h-10 w-10 text-primary-foreground mb-4" />
-              <h3 className="text-xl font-semibold text-primary-foreground mb-2">{feature.title}</h3>
-              <p className="text-primary-foreground/80">{feature.desc}</p>
+            <div key={i} className="bg-white/10 backdrop-blur-sm rounded-xl p-4 md:p-6 border border-white/20 hover:bg-white/15 transition-all duration-300 hover:shadow-strong">
+              <feature.icon className="h-8 w-8 md:h-10 md:w-10 text-primary-foreground mb-3 md:mb-4" />
+              <h3 className="text-lg md:text-xl font-semibold text-primary-foreground mb-1 md:mb-2">{feature.title}</h3>
+              <p className="text-sm md:text-base text-primary-foreground/80">{feature.desc}</p>
             </div>
           ))}
         </div>

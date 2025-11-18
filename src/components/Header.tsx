@@ -71,7 +71,7 @@ export function Header() {
             <span className="text-xs font-normal text-muted-foreground">by We The People News</span>
           </div>
         </Link>
-        
+
         <nav className="flex items-center gap-2 md:gap-4">
           <Button variant="ghost" size="sm" asChild className="hidden sm:flex">
             <Link to="/attorneys">

@@ -26,6 +26,28 @@ INSERT INTO agencies (
   101000000
 ),
 (
+  'Los Angeles County Sheriff''s Department',
+  'Sheriff''s Office',
+  'California',
+  'Los Angeles',
+  '211 W Temple St, Los Angeles, CA 90012',
+  '(213) 229-1700',
+  'https://lasd.org',
+  81,
+  86000000
+),
+(
+  'Orange County Sheriff''s Department',
+  'Sheriff''s Office',
+  'California',
+  'Santa Ana',
+  '550 N Flower St, Santa Ana, CA 92703',
+  '(714) 647-7000',
+  'https://ocsheriff.gov',
+  18,
+  12000000
+),
+(
   'New York Police Department',
   'Police Department',
   'New York',
@@ -59,50 +81,6 @@ INSERT INTO agencies (
   3200000
 ),
 (
-  'Phoenix Police Department',
-  'Police Department',
-  'Arizona',
-  'Phoenix',
-  '620 W Washington St, Phoenix, AZ 85003',
-  '(602) 262-6151',
-  'https://www.phoenix.gov/police',
-  125,
-  5700000
-),
-(
-  'Philadelphia Police Department',
-  'Police Department',
-  'Pennsylvania',
-  'Philadelphia',
-  '750 Race St, Philadelphia, PA 19106',
-  '(215) 686-3013',
-  'https://www.phillypolice.com',
-  39,
-  9100000
-),
-(
-  'Los Angeles County Sheriff''s Department',
-  'Sheriff''s Office',
-  'California',
-  'Los Angeles',
-  '211 W Temple St, Los Angeles, CA 90012',
-  '(213) 229-1700',
-  'https://lasd.org',
-  81,
-  86000000
-),
-(
-  'Orange County Sheriff''s Department',
-  'Sheriff''s Office',
-  'California',
-  'Santa Ana',
-  '550 N Flower St, Santa Ana, CA 92703',
-  '(714) 647-7000',
-  'https://ocsheriff.gov',
-  18,
-  12000000
-),
-(
   'Harris County Sheriff''s Office',
   'Sheriff''s Office',
   'Texas',
@@ -114,6 +92,17 @@ INSERT INTO agencies (
   4100000
 ),
 (
+  'Phoenix Police Department',
+  'Police Department',
+  'Arizona',
+  'Phoenix',
+  '620 W Washington St, Phoenix, AZ 85003',
+  '(602) 262-6151',
+  'https://www.phoenix.gov/police',
+  125,
+  5700000
+),
+(
   'Maricopa County Sheriff''s Office',
   'Sheriff''s Office',
   'Arizona',
@@ -123,6 +112,17 @@ INSERT INTO agencies (
   'https://www.mcso.org',
   21,
   2800000
+),
+(
+  'Philadelphia Police Department',
+  'Police Department',
+  'Pennsylvania',
+  'Philadelphia',
+  '750 Race St, Philadelphia, PA 19106',
+  '(215) 686-3013',
+  'https://www.phillypolice.com',
+  39,
+  9100000
 ),
 (
   'Minneapolis Police Department',

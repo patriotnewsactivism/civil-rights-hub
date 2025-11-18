@@ -1,8 +1,10 @@
+import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Download, FileText, Scale, AlertCircle, Phone, Shield, HelpCircle } from "lucide-react";
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { Download, FileText, Scale, AlertCircle, Phone, Shield, HelpCircle, ExternalLink } from "lucide-react";
 import { useGeolocation } from "@/hooks/useGeolocation";
 import jsPDF from "jspdf";
 
@@ -281,6 +283,7 @@ const emergencyContacts: EmergencyContactCategory[] = [
 
 export const KnowYourRights = () => {
   const { state, loading } = useGeolocation();
+  const [selectedRight, setSelectedRight] = useState<string | null>(null);
 
   const downloadPDF = (amendment: string) => {
     const content = rightsData[amendment as keyof typeof rightsData];
@@ -382,159 +385,156 @@ export const KnowYourRights = () => {
 
   const isStopAndIdentifyState = state && idLawsByState.stop_and_identify.includes(state);
 
+  const selectedContent = selectedRight ? rightsData[selectedRight as keyof typeof rightsData] : null;
+
   return (
-    <section id="rights" className="py-20 bg-gradient-subtle">
+    <section id="rights" className="py-12 md:py-16 bg-gradient-subtle">
       <div className="container mx-auto px-4">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
-          <div className="text-center mb-12">
-            <div className="flex items-center justify-center gap-2 mb-4">
-              <Scale className="h-8 w-8 text-primary" />
-              <h2 className="text-4xl font-bold">Know Your Rights</h2>
+          <div className="text-center mb-8 md:mb-12">
+            <div className="flex items-center justify-center gap-2 mb-3 md:mb-4">
+              <Scale className="h-6 w-6 md:h-8 md:w-8 text-primary" />
+              <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold">Know Your Rights</h2>
             </div>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Understanding your constitutional rights is essential to protecting them. Download pocket guides,
-              learn what to do in police encounters, and access emergency resources.
+            <p className="text-muted-foreground text-sm md:text-base lg:text-lg max-w-2xl mx-auto px-4">
+              Quick-access constitutional guides, scenario playbooks, and emergency contacts.
             </p>
             {!loading && state && (
-              <Badge variant="outline" className="mt-4">
-                <FileText className="h-4 w-4 mr-2" />
+              <Badge variant="outline" className="mt-3 md:mt-4 text-xs md:text-sm">
+                <FileText className="h-3 w-3 md:h-4 md:w-4 mr-2" />
                 Showing information for: {state}
               </Badge>
             )}
           </div>
 
-          {/* Constitutional Rights - Downloadable PDFs */}
-          <div className="mb-16">
-            <h3 className="text-2xl font-bold mb-6 flex items-center gap-2">
-              <Shield className="h-6 w-6 text-primary" />
+          {/* Constitutional Rights - Compact Cards */}
+          <div className="mb-10 md:mb-12">
+            <h3 className="text-xl md:text-2xl font-bold mb-4 md:mb-6 flex items-center gap-2">
+              <Shield className="h-5 w-5 md:h-6 md:w-6 text-primary" />
               Your Constitutional Rights
             </h3>
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
               {Object.entries(rightsData).map(([amendment, content]) => (
-                <Card key={amendment} className="border-border hover:shadow-strong transition-shadow">
-                  <CardHeader>
-                    <CardTitle className="flex items-center justify-between">
-                      <span>{amendment}</span>
+                <Sheet key={amendment}>
+                  <SheetTrigger asChild>
+                    <Card className="border-border hover:shadow-strong transition-all cursor-pointer hover:border-primary/50 h-full">
+                      <CardHeader className="p-4 md:p-6 space-y-2">
+                        <CardTitle className="text-base md:text-lg flex items-start justify-between gap-2">
+                          <span className="line-clamp-2">{amendment}</span>
+                          <ExternalLink className="h-4 w-4 flex-shrink-0 text-muted-foreground" />
+                        </CardTitle>
+                        <CardDescription className="text-xs md:text-sm line-clamp-3">{content.summary}</CardDescription>
+                      </CardHeader>
+                      <CardContent className="p-4 pt-0 md:p-6 md:pt-0">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="w-full text-xs md:text-sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            downloadPDF(amendment);
+                          }}
+                        >
+                          <Download className="h-3 w-3 md:h-4 md:w-4 mr-2" />
+                          Download PDF
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  </SheetTrigger>
+                  <SheetContent side="right" className="w-full sm:max-w-2xl overflow-y-auto">
+                    <SheetHeader>
+                      <SheetTitle className="text-xl md:text-2xl">{amendment}</SheetTitle>
+                      <SheetDescription className="text-sm md:text-base">{content.summary}</SheetDescription>
+                    </SheetHeader>
+                    <div className="mt-6 space-y-4">
+                      <div className="space-y-3">
+                        {content.details.map((detail, idx) => (
+                          <div key={idx} className="flex gap-3 p-3 rounded-lg bg-muted/30">
+                            <span className="text-primary font-bold flex-shrink-0">•</span>
+                            <span className="text-sm md:text-base">{detail}</span>
+                          </div>
+                        ))}
+                      </div>
                       <Button
-                        variant="outline"
-                        size="sm"
                         onClick={() => downloadPDF(amendment)}
-                        className="gap-2"
+                        className="w-full"
                       >
-                        <Download className="h-4 w-4" />
-                        PDF
+                        <Download className="h-4 w-4 mr-2" />
+                        Download PDF Guide
                       </Button>
-                    </CardTitle>
-                    <CardDescription>{content.summary}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <ul className="space-y-2">
-                      {content.details.map((detail, idx) => (
-                        <li key={idx} className="flex gap-2">
-                          <span className="text-primary mt-1">•</span>
-                          <span className="text-sm">{detail}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </CardContent>
-                </Card>
+                    </div>
+                  </SheetContent>
+                </Sheet>
               ))}
             </div>
           </div>
 
-          {/* ID Laws Section */}
-          <div className="mb-16">
-            <h3 className="text-2xl font-bold mb-6 flex items-center gap-2">
-              <AlertCircle className="h-6 w-6 text-primary" />
+          {/* ID Laws Section - Compact */}
+          <div className="mb-10 md:mb-12">
+            <h3 className="text-xl md:text-2xl font-bold mb-4 md:mb-6 flex items-center gap-2">
+              <AlertCircle className="h-5 w-5 md:h-6 md:w-6 text-primary" />
               When Do You Have to Show ID?
             </h3>
             <Card className={isStopAndIdentifyState ? "border-amber-500 bg-amber-500/5" : ""}>
-              <CardHeader>
-                <CardTitle>
-                  {isStopAndIdentifyState ? `${state} is a "Stop and Identify" State` : "ID Requirements in Your State"}
+              <CardHeader className="p-4 md:p-6">
+                <CardTitle className="text-base md:text-lg">
+                  {isStopAndIdentifyState ? `${state} is a "Stop and Identify" State` : "ID Requirements"}
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-3">
-                  <div className="flex gap-3">
-                    <div className="text-primary font-bold min-w-[30px]">1.</div>
-                    <div>
-                      <strong>When Driving:</strong> You must show your driver's license, registration, and proof of insurance when lawfully stopped while operating a vehicle.
-                    </div>
+              <CardContent className="p-4 pt-0 md:p-6 md:pt-0 space-y-3 md:space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 text-sm md:text-base">
+                  <div className="p-3 rounded-lg bg-muted/30">
+                    <strong className="text-primary">When Driving:</strong> Must show license, registration, insurance.
                   </div>
-                  <div className="flex gap-3">
-                    <div className="text-primary font-bold min-w-[30px]">2.</div>
-                    <div>
-                      <strong>When Walking:</strong> In {isStopAndIdentifyState ? state : "most states"}, you {isStopAndIdentifyState ? "MUST" : "do NOT have to"} provide your name if police have reasonable suspicion you're involved in criminal activity.
-                      {isStopAndIdentifyState && (
-                        <span className="block mt-1 text-amber-700 font-semibold">
-                          However, you only need to verbally provide your NAME - you do NOT have to show physical ID or answer other questions.
-                        </span>
-                      )}
-                    </div>
+                  <div className="p-3 rounded-lg bg-muted/30">
+                    <strong className="text-primary">When Walking:</strong> {isStopAndIdentifyState ? "Must give name if reasonable suspicion" : "Generally NOT required"}
                   </div>
-                  <div className="flex gap-3">
-                    <div className="text-primary font-bold min-w-[30px]">3.</div>
-                    <div>
-                      <strong>When Arrested:</strong> Police will identify you as part of the booking process, but you still have the right to remain silent about everything else.
-                    </div>
+                  <div className="p-3 rounded-lg bg-muted/30">
+                    <strong className="text-primary">When Arrested:</strong> ID during booking process.
                   </div>
-                  <div className="flex gap-3">
-                    <div className="text-primary font-bold min-w-[30px]">4.</div>
-                    <div>
-                      <strong>At Airports/Federal Buildings:</strong> You may be required to show ID to enter secure federal facilities or board aircraft.
-                    </div>
+                  <div className="p-3 rounded-lg bg-muted/30">
+                    <strong className="text-primary">Federal Buildings:</strong> May be required for entry.
                   </div>
                 </div>
 
                 {isStopAndIdentifyState && (
-                  <div className="mt-4 p-4 bg-amber-100 dark:bg-amber-900/20 rounded-lg border border-amber-300">
-                    <p className="text-sm font-semibold text-amber-900 dark:text-amber-100">
+                  <div className="p-3 md:p-4 bg-amber-100 dark:bg-amber-900/20 rounded-lg border border-amber-300">
+                    <p className="text-xs md:text-sm font-semibold text-amber-900 dark:text-amber-100">
                       <AlertCircle className="h-4 w-4 inline mr-2" />
                       {state} "Stop and Identify" Law
                     </p>
-                    <p className="text-sm mt-2">
+                    <p className="text-xs md:text-sm mt-2">
                       {idLawsByState.description}
                     </p>
                   </div>
                 )}
-
-                <div className="mt-4 text-sm text-muted-foreground space-y-2">
-                  <p><strong>What to say if asked for ID:</strong></p>
-                  <ul className="list-disc list-inside space-y-1 ml-4">
-                    <li>"Am I being detained or am I free to leave?"</li>
-                    <li>If detained: "What is the reasonable suspicion?"</li>
-                    {!isStopAndIdentifyState && <li>"I don't have to provide ID unless you have reasonable suspicion of a crime."</li>}
-                    {isStopAndIdentifyState && <li>"My name is [your name]. I don't have to answer other questions."</li>}
-                  </ul>
-                </div>
               </CardContent>
             </Card>
           </div>
 
-          {/* What To Do If Scenarios */}
-          <div className="mb-16">
-            <h3 className="text-2xl font-bold mb-6 flex items-center gap-2">
-              <HelpCircle className="h-6 w-6 text-primary" />
+          {/* What To Do If Scenarios - Keep Accordion */}
+          <div className="mb-10 md:mb-12">
+            <h3 className="text-xl md:text-2xl font-bold mb-4 md:mb-6 flex items-center gap-2">
+              <HelpCircle className="h-5 w-5 md:h-6 md:w-6 text-primary" />
               What To Do If...
             </h3>
-            <Accordion type="single" collapsible className="space-y-4">
+            <Accordion type="single" collapsible className="space-y-3 md:space-y-4">
               {whatToDoScenarios.map((scenario, index) => (
                 <Card key={index}>
                   <AccordionItem value={`scenario-${index}`} className="border-none">
-                    <CardHeader>
+                    <CardHeader className="p-4 md:p-6">
                       <AccordionTrigger className="hover:no-underline">
-                        <CardTitle className="text-lg text-left">{scenario.title}</CardTitle>
+                        <CardTitle className="text-base md:text-lg text-left">{scenario.title}</CardTitle>
                       </AccordionTrigger>
                     </CardHeader>
                     <AccordionContent>
-                      <CardContent>
-                        <ol className="space-y-3">
+                      <CardContent className="p-4 pt-0 md:p-6 md:pt-0">
+                        <ol className="space-y-2 md:space-y-3">
                           {scenario.steps.map((step, stepIndex) => (
-                            <li key={stepIndex} className="flex gap-3">
-                              <span className="text-primary font-bold min-w-[30px]">{stepIndex + 1}.</span>
-                              <span className="text-sm">{step}</span>
+                            <li key={stepIndex} className="flex gap-2 md:gap-3 text-xs md:text-sm p-2 md:p-3 rounded-lg bg-muted/30">
+                              <span className="text-primary font-bold min-w-[24px] md:min-w-[30px]">{stepIndex + 1}.</span>
+                              <span>{step}</span>
                             </li>
                           ))}
                         </ol>
@@ -546,24 +546,24 @@ export const KnowYourRights = () => {
             </Accordion>
           </div>
 
-          {/* Emergency Contacts */}
-          <div className="mb-12">
-            <h3 className="text-2xl font-bold mb-6 flex items-center gap-2">
-              <Phone className="h-6 w-6 text-primary" />
+          {/* Emergency Contacts - More Compact */}
+          <div className="mb-8 md:mb-10">
+            <h3 className="text-xl md:text-2xl font-bold mb-4 md:mb-6 flex items-center gap-2">
+              <Phone className="h-5 w-5 md:h-6 md:w-6 text-primary" />
               Important Numbers & Resources
             </h3>
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
               {emergencyContacts.map((category, index) => (
                 <Card key={index}>
-                  <CardHeader>
-                    <CardTitle className="text-lg">{category.category}</CardTitle>
+                  <CardHeader className="p-4 md:p-6">
+                    <CardTitle className="text-base md:text-lg">{category.category}</CardTitle>
                   </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
+                  <CardContent className="p-4 pt-0 md:p-6 md:pt-0">
+                    <div className="space-y-3 md:space-y-4">
                       {category.contacts.map((contact, contactIndex) => (
-                        <div key={contactIndex} className="border-l-2 border-primary pl-3">
-                          <div className="font-semibold text-sm">{contact.name}</div>
-                          <div className="text-sm text-primary">
+                        <div key={contactIndex} className="border-l-2 border-primary pl-3 text-xs md:text-sm">
+                          <div className="font-semibold">{contact.name}</div>
+                          <div className="text-primary">
                             {contact.number.match(/^\d/) || contact.number.includes('-') && contact.number.match(/\d/) ? (
                               <a href={`tel:${contact.number.replace(/[^\d]/g, '')}`} className="hover:underline">
                                 {contact.number}
@@ -572,7 +572,7 @@ export const KnowYourRights = () => {
                               contact.number
                             )}
                           </div>
-                          <div className="text-xs text-muted-foreground">{contact.description}</div>
+                          <div className="text-muted-foreground">{contact.description}</div>
                           {contact.links?.length ? (
                             <div className="mt-2 flex flex-wrap gap-2">
                               {contact.links.map((link) => {
@@ -613,8 +613,8 @@ export const KnowYourRights = () => {
 
           {/* Legal Disclaimer */}
           <Card className="border-amber-500/50 bg-amber-500/5">
-            <CardContent className="pt-6">
-              <p className="text-sm text-center">
+            <CardContent className="p-4 md:p-6">
+              <p className="text-xs md:text-sm text-center">
                 <strong>Important Legal Disclaimer:</strong> This is general legal information, not legal advice.
                 Laws vary significantly by state, county, and situation. This information does not create an attorney-client relationship.
                 Always consult with a qualified attorney licensed in your state for specific legal guidance about your situation.

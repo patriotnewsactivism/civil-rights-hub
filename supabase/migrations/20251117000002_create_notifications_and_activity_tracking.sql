@@ -10,7 +10,8 @@ CREATE TABLE IF NOT EXISTS public.notifications (
   type VARCHAR(50) NOT NULL CHECK (type IN ('like', 'comment', 'share', 'follow', 'mention', 'reply', 'message', 'violation_comment', 'thread_reply', 'badge_earned')),
   from_user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
   post_id UUID REFERENCES public.posts(id) ON DELETE CASCADE,
-  comment_id UUID REFERENCES public.comments(id) ON DELETE CASCADE,
+  comment_id UUID, -- For future social feed post comments (table not yet implemented)
+  violation_comment_id UUID REFERENCES public.violation_comments(id) ON DELETE CASCADE,
   message_id UUID REFERENCES public.direct_messages(id) ON DELETE CASCADE,
   thread_id UUID REFERENCES public.forum_threads(id) ON DELETE CASCADE,
   violation_id UUID REFERENCES public.violations(id) ON DELETE CASCADE,
@@ -124,6 +125,7 @@ CREATE OR REPLACE FUNCTION create_notification(
   p_from_user_id UUID DEFAULT NULL,
   p_post_id UUID DEFAULT NULL,
   p_comment_id UUID DEFAULT NULL,
+  p_violation_comment_id UUID DEFAULT NULL,
   p_message_id UUID DEFAULT NULL,
   p_thread_id UUID DEFAULT NULL,
   p_violation_id UUID DEFAULT NULL,
@@ -144,6 +146,7 @@ BEGIN
     from_user_id,
     post_id,
     comment_id,
+    violation_comment_id,
     message_id,
     thread_id,
     violation_id,
@@ -154,6 +157,7 @@ BEGIN
     p_from_user_id,
     p_post_id,
     p_comment_id,
+    p_violation_comment_id,
     p_message_id,
     p_thread_id,
     p_violation_id,
@@ -179,10 +183,10 @@ BEGIN
 
   -- Create notification
   PERFORM create_notification(
-    v_post_author_id,
-    'like',
-    NEW.user_id,
-    NEW.post_id
+    v_post_author_id,  -- p_user_id
+    'like',            -- p_type
+    NEW.user_id,       -- p_from_user_id
+    NEW.post_id        -- p_post_id
   );
 
   RETURN NEW;
@@ -204,16 +208,16 @@ BEGIN
 
   -- Create notification
   PERFORM create_notification(
-    v_post_author_id,
-    'share',
-    NEW.user_id,
-    NEW.post_id,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NEW.share_comment
+    v_post_author_id,     -- p_user_id
+    'share',              -- p_type
+    NEW.user_id,          -- p_from_user_id
+    NEW.post_id,          -- p_post_id
+    NULL,                 -- p_comment_id
+    NULL,                 -- p_violation_comment_id
+    NULL,                 -- p_message_id
+    NULL,                 -- p_thread_id
+    NULL,                 -- p_violation_id
+    NEW.share_comment     -- p_content
   );
 
   RETURN NEW;
@@ -230,9 +234,9 @@ RETURNS TRIGGER AS $$
 BEGIN
   -- Create notification
   PERFORM create_notification(
-    NEW.following_id,  -- User being followed gets notified
-    'follow',
-    NEW.follower_id    -- User who followed
+    NEW.following_id,  -- p_user_id: User being followed gets notified
+    'follow',          -- p_type
+    NEW.follower_id    -- p_from_user_id: User who followed
   );
 
   RETURN NEW;
@@ -255,14 +259,15 @@ BEGIN
   -- Only notify if the violation has an author
   IF v_violation_author_id IS NOT NULL THEN
     PERFORM create_notification(
-      v_violation_author_id,
-      'violation_comment',
-      NEW.user_id,
-      NULL,
-      NULL,
-      NULL,
-      NULL,
-      NEW.violation_id
+      v_violation_author_id,     -- p_user_id
+      'violation_comment',       -- p_type
+      NEW.user_id,               -- p_from_user_id
+      NULL,                      -- p_post_id
+      NULL,                      -- p_comment_id
+      NEW.id,                    -- p_violation_comment_id
+      NULL,                      -- p_message_id
+      NULL,                      -- p_thread_id
+      NEW.violation_id           -- p_violation_id
     );
   END IF;
 

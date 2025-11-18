@@ -528,9 +528,9 @@ const ThreadCard = ({
   onTagInputChange,
   onReport,
 }: ThreadCardProps) => {
-  const hasUpvoted = reactions.upvotes.has(thread.id);
-  const hasBookmarked = reactions.bookmarks.has(thread.id);
-  const hasSubscription = reactions.subscriptions.has(thread.id);
+  const hasUpvoted = reactions?.upvotes?.has(thread.id) ?? false;
+  const hasBookmarked = reactions?.bookmarks?.has(thread.id) ?? false;
+  const hasSubscription = reactions?.subscriptions?.has(thread.id) ?? false;
 
   const excerpt = useMemo(() => {
     if (!thread.content) return "";

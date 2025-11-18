@@ -1,29 +1,16 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useGeolocation } from "@/hooks/useGeolocation";
-import { Search, MapPin, Mail, Phone, Globe, Scale } from "lucide-react";
+import { Search, MapPin, Mail, Phone, Globe, Scale, Database } from "lucide-react";
 import { toast } from "sonner";
-
-interface Attorney {
-  id: string;
-  name: string;
-  firm_name: string | null;
-  state: string;
-  city: string | null;
-  email: string | null;
-  phone: string | null;
-  website: string | null;
-  specialties: string[];
-  accepts_pro_bono: boolean;
-  bar_number: string | null;
-  years_experience: number | null;
-  bio: string | null;
-}
+import { ATTORNEY_FALLBACK_DATA } from "@/lib/attorneyFallback";
+import { AttorneyRecord } from "@/types/attorney";
 
 const US_STATES = [
   "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut",
@@ -51,44 +38,42 @@ const SPECIALTIES = [
 
 export function LawyerFinder() {
   const { state: userState, loading: locationLoading } = useGeolocation();
-  const [attorneys, setAttorneys] = useState<Attorney[]>([]);
+  const [attorneys, setAttorneys] = useState<AttorneyRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedState, setSelectedState] = useState<string>("all");
   const [selectedSpecialty, setSelectedSpecialty] = useState<string>("all");
   const [proBonoOnly, setProBonoOnly] = useState(false);
+  const [usingFallback, setUsingFallback] = useState(false);
 
   const fetchAttorneys = useCallback(async () => {
     setLoading(true);
     try {
-      let query = supabase
-        .from('attorneys')
-        .select('*')
-        .order('name');
-
-      if (selectedState !== "all") {
-        query = query.eq('state', selectedState);
-      }
-
-      if (proBonoOnly) {
-        query = query.eq('accepts_pro_bono', true);
-      }
-
-      if (selectedSpecialty !== "all") {
-        query = query.contains('specialties', [selectedSpecialty]);
-      }
-
-      const { data, error } = await query;
+      const { data, error } = await supabase
+        .from("attorneys")
+        .select("*")
+        .order("name");
 
       if (error) throw error;
-      setAttorneys(data || []);
+
+      if (data && data.length > 0) {
+        setAttorneys(data as AttorneyRecord[]);
+        setUsingFallback(false);
+      } else {
+        setAttorneys(ATTORNEY_FALLBACK_DATA);
+        setUsingFallback(true);
+      }
     } catch (error) {
-      console.error('Error fetching attorneys:', error);
-      toast.error("Failed to load attorneys");
+      console.error("Error fetching attorneys:", error);
+      setAttorneys(ATTORNEY_FALLBACK_DATA);
+      setUsingFallback(true);
+      toast.error("Failed to load attorneys", {
+        description: "Showing verified fallback directory.",
+      });
     } finally {
       setLoading(false);
     }
-  }, [proBonoOnly, selectedSpecialty, selectedState]);
+  }, []);
 
   useEffect(() => {
     if (userState && !locationLoading) {
@@ -100,14 +85,43 @@ export function LawyerFinder() {
     void fetchAttorneys();
   }, [fetchAttorneys]);
 
-  const filteredAttorneys = attorneys.filter((attorney) => {
+  const filteredAttorneys = useMemo(() => {
     const searchLower = searchTerm.toLowerCase();
-    return (
-      attorney.name.toLowerCase().includes(searchLower) ||
-      attorney.firm_name?.toLowerCase().includes(searchLower) ||
-      attorney.city?.toLowerCase().includes(searchLower)
-    );
-  });
+
+    return attorneys.filter((attorney) => {
+      if (selectedState !== "all" && attorney.state !== selectedState) {
+        return false;
+      }
+
+      if (proBonoOnly && !attorney.accepts_pro_bono) {
+        return false;
+      }
+
+      if (
+        selectedSpecialty !== "all" &&
+        !attorney.specialties?.some(
+          (specialty) => specialty.toLowerCase() === selectedSpecialty.toLowerCase(),
+        )
+      ) {
+        return false;
+      }
+
+      if (!searchLower) {
+        return true;
+      }
+
+      const firmMatch = attorney.firm_name?.toLowerCase().includes(searchLower);
+      const cityMatch = attorney.city?.toLowerCase().includes(searchLower);
+      const stateMatch = attorney.state.toLowerCase().includes(searchLower);
+
+      return (
+        attorney.name.toLowerCase().includes(searchLower) ||
+        firmMatch ||
+        cityMatch ||
+        stateMatch
+      );
+    });
+  }, [attorneys, proBonoOnly, searchTerm, selectedSpecialty, selectedState]);
 
   return (
     <section id="find-attorney" className="space-y-6">
@@ -183,6 +197,17 @@ export function LawyerFinder() {
           </div>
         </CardContent>
       </Card>
+
+      {usingFallback && (
+        <Alert className="border-dashed">
+          <Database className="h-4 w-4" />
+          <AlertTitle>Offline directory loaded</AlertTitle>
+          <AlertDescription>
+            Supabase data is unavailable, so we&rsquo;re showing the verified national and state
+            attorney roster to keep search results available.
+          </AlertDescription>
+        </Alert>
+      )}
 
       {loading ? (
         <div className="text-center py-12">Loading attorneys...</div>

@@ -1,27 +1,17 @@
-import { useState } from "react";
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { KnowYourRights } from "@/components/KnowYourRights";
 import { IncidentGuide } from "@/components/IncidentGuide";
 import { ViolationReport } from "@/components/ViolationReport";
-import { ViolationFeed } from "@/components/ViolationFeed";
-import { StateSelector } from "@/components/StateSelector";
-import { InteractiveMap } from "@/components/InteractiveMap";
-import { CaseSearch } from "@/components/CaseSearch";
-import { AITools } from "@/components/AITools";
-import { PoliceScanner } from "@/components/PoliceScanner";
-import { LawyerFinder } from "@/components/LawyerFinder";
-import { FOIABuilder } from "@/components/FOIABuilder";
-import { FOIATracker } from "@/components/FOIATracker";
-import { ActivistDirectory } from "@/components/ActivistDirectory";
-import { OfficerAccountability } from "@/components/OfficerAccountability";
-import { LegislativeActionCenter } from "@/components/LegislativeActionCenter";
-import { Resources } from "@/components/Resources";
 import { Footer } from "@/components/Footer";
 import { SEO } from "@/components/SEO";
 import { AttorneySeoContent } from "@/components/AttorneySeoContent";
 import { SectionQuickNav, type SectionNavItem } from "@/components/SectionQuickNav";
 import { ATTORNEY_DIRECTORY } from "@/lib/seoData";
+import { FeaturedNews } from "@/components/FeaturedNews";
+import { ResourceCommandCenter } from "@/components/ResourceCommandCenter";
+import { SocialSpotlight } from "@/components/SocialSpotlight";
+import { MonetizationShowcase } from "@/components/MonetizationShowcase";
 
 const attorneyNames = ATTORNEY_DIRECTORY.map((entry) => entry.name);
 const organizationNames = ATTORNEY_DIRECTORY.map((entry) => entry.organization).filter(
@@ -33,18 +23,11 @@ const SECTION_NAV_ITEMS: SectionNavItem[] = [
   { id: "rights", label: "Know Your Rights" },
   { id: "incident-guide", label: "Incident Guide" },
   { id: "report-violation", label: "Report a Violation" },
-  { id: "violation-feed", label: "Latest Violations" },
-  { id: "states", label: "State Laws" },
-  { id: "police-scanner", label: "Police Scanner" },
-  { id: "find-attorney", label: "Find an Attorney" },
-  { id: "activist-directory", label: "Activist Directory" },
-  { id: "accountability", label: "Accountability Tools" },
-  { id: "foia-builder", label: "FOIA Builder" },
-  { id: "foia-tracker", label: "FOIA Tracker" },
-  { id: "legislative-action", label: "Legislative Action" },
-  { id: "case-search", label: "Case Search" },
-  { id: "ai-tools", label: "AI Tools" },
-  { id: "resources", label: "Resources" }
+  { id: "news", label: "News Desk" },
+  { id: "resource-command", label: "Resource Command" },
+  { id: "social", label: "Social Desk" },
+  { id: "monetization", label: "Partner Boosts" },
+  { id: "footer", label: "Footer" }
 ];
 
 const seoKeywords = [
@@ -101,14 +84,6 @@ const legalServicesStructuredData = {
 };
 
 const Index = () => {
-  const [selectedState, setSelectedState] = useState("");
-
-  const handleStateSelect = (state: string) => {
-    setSelectedState(state);
-    const element = document.getElementById('states');
-    element?.scrollIntoView({ behavior: "smooth" });
-  };
-
   return (
     <div className="min-h-screen bg-background">
       <SEO
@@ -127,26 +102,11 @@ const Index = () => {
       <KnowYourRights />
       <IncidentGuide />
       <ViolationReport />
-      <ViolationFeed />
-      <section className="py-12 bg-muted/50">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <InteractiveMap onStateSelect={handleStateSelect} />
-          </div>
-        </div>
-      </section>
-      <StateSelector selectedState={selectedState} onStateChange={setSelectedState} />
-      <PoliceScanner />
-      <LawyerFinder />
+      <FeaturedNews />
+      <ResourceCommandCenter />
       <AttorneySeoContent />
-      <ActivistDirectory />
-      <OfficerAccountability />
-      <FOIABuilder />
-      <FOIATracker />
-      <LegislativeActionCenter />
-      <CaseSearch />
-      <AITools />
-      <Resources />
+      <SocialSpotlight />
+      <MonetizationShowcase />
       <Footer />
     </div>
   );

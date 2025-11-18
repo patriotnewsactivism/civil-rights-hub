@@ -2,7 +2,9 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
-import { Shield, Users, Scale, Megaphone, BookOpen, Bell, MessageCircle } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Badge } from "@/components/ui/badge";
+import { Shield, Users, Scale, Megaphone, BookOpen, Bell, MessageCircle, Sparkles } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 export function Header() {
@@ -123,12 +125,57 @@ export function Header() {
               </Link>
             </Button>
           ) : (
-            <Button asChild>
-              <Link to="/auth">Sign In</Link>
-            </Button>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button className="flex flex-col items-start gap-0 px-4 text-left leading-tight">
+                  <span className="font-semibold">Join the Accountability Network</span>
+                  <span className="text-xs text-primary-foreground/90">
+                    File reports, follow FOIAs, and access rapid legal support
+                  </span>
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-80" align="end">
+                <div className="space-y-3">
+                  <div className="flex items-start gap-3">
+                    <div className="rounded-full bg-primary/10 p-2 text-primary">
+                      <Sparkles className="h-4 w-4" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold">Why create an account?</p>
+                      <p className="text-xs text-muted-foreground">
+                        Securely collaborate with attorneys, track violation updates, and receive scanner alerts tailored to your state.
+                      </p>
+                    </div>
+                  </div>
+                  <ul className="space-y-2 text-sm">
+                    <li className="flex items-start gap-2">
+                      <Badge variant="secondary" className="mt-0.5">
+                        Citizen Intel
+                      </Badge>
+                      <span>Archive footage, documents, and FOIA drafts in one encrypted workspace.</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Badge variant="secondary" className="mt-0.5">
+                        Alerts
+                      </Badge>
+                      <span>Receive notifications when attorneys boost availability or when scanner incidents match your area.</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Badge variant="secondary" className="mt-0.5">
+                        Community
+                      </Badge>
+                      <span>Message journalists, activists, and pro bono partners coordinating on the same case.</span>
+                    </li>
+                  </ul>
+                  <Button asChild className="w-full">
+                    <Link to="/auth">Create a free profile</Link>
+                  </Button>
+                </div>
+              </PopoverContent>
+            </Popover>
           )}
-        </nav>
-      </div>
-    </header>
+       </nav>
+     </div>
+   </header>
   );
 }

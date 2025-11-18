@@ -53,6 +53,10 @@ INSERT INTO public.scanner_links (
 ('Pennsylvania', 'PA', 'Philadelphia', 'Philadelphia County', 'Philadelphia Police', 'PPD citywide operations', '460.475 MHz', 'https://www.broadcastify.com/webPlayer/20235', NULL, NULL, 'broadcastify', 890, true, NULL),
 ('Pennsylvania', 'PA', 'Pittsburgh', 'Allegheny County', 'Pittsburgh Public Safety', 'Pittsburgh PD, Fire, EMS', '460.125 MHz', 'https://www.broadcastify.com/webPlayer/8753', NULL, NULL, 'broadcastify', 420, true, NULL),
 
+-- District of Columbia
+('District of Columbia', 'DC', 'Washington', 'District of Columbia', 'MPD Citywide 1', 'Metropolitan Police Department citywide dispatch and citywide events', '460.475 MHz', 'https://www.broadcastify.com/webPlayer/30587', NULL, NULL, 'broadcastify', 980, true, 'Feed monitors MPD Citywide 1 and Citywide 3 channels.'),
+('District of Columbia', 'DC', 'Washington', 'District of Columbia', 'DC Fire and EMS', 'District of Columbia Fire and EMS Dispatch and Special Ops', '154.190 MHz', 'https://www.broadcastify.com/webPlayer/23354', NULL, NULL, 'broadcastify', 640, true, 'Simulcast sourced from DCFEMS Fire Dispatch 1 transmitter.'),
+
 -- Washington
 ('Washington', 'WA', 'Seattle', 'King County', 'Seattle Police', 'Seattle PD dispatch and tactical', '154.785 MHz', 'https://www.broadcastify.com/webPlayer/15332', NULL, NULL, 'broadcastify', 720, true, NULL),
 ('Washington', 'WA', 'Tacoma', 'Pierce County', 'Pierce County Sheriff', 'Pierce County SO and Fire', '856.2375 MHz', 'https://www.broadcastify.com/webPlayer/7264', NULL, NULL, 'broadcastify', 280, true, NULL),

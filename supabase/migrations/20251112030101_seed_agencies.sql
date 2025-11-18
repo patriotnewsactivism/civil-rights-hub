@@ -26,6 +26,28 @@ INSERT INTO agencies (
   101000000
 ),
 (
+  'Los Angeles County Sheriff''s Department',
+  'Sheriff''s Office',
+  'California',
+  'Los Angeles',
+  '211 W Temple St, Los Angeles, CA 90012',
+  '(213) 229-1700',
+  'https://lasd.org',
+  81,
+  86000000
+),
+(
+  'Orange County Sheriff''s Department',
+  'Sheriff''s Office',
+  'California',
+  'Santa Ana',
+  '550 N Flower St, Santa Ana, CA 92703',
+  '(714) 647-7000',
+  'https://ocsheriff.gov',
+  18,
+  12000000
+),
+(
   'New York Police Department',
   'Police Department',
   'New York',
@@ -59,6 +81,17 @@ INSERT INTO agencies (
   3200000
 ),
 (
+  'Harris County Sheriff''s Office',
+  'Sheriff''s Office',
+  'Texas',
+  'Houston',
+  '1200 Baker St, Houston, TX 77002',
+  '(713) 755-6044',
+  'https://www.hcsheriff.org',
+  35,
+  4100000
+),
+(
   'Phoenix Police Department',
   'Police Department',
   'Arizona',
@@ -68,6 +101,17 @@ INSERT INTO agencies (
   'https://www.phoenix.gov/police',
   125,
   5700000
+),
+(
+  'Maricopa County Sheriff''s Office',
+  'Sheriff''s Office',
+  'Arizona',
+  'Phoenix',
+  '550 W Jackson St, Phoenix, AZ 85003',
+  '(602) 876-1801',
+  'https://www.mcso.org',
+  21,
+  2800000
 ),
 (
   'Philadelphia Police Department',
@@ -80,113 +124,6 @@ INSERT INTO agencies (
   39,
   9100000
 ),
-(
-  'Los Angeles County Sheriff''s Department',
-  'Sheriff''s Office',
-  'California',
-  'Los Angeles',
-  '211 W Temple St, Los Angeles, CA 90012',
-  '(213) 229-1700',
-  'https://lasd.org',
-  81,
-  86000000
-),
-(
-  'Orange County Sheriff''s Department',
-  'Sheriff''s Office',
-  'California',
-  'Santa Ana',
-  '550 N Flower St, Santa Ana, CA 92703',
-  '(714) 647-7000',
-  'https://ocsheriff.gov',
-  18,
-  12000000
-),
-(
-  'Harris County Sheriff''s Office',
-  'Sheriff''s Office',
-  'Texas',
-  'Houston',
-  '1200 Baker St, Houston, TX 77002',
-  '(713) 755-6044',
-  'https://www.hcsheriff.org',
-  35,
-  4100000
-),
-(
-  'Maricopa County Sheriff''s Office',
-  'Sheriff''s Office',
-  'Arizona',
-  'Phoenix',
-  '550 W Jackson St, Phoenix, AZ 85003',
-  '(602) 876-1801',
-  'https://www.mcso.org',
-  21,
-  2800000
-);
-
-TRUNCATE officers RESTART IDENTITY CASCADE;
-
-INSERT INTO officers (
-  agency_id,
-  badge_number,
-  first_name,
-  last_name,
-  rank,
-  total_violations
-) VALUES
-(
-  (SELECT id FROM agencies WHERE name = 'Minneapolis Police Department'),
-  NULL,
-  'Derek',
-  'Chauvin',
-  'Former Officer',
-  18
-),
-(
-  (SELECT id FROM agencies WHERE name = 'Louisville Metro Police Department'),
-  NULL,
-  'Brett',
-  'Hankison',
-  'Former Detective',
-  26
-),
-(
-  (SELECT id FROM agencies WHERE name = 'North Charleston Police Department'),
-  NULL,
-  'Michael',
-  'Slager',
-  'Former Officer',
-  2
-),
-(
-  (SELECT id FROM agencies WHERE name = 'Fort Worth Police Department'),
-  NULL,
-  'Aaron',
-  'Dean',
-  'Former Officer',
-  1
-),
-(
-  (SELECT id FROM agencies WHERE name = 'St. Anthony Police Department'),
-  NULL,
-  'Jeronimo',
-  'Yanez',
-  'Former Officer',
-  1
-);
-
-INSERT INTO agencies (
-  name,
-  agency_type,
-  state,
-  city,
-  address,
-  phone,
-  website,
-  total_complaints,
-  total_settlements_paid
-) VALUES
 (
   'Minneapolis Police Department',
   'Police Department',
@@ -241,4 +178,55 @@ INSERT INTO agencies (
   'https://savmn.com/193/Police-Department',
   3,
   3000000
+);
+
+TRUNCATE officers RESTART IDENTITY CASCADE;
+
+INSERT INTO officers (
+  agency_id,
+  badge_number,
+  first_name,
+  last_name,
+  rank,
+  total_violations
+) VALUES
+(
+  (SELECT id FROM agencies WHERE name = 'Minneapolis Police Department'),
+  NULL,
+  'Derek',
+  'Chauvin',
+  'Former Officer',
+  18
+),
+(
+  (SELECT id FROM agencies WHERE name = 'Louisville Metro Police Department'),
+  NULL,
+  'Brett',
+  'Hankison',
+  'Former Detective',
+  26
+),
+(
+  (SELECT id FROM agencies WHERE name = 'North Charleston Police Department'),
+  NULL,
+  'Michael',
+  'Slager',
+  'Former Officer',
+  2
+),
+(
+  (SELECT id FROM agencies WHERE name = 'Fort Worth Police Department'),
+  NULL,
+  'Aaron',
+  'Dean',
+  'Former Officer',
+  1
+),
+(
+  (SELECT id FROM agencies WHERE name = 'St. Anthony Police Department'),
+  NULL,
+  'Jeronimo',
+  'Yanez',
+  'Former Officer',
+  1
 );

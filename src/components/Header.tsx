@@ -16,7 +16,7 @@ export function Header() {
             <span className="text-xs font-normal text-muted-foreground">by We The People News</span>
           </div>
         </Link>
-        
+
         <nav className="flex items-center gap-2 md:gap-4">
           <Button variant="ghost" size="sm" asChild className="hidden sm:flex">
             <Link to="/attorneys">
@@ -43,26 +43,12 @@ export function Header() {
                 Community
               </Link>
             </Button>
-            <Button variant="ghost" size="sm" asChild className="hidden sm:flex">
-              <Link to="/resources">
-                <BookOpen className="h-4 w-4 mr-2" />
-                Resources
-              </Link>
+          ) : (
+            <Button asChild>
+              <Link to="/auth">Sign In</Link>
             </Button>
-            {user ? (
-              <Button asChild>
-                <Link to="/community">
-                  <Users className="h-4 w-4 mr-2" />
-                  Community
-                </Link>
-              </Button>
-            ) : (
-              <Button asChild>
-                <Link to="/auth">Sign In</Link>
-              </Button>
-            )}
-          </nav>
-        </div>
+          )}
+        </nav>
       </div>
     </header>
   );

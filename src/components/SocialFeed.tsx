@@ -12,11 +12,10 @@ import { formatDistanceToNow } from "date-fns";
 import type { ChangeEvent } from "react";
 import type { Database } from "@/integrations/supabase/types";
 
-// Type definitions - using conditional types to handle missing tables
-type PostRow = Database["public"]["Tables"] extends { posts: { Row: infer R } } ? R : any;
-type LikeRow = Database["public"]["Tables"] extends { likes: { Row: infer R } } ? R : any;
-type CommentRow = Database["public"]["Tables"] extends { comments: { Row: infer R } } ? R : any;
-type ProfileRow = Database["public"]["Tables"] extends { profiles: { Row: infer R } } ? R : any;
+type PostRow = Database["public"]["Tables"]["posts"]["Row"];
+type LikeRow = Database["public"]["Tables"]["likes"]["Row"];
+type CommentRow = Database["public"]["Tables"]["comments"]["Row"];
+type ProfileRow = Database["public"]["Tables"]["profiles"]["Row"];
 
 type PostQueryResult = PostRow & {
   profiles: Pick<ProfileRow, "display_name" | "avatar_url" | "role"> | null;
@@ -48,7 +47,8 @@ export function SocialFeed() {
         comments(id, content, user_id, profiles!comments_user_id_fkey(display_name))
       `)
       .order("created_at", { ascending: false })
-      .limit(50);
+      .limit(50)
+      .returns<PostQueryResult[]>();
 
     if (error) {
       toast.error("Failed to load posts");
@@ -56,7 +56,7 @@ export function SocialFeed() {
       return;
     }
 
-    setPosts((data ?? []) as PostQueryResult[]);
+    setPosts(data ?? []);
   }, []);
 
   const handleFileSelect = (event: ChangeEvent<HTMLInputElement>) => {

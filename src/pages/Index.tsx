@@ -1,3 +1,4 @@
+import { Suspense, lazy } from "react";
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { KnowYourRights } from "@/components/KnowYourRights";
@@ -5,13 +6,30 @@ import { IncidentGuide } from "@/components/IncidentGuide";
 import { ViolationReport } from "@/components/ViolationReport";
 import { Footer } from "@/components/Footer";
 import { SEO } from "@/components/SEO";
-import { AttorneySeoContent } from "@/components/AttorneySeoContent";
 import { SectionQuickNav, type SectionNavItem } from "@/components/SectionQuickNav";
 import { ATTORNEY_DIRECTORY } from "@/lib/seoData";
-import { FeaturedNews } from "@/components/FeaturedNews";
-import { ResourceCommandCenter } from "@/components/ResourceCommandCenter";
-import { SocialSpotlight } from "@/components/SocialSpotlight";
-import { MonetizationShowcase } from "@/components/MonetizationShowcase";
+
+const FeaturedNews = lazy(() =>
+  import("@/components/FeaturedNews").then((module) => ({ default: module.FeaturedNews }))
+);
+const ResourceCommandCenter = lazy(() =>
+  import("@/components/ResourceCommandCenter").then((module) => ({
+    default: module.ResourceCommandCenter
+  }))
+);
+const SocialSpotlight = lazy(() =>
+  import("@/components/SocialSpotlight").then((module) => ({ default: module.SocialSpotlight }))
+);
+const MonetizationShowcase = lazy(() =>
+  import("@/components/MonetizationShowcase").then((module) => ({
+    default: module.MonetizationShowcase
+  }))
+);
+const AttorneySeoContent = lazy(() =>
+  import("@/components/AttorneySeoContent").then((module) => ({
+    default: module.AttorneySeoContent
+  }))
+);
 
 const attorneyNames = ATTORNEY_DIRECTORY.map((entry) => entry.name);
 const organizationNames = ATTORNEY_DIRECTORY.map((entry) => entry.organization).filter(
@@ -99,14 +117,44 @@ const Index = () => {
       <Header />
       <SectionQuickNav sections={SECTION_NAV_ITEMS} />
       <Hero />
-      <FeaturedNews />
-      <ResourceCommandCenter />
+      <Suspense
+        fallback={
+          <div className="py-16 text-center text-muted-foreground">Loading News Desk…</div>
+        }
+      >
+        <FeaturedNews />
+      </Suspense>
+      <Suspense
+        fallback={
+          <div className="py-16 text-center text-muted-foreground">Loading Resource Command…</div>
+        }
+      >
+        <ResourceCommandCenter />
+      </Suspense>
       <KnowYourRights />
       <ViolationReport />
       <IncidentGuide />
-      <SocialSpotlight />
-      <MonetizationShowcase />
-      <AttorneySeoContent />
+      <Suspense
+        fallback={
+          <div className="py-16 text-center text-muted-foreground">Loading Social Desk…</div>
+        }
+      >
+        <SocialSpotlight />
+      </Suspense>
+      <Suspense
+        fallback={
+          <div className="py-16 text-center text-muted-foreground">Loading Partner Boosts…</div>
+        }
+      >
+        <MonetizationShowcase />
+      </Suspense>
+      <Suspense
+        fallback={
+          <div className="py-16 text-center text-muted-foreground">Loading Attorney Directory…</div>
+        }
+      >
+        <AttorneySeoContent />
+      </Suspense>
       <Footer />
     </div>
   );

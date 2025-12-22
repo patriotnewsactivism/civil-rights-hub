@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -6,6 +6,8 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Download, FileText, Scale, AlertCircle, Phone, Shield, HelpCircle, ExternalLink } from "lucide-react";
 import { useGeolocation } from "@/hooks/useGeolocation";
+import { useJurisdiction } from "@/hooks/useJurisdiction";
+import { JurisdictionSelector } from "@/components/JurisdictionSelector";
 import jsPDF from "jspdf";
 
 type EmergencyContactLink = {
@@ -282,8 +284,17 @@ const emergencyContacts: EmergencyContactCategory[] = [
 ];
 
 export const KnowYourRights = () => {
-  const { state, loading } = useGeolocation();
+  const { state: detectedState, loading } = useGeolocation();
+  const { state: selectedState, setState: setJurisdictionState } = useJurisdiction();
   const [selectedRight, setSelectedRight] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!selectedState && detectedState) {
+      setJurisdictionState(detectedState);
+    }
+  }, [detectedState, selectedState, setJurisdictionState]);
+
+  const activeState = selectedState || detectedState;
 
   const downloadPDF = (amendment: string) => {
     const content = rightsData[amendment as keyof typeof rightsData];
@@ -348,17 +359,17 @@ export const KnowYourRights = () => {
     }
 
     // State-specific note
-    if (state) {
+    if (activeState) {
       doc.setFontSize(10);
       doc.setFont('helvetica', 'bold');
-      doc.text(`State: ${state}`, margin, yPos);
+      doc.text(`State: ${activeState}`, margin, yPos);
       yPos += 7;
 
       // Check if it's a stop and identify state
-      if (idLawsByState.stop_and_identify.includes(state)) {
+      if (idLawsByState.stop_and_identify.includes(activeState)) {
         doc.setFont('helvetica', 'normal');
         doc.setTextColor(200, 0, 0);
-        const idNote = doc.splitTextToSize(`${state} is a "Stop and Identify" state. You must provide your name to police if they have reasonable suspicion of criminal activity.`, maxWidth);
+        const idNote = doc.splitTextToSize(`${activeState} is a "Stop and Identify" state. You must provide your name to police if they have reasonable suspicion of criminal activity.`, maxWidth);
         doc.text(idNote, margin, yPos);
         yPos += idNote.length * 5 + 5;
         doc.setTextColor(0, 0, 0);
@@ -383,7 +394,7 @@ export const KnowYourRights = () => {
     doc.save(`KnowYourRights-${amendment.replace(/\s+/g, '-')}.pdf`);
   };
 
-  const isStopAndIdentifyState = state && idLawsByState.stop_and_identify.includes(state);
+  const isStopAndIdentifyState = activeState && idLawsByState.stop_and_identify.includes(activeState);
 
   const selectedContent = selectedRight ? rightsData[selectedRight as keyof typeof rightsData] : null;
 
@@ -400,13 +411,15 @@ export const KnowYourRights = () => {
             <p className="text-muted-foreground text-sm md:text-base lg:text-lg max-w-2xl mx-auto px-4">
               Quick-access constitutional guides, scenario playbooks, and emergency contacts.
             </p>
-            {!loading && state && (
+            {!loading && activeState && (
               <Badge variant="outline" className="mt-3 md:mt-4 text-xs md:text-sm">
                 <FileText className="h-3 w-3 md:h-4 md:w-4 mr-2" />
-                Showing information for: {state}
+                Showing information for: {activeState}
               </Badge>
             )}
           </div>
+
+          <JurisdictionSelector detectedState={detectedState} loading={loading} className="mb-10" />
 
           {/* Constitutional Rights - Compact Cards */}
           <div className="mb-10 md:mb-12">
@@ -479,7 +492,7 @@ export const KnowYourRights = () => {
             <Card className={isStopAndIdentifyState ? "border-amber-500 bg-amber-500/5" : ""}>
               <CardHeader className="p-4 md:p-6">
                 <CardTitle className="text-base md:text-lg">
-                  {isStopAndIdentifyState ? `${state} is a "Stop and Identify" State` : "ID Requirements"}
+                  {isStopAndIdentifyState ? `${activeState} is a "Stop and Identify" State` : "ID Requirements"}
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-4 pt-0 md:p-6 md:pt-0 space-y-3 md:space-y-4">
@@ -502,7 +515,7 @@ export const KnowYourRights = () => {
                   <div className="p-3 md:p-4 bg-amber-100 dark:bg-amber-900/20 rounded-lg border border-amber-300">
                     <p className="text-xs md:text-sm font-semibold text-amber-900 dark:text-amber-100">
                       <AlertCircle className="h-4 w-4 inline mr-2" />
-                      {state} "Stop and Identify" Law
+                      {activeState} "Stop and Identify" Law
                     </p>
                     <p className="text-xs md:text-sm mt-2">
                       {idLawsByState.description}

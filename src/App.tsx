@@ -12,6 +12,12 @@ import Community from "./pages/Community";
 import Activists from "./pages/Activists";
 import Attorneys from "./pages/Attorneys";
 import ResourceLibrary from "./pages/ResourceLibrary";
+import Rights from "./pages/Rights";
+import DoThisNow from "./pages/DoThisNow";
+import Tools from "./pages/Tools";
+import Learn from "./pages/Learn";
+import News from "./pages/News";
+import Help from "./pages/Help";
 
 const queryClient = new QueryClient();
 
@@ -29,6 +35,12 @@ const App = () => (
             <Route path="/activists" element={<Activists />} />
             <Route path="/attorneys" element={<Attorneys />} />
             <Route path="/resources" element={<ResourceLibrary />} />
+            <Route path="/rights" element={<Rights />} />
+            <Route path="/do-this-now" element={<DoThisNow />} />
+            <Route path="/tools" element={<Tools />} />
+            <Route path="/learn" element={<Learn />} />
+            <Route path="/news" element={<News />} />
+            <Route path="/help" element={<Help />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

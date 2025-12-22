@@ -5,7 +5,18 @@ import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Badge } from "@/components/ui/badge";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Shield, Users, Scale, Megaphone, BookOpen, Bell, MessageCircle, Sparkles, Menu } from "lucide-react";
+import {
+  Shield,
+  Users,
+  BookOpen,
+  Bell,
+  MessageCircle,
+  Sparkles,
+  Menu,
+  Wrench,
+  Newspaper,
+  Gavel
+} from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 export function Header() {
@@ -13,6 +24,16 @@ export function Header() {
   const [unreadNotifications, setUnreadNotifications] = useState(0);
   const [unreadMessages, setUnreadMessages] = useState(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const navigationLinks = [
+    { to: "/rights", label: "Rights", icon: Shield },
+    { to: "/do-this-now", label: "Do This Now", icon: Sparkles },
+    { to: "/tools", label: "Tools", icon: Wrench },
+    { to: "/learn", label: "Learn", icon: BookOpen },
+    { to: "/news", label: "Newsroom", icon: Newspaper },
+    { to: "/help", label: "Get Help", icon: Gavel },
+    { to: "/community", label: "Community", icon: Users }
+  ];
 
   useEffect(() => {
     if (!user) {
@@ -79,24 +100,17 @@ export function Header() {
         <nav className="flex items-center gap-2">
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-2">
-            <Button variant="ghost" size="sm" asChild>
-              <Link to="/attorneys">
-                <Scale className="h-4 w-4 mr-2" />
-                Attorneys
-              </Link>
-            </Button>
-            <Button variant="ghost" size="sm" asChild>
-              <Link to="/activists">
-                <Megaphone className="h-4 w-4 mr-2" />
-                Activists
-              </Link>
-            </Button>
-            <Button variant="ghost" size="sm" asChild>
-              <Link to="/resources">
-                <BookOpen className="h-4 w-4 mr-2" />
-                Resources
-              </Link>
-            </Button>
+            {navigationLinks.map((link) => {
+              const Icon = link.icon;
+              return (
+                <Button key={link.to} variant="ghost" size="sm" asChild>
+                  <Link to={link.to}>
+                    <Icon className="h-4 w-4 mr-2" />
+                    {link.label}
+                  </Link>
+                </Button>
+              );
+            })}
           </div>
 
           {/* User Actions - Always Visible */}
@@ -197,32 +211,24 @@ export function Header() {
                 <SheetTitle>Navigation</SheetTitle>
               </SheetHeader>
               <div className="mt-6 flex flex-col gap-3">
-                <Button variant="ghost" asChild className="justify-start" onClick={() => setMobileMenuOpen(false)}>
-                  <Link to="/attorneys">
-                    <Scale className="h-4 w-4 mr-3" />
-                    Find Attorneys
-                  </Link>
-                </Button>
-                <Button variant="ghost" asChild className="justify-start" onClick={() => setMobileMenuOpen(false)}>
-                  <Link to="/activists">
-                    <Megaphone className="h-4 w-4 mr-3" />
-                    Activist Directory
-                  </Link>
-                </Button>
-                <Button variant="ghost" asChild className="justify-start" onClick={() => setMobileMenuOpen(false)}>
-                  <Link to="/resources">
-                    <BookOpen className="h-4 w-4 mr-3" />
-                    Resources
-                  </Link>
-                </Button>
-                {user ? (
-                  <Button asChild onClick={() => setMobileMenuOpen(false)}>
-                    <Link to="/community">
-                      <Users className="h-4 w-4 mr-3" />
-                      Community
-                    </Link>
-                  </Button>
-                ) : (
+                {navigationLinks.map((link) => {
+                  const Icon = link.icon;
+                  return (
+                    <Button
+                      key={link.to}
+                      variant="ghost"
+                      asChild
+                      className="justify-start"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      <Link to={link.to}>
+                        <Icon className="h-4 w-4 mr-3" />
+                        {link.label}
+                      </Link>
+                    </Button>
+                  );
+                })}
+                {!user && (
                   <Button asChild onClick={() => setMobileMenuOpen(false)}>
                     <Link to="/auth">
                       <Sparkles className="h-4 w-4 mr-3" />

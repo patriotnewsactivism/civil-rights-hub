@@ -6,6 +6,7 @@ import { IncidentGuide } from "@/components/IncidentGuide";
 import { ViolationReport } from "@/components/ViolationReport";
 import { Footer } from "@/components/Footer";
 import { SEO } from "@/components/SEO";
+import { TaskNavigation } from "@/components/TaskNavigation";
 import { SectionQuickNav, type SectionNavItem } from "@/components/SectionQuickNav";
 import { ATTORNEY_DIRECTORY } from "@/lib/seoData";
 
@@ -38,6 +39,7 @@ const organizationNames = ATTORNEY_DIRECTORY.map((entry) => entry.organization).
 
 const SECTION_NAV_ITEMS: SectionNavItem[] = [
   { id: "overview", label: "Overview" },
+  { id: "task-navigation", label: "Start Here" },
   { id: "rights", label: "Know Your Rights" },
   { id: "incident-guide", label: "Incident Guide" },
   { id: "report-violation", label: "Report a Violation" },
@@ -117,6 +119,9 @@ const Index = () => {
       <Header />
       <SectionQuickNav sections={SECTION_NAV_ITEMS} />
       <Hero />
+      <div id="task-navigation">
+        <TaskNavigation />
+      </div>
       <Suspense
         fallback={
           <div className="py-16 text-center text-muted-foreground">Loading News Desk…</div>

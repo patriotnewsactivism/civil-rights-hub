@@ -6,8 +6,9 @@ import { IncidentGuide } from "@/components/IncidentGuide";
 import { ViolationReport } from "@/components/ViolationReport";
 import { Footer } from "@/components/Footer";
 import { SEO } from "@/components/SEO";
-import { SectionQuickNav, type SectionNavItem } from "@/components/SectionQuickNav";
 import { ATTORNEY_DIRECTORY } from "@/lib/seoData";
+import { StatePreferenceBanner } from "@/components/StatePreferenceBanner";
+import { SectionEntryGrid } from "@/components/SectionEntryGrid";
 
 const FeaturedNews = lazy(() =>
   import("@/components/FeaturedNews").then((module) => ({ default: module.FeaturedNews }))
@@ -35,18 +36,6 @@ const attorneyNames = ATTORNEY_DIRECTORY.map((entry) => entry.name);
 const organizationNames = ATTORNEY_DIRECTORY.map((entry) => entry.organization).filter(
   (organization): organization is string => Boolean(organization)
 );
-
-const SECTION_NAV_ITEMS: SectionNavItem[] = [
-  { id: "overview", label: "Overview" },
-  { id: "rights", label: "Know Your Rights" },
-  { id: "incident-guide", label: "Incident Guide" },
-  { id: "report-violation", label: "Report a Violation" },
-  { id: "news", label: "News Desk" },
-  { id: "resource-command", label: "Resource Command" },
-  { id: "social", label: "Social Desk" },
-  { id: "monetization", label: "Partner Boosts" },
-  { id: "footer", label: "Footer" }
-];
 
 const seoKeywords = [
   "civil rights hub",
@@ -115,8 +104,13 @@ const Index = () => {
         structuredData={legalServicesStructuredData}
       />
       <Header />
-      <SectionQuickNav sections={SECTION_NAV_ITEMS} />
       <Hero />
+      <div className="container mx-auto px-4">
+        <div className="mt-8 space-y-6">
+          <StatePreferenceBanner />
+          <SectionEntryGrid />
+        </div>
+      </div>
       <Suspense
         fallback={
           <div className="py-16 text-center text-muted-foreground">Loading News Desk…</div>

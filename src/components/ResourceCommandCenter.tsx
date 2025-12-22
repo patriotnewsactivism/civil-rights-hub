@@ -40,6 +40,8 @@ import { CaseSearch } from "@/components/CaseSearch";
 import { AITools } from "@/components/AITools";
 import { Resources } from "@/components/Resources";
 import { toast } from "sonner";
+import { useJurisdiction } from "@/hooks/useJurisdiction";
+import { DEFAULT_JURISDICTION } from "@/data/usStates";
 
 interface ResourceDefinition {
   id: string;
@@ -192,7 +194,7 @@ export const ResourceCommandCenter = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
-  const [focusState, setFocusState] = useState("");
+  const { state: focusState, setState: setFocusState } = useJurisdiction();
 
   const resourceDefinitions = useMemo(
     () => createResourceDefinitions(focusState, (state) => setFocusState(state)),
@@ -340,7 +342,7 @@ export const ResourceCommandCenter = () => {
               </SheetHeader>
               <Separator />
               <div className="space-y-8">{selectedResource.render()}</div>
-              {focusState && (
+              {focusState && focusState !== DEFAULT_JURISDICTION && (
                 <div className="rounded-2xl border border-primary/40 bg-primary/5 p-4 text-sm text-muted-foreground">
                   Focused on <span className="font-semibold text-primary">{focusState}</span>. Select a different state via the map or statute navigator to swap resources.
                 </div>

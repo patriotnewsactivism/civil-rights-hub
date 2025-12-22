@@ -12,6 +12,13 @@ import Community from "./pages/Community";
 import Activists from "./pages/Activists";
 import Attorneys from "./pages/Attorneys";
 import ResourceLibrary from "./pages/ResourceLibrary";
+import Rights from "./pages/Rights";
+import DoThisNow from "./pages/DoThisNow";
+import Tools from "./pages/Tools";
+import Learn from "./pages/Learn";
+import Newsroom from "./pages/Newsroom";
+import GetHelp from "./pages/GetHelp";
+import { JurisdictionProvider } from "./hooks/useJurisdiction";
 
 const queryClient = new QueryClient();
 
@@ -19,21 +26,29 @@ const App = () => (
   <HelmetProvider>
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/community" element={<Community />} />
-            <Route path="/activists" element={<Activists />} />
-            <Route path="/attorneys" element={<Attorneys />} />
-            <Route path="/resources" element={<ResourceLibrary />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-        <Analytics />
+        <JurisdictionProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/rights" element={<Rights />} />
+              <Route path="/do-this-now" element={<DoThisNow />} />
+              <Route path="/tools" element={<Tools />} />
+              <Route path="/learn" element={<Learn />} />
+              <Route path="/newsroom" element={<Newsroom />} />
+              <Route path="/help" element={<GetHelp />} />
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/community" element={<Community />} />
+              <Route path="/activists" element={<Activists />} />
+              <Route path="/attorneys" element={<Attorneys />} />
+              <Route path="/resources" element={<ResourceLibrary />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+          <Analytics />
+        </JurisdictionProvider>
       </TooltipProvider>
     </QueryClientProvider>
   </HelmetProvider>

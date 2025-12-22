@@ -2,6 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { MapPin, Video, Phone } from "lucide-react";
+import { DEFAULT_JURISDICTION, US_STATES } from "@/data/usStates";
 
 type BaseStateInfo = {
   recording: string;
@@ -189,7 +190,7 @@ interface StateSelectorProps {
 }
 
 export const StateSelector = ({ selectedState, onStateChange }: StateSelectorProps) => {
-  const stateInfo = selectedState ? stateProfiles[selectedState as keyof typeof stateProfiles] : null;
+  const stateInfo = selectedState in stateProfiles ? stateProfiles[selectedState as keyof typeof stateProfiles] : null;
 
   return (
     <section id="states" className="py-20 bg-background">
@@ -221,7 +222,10 @@ export const StateSelector = ({ selectedState, onStateChange }: StateSelectorPro
                   <SelectValue placeholder="Choose your state..." />
                 </SelectTrigger>
                 <SelectContent>
-                  {Object.keys(stateData).map((state) => (
+                  <SelectItem value={DEFAULT_JURISDICTION} className="text-lg">
+                    Nationwide / Federal baseline
+                  </SelectItem>
+                  {US_STATES.map((state) => (
                     <SelectItem key={state} value={state} className="text-lg">
                       {state}
                     </SelectItem>

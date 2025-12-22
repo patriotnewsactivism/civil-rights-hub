@@ -5,8 +5,22 @@ import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Badge } from "@/components/ui/badge";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Shield, Users, Scale, Megaphone, BookOpen, Bell, MessageCircle, Sparkles, Menu } from "lucide-react";
+import {
+  Shield,
+  Users,
+  Bell,
+  MessageCircle,
+  Sparkles,
+  Menu,
+  ShieldCheck,
+  Zap,
+  Wrench,
+  Newspaper,
+  LifeBuoy,
+  BookOpenText,
+} from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { StateQuickSelect } from "@/components/StateQuickSelect";
 
 export function Header() {
   const { user } = useAuth();
@@ -80,23 +94,45 @@ export function Header() {
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-2">
             <Button variant="ghost" size="sm" asChild>
-              <Link to="/attorneys">
-                <Scale className="h-4 w-4 mr-2" />
-                Attorneys
+              <Link to="/rights">
+                <ShieldCheck className="h-4 w-4 mr-2" />
+                Rights
               </Link>
             </Button>
             <Button variant="ghost" size="sm" asChild>
-              <Link to="/activists">
-                <Megaphone className="h-4 w-4 mr-2" />
-                Activists
+              <Link to="/do-this-now">
+                <Zap className="h-4 w-4 mr-2" />
+                Do This Now
               </Link>
             </Button>
             <Button variant="ghost" size="sm" asChild>
-              <Link to="/resources">
-                <BookOpen className="h-4 w-4 mr-2" />
-                Resources
+              <Link to="/tools">
+                <Wrench className="h-4 w-4 mr-2" />
+                Tools
               </Link>
             </Button>
+            <Button variant="ghost" size="sm" asChild>
+              <Link to="/learn">
+                <BookOpenText className="h-4 w-4 mr-2" />
+                Learn
+              </Link>
+            </Button>
+            <Button variant="ghost" size="sm" asChild>
+              <Link to="/newsroom">
+                <Newspaper className="h-4 w-4 mr-2" />
+                Newsroom
+              </Link>
+            </Button>
+            <Button variant="ghost" size="sm" asChild>
+              <Link to="/help">
+                <LifeBuoy className="h-4 w-4 mr-2" />
+                Get Help
+              </Link>
+            </Button>
+          </div>
+
+          <div className="hidden lg:block">
+            <StateQuickSelect />
           </div>
 
           {/* User Actions - Always Visible */}
@@ -197,22 +233,41 @@ export function Header() {
                 <SheetTitle>Navigation</SheetTitle>
               </SheetHeader>
               <div className="mt-6 flex flex-col gap-3">
+                <StateQuickSelect />
                 <Button variant="ghost" asChild className="justify-start" onClick={() => setMobileMenuOpen(false)}>
-                  <Link to="/attorneys">
-                    <Scale className="h-4 w-4 mr-3" />
-                    Find Attorneys
+                  <Link to="/rights">
+                    <ShieldCheck className="h-4 w-4 mr-3" />
+                    Know Your Rights
                   </Link>
                 </Button>
                 <Button variant="ghost" asChild className="justify-start" onClick={() => setMobileMenuOpen(false)}>
-                  <Link to="/activists">
-                    <Megaphone className="h-4 w-4 mr-3" />
-                    Activist Directory
+                  <Link to="/do-this-now">
+                    <Zap className="h-4 w-4 mr-3" />
+                    Do This Now
                   </Link>
                 </Button>
                 <Button variant="ghost" asChild className="justify-start" onClick={() => setMobileMenuOpen(false)}>
-                  <Link to="/resources">
-                    <BookOpen className="h-4 w-4 mr-3" />
-                    Resources
+                  <Link to="/tools">
+                    <Wrench className="h-4 w-4 mr-3" />
+                    Tools
+                  </Link>
+                </Button>
+                <Button variant="ghost" asChild className="justify-start" onClick={() => setMobileMenuOpen(false)}>
+                  <Link to="/learn">
+                    <BookOpenText className="h-4 w-4 mr-3" />
+                    Learn
+                  </Link>
+                </Button>
+                <Button variant="ghost" asChild className="justify-start" onClick={() => setMobileMenuOpen(false)}>
+                  <Link to="/newsroom">
+                    <Newspaper className="h-4 w-4 mr-3" />
+                    Newsroom
+                  </Link>
+                </Button>
+                <Button variant="ghost" asChild className="justify-start" onClick={() => setMobileMenuOpen(false)}>
+                  <Link to="/help">
+                    <LifeBuoy className="h-4 w-4 mr-3" />
+                    Get Help
                   </Link>
                 </Button>
                 {user ? (

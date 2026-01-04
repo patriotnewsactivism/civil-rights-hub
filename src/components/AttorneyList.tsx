@@ -1,25 +1,8 @@
-'use client';
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import type { Database } from "@/integrations/supabase/types";
 
-import { useEffect, useState } from 'react';
-import { createClient } from '@supabase/supabase-js'; // Or import from your local utils if you have 'utils/supabase/client'
-
-// Initialize client (ensure env vars are set in Next.js)
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
-
-interface Attorney {
-  id: string;
-  name: string;
-  firm: string | null;
-  city: string | null;
-  state: string;
-  phone: string | null;
-  email: string | null;
-  specialties: string[];
-  status: string;
-}
+type Attorney = Database["public"]["Tables"]["attorneys"]["Row"];
 
 interface AttorneyListProps {
   searchQuery: string;
@@ -38,55 +21,44 @@ export default function AttorneyList({ searchQuery, selectedState, selectedSpeci
       setError(null);
 
       try {
-        // Start building the query
         let query = supabase
-          .from('attorneys')
-          .select('*')
-          .eq('status', 'verified'); // Only show verified lawyers
+          .from("attorneys")
+          .select("*");
 
-        // 1. Apply State Filter
-        if (selectedState && selectedState !== 'All States') {
-          query = query.eq('state', selectedState);
+        if (selectedState && selectedState !== "All States") {
+          query = query.eq("state", selectedState);
         }
 
-        // 2. Apply Specialty Filter (using Postgres Array overlap)
-        if (selectedSpecialty && selectedSpecialty !== 'All Specialties') {
-          query = query.contains('specialties', [selectedSpecialty]);
+        if (selectedSpecialty && selectedSpecialty !== "All Specialties") {
+          query = query.contains("specialties", [selectedSpecialty]);
         }
 
-        // 3. Apply Text Search (using the 'fts' column we created in SQL)
         if (searchQuery.trim()) {
-          // 'plainto_tsquery' handles plain text better than strict syntax
-          query = query.textSearch('fts', searchQuery, {
-            type: 'plain', 
-            config: 'english'
+          query = query.textSearch("name", searchQuery.trim(), {
+            type: "plain",
+            config: "english",
           });
         }
 
-        // Execute
-        const { data, error } = await query.limit(50); // Limit to 50 for performance
+        const { data, error: fetchError } = await query.limit(50);
 
-        if (error) throw error;
-        setAttorneys(data || []);
+        if (fetchError) throw fetchError;
 
-      } catch (err: any) {
-        console.error('Supabase Fetch Error:', err);
-        setError('Connection to Civil Rights Database failed. Please try again.');
+        setAttorneys(data ?? []);
+      } catch (err) {
+        console.error("Supabase Fetch Error:", err);
+        setError("Connection to Civil Rights Database failed. Please try again.");
       } finally {
         setLoading(false);
       }
     };
 
-    // Debounce the fetch to prevent flickering while typing
-    const timeoutId = setTimeout(() => {
-      fetchAttorneys();
+    const timeoutId = window.setTimeout(() => {
+      void fetchAttorneys();
     }, 500);
 
-    return () => clearTimeout(timeoutId);
-
-  }, [searchQuery, selectedState, selectedSpecialty]);
-
-  // --- RENDER STATES ---
+    return () => window.clearTimeout(timeoutId);
+  }, [searchQuery, selectedSpecialty, selectedState]);
 
   if (loading) {
     return (
@@ -115,16 +87,15 @@ export default function AttorneyList({ searchQuery, selectedState, selectedSpeci
     );
   }
 
-  // --- SUCCESS RENDER ---
   return (
     <div className="space-y-4">
       <div className="text-sm text-gray-500 mb-2">
         Showing {attorneys.length} results from live database
       </div>
-      
+
       {attorneys.map((lawyer) => (
-        <div 
-          key={lawyer.id} 
+        <div
+          key={lawyer.id}
           className="bg-white border border-gray-200 rounded-lg p-5 shadow-sm hover:shadow-md transition-shadow"
         >
           <div className="flex justify-between items-start">
@@ -134,28 +105,30 @@ export default function AttorneyList({ searchQuery, selectedState, selectedSpeci
                 <p className="text-sm text-gray-600 font-medium">{lawyer.firm}</p>
               )}
             </div>
-            {/* Pro Bono Badge if applicable (logic depends on your data) */}
             <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full font-semibold">
               Verified
             </span>
           </div>
 
-          <div className="mt-3 flex items-center text-gray-500 text-sm">
-            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-            {lawyer.city}, {lawyer.state}
-          </div>
+          {(lawyer.city || lawyer.state) && (
+            <div className="mt-3 flex items-center text-gray-500 text-sm">
+              <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+              {[lawyer.city, lawyer.state].filter(Boolean).join(", ")}
+            </div>
+          )}
 
-          {/* Specialties Tags */}
-          <div className="mt-3 flex flex-wrap gap-2">
-            {lawyer.specialties && lawyer.specialties.slice(0, 4).map((spec, index) => (
-              <span 
-                key={index} 
-                className="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium bg-gray-100 text-gray-800 border border-gray-200"
-              >
-                {spec}
-              </span>
-            ))}
-          </div>
+          {lawyer.specialties && lawyer.specialties.length > 0 && (
+            <div className="mt-3 flex flex-wrap gap-2">
+              {lawyer.specialties.slice(0, 4).map((spec) => (
+                <span
+                  key={`${lawyer.id}-${spec}`}
+                  className="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium bg-gray-100 text-gray-800 border border-gray-200"
+                >
+                  {spec}
+                </span>
+              ))}
+            </div>
+          )}
 
           <div className="mt-4 pt-4 border-t border-gray-100 flex flex-col sm:flex-row gap-4">
             {lawyer.email && (

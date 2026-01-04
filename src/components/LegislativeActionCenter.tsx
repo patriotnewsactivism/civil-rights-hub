@@ -391,7 +391,7 @@ function BillCard({ bill }: { bill: LegislationItem }) {
         <div className="flex gap-2 pt-2">
           <Dialog>
             <DialogTrigger asChild>
-              <Button onClick={fetchTemplates} className="gap-2">
+              <Button className="gap-2">
                 <Mail className="h-4 w-4" />
                 Contact Representatives
               </Button>

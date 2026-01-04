@@ -1,15 +1,15 @@
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
-import { Mail, Send, Inbox, Star, Trash2, Search, User, X, MessageSquare } from "lucide-react";
+import { Mail, Send, Inbox, Star, Trash2, Search, User as UserIcon, X, MessageSquare } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import type { Database } from "@/integrations/supabase/types";
-import type { User } from "@supabase/supabase-js";
+import type { User as SupabaseUser } from "@supabase/supabase-js";
 
 type DirectMessageRow = Database["public"]["Tables"]["direct_messages"]["Row"];
-type UserProfileRow = Database["public"]["Tables"]["user_profiles"]["Row"];
+type ProfileRow = Database["public"]["Tables"]["profiles"]["Row"];
 
 type MessageProfile =
-  | (Pick<UserProfileRow, "username" | "display_name"> & { id?: string | null; user_id?: string | null })
+  | (Pick<ProfileRow, "display_name"> & { id?: string | null })
   | null;
 
 type MessageWithProfiles = DirectMessageRow & {
@@ -18,16 +18,14 @@ type MessageWithProfiles = DirectMessageRow & {
 };
 
 type ComposeFormState = {
-  recipient_username: string;
-  subject: string;
+  recipient_id: string;
   content: string;
 };
 
 type MailboxView = "inbox" | "sent" | "compose";
 
 const INITIAL_FORM_STATE: ComposeFormState = {
-  recipient_username: "",
-  subject: "",
+  recipient_id: "",
   content: "",
 };
 
@@ -38,8 +36,9 @@ export default function MessagingPanel() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [composeForm, setComposeForm] = useState<ComposeFormState>(INITIAL_FORM_STATE);
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [currentUser, setCurrentUser] = useState<SupabaseUser | null>(null);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [availableUsers, setAvailableUsers] = useState<ProfileRow[]>([]);
 
   const loadCurrentUser = useCallback(async () => {
     const { data } = await supabase.auth.getUser();
@@ -50,6 +49,24 @@ export default function MessagingPanel() {
     void loadCurrentUser();
   }, [loadCurrentUser]);
 
+  const loadAvailableUsers = useCallback(async () => {
+    if (!currentUser) return;
+
+    const { data } = await supabase
+      .from("profiles")
+      .select("*")
+      .neq("id", currentUser.id)
+      .order("display_name");
+
+    setAvailableUsers(data ?? []);
+  }, [currentUser]);
+
+  useEffect(() => {
+    if (currentUser) {
+      void loadAvailableUsers();
+    }
+  }, [currentUser, loadAvailableUsers]);
+
   const loadMessages = useCallback(async () => {
     if (!currentUser) return;
 
@@ -57,13 +74,7 @@ export default function MessagingPanel() {
     try {
       let query = supabase
         .from("direct_messages")
-        .select(
-          `
-          *,
-          sender:sender_id(username, display_name),
-          recipient:recipient_id(username, display_name)
-        `
-        )
+        .select("*")
         .order("created_at", { ascending: false });
 
       if (view === "inbox") {
@@ -72,13 +83,34 @@ export default function MessagingPanel() {
         query = query.eq("sender_id", currentUser.id).eq("is_deleted_by_sender", false);
       }
 
-      const { data, error } = await query.returns<MessageWithProfiles[]>();
+      const { data, error } = await query;
 
       if (error) throw error;
-      setMessages(data ?? []);
+
+      // Fetch profiles for senders and recipients
+      const userIds = new Set<string>();
+      data?.forEach((msg) => {
+        userIds.add(msg.sender_id);
+        userIds.add(msg.recipient_id);
+      });
+
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("id, display_name")
+        .in("id", Array.from(userIds));
+
+      const profileMap = new Map(profiles?.map((p) => [p.id, p]) ?? []);
+
+      const messagesWithProfiles: MessageWithProfiles[] = (data ?? []).map((msg) => ({
+        ...msg,
+        sender: profileMap.get(msg.sender_id) ?? null,
+        recipient: profileMap.get(msg.recipient_id) ?? null,
+      }));
+
+      setMessages(messagesWithProfiles);
 
       if (view === "inbox") {
-        const unread = data?.filter((message) => !message.is_read).length ?? 0;
+        const unread = messagesWithProfiles.filter((message) => !message.is_read).length;
         setUnreadCount(unread);
       } else {
         setUnreadCount(0);
@@ -97,26 +129,12 @@ export default function MessagingPanel() {
 
   const handleSendMessage = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!currentUser) return;
+    if (!currentUser || !composeForm.recipient_id) return;
 
     try {
-      const normalizedUsername = composeForm.recipient_username.trim().toLowerCase();
-      const { data: profileData, error: profileError } = await supabase
-        .from("user_profiles")
-        .select("user_id")
-        .eq("username", normalizedUsername)
-        .single()
-        .returns<Pick<UserProfileRow, "user_id">>();
-
-      if (profileError || !profileData) {
-        toast.error("User not found");
-        return;
-      }
-
       const { error } = await supabase.from("direct_messages").insert({
         sender_id: currentUser.id,
-        recipient_id: profileData.user_id,
-        subject: composeForm.subject || null,
+        recipient_id: composeForm.recipient_id,
         content: composeForm.content,
       });
 
@@ -143,22 +161,6 @@ export default function MessagingPanel() {
       void loadMessages();
     } catch (error) {
       console.error("Error marking as read:", error);
-    }
-  };
-
-  const toggleStar = async (message: MessageWithProfiles) => {
-    if (!currentUser) return;
-
-    try {
-      const isSender = message.sender_id === currentUser.id;
-      const updates: Partial<DirectMessageRow> = isSender
-        ? { is_starred_by_sender: !message.is_starred_by_sender }
-        : { is_starred_by_recipient: !message.is_starred_by_recipient };
-
-      await supabase.from("direct_messages").update(updates).eq("id", message.id);
-      void loadMessages();
-    } catch (error) {
-      console.error("Error toggling star:", error);
     }
   };
 
@@ -189,10 +191,9 @@ export default function MessagingPanel() {
     const search = searchTerm.toLowerCase();
 
     return messages.filter((message) => {
-      const subject = message.subject?.toLowerCase() ?? "";
       const content = message.content?.toLowerCase() ?? "";
-      const senderUsername = message.sender?.username?.toLowerCase() ?? "";
-      return subject.includes(search) || content.includes(search) || senderUsername.includes(search);
+      const senderName = message.sender?.display_name?.toLowerCase() ?? "";
+      return content.includes(search) || senderName.includes(search);
     });
   }, [messages, searchTerm]);
 
@@ -253,28 +254,22 @@ export default function MessagingPanel() {
               </div>
               <form onSubmit={handleSendMessage} className="space-y-4">
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-foreground">To (username)</label>
-                  <input
-                    type="text"
-                    value={composeForm.recipient_username}
+                  <label className="mb-1 block text-sm font-medium text-foreground">To</label>
+                  <select
+                    value={composeForm.recipient_id}
                     onChange={(event) =>
-                      setComposeForm((previous) => ({ ...previous, recipient_username: event.target.value }))
+                      setComposeForm((previous) => ({ ...previous, recipient_id: event.target.value }))
                     }
                     className="w-full rounded-lg border border-input bg-background px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-ring"
-                    placeholder="username"
                     required
-                  />
-                </div>
-
-                <div>
-                  <label className="mb-1 block text-sm font-medium text-foreground">Subject (optional)</label>
-                  <input
-                    type="text"
-                    value={composeForm.subject}
-                    onChange={(event) => setComposeForm((previous) => ({ ...previous, subject: event.target.value }))}
-                    className="w-full rounded-lg border border-input bg-background px-4 py-2 focus:border-transparent focus:ring-2 focus:ring-ring"
-                    placeholder="Message subject"
-                  />
+                  >
+                    <option value="">Select a recipient...</option>
+                    {availableUsers.map((user) => (
+                      <option key={user.id} value={user.id}>
+                        {user.display_name || user.email}
+                      </option>
+                    ))}
+                  </select>
                 </div>
 
                 <div>
@@ -346,47 +341,38 @@ export default function MessagingPanel() {
                     </div>
                   ) : (
                     <div className="divide-y divide-border overflow-y-auto">
-                      {filteredMessages.map((message) => {
-                        const isSender = message.sender_id === currentUser?.id;
-                        const isStarred = isSender
-                          ? Boolean(message.is_starred_by_sender)
-                          : Boolean(message.is_starred_by_recipient);
-
-                        return (
-                          <button
-                            key={message.id}
-                            onClick={() => {
-                              setSelectedMessage(message);
-                              if (!message.is_read && view === "inbox") {
-                                void markAsRead(message.id);
-                              }
-                            }}
-                            className={`flex w-full flex-col items-start gap-1 px-4 py-3 text-left transition-colors ${
-                              selectedMessage?.id === message.id ? "bg-primary/10" : "hover:bg-muted"
-                            } ${!message.is_read && view === "inbox" ? "bg-primary/5" : ""}`}
-                          >
-                            <div className="flex w-full items-start justify-between">
-                              <div className="flex items-center space-x-2">
-                                <User className="h-4 w-4 text-muted-foreground" />
-                                <span className="font-semibold text-foreground">
-                                  {view === "inbox"
-                                    ? message.sender?.display_name || message.sender?.username || "Unknown"
-                                    : message.recipient?.display_name || message.recipient?.username || "Unknown"}
-                                </span>
-                              </div>
-                              <div className="flex items-center space-x-1">
-                                {isStarred && <Star className="h-4 w-4 fill-yellow-400 text-yellow-500" />}
-                                {!message.is_read && view === "inbox" && <span className="h-2 w-2 rounded-full bg-primary" />}
-                              </div>
+                      {filteredMessages.map((message) => (
+                        <button
+                          key={message.id}
+                          onClick={() => {
+                            setSelectedMessage(message);
+                            if (!message.is_read && view === "inbox") {
+                              void markAsRead(message.id);
+                            }
+                          }}
+                          className={`flex w-full flex-col items-start gap-1 px-4 py-3 text-left transition-colors ${
+                            selectedMessage?.id === message.id ? "bg-primary/10" : "hover:bg-muted"
+                          } ${!message.is_read && view === "inbox" ? "bg-primary/5" : ""}`}
+                        >
+                          <div className="flex w-full items-start justify-between">
+                            <div className="flex items-center space-x-2">
+                              <UserIcon className="h-4 w-4 text-muted-foreground" />
+                              <span className="font-semibold text-foreground">
+                                {view === "inbox"
+                                  ? message.sender?.display_name || "Unknown"
+                                  : message.recipient?.display_name || "Unknown"}
+                              </span>
                             </div>
-                            <p className="text-sm font-medium text-foreground">{message.subject || "(No subject)"}</p>
-                            <p className="line-clamp-2 text-sm text-muted-foreground">{message.content}</p>
-                            <p className="text-xs text-muted-foreground/70">
-                              {new Date(message.created_at).toLocaleDateString()}
-                            </p>
-                          </button>
-                        );
-                      })}
+                            <div className="flex items-center space-x-1">
+                              {!message.is_read && view === "inbox" && <span className="h-2 w-2 rounded-full bg-primary" />}
+                            </div>
+                          </div>
+                          <p className="line-clamp-2 text-sm text-muted-foreground">{message.content}</p>
+                          <p className="text-xs text-muted-foreground/70">
+                            {message.created_at && new Date(message.created_at).toLocaleDateString()}
+                          </p>
+                        </button>
+                      ))}
                     </div>
                   )}
                 </div>
@@ -396,97 +382,40 @@ export default function MessagingPanel() {
                     <div className="space-y-4 p-6">
                       <div className="flex flex-wrap items-start justify-between gap-3">
                         <div>
-                          <h2 className="text-2xl font-bold text-foreground">
-                            {selectedMessage.subject || "(No subject)"}
-                          </h2>
+                          <h2 className="text-2xl font-bold text-foreground">Message</h2>
                           <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
-                            <User className="h-4 w-4" />
+                            <UserIcon className="h-4 w-4" />
                             <span>
                               {view === "inbox" ? "From:" : "To:"}{" "}
                               {view === "inbox"
-                                ? selectedMessage.sender?.display_name || selectedMessage.sender?.username
-                                : selectedMessage.recipient?.display_name || selectedMessage.recipient?.username}
+                                ? selectedMessage.sender?.display_name
+                                : selectedMessage.recipient?.display_name}
                             </span>
                             <span>•</span>
-                            <span>{new Date(selectedMessage.created_at).toLocaleString()}</span>
+                            <span>{selectedMessage.created_at && new Date(selectedMessage.created_at).toLocaleString()}</span>
                           </div>
                         </div>
                         <div className="flex items-center space-x-2">
                           <button
-                            onClick={() => toggleStar(selectedMessage)}
-                            className={`rounded-lg p-2 transition-colors hover:bg-muted ${
-                              (selectedMessage.sender_id === currentUser?.id
-                              ? selectedMessage.is_starred_by_sender
-                              : selectedMessage.is_starred_by_recipient)
-                                ? "text-yellow-500"
-                                : "text-muted-foreground"
-                            }`}
-                            title="Star"
-                          >
-                            <Star
-                              className={`h-5 w-5 ${
-                                (selectedMessage.sender_id === currentUser?.id
-                                ? selectedMessage.is_starred_by_sender
-                                : selectedMessage.is_starred_by_recipient)
-                                  ? "fill-current"
-                                  : ""
-                              }`}
-                            />
-                          </button>
-                          {view === "inbox" && (
-                            <button
-                              onClick={() => {
-                                setComposeForm({
-                                  recipient_username: selectedMessage.sender?.username ?? "",
-                                  subject: `Re: ${selectedMessage.subject || ""}`,
-                                  content: `\n\n--- Original Message ---\n${selectedMessage.content}`,
-                                });
-                                handleViewChange("compose");
-                              }}
-                              className="rounded-lg p-2 text-primary transition-colors hover:bg-primary/10"
-                              title="Reply"
-                            >
-                              <Mail className="h-5 w-5" />
-                            </button>
-                          )}
-                          <button
                             onClick={() => deleteMessage(selectedMessage.id)}
-                            className="rounded-lg p-2 text-destructive transition-colors hover:bg-destructive/10"
-                            title="Delete"
+                            className="rounded-lg p-2 text-destructive transition-colors hover:bg-muted"
                           >
                             <Trash2 className="h-5 w-5" />
                           </button>
                         </div>
                       </div>
 
-                      <div className="rounded-xl border bg-background p-4">
+                      <div className="rounded-2xl border bg-background/50 p-6">
                         <p className="whitespace-pre-wrap text-foreground">{selectedMessage.content}</p>
                       </div>
                     </div>
                   ) : (
-                    <div className="flex h-full flex-col items-center justify-center p-12 text-center">
-                      <Mail className="mb-4 h-16 w-16 text-muted" />
-                      <p className="text-muted-foreground">Select a message to read</p>
-                    </div>
-                  )}
-                </div>
-                <div className="flex-1 bg-card p-6 lg:hidden">
-                  {selectedMessage ? (
-                    <div className="space-y-4">
-                      <div className="flex flex-col gap-2">
-                        <h2 className="text-xl font-bold text-foreground">
-                          {selectedMessage.subject || "(No subject)"}
-                        </h2>
-                        <p className="text-sm text-muted-foreground">
-                          {new Date(selectedMessage.created_at).toLocaleString()}
-                        </p>
-                      </div>
-                      <div className="rounded-xl border bg-background p-4">
-                        <p className="whitespace-pre-wrap text-foreground">{selectedMessage.content}</p>
+                    <div className="flex h-full items-center justify-center">
+                      <div className="text-center">
+                        <Mail className="mx-auto mb-4 h-16 w-16 text-muted" />
+                        <p className="text-muted-foreground">Select a message to read</p>
                       </div>
                     </div>
-                  ) : (
-                    <div className="text-center text-muted-foreground">Select a message to read</div>
                   )}
                 </div>
               </div>

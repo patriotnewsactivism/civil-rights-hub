@@ -10,11 +10,13 @@ import { Separator } from "@/components/ui/separator";
 import { Megaphone, Users, Send, Activity } from "lucide-react";
 import type { Database } from "@/integrations/supabase/types";
 
+type ProfileRow = Database["public"]["Tables"]["profiles"]["Row"];
+
 interface SpotlightPost {
   id: string;
   content: string | null;
   created_at: string;
-  profiles: Pick<Database["public"]["Tables"]["profiles"]["Row"], "display_name" | "avatar_url" | "role"> | null;
+  profiles: Pick<ProfileRow, "display_name" | "avatar_url" | "role"> | null;
 }
 
 const FALLBACK_POSTS: SpotlightPost[] = [
@@ -71,19 +73,36 @@ export const SocialSpotlight = () => {
   useEffect(() => {
     let isMounted = true;
     const loadPosts = async () => {
-      const { data, error } = await supabase
+      // Fetch posts with user_id, then fetch profiles separately
+      const { data: postsData, error: postsError } = await supabase
         .from("posts")
-        .select(
-          `id, content, created_at, profiles!posts_user_id_fkey(display_name, avatar_url, role)`
-        )
+        .select("id, content, created_at, user_id")
         .order("created_at", { ascending: false })
         .limit(3);
 
-      if (error || !data || !isMounted) {
+      if (postsError || !postsData || !isMounted) {
         return;
       }
 
-      setPosts(data);
+      // Fetch profiles for these users
+      const userIds = postsData.map((p) => p.user_id);
+      const { data: profilesData } = await supabase
+        .from("profiles")
+        .select("id, display_name, avatar_url, role")
+        .in("id", userIds);
+
+      const profileMap = new Map(profilesData?.map((p) => [p.id, p]) ?? []);
+
+      const transformedPosts: SpotlightPost[] = postsData.map((post) => ({
+        id: post.id,
+        content: post.content,
+        created_at: post.created_at ?? new Date().toISOString(),
+        profiles: profileMap.get(post.user_id) ?? null,
+      }));
+
+      if (transformedPosts.length > 0) {
+        setPosts(transformedPosts);
+      }
     };
 
     void loadPosts();

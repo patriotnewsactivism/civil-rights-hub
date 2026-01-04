@@ -15,56 +15,14 @@ import {
 } from "@/lib/referenceData";
 
 const US_STATES = [
-  "Alabama",
-  "Alaska",
-  "Arizona",
-  "Arkansas",
-  "California",
-  "Colorado",
-  "Connecticut",
-  "Delaware",
-  "Florida",
-  "Georgia",
-  "Hawaii",
-  "Idaho",
-  "Illinois",
-  "Indiana",
-  "Iowa",
-  "Kansas",
-  "Kentucky",
-  "Louisiana",
-  "Maine",
-  "Maryland",
-  "Massachusetts",
-  "Michigan",
-  "Minnesota",
-  "Mississippi",
-  "Missouri",
-  "Montana",
-  "Nebraska",
-  "Nevada",
-  "New Hampshire",
-  "New Jersey",
-  "New Mexico",
-  "New York",
-  "North Carolina",
-  "North Dakota",
-  "Ohio",
-  "Oklahoma",
-  "Oregon",
-  "Pennsylvania",
-  "Rhode Island",
-  "South Carolina",
-  "South Dakota",
-  "Tennessee",
-  "Texas",
-  "Utah",
-  "Vermont",
-  "Virginia",
-  "Washington",
-  "West Virginia",
-  "Wisconsin",
-  "Wyoming",
+  "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut",
+  "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa",
+  "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan",
+  "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire",
+  "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio",
+  "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota",
+  "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia",
+  "Wisconsin", "Wyoming",
 ];
 
 type AccountabilityDataSource = "supabase" | "reference";
@@ -84,9 +42,7 @@ export function OfficerAccountability() {
     if (!referenceNoticeShown.current) {
       toast.info(
         "Loaded accountability data compiled from The Washington Post fatal force database and public court records.",
-        {
-          duration: 6000,
-        },
+        { duration: 6000 }
       );
       referenceNoticeShown.current = true;
     }
@@ -116,7 +72,7 @@ export function OfficerAccountability() {
     try {
       let query = supabase
         .from("agencies")
-        .select("*")
+        .select("id, name, agency_type, state, city, total_complaints, total_violations, website")
         .order("total_complaints", { ascending: false });
 
       if (selectedState !== "all") {
@@ -135,7 +91,19 @@ export function OfficerAccountability() {
         return;
       }
 
-      setAgencies(data as AccountabilityAgency[]);
+      // Transform to AccountabilityAgency format
+      const transformed: AccountabilityAgency[] = data.map((item) => ({
+        id: item.id,
+        name: item.name,
+        agency_type: item.agency_type,
+        state: item.state,
+        city: item.city,
+        total_complaints: item.total_complaints ?? 0,
+        total_settlements_paid: 0,
+        source_url: item.website ?? undefined,
+      }));
+
+      setAgencies(transformed);
       setDataSource("supabase");
     } catch (error) {
       console.error("Unexpected error fetching agencies:", error);
@@ -145,20 +113,21 @@ export function OfficerAccountability() {
 
   const fetchOfficers = useCallback(async () => {
     try {
-      let query = supabase
+      const { data, error } = await supabase
         .from("officers")
         .select(`
-          *,
-          agency:agencies(name, state)
+          id,
+          badge_number,
+          first_name,
+          last_name,
+          rank,
+          total_violations,
+          agency_id,
+          agencies (name, state)
         `)
         .order("total_violations", { ascending: false })
         .limit(100);
 
-      if (selectedState !== "all") {
-        query = query.eq("agencies.state", selectedState);
-      }
-
-      const { data, error } = await query;
       if (error) {
         console.warn("Falling back to reference officers due to Supabase error:", error);
         applyOfficerReference();
@@ -170,7 +139,32 @@ export function OfficerAccountability() {
         return;
       }
 
-      setOfficers(data as AccountabilityOfficer[]);
+      // Transform to AccountabilityOfficer format
+      const transformed: AccountabilityOfficer[] = data
+        .filter((item) => {
+          if (selectedState === "all") return true;
+          const agencyData = item.agencies as { name: string; state: string } | null;
+          return agencyData?.state === selectedState;
+        })
+        .map((item) => {
+          const agencyData = item.agencies as { name: string; state: string } | null;
+          return {
+            id: item.id,
+            badge_number: item.badge_number,
+            first_name: item.first_name,
+            last_name: item.last_name,
+            rank: item.rank,
+            total_violations: item.total_violations ?? 0,
+            agency: agencyData ? { name: agencyData.name, state: agencyData.state } : null,
+          };
+        });
+
+      if (transformed.length === 0) {
+        applyOfficerReference();
+        return;
+      }
+
+      setOfficers(transformed);
       setDataSource("supabase");
     } catch (error) {
       console.error("Unexpected error fetching officers:", error);
@@ -344,9 +338,7 @@ export function OfficerAccountability() {
                       </div>
 
                       {agency.data_notes && (
-                        <p className="text-xs text-muted-foreground">
-                          {agency.data_notes}
-                        </p>
+                        <p className="text-xs text-muted-foreground">{agency.data_notes}</p>
                       )}
 
                       {agency.source_url && (
@@ -454,7 +446,7 @@ export function OfficerAccountability() {
                             <TrendingUp className="h-4 w-4 text-red-600 mt-0.5" />
                             <div className="text-xs text-red-900 dark:text-red-200">
                               <strong>Pattern alert:</strong> Multiple documented complaints indicate sustained
-                              accountability concerns.
+                              accountability concerns for this individual.
                             </div>
                           </div>
                         </div>
@@ -466,22 +458,6 @@ export function OfficerAccountability() {
             )}
           </TabsContent>
         </Tabs>
-
-        <Card className="mt-8 bg-primary/5 border-primary/20">
-          <CardHeader>
-            <CardTitle>About This Data</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2 text-sm">
-            <p>
-              Agency-level metrics reflect the number of fatal police shootings tracked by The Washington Post since 2015 and the
-              most recent settlement totals reported by local governments.
-            </p>
-            <p>
-              Officer case summaries highlight high-profile incidents with outcomes documented in court records or official
-              statements. Presence in this list reflects public reporting and does not replace due process.
-            </p>
-          </CardContent>
-        </Card>
       </div>
     </section>
   );

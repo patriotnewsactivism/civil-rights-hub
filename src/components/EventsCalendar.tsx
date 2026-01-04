@@ -44,7 +44,7 @@ type EventRsvp = Database["public"]["Tables"]["event_rsvps"]["Row"];
 
 type ViewMode = "list" | "calendar";
 
-const EVENT_TYPE_LABELS: Record<CommunityEvent["event_type"], string> = {
+const EVENT_TYPE_LABELS: Record<string, string> = {
   protest: "Protest",
   rally: "Rally",
   workshop: "Workshop",
@@ -83,11 +83,12 @@ export const EventsCalendar = () => {
   const [selectedType, setSelectedType] = useState<string>("");
   const [stateFilter, setStateFilter] = useState<string>("");
   const [rsvps, setRsvps] = useState<Map<string, EventRsvp>>(new Map());
+  const [rsvpCounts, setRsvpCounts] = useState<Map<string, number>>(new Map());
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [newEvent, setNewEvent] = useState({
     title: "",
     description: "",
-    event_type: "protest" as CommunityEvent["event_type"],
+    event_type: "protest",
     city: "",
     state: "",
     start_date: "",
@@ -101,7 +102,7 @@ export const EventsCalendar = () => {
     setLoading(true);
     const { data, error } = await supabase
       .from("community_events")
-      .select("*, event_rsvps:user_id (id, status)")
+      .select("*")
       .eq("is_published", true)
       .order("start_date", { ascending: true })
       .limit(50);
@@ -122,6 +123,22 @@ export const EventsCalendar = () => {
     setEvents(typedEvents);
     setFilteredEvents(typedEvents);
     setLoading(false);
+
+    // Fetch RSVP counts for all events
+    const eventIds = typedEvents.map((e) => e.id);
+    if (eventIds.length > 0) {
+      const { data: rsvpData } = await supabase
+        .from("event_rsvps")
+        .select("event_id")
+        .in("event_id", eventIds)
+        .eq("status", "going");
+
+      const counts = new Map<string, number>();
+      (rsvpData ?? []).forEach((r) => {
+        counts.set(r.event_id, (counts.get(r.event_id) ?? 0) + 1);
+      });
+      setRsvpCounts(counts);
+    }
 
     if (user?.id) {
       const { data: rsvpData } = await supabase
@@ -186,14 +203,13 @@ export const EventsCalendar = () => {
       }
 
       setRsvps((current) => new Map(current).set(eventItem.id, data as EventRsvp));
-      setEvents((current) =>
-        current.map((event) => {
-          if (event.id !== eventItem.id) return event;
-          const increment = nextStatus === "going" ? 1 : -1;
-          const baseCount = event.rsvp_count ?? 0;
-          return { ...event, rsvp_count: Math.max(baseCount + increment, 0) };
-        })
-      );
+      setRsvpCounts((current) => {
+        const newCounts = new Map(current);
+        const currentCount = newCounts.get(eventItem.id) ?? 0;
+        const increment = nextStatus === "going" ? 1 : -1;
+        newCounts.set(eventItem.id, Math.max(currentCount + increment, 0));
+        return newCounts;
+      });
     } else {
       const { data, error } = await supabase
         .from("event_rsvps")
@@ -211,13 +227,11 @@ export const EventsCalendar = () => {
       }
 
       setRsvps((current) => new Map(current).set(eventItem.id, data as EventRsvp));
-      setEvents((current) =>
-        current.map((event) =>
-          event.id === eventItem.id
-            ? { ...event, rsvp_count: (event.rsvp_count ?? 0) + 1 }
-            : event
-        )
-      );
+      setRsvpCounts((current) => {
+        const newCounts = new Map(current);
+        newCounts.set(eventItem.id, (newCounts.get(eventItem.id) ?? 0) + 1);
+        return newCounts;
+      });
     }
   };
 
@@ -252,7 +266,7 @@ export const EventsCalendar = () => {
       virtual_link: newEvent.virtual_link || null,
       location_name: newEvent.location_name || null,
       is_published: true,
-      created_by: user.id,
+      organizer_id: user.id,
     };
 
     const { error } = await supabase.from("community_events").insert(payload);
@@ -337,7 +351,7 @@ export const EventsCalendar = () => {
                     <label className="text-sm font-medium">Event type</label>
                     <Select
                       value={newEvent.event_type}
-                      onValueChange={(value) => setNewEvent((state) => ({ ...state, event_type: value as CommunityEvent["event_type"] }))}
+                      onValueChange={(value) => setNewEvent((state) => ({ ...state, event_type: value }))}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Select type" />
@@ -467,66 +481,51 @@ export const EventsCalendar = () => {
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
                   <Badge variant="secondary" className="capitalize">
-                    {event.event_type.replace("_", " ")}
+                    {EVENT_TYPE_LABELS[event.event_type] ?? event.event_type}
                   </Badge>
-                  {event.is_virtual ? (
-                    <Badge className="bg-primary/20 text-primary">
-                      <Video className="mr-1 h-3 w-3" /> Virtual
-                    </Badge>
-                  ) : (
-                    <Badge className="bg-emerald-50 text-emerald-700">
-                      <MapPin className="mr-1 h-3 w-3" /> {event.city}, {event.state}
+                  {event.is_virtual && (
+                    <Badge variant="outline" className="flex items-center gap-1">
+                      <Video className="h-3 w-3" /> Virtual
                     </Badge>
                   )}
                 </div>
               </CardHeader>
               <CardContent className="space-y-3">
-                <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
-                  <CalendarIcon className="h-4 w-4" />
-                  <span>
-                    {format(new Date(event.start_date), "PPpp")}
-                    {event.end_date && ` → ${format(new Date(event.end_date), "PPpp")}`}
-                  </span>
+                <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+                  <span>{format(new Date(event.start_date), "PPP p")}</span>
+                  {event.location_name && (
+                    <span className="flex items-center gap-1">
+                      <MapPin className="h-4 w-4" />
+                      {[event.location_name, event.city, event.state].filter(Boolean).join(", ")}
+                    </span>
+                  )}
                 </div>
-                {event.virtual_link && (
-                  <a href={event.virtual_link} target="_blank" rel="noopener noreferrer" className="text-sm text-primary underline">
-                    Join virtual session
-                  </a>
-                )}
+                <div className="flex items-center gap-1 text-sm">
+                  <Users className="h-4 w-4" />
+                  <span>{rsvpCounts.get(event.id) ?? 0} attending</span>
+                </div>
               </CardContent>
-              <CardFooter className="flex flex-wrap items-center justify-between gap-3">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Users className="h-4 w-4" /> {event.rsvp_count ?? 0} RSVPs
-                </div>
-                <div className="flex flex-wrap items-center gap-2">
-                  <Button variant="outline" size="sm" asChild>
-                    <a href={buildGoogleCalendarUrl(event)} target="_blank" rel="noopener noreferrer">
-                      Add to Google Calendar
-                    </a>
-                  </Button>
-                  {(() => {
-                    const status = rsvps.get(event.id)?.status;
-                    const isGoing = status === "going";
-                    return (
-                      <Button
-                        variant={isGoing ? "default" : "secondary"}
-                        size="sm"
-                        onClick={() => void handleRsvpToggle(event)}
-                      >
-                        {isGoing ? "Going" : "RSVP"}
-                      </Button>
-                    );
-                  })()}
-                </div>
+              <CardFooter className="flex flex-wrap items-center justify-between gap-2">
+                <Button
+                  variant={rsvps.get(event.id)?.status === "going" ? "secondary" : "default"}
+                  size="sm"
+                  onClick={() => void handleRsvpToggle(event)}
+                >
+                  {rsvps.get(event.id)?.status === "going" ? "Cancel RSVP" : "RSVP"}
+                </Button>
+                <Button variant="outline" size="sm" asChild>
+                  <a href={buildGoogleCalendarUrl(event)} target="_blank" rel="noreferrer">
+                    <CalendarIcon className="mr-2 h-4 w-4" /> Add to Calendar
+                  </a>
+                </Button>
               </CardFooter>
             </Card>
           ))}
-
           {filteredEvents.length === 0 && (
-            <Card className="border-dashed text-center">
+            <Card className="border-dashed">
               <CardHeader>
-                <CardTitle>No events match your filters</CardTitle>
-                <CardDescription>Adjust the filters or host a new action to mobilize your community.</CardDescription>
+                <CardTitle>No events found</CardTitle>
+                <CardDescription>Try adjusting your filters or host the first event for your community.</CardDescription>
               </CardHeader>
             </Card>
           )}
@@ -534,14 +533,14 @@ export const EventsCalendar = () => {
       )}
 
       {!loading && viewMode === "calendar" && (
-        <div className="rounded-lg border bg-card p-4">
+        <div className="h-[600px] rounded-lg border bg-card p-4">
           <Calendar
             localizer={localizer}
             events={calendarEvents}
             startAccessor="start"
             endAccessor="end"
-            style={{ height: 500 }}
-            popup
+            style={{ height: "100%" }}
+            views={["month", "week", "day"]}
           />
         </div>
       )}

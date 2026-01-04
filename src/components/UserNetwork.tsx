@@ -3,10 +3,10 @@ import { Users, UserPlus, UserCheck, Search, Filter, Award } from "lucide-react"
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import type { Database } from "@/integrations/supabase/types";
-import type { User } from "@supabase/supabase-js";
+import type { User as SupabaseUser } from "@supabase/supabase-js";
 
-type UserProfileRow = Database["public"]["Tables"]["user_profiles"]["Row"];
-type UserConnectionRow = Database["public"]["Tables"]["user_connections"]["Row"];
+type ProfileRow = Database["public"]["Tables"]["profiles"]["Row"];
+type FollowRow = Database["public"]["Tables"]["follows"]["Row"];
 type RoleFilter = "all" | Database["public"]["Enums"]["app_role"];
 
 type ContributorLevel = {
@@ -24,10 +24,10 @@ const ROLE_OPTIONS: { value: RoleFilter; label: string }[] = [
 ];
 
 export default function UserNetwork() {
-  const [users, setUsers] = useState<UserProfileRow[]>([]);
+  const [users, setUsers] = useState<ProfileRow[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterRole, setFilterRole] = useState<RoleFilter>("all");
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [currentUser, setCurrentUser] = useState<SupabaseUser | null>(null);
   const [following, setFollowing] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -38,10 +38,9 @@ export default function UserNetwork() {
 
     if (user) {
       const { data: connections } = await supabase
-        .from("user_connections")
+        .from("follows")
         .select("following_id")
-        .eq("follower_id", user.id)
-        .returns<Pick<UserConnectionRow, "following_id">[]>();
+        .eq("follower_id", user.id);
 
       setFollowing(connections?.map((connection) => connection.following_id) ?? []);
     } else {
@@ -59,17 +58,17 @@ export default function UserNetwork() {
     setLoading(true);
     try {
       let query = supabase
-        .from("user_profiles")
+        .from("profiles")
         .select("*")
-        .neq("user_id", currentUser.id)
-        .order("posts_created", { ascending: false })
+        .neq("id", currentUser.id)
+        .order("created_at", { ascending: false })
         .limit(50);
 
       if (filterRole !== "all") {
         query = query.eq("role", filterRole);
       }
 
-      const { data, error } = await query.returns<UserProfileRow[]>();
+      const { data, error } = await query;
       if (error) throw error;
       setUsers(data ?? []);
     } catch (error) {
@@ -95,7 +94,7 @@ export default function UserNetwork() {
     try {
       if (following.includes(userId)) {
         await supabase
-          .from("user_connections")
+          .from("follows")
           .delete()
           .eq("follower_id", currentUser.id)
           .eq("following_id", userId);
@@ -103,7 +102,7 @@ export default function UserNetwork() {
         setFollowing((previous) => previous.filter((id) => id !== userId));
         toast.success("Unfollowed");
       } else {
-        await supabase.from("user_connections").insert({ follower_id: currentUser.id, following_id: userId });
+        await supabase.from("follows").insert({ follower_id: currentUser.id, following_id: userId });
         setFollowing((previous) => [...previous, userId]);
         toast.success("Following");
       }
@@ -132,18 +131,9 @@ export default function UserNetwork() {
     );
   };
 
-  const getContributorLevel = (userProfile: UserProfileRow): ContributorLevel => {
-    const totalActivity =
-      (userProfile.posts_created ?? 0) +
-      (userProfile.helpful_answers ?? 0) +
-      (userProfile.threads_created ?? 0) +
-      (userProfile.violations_count ?? 0);
-
-    if (totalActivity >= 100) return { level: "Elite", color: "text-purple-600", icon: "👑" };
-    if (totalActivity >= 50) return { level: "Expert", color: "text-blue-600", icon: "⭐" };
-    if (totalActivity >= 25) return { level: "Active", color: "text-green-600", icon: "🌟" };
-    if (totalActivity >= 10) return { level: "Regular", color: "text-yellow-600", icon: "✨" };
-    return { level: "New", color: "text-gray-600", icon: "🌱" };
+  const getContributorLevel = (userProfile: ProfileRow): ContributorLevel => {
+    // Since we don't have activity stats in the profiles table, use a simple default
+    return { level: "Member", color: "text-gray-600", icon: "🌱" };
   };
 
   const filteredUsers = useMemo(() => {
@@ -151,10 +141,10 @@ export default function UserNetwork() {
     const search = searchQuery.toLowerCase();
 
     return users.filter((user) => {
-      const username = user.username?.toLowerCase() ?? "";
       const displayName = user.display_name?.toLowerCase() ?? "";
       const bio = user.bio?.toLowerCase() ?? "";
-      return username.includes(search) || displayName.includes(search) || bio.includes(search);
+      const email = user.email?.toLowerCase() ?? "";
+      return displayName.includes(search) || bio.includes(search) || email.includes(search);
     });
   }, [searchQuery, users]);
 
@@ -175,7 +165,7 @@ export default function UserNetwork() {
               type="text"
               value={searchQuery}
               onChange={(event) => setSearchQuery(event.target.value)}
-              placeholder="Search by name, username, or bio..."
+              placeholder="Search by name or bio..."
               className="w-full rounded-lg border border-input bg-background py-3 pl-10 pr-4 focus:border-transparent focus:ring-2 focus:ring-ring"
             />
           </div>
@@ -208,33 +198,26 @@ export default function UserNetwork() {
       ) : (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {filteredUsers.map((user) => {
-            const isFollowing = following.includes(user.user_id);
+            const isFollowing = following.includes(user.id);
             const contributorLevel = getContributorLevel(user);
-            const totalActivity =
-              (user.posts_created ?? 0) +
-              (user.helpful_answers ?? 0) +
-              (user.threads_created ?? 0) +
-              (user.violations_count ?? 0);
 
             return (
-              <div key={user.user_id} className="space-y-4 rounded-2xl border bg-card p-6 shadow-md">
+              <div key={user.id} className="space-y-4 rounded-2xl border bg-card p-6 shadow-md">
                 <div className="flex items-start justify-between">
                   <div className="flex items-center space-x-3">
                     <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-purple-500 text-2xl font-bold text-white">
                       {user.avatar_url ? (
-                        <img src={user.avatar_url} alt={user.display_name || user.username || "Profile"} className="h-16 w-16 rounded-full object-cover" />
+                        <img src={user.avatar_url} alt={user.display_name || "Profile"} className="h-16 w-16 rounded-full object-cover" />
                       ) : (
-                        (user.display_name || user.username || "?")
-                          .substring(0, 1)
-                          .toUpperCase()
+                        (user.display_name || "?").substring(0, 1).toUpperCase()
                       )}
                     </div>
                     <div>
                       <div className="flex items-center space-x-2 font-bold text-lg text-foreground">
-                        <span>{user.display_name || user.username}</span>
-                        {user.is_verified && <Award className="h-4 w-4 text-primary" title="Verified" />}
+                        <span>{user.display_name || "Community Member"}</span>
+                        <Award className="h-4 w-4 text-primary" aria-label="Verified" />
                       </div>
-                      <div className="text-sm text-muted-foreground">@{user.username}</div>
+                      <div className="text-sm text-muted-foreground">{user.location || "Location not set"}</div>
                     </div>
                   </div>
                 </div>
@@ -251,33 +234,14 @@ export default function UserNetwork() {
                         {contributorLevel.icon} {contributorLevel.level}
                       </div>
                     </div>
-                    <div className="text-right">
-                      <div className="text-xs text-muted-foreground">Activity</div>
-                      <div className="text-2xl font-bold text-foreground">{totalActivity}</div>
-                    </div>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-3 gap-2 text-center">
-                  <div>
-                    <div className="text-lg font-bold text-foreground">{user.posts_created ?? 0}</div>
-                    <div className="text-xs text-muted-foreground">Posts</div>
-                  </div>
-                  <div>
-                    <div className="text-lg font-bold text-foreground">{user.threads_created ?? 0}</div>
-                    <div className="text-xs text-muted-foreground">Threads</div>
-                  </div>
-                  <div>
-                    <div className="text-lg font-bold text-foreground">{user.helpful_answers ?? 0}</div>
-                    <div className="text-xs text-muted-foreground">Helpful</div>
-                  </div>
-                </div>
-
-                {currentUser && currentUser.id !== user.user_id && (
+                {currentUser && currentUser.id !== user.id && (
                   <button
-                    onClick={() => toggleFollow(user.user_id)}
+                    onClick={() => toggleFollow(user.id)}
                     className={`flex w-full items-center justify-center space-x-2 rounded-lg px-4 py-2 font-semibold transition-all ${
-                      isFollowing ? "bg-secondary text-secondary-foreground" : "bg-gradient-primary text-white"
+                      isFollowing ? "bg-secondary text-secondary-foreground" : "bg-primary text-primary-foreground"
                     }`}
                   >
                     {isFollowing ? (

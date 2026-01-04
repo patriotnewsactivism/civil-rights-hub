@@ -8,7 +8,6 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import {
   Shield,
   Users,
-  Bell,
   MessageCircle,
   Sparkles,
   Menu,
@@ -24,33 +23,23 @@ import { StateQuickSelect } from "@/components/StateQuickSelect";
 
 export function Header() {
   const { user } = useAuth();
-  const [unreadNotifications, setUnreadNotifications] = useState(0);
   const [unreadMessages, setUnreadMessages] = useState(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     if (!user) {
       setUnreadMessages(0);
-      setUnreadNotifications(0);
       return;
     }
 
     const loadCounts = async () => {
-      const [{ count: notifCount }, { count: msgCount }] = await Promise.all([
-        supabase
-          .from("notifications")
-          .select("*", { count: "exact", head: true })
-          .eq("user_id", user.id)
-          .eq("is_read", false),
-        supabase
-          .from("direct_messages")
-          .select("*", { count: "exact", head: true })
-          .eq("recipient_id", user.id)
-          .eq("is_read", false)
-          .eq("is_deleted_by_recipient", false),
-      ]);
+      const { count: msgCount } = await supabase
+        .from("direct_messages")
+        .select("*", { count: "exact", head: true })
+        .eq("recipient_id", user.id)
+        .eq("is_read", false)
+        .eq("is_deleted_by_recipient", false);
 
-      setUnreadNotifications(notifCount ?? 0);
       setUnreadMessages(msgCount ?? 0);
     };
 
@@ -58,13 +47,6 @@ export function Header() {
 
     const channel = supabase
       .channel(`header-counts-${user.id}`)
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "notifications", filter: `user_id=eq.${user.id}` },
-        () => {
-          void loadCounts();
-        }
-      )
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "direct_messages", filter: `recipient_id=eq.${user.id}` },
@@ -137,28 +119,16 @@ export function Header() {
 
           {/* User Actions - Always Visible */}
           {user && (
-            <>
-              <Button variant="ghost" size="icon" asChild className="relative h-9 w-9">
-                <Link to="/community?tab=notifications" aria-label="Notifications">
-                  <Bell className="h-4 w-4 md:h-5 md:w-5" />
-                  {unreadNotifications > 0 && (
-                    <span className="absolute -top-1 -right-1 inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold text-white">
-                      {Math.min(unreadNotifications, 99)}
-                    </span>
-                  )}
-                </Link>
-              </Button>
-              <Button variant="ghost" size="icon" asChild className="relative h-9 w-9">
-                <Link to="/community?tab=messages" aria-label="Messages">
-                  <MessageCircle className="h-4 w-4 md:h-5 md:w-5" />
-                  {unreadMessages > 0 && (
-                    <span className="absolute -top-1 -right-1 inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold text-primary-foreground">
-                      {Math.min(unreadMessages, 99)}
-                    </span>
-                  )}
-                </Link>
-              </Button>
-            </>
+            <Button variant="ghost" size="icon" asChild className="relative h-9 w-9">
+              <Link to="/community?tab=messages" aria-label="Messages">
+                <MessageCircle className="h-4 w-4 md:h-5 md:w-5" />
+                {unreadMessages > 0 && (
+                  <span className="absolute -top-1 -right-1 inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold text-primary-foreground">
+                    {Math.min(unreadMessages, 99)}
+                  </span>
+                )}
+              </Link>
+            </Button>
           )}
 
           {/* Auth Button / Community Button */}

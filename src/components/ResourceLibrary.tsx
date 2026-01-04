@@ -20,14 +20,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 
-const RESOURCE_TYPES: Array<Database["public"]["Tables"]["resource_library"]["Row"]["resource_type"]> = [
-  "pdf",
-  "video",
-  "link",
-  "image",
-  "audio",
-  "document",
-];
+const RESOURCE_TYPES = ["pdf", "video", "link", "image", "audio", "document"] as const;
 
 type Resource = Database["public"]["Tables"]["resource_library"]["Row"];
 type ResourceRating = Database["public"]["Tables"]["resource_ratings"]["Row"];
@@ -35,12 +28,9 @@ type ResourceRating = Database["public"]["Tables"]["resource_ratings"]["Row"];
 type UploadFormState = {
   title: string;
   description: string;
-  resource_type: Resource["resource_type"];
+  resource_type: string;
   category: string;
-  external_url: string;
-  file_url: string;
-  author: string;
-  source: string;
+  url: string;
 };
 
 const initialForm: UploadFormState = {
@@ -48,10 +38,7 @@ const initialForm: UploadFormState = {
   description: "",
   resource_type: "pdf",
   category: "",
-  external_url: "",
-  file_url: "",
-  author: "",
-  source: "",
+  url: "",
 };
 
 export const ResourceLibrary = () => {
@@ -72,7 +59,6 @@ export const ResourceLibrary = () => {
     const { data, error } = await supabase
       .from("resource_library")
       .select("*")
-      .eq("is_approved", true)
       .order("created_at", { ascending: false })
       .limit(100);
 
@@ -123,7 +109,8 @@ export const ResourceLibrary = () => {
 
   useEffect(() => {
     const next = resources.filter((resource) => {
-      const matchesCategory = categoryFilter ? resource.category === categoryFilter : true;
+      const categories = resource.category ?? [];
+      const matchesCategory = categoryFilter ? categories.includes(categoryFilter) : true;
       const matchesType = typeFilter ? resource.resource_type === typeFilter : true;
       const matchesSearch = searchTerm
         ? resource.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -134,7 +121,10 @@ export const ResourceLibrary = () => {
     setFiltered(next);
   }, [resources, categoryFilter, typeFilter, searchTerm]);
 
-  const categories = useMemo(() => Array.from(new Set(resources.map((resource) => resource.category))).filter(Boolean), [resources]);
+  const categories = useMemo(() => {
+    const allCategories = resources.flatMap((r) => r.category ?? []);
+    return Array.from(new Set(allCategories)).filter(Boolean);
+  }, [resources]);
 
   const handleRating = async (resource: Resource, score: number) => {
     if (!user?.id) {
@@ -177,10 +167,10 @@ export const ResourceLibrary = () => {
       return;
     }
 
-    if (!formState.title || !formState.category || (!formState.file_url && !formState.external_url)) {
+    if (!formState.title || !formState.category || !formState.url) {
       toast({
         title: "Missing information",
-        description: "Provide a title, category, and either a file URL or an external link.",
+        description: "Provide a title, category, and URL.",
         variant: "destructive",
       });
       return;
@@ -190,13 +180,9 @@ export const ResourceLibrary = () => {
       title: formState.title,
       description: formState.description || null,
       resource_type: formState.resource_type,
-      category: formState.category,
-      file_url: formState.file_url || null,
-      external_url: formState.external_url || null,
-      author: formState.author || null,
-      source: formState.source || null,
-      uploaded_by: user.id,
-      is_approved: false,
+      category: [formState.category],
+      url: formState.url,
+      submitter_id: user.id,
     };
 
     const { error } = await supabase.from("resource_library").insert(payload);
@@ -217,6 +203,7 @@ export const ResourceLibrary = () => {
 
     setUploadDialogOpen(false);
     setFormState(initialForm);
+    void fetchResources();
   };
 
   return (
@@ -262,7 +249,7 @@ export const ResourceLibrary = () => {
                   <label className="text-sm font-medium">Type</label>
                   <Select
                     value={formState.resource_type}
-                    onValueChange={(value) => setFormState((state) => ({ ...state, resource_type: value as Resource["resource_type"] }))}
+                    onValueChange={(value) => setFormState((state) => ({ ...state, resource_type: value }))}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Select type" />
@@ -278,27 +265,10 @@ export const ResourceLibrary = () => {
                 </div>
               </div>
               <Input
-                placeholder="Direct file URL (optional)"
-                value={formState.file_url}
-                onChange={(event) => setFormState((state) => ({ ...state, file_url: event.target.value }))}
+                placeholder="Resource URL"
+                value={formState.url}
+                onChange={(event) => setFormState((state) => ({ ...state, url: event.target.value }))}
               />
-              <Input
-                placeholder="External link (optional)"
-                value={formState.external_url}
-                onChange={(event) => setFormState((state) => ({ ...state, external_url: event.target.value }))}
-              />
-              <div className="grid gap-4 md:grid-cols-2">
-                <Input
-                  placeholder="Author or organization"
-                  value={formState.author}
-                  onChange={(event) => setFormState((state) => ({ ...state, author: event.target.value }))}
-                />
-                <Input
-                  placeholder="Source URL"
-                  value={formState.source}
-                  onChange={(event) => setFormState((state) => ({ ...state, source: event.target.value }))}
-                />
-              </div>
             </div>
             <DialogFooter>
               <Button variant="ghost" onClick={() => setUploadDialogOpen(false)}>
@@ -361,7 +331,7 @@ export const ResourceLibrary = () => {
       {!loading && (
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {filtered.map((resource) => {
-            const rating = ratings.get(resource.id)?.rating ?? 0;
+            const userRating = ratings.get(resource.id)?.rating ?? 0;
             return (
               <Card key={resource.id} className="flex h-full flex-col justify-between shadow-sm">
                 <CardHeader className="space-y-2">
@@ -373,9 +343,9 @@ export const ResourceLibrary = () => {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-                    {resource.category && <Badge variant="outline">{resource.category}</Badge>}
-                    {resource.language && <Badge variant="outline">{resource.language.toUpperCase()}</Badge>}
-                    {resource.author && <span>By {resource.author}</span>}
+                    {(resource.category ?? []).map((cat) => (
+                      <Badge key={cat} variant="outline">{cat}</Badge>
+                    ))}
                   </div>
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <Download className="h-4 w-4" /> {resource.download_count ?? 0} downloads
@@ -389,36 +359,22 @@ export const ResourceLibrary = () => {
                         className="text-primary"
                         aria-label={`Rate ${star} star${star > 1 ? "s" : ""}`}
                       >
-                        <Star className={`h-5 w-5 ${star <= rating ? "fill-primary" : "fill-transparent"}`} />
+                        <Star className={`h-5 w-5 ${star <= userRating ? "fill-primary" : "fill-transparent"}`} />
                       </button>
                     ))}
-                    <span className="ml-2 text-xs text-muted-foreground">Average: {resource.rating ?? "—"}</span>
+                    <span className="ml-2 text-xs text-muted-foreground">Average: {resource.avg_rating?.toFixed(1) ?? "—"}</span>
                   </div>
                 </CardContent>
                 <CardFooter className="flex flex-wrap items-center justify-between gap-2">
                   <div className="flex flex-col text-xs text-muted-foreground">
-                    {resource.source && (
-                      <a href={resource.source} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-primary underline">
-                        <LinkIcon className="h-3 w-3" /> Source
-                      </a>
-                    )}
-                    <span>Updated {new Date(resource.updated_at).toLocaleDateString()}</span>
+                    <span>Updated {resource.updated_at ? new Date(resource.updated_at).toLocaleDateString() : "N/A"}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    {resource.file_url && (
-                      <Button asChild size="sm">
-                        <a href={resource.file_url} target="_blank" rel="noopener noreferrer">
-                          <Download className="mr-2 h-4 w-4" /> Download
-                        </a>
-                      </Button>
-                    )}
-                    {resource.external_url && (
-                      <Button variant="outline" size="sm" asChild>
-                        <a href={resource.external_url} target="_blank" rel="noopener noreferrer">
-                          Open link
-                        </a>
-                      </Button>
-                    )}
+                    <Button asChild size="sm">
+                      <a href={resource.url} target="_blank" rel="noopener noreferrer">
+                        <LinkIcon className="mr-2 h-4 w-4" /> Open
+                      </a>
+                    </Button>
                   </div>
                 </CardFooter>
               </Card>

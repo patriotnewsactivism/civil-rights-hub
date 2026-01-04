@@ -27,7 +27,7 @@ export const PoliceScanner = () => {
   const [scanners, setScanners] = useState<ScannerLinkRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedState, setSelectedState] = useState<string>("all");
-  const [usingFallback, setUsingFallback] = useState(false);
+  const [fallbackStatus, setFallbackStatus] = useState<"none" | "empty" | "error">("none");
 
   const fetchScanners = useCallback(async () => {
     setLoading(true);
@@ -43,15 +43,16 @@ export const PoliceScanner = () => {
 
       if (data && data.length > 0) {
         setScanners(data as ScannerLinkRecord[]);
-        setUsingFallback(false);
-      } else {
-        setScanners(SCANNER_FALLBACK_DATA);
-        setUsingFallback(true);
+        setFallbackStatus("none");
+        return;
       }
+
+      setScanners(SCANNER_FALLBACK_DATA);
+      setFallbackStatus("empty");
     } catch (error) {
       console.error("Error fetching scanner links:", error);
       setScanners(SCANNER_FALLBACK_DATA);
-      setUsingFallback(true);
+      setFallbackStatus("error");
       toast({
         title: "Failed to load scanner links",
         description: "Showing cached Broadcastify feeds instead.",
@@ -140,13 +141,14 @@ export const PoliceScanner = () => {
           </Card>
 
           {/* Scanner Links */}
-          {usingFallback && (
+          {fallbackStatus !== "none" && (
             <Alert className="border-dashed">
               <Database className="h-4 w-4" />
               <AlertTitle>Loaded cached scanner feeds</AlertTitle>
               <AlertDescription>
-                Supabase is offline right now. These Broadcastify and OpenMHZ feeds come from the
-                bundled seed data so you can still monitor activity.
+                {fallbackStatus === "error"
+                  ? "We couldn't reach Supabase right now. These Broadcastify and OpenMHZ feeds come from the bundled seed data so you can still monitor activity."
+                  : "The live Supabase database doesn't have scanner feeds yet. Showing bundled Broadcastify and OpenMHZ seed data until the sync completes."}
               </AlertDescription>
             </Alert>
           )}

@@ -3,7 +3,7 @@
 -- Date: January 4, 2026
 
 -- Clear existing templates to replace with verified templates
-TRUNCATE public.foia_templates;
+TRUNCATE public.foia_templates CASCADE;
 
 -- FEDERAL FOIA TEMPLATES
 

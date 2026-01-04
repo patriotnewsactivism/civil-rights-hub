@@ -198,7 +198,7 @@ export const ResourceCommandCenter = () => {
 
   const resourceDefinitions = useMemo(
     () => createResourceDefinitions(focusState, (state) => setFocusState(state)),
-    [focusState]
+    [focusState, setFocusState]
   );
 
   const filteredResources = useMemo(() => {

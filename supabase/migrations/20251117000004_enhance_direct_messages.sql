@@ -45,7 +45,8 @@ CREATE INDEX IF NOT EXISTS idx_direct_messages_search ON public.direct_messages 
 -- =====================================================
 
 -- Add updated_at trigger
-CREATE TRIGGER IF NOT EXISTS update_direct_messages_updated_at
+DROP TRIGGER IF EXISTS update_direct_messages_updated_at ON public.direct_messages;
+CREATE TRIGGER update_direct_messages_updated_at
   BEFORE UPDATE ON public.direct_messages
   FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
 

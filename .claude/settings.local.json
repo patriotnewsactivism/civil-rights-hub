@@ -7,7 +7,12 @@
       "WebFetch(domain:en.wikipedia.org)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(git push)"
+      "Bash(git push)",
+      "Bash(npm run dev:*)",
+      "Bash(npm run lint)",
+      "Bash(tee:*)",
+      "Bash(curl:*)",
+      "Bash(psql:*)"
     ],
     "deny": [],
     "ask": []

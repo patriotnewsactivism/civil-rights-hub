@@ -19,6 +19,13 @@ import Learn from "./pages/Learn";
 import Newsroom from "./pages/Newsroom";
 import GetHelp from "./pages/GetHelp";
 import { JurisdictionProvider } from "./hooks/useJurisdiction";
+import Attorneys from "./components/AttorneyList";
+<AttorneyList 
+  searchQuery={searchQuery} // State from your search input
+  selectedState={selectedState} // State from your dropdown
+  selectedSpecialty={selectedSpecialty} // State from specialty dropdown
+/>
+
 
 const queryClient = new QueryClient();
 

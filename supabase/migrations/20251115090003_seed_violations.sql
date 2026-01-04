@@ -1,7 +1,5 @@
 -- Seed historically documented civil rights violations for the public feed
 
-TRUNCATE public.violations RESTART IDENTITY CASCADE;
-
 INSERT INTO public.violations (
   user_id,
   title,

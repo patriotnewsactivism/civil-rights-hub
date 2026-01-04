@@ -24,8 +24,12 @@ async function seed() {
   console.log(`Seeding ${attorneys.length} attorneys...`);
   
   const { data, error } = await supabase
-    .from('attorneys')
-    .upsert(attorneys, { onConflict: 'email' }); // Prevent duplicates
+  .from('attorneys')
+  .upsert(attorneys, { 
+    onConflict: 'name, phone',  // Uses the composite index we just created
+    ignoreDuplicates: false     // set to false to update existing entries
+  });
+
 
   if (error) console.error('Error:', error);
   else console.log('Success:', data);

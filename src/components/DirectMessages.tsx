@@ -11,7 +11,7 @@ import { formatDistanceToNow } from "date-fns";
 import type { Database } from "@/integrations/supabase/types";
 
 type ProfileRow = Database["public"]["Tables"]["profiles"]["Row"];
-type MessageRow = Database["public"]["Tables"]["messages"]["Row"];
+type DirectMessageRow = Database["public"]["Tables"]["direct_messages"]["Row"];
 
 interface ProfileSummary {
   id: string;
@@ -20,7 +20,7 @@ interface ProfileSummary {
   role: ProfileRow["role"];
 }
 
-type Message = MessageRow;
+type Message = DirectMessageRow;
 
 export function DirectMessages() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -58,7 +58,13 @@ export function DirectMessages() {
     }
 
     return messages.filter((message) => {
-      // Messages table doesn't have soft delete columns, show all messages
+      // Filter out messages deleted by current user
+      if (message.sender_id === currentUserId && message.is_deleted_by_sender) {
+        return false;
+      }
+      if (message.recipient_id === currentUserId && message.is_deleted_by_recipient) {
+        return false;
+      }
       return true;
     });
   }, [currentUserId, messages]);
@@ -121,7 +127,7 @@ export function DirectMessages() {
     if (!currentUserId) return;
 
     const { data, error } = await supabase
-      .from("messages")
+      .from("direct_messages")
       .select("*")
       .or(`sender_id.eq.${currentUserId},recipient_id.eq.${currentUserId}`)
       .order("created_at", { ascending: true });
@@ -261,8 +267,7 @@ export function DirectMessages() {
                 (message) =>
                   message.sender_id === user.id &&
                   message.recipient_id === currentUserId &&
-                  !message.is_read &&
-                  !message.is_deleted_by_recipient
+                  !message.is_read
               ).length;
 
               return (
@@ -335,7 +340,7 @@ export function DirectMessages() {
                       >
                         <p className="break-words">{message.content}</p>
                         <p className="mt-1 text-xs opacity-70">
-                          {formatDistanceToNow(new Date(message.created_at), { addSuffix: true })}
+                          {message.created_at && formatDistanceToNow(new Date(message.created_at), { addSuffix: true })}
                         </p>
                       </div>
                     </div>

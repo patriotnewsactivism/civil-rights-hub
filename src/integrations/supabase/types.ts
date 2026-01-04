@@ -62,6 +62,51 @@ export type Database = {
         }
         Relationships: []
       }
+      agencies: {
+        Row: {
+          address: string | null
+          agency_type: string
+          city: string | null
+          created_at: string | null
+          id: string
+          name: string
+          phone: string | null
+          state: string
+          total_complaints: number | null
+          total_violations: number | null
+          updated_at: string | null
+          website: string | null
+        }
+        Insert: {
+          address?: string | null
+          agency_type: string
+          city?: string | null
+          created_at?: string | null
+          id?: string
+          name: string
+          phone?: string | null
+          state: string
+          total_complaints?: number | null
+          total_violations?: number | null
+          updated_at?: string | null
+          website?: string | null
+        }
+        Update: {
+          address?: string | null
+          agency_type?: string
+          city?: string | null
+          created_at?: string | null
+          id?: string
+          name?: string
+          phone?: string | null
+          state?: string
+          total_complaints?: number | null
+          total_violations?: number | null
+          updated_at?: string | null
+          website?: string | null
+        }
+        Relationships: []
+      }
       attorneys: {
         Row: {
           accepts_pro_bono: boolean | null
@@ -148,6 +193,161 @@ export type Database = {
           },
         ]
       }
+      community_events: {
+        Row: {
+          city: string | null
+          created_at: string | null
+          description: string
+          end_date: string | null
+          event_type: string
+          id: string
+          is_published: boolean | null
+          is_virtual: boolean | null
+          location_name: string | null
+          organizer_id: string | null
+          start_date: string
+          state: string | null
+          title: string
+          updated_at: string | null
+          virtual_link: string | null
+        }
+        Insert: {
+          city?: string | null
+          created_at?: string | null
+          description: string
+          end_date?: string | null
+          event_type: string
+          id?: string
+          is_published?: boolean | null
+          is_virtual?: boolean | null
+          location_name?: string | null
+          organizer_id?: string | null
+          start_date: string
+          state?: string | null
+          title: string
+          updated_at?: string | null
+          virtual_link?: string | null
+        }
+        Update: {
+          city?: string | null
+          created_at?: string | null
+          description?: string
+          end_date?: string | null
+          event_type?: string
+          id?: string
+          is_published?: boolean | null
+          is_virtual?: boolean | null
+          location_name?: string | null
+          organizer_id?: string | null
+          start_date?: string
+          state?: string | null
+          title?: string
+          updated_at?: string | null
+          virtual_link?: string | null
+        }
+        Relationships: []
+      }
+      content_reports: {
+        Row: {
+          content_id: string
+          content_type: string
+          created_at: string | null
+          id: string
+          reason: string
+          reporter_id: string
+          status: string | null
+        }
+        Insert: {
+          content_id: string
+          content_type: string
+          created_at?: string | null
+          id?: string
+          reason: string
+          reporter_id: string
+          status?: string | null
+        }
+        Update: {
+          content_id?: string
+          content_type?: string
+          created_at?: string | null
+          id?: string
+          reason?: string
+          reporter_id?: string
+          status?: string | null
+        }
+        Relationships: []
+      }
+      direct_messages: {
+        Row: {
+          content: string
+          created_at: string | null
+          id: string
+          is_deleted_by_recipient: boolean | null
+          is_deleted_by_sender: boolean | null
+          is_read: boolean | null
+          read_at: string | null
+          recipient_id: string
+          sender_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          id?: string
+          is_deleted_by_recipient?: boolean | null
+          is_deleted_by_sender?: boolean | null
+          is_read?: boolean | null
+          read_at?: string | null
+          recipient_id: string
+          sender_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          id?: string
+          is_deleted_by_recipient?: boolean | null
+          is_deleted_by_sender?: boolean | null
+          is_read?: boolean | null
+          read_at?: string | null
+          recipient_id?: string
+          sender_id?: string
+        }
+        Relationships: []
+      }
+      event_rsvps: {
+        Row: {
+          created_at: string | null
+          event_id: string
+          id: string
+          status: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          event_id: string
+          id?: string
+          status?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          event_id?: string
+          id?: string
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_rsvps_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "community_events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       foia_requests: {
         Row: {
           agency_name: string
@@ -205,711 +405,6 @@ export type Database = {
         }
         Relationships: []
       }
-      community_events: {
-        Row: {
-          address: string | null
-          attendee_count: number | null
-          cancellation_reason: string | null
-          capacity: number | null
-          city: string
-          created_at: string
-          created_by: string | null
-          description: string
-          end_date: string | null
-          event_type: string
-          id: string
-          is_cancelled: boolean | null
-          is_published: boolean | null
-          is_virtual: boolean | null
-          latitude: string | null
-          location_name: string | null
-          longitude: string | null
-          organizer_contact: string | null
-          organizer_name: string | null
-          registration_link: string | null
-          registration_required: boolean | null
-          rsvp_count: number | null
-          start_date: string
-          state: string
-          tags: string[] | null
-          title: string
-          updated_at: string
-          virtual_link: string | null
-        }
-        Insert: {
-          address?: string | null
-          attendee_count?: number | null
-          cancellation_reason?: string | null
-          capacity?: number | null
-          city: string
-          created_at?: string
-          created_by?: string | null
-          description: string
-          end_date?: string | null
-          event_type: string
-          id?: string
-          is_cancelled?: boolean | null
-          is_published?: boolean | null
-          is_virtual?: boolean | null
-          latitude?: string | null
-          location_name?: string | null
-          longitude?: string | null
-          organizer_contact?: string | null
-          organizer_name?: string | null
-          registration_link?: string | null
-          registration_required?: boolean | null
-          rsvp_count?: number | null
-          start_date: string
-          state: string
-          tags?: string[] | null
-          title: string
-          updated_at?: string
-          virtual_link?: string | null
-        }
-        Update: {
-          address?: string | null
-          attendee_count?: number | null
-          cancellation_reason?: string | null
-          capacity?: number | null
-          city?: string
-          created_at?: string
-          created_by?: string | null
-          description?: string
-          end_date?: string | null
-          event_type?: string
-          id?: string
-          is_cancelled?: boolean | null
-          is_published?: boolean | null
-          is_virtual?: boolean | null
-          latitude?: string | null
-          location_name?: string | null
-          longitude?: string | null
-          organizer_contact?: string | null
-          organizer_name?: string | null
-          registration_link?: string | null
-          registration_required?: boolean | null
-          rsvp_count?: number | null
-          start_date?: string
-          state?: string
-          tags?: string[] | null
-          title?: string
-          updated_at?: string
-          virtual_link?: string | null
-        }
-        Relationships: []
-      }
-      event_rsvps: {
-        Row: {
-          created_at: string
-          email: string | null
-          event_id: string
-          id: string
-          name: string | null
-          status: string | null
-          user_id: string | null
-        }
-        Insert: {
-          created_at?: string
-          email?: string | null
-          event_id: string
-          id?: string
-          name?: string | null
-          status?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          created_at?: string
-          email?: string | null
-          event_id?: string
-          id?: string
-          name?: string | null
-          status?: string | null
-          user_id?: string | null
-        }
-        Relationships: []
-      }
-      resource_library: {
-        Row: {
-          approved_by: string | null
-          author: string | null
-          category: string
-          created_at: string
-          description: string | null
-          download_count: number | null
-          external_url: string | null
-          file_size: number | null
-          file_url: string | null
-          id: string
-          is_approved: boolean | null
-          language: string | null
-          rating: string | null
-          rating_count: number | null
-          resource_type: string
-          source: string | null
-          tags: string[] | null
-          title: string
-          updated_at: string
-          uploaded_by: string | null
-          view_count: number | null
-        }
-        Insert: {
-          approved_by?: string | null
-          author?: string | null
-          category: string
-          created_at?: string
-          description?: string | null
-          download_count?: number | null
-          external_url?: string | null
-          file_size?: number | null
-          file_url?: string | null
-          id?: string
-          is_approved?: boolean | null
-          language?: string | null
-          rating?: string | null
-          rating_count?: number | null
-          resource_type: string
-          source?: string | null
-          tags?: string[] | null
-          title: string
-          updated_at?: string
-          uploaded_by?: string | null
-          view_count?: number | null
-        }
-        Update: {
-          approved_by?: string | null
-          author?: string | null
-          category?: string
-          created_at?: string
-          description?: string | null
-          download_count?: number | null
-          external_url?: string | null
-          file_size?: number | null
-          file_url?: string | null
-          id?: string
-          is_approved?: boolean | null
-          language?: string | null
-          rating?: string | null
-          rating_count?: number | null
-          resource_type?: string
-          source?: string | null
-          tags?: string[] | null
-          title?: string
-          updated_at?: string
-          uploaded_by?: string | null
-          view_count?: number | null
-        }
-        Relationships: []
-      }
-      resource_ratings: {
-        Row: {
-          created_at: string
-          id: string
-          rating: number
-          resource_id: string
-          review: string | null
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          rating: number
-          resource_id: string
-          review?: string | null
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          rating?: number
-          resource_id?: string
-          review?: string | null
-          user_id?: string
-        }
-        Relationships: []
-      }
-      success_stories: {
-        Row: {
-          approved_by: string | null
-          city: string | null
-          created_at: string
-          id: string
-          incident_type: string | null
-          is_anonymous: boolean | null
-          is_approved: boolean | null
-          is_featured: boolean | null
-          like_count: number | null
-          organizations_involved: string[] | null
-          outcome: string
-          resolution_date: string | null
-          share_count: number | null
-          state: string | null
-          story: string
-          submitter_name: string | null
-          submitted_by: string | null
-          title: string
-          updated_at: string
-        }
-        Insert: {
-          approved_by?: string | null
-          city?: string | null
-          created_at?: string
-          id?: string
-          incident_type?: string | null
-          is_anonymous?: boolean | null
-          is_approved?: boolean | null
-          is_featured?: boolean | null
-          like_count?: number | null
-          organizations_involved?: string[] | null
-          outcome: string
-          resolution_date?: string | null
-          share_count?: number | null
-          state?: string | null
-          story: string
-          submitter_name?: string | null
-          submitted_by?: string | null
-          title: string
-          updated_at?: string
-        }
-        Update: {
-          approved_by?: string | null
-          city?: string | null
-          created_at?: string
-          id?: string
-          incident_type?: string | null
-          is_anonymous?: boolean | null
-          is_approved?: boolean | null
-          is_featured?: boolean | null
-          like_count?: number | null
-          organizations_involved?: string[] | null
-          outcome?: string
-          resolution_date?: string | null
-          share_count?: number | null
-          state?: string | null
-          story?: string
-          submitter_name?: string | null
-          submitted_by?: string | null
-          title?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
-      direct_messages: {
-        Row: {
-          content: string
-          created_at: string
-          id: string
-          is_deleted_by_recipient: boolean | null
-          is_deleted_by_sender: boolean | null
-          is_read: boolean | null
-          is_starred_by_recipient: boolean | null
-          is_starred_by_sender: boolean | null
-          parent_message_id: string | null
-          read_at: string | null
-          recipient_id: string
-          sender_id: string
-          subject: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          content: string
-          created_at?: string
-          id?: string
-          is_deleted_by_recipient?: boolean | null
-          is_deleted_by_sender?: boolean | null
-          is_read?: boolean | null
-          is_starred_by_recipient?: boolean | null
-          is_starred_by_sender?: boolean | null
-          parent_message_id?: string | null
-          read_at?: string | null
-          recipient_id: string
-          sender_id: string
-          subject?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          content?: string
-          created_at?: string
-          id?: string
-          is_deleted_by_recipient?: boolean | null
-          is_deleted_by_sender?: boolean | null
-          is_read?: boolean | null
-          is_starred_by_recipient?: boolean | null
-          is_starred_by_sender?: boolean | null
-          parent_message_id?: string | null
-          read_at?: string | null
-          recipient_id?: string
-          sender_id?: string
-          subject?: string | null
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
-      emergency_contacts: {
-        Row: {
-          created_at: string
-          email: string | null
-          id: string
-          is_primary: boolean | null
-          name: string
-          notes: string | null
-          phone: string
-          priority_order: number | null
-          relationship: string | null
-          updated_at: string
-          user_id: string | null
-        }
-        Insert: {
-          created_at?: string
-          email?: string | null
-          id?: string
-          is_primary?: boolean | null
-          name: string
-          notes?: string | null
-          phone: string
-          priority_order?: number | null
-          relationship?: string | null
-          updated_at?: string
-          user_id?: string | null
-        }
-        Update: {
-          created_at?: string
-          email?: string | null
-          id?: string
-          is_primary?: boolean | null
-          name?: string
-          notes?: string | null
-          phone?: string
-          priority_order?: number | null
-          relationship?: string | null
-          updated_at?: string
-          user_id?: string | null
-        }
-        Relationships: []
-      }
-      panic_alerts: {
-        Row: {
-          address: string | null
-          alert_type: string
-          contacts_notified: string[] | null
-          created_at: string
-          id: string
-          latitude: string
-          longitude: string
-          message: string | null
-          resolved_at: string | null
-          status: string | null
-          user_id: string
-        }
-        Insert: {
-          address?: string | null
-          alert_type: string
-          contacts_notified?: string[] | null
-          created_at?: string
-          id?: string
-          latitude: string
-          longitude: string
-          message?: string | null
-          resolved_at?: string | null
-          status?: string | null
-          user_id: string
-        }
-        Update: {
-          address?: string | null
-          alert_type?: string
-          contacts_notified?: string[] | null
-          created_at?: string
-          id?: string
-          latitude?: string
-          longitude?: string
-          message?: string | null
-          resolved_at?: string | null
-          status?: string | null
-          user_id?: string
-        }
-        Relationships: []
-      }
-      comment_upvotes: {
-        Row: {
-          comment_id: string
-          created_at: string
-          id: string
-          user_id: string | null
-        }
-        Insert: {
-          comment_id: string
-          created_at?: string
-          id?: string
-          user_id?: string | null
-        }
-        Update: {
-          comment_id?: string
-          created_at?: string
-          id?: string
-          user_id?: string | null
-        }
-        Relationships: []
-      }
-      content_reports: {
-        Row: {
-          content_id: string
-          content_type: string
-          created_at: string
-          details: string | null
-          id: string
-          reason: string
-          reporter_id: string | null
-          reviewed_at: string | null
-          reviewed_by: string | null
-          status: string | null
-        }
-        Insert: {
-          content_id: string
-          content_type: string
-          created_at?: string
-          details?: string | null
-          id?: string
-          reason: string
-          reporter_id?: string | null
-          reviewed_at?: string | null
-          reviewed_by?: string | null
-          status?: string | null
-        }
-        Update: {
-          content_id?: string
-          content_type?: string
-          created_at?: string
-          details?: string | null
-          id?: string
-          reason?: string
-          reporter_id?: string | null
-          reviewed_at?: string | null
-          reviewed_by?: string | null
-          status?: string | null
-        }
-        Relationships: []
-      }
-      forum_posts: {
-        Row: {
-          content: string
-          created_at: string
-          id: string
-          is_deleted: boolean | null
-          is_edited: boolean | null
-          like_count: number | null
-          parent_post_id: string | null
-          thread_id: string
-          updated_at: string
-          user_id: string | null
-          username: string | null
-        }
-        Insert: {
-          content: string
-          created_at?: string
-          id?: string
-          is_deleted?: boolean | null
-          is_edited?: boolean | null
-          like_count?: number | null
-          parent_post_id?: string | null
-          thread_id: string
-          updated_at?: string
-          user_id?: string | null
-          username?: string | null
-        }
-        Update: {
-          content?: string
-          created_at?: string
-          id?: string
-          is_deleted?: boolean | null
-          is_edited?: boolean | null
-          like_count?: number | null
-          parent_post_id?: string | null
-          thread_id?: string
-          updated_at?: string
-          user_id?: string | null
-          username?: string | null
-        }
-        Relationships: []
-      }
-      forum_threads: {
-        Row: {
-          category: string
-          content: string
-          created_at: string
-          id: string
-          is_deleted: boolean | null
-          is_locked: boolean | null
-          is_pinned: boolean | null
-          last_post_at: string | null
-          like_count: number | null
-          post_count: number | null
-          title: string
-          updated_at: string
-          user_id: string | null
-          username: string | null
-          view_count: number | null
-        }
-        Insert: {
-          category: string
-          content: string
-          created_at?: string
-          id?: string
-          is_deleted?: boolean | null
-          is_locked?: boolean | null
-          is_pinned?: boolean | null
-          last_post_at?: string | null
-          like_count?: number | null
-          post_count?: number | null
-          title: string
-          updated_at?: string
-          user_id?: string | null
-          username?: string | null
-          view_count?: number | null
-        }
-        Update: {
-          category?: string
-          content?: string
-          created_at?: string
-          id?: string
-          is_deleted?: boolean | null
-          is_locked?: boolean | null
-          is_pinned?: boolean | null
-          last_post_at?: string | null
-          like_count?: number | null
-          post_count?: number | null
-          title?: string
-          updated_at?: string
-          user_id?: string | null
-          username?: string | null
-          view_count?: number | null
-        }
-        Relationships: []
-      }
-      popular_tags: {
-        Row: {
-          last_used: string
-          tag: string
-          use_count: number | null
-        }
-        Insert: {
-          last_used?: string
-          tag: string
-          use_count?: number | null
-        }
-        Update: {
-          last_used?: string
-          tag?: string
-          use_count?: number | null
-        }
-        Relationships: []
-      }
-      post_upvotes: {
-        Row: {
-          created_at: string
-          id: string
-          post_id: string
-          user_id: string | null
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          post_id: string
-          user_id?: string | null
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          post_id?: string
-          user_id?: string | null
-        }
-        Relationships: []
-      }
-      thread_bookmarks: {
-        Row: {
-          created_at: string
-          id: string
-          thread_id: string
-          user_id: string | null
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          thread_id: string
-          user_id?: string | null
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          thread_id?: string
-          user_id?: string | null
-        }
-        Relationships: []
-      }
-      thread_tags: {
-        Row: {
-          created_at: string
-          id: string
-          tag: string
-          thread_id: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          tag: string
-          thread_id: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          tag?: string
-          thread_id?: string
-        }
-        Relationships: []
-      }
-      thread_upvotes: {
-        Row: {
-          created_at: string
-          id: string
-          thread_id: string
-          user_id: string | null
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          thread_id: string
-          user_id?: string | null
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          thread_id?: string
-          user_id?: string | null
-        }
-        Relationships: []
-      }
-      thread_subscriptions: {
-        Row: {
-          created_at: string
-          email_notifications: boolean | null
-          id: string
-          thread_id: string
-          user_id: string | null
-        }
-        Insert: {
-          created_at?: string
-          email_notifications?: boolean | null
-          id?: string
-          thread_id: string
-          user_id?: string | null
-        }
-        Update: {
-          created_at?: string
-          email_notifications?: boolean | null
-          id?: string
-          thread_id?: string
-          user_id?: string | null
-        }
-        Relationships: []
-      }
       follows: {
         Row: {
           created_at: string | null
@@ -928,6 +423,54 @@ export type Database = {
           follower_id?: string
           following_id?: string
           id?: string
+        }
+        Relationships: []
+      }
+      forum_threads: {
+        Row: {
+          category: string
+          content: string
+          created_at: string | null
+          id: string
+          is_deleted: boolean | null
+          is_pinned: boolean | null
+          last_post_at: string | null
+          like_count: number | null
+          post_count: number | null
+          title: string
+          updated_at: string | null
+          user_id: string
+          view_count: number | null
+        }
+        Insert: {
+          category: string
+          content: string
+          created_at?: string | null
+          id?: string
+          is_deleted?: boolean | null
+          is_pinned?: boolean | null
+          last_post_at?: string | null
+          like_count?: number | null
+          post_count?: number | null
+          title: string
+          updated_at?: string | null
+          user_id: string
+          view_count?: number | null
+        }
+        Update: {
+          category?: string
+          content?: string
+          created_at?: string | null
+          id?: string
+          is_deleted?: boolean | null
+          is_pinned?: boolean | null
+          last_post_at?: string | null
+          like_count?: number | null
+          post_count?: number | null
+          title?: string
+          updated_at?: string | null
+          user_id?: string
+          view_count?: number | null
         }
         Relationships: []
       }
@@ -984,6 +527,92 @@ export type Database = {
           read?: boolean | null
           recipient_id?: string
           sender_id?: string
+        }
+        Relationships: []
+      }
+      officers: {
+        Row: {
+          agency_id: string | null
+          badge_number: string
+          created_at: string | null
+          first_name: string | null
+          id: string
+          last_name: string | null
+          rank: string | null
+          total_violations: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          agency_id?: string | null
+          badge_number: string
+          created_at?: string | null
+          first_name?: string | null
+          id?: string
+          last_name?: string | null
+          rank?: string | null
+          total_violations?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          agency_id?: string | null
+          badge_number?: string
+          created_at?: string | null
+          first_name?: string | null
+          id?: string
+          last_name?: string | null
+          rank?: string | null
+          total_violations?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "officers_agency_id_fkey"
+            columns: ["agency_id"]
+            isOneToOne: false
+            referencedRelation: "agencies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      panic_alerts: {
+        Row: {
+          address: string | null
+          alert_type: string | null
+          created_at: string | null
+          id: string
+          latitude: number | null
+          longitude: number | null
+          notes: string | null
+          recording_url: string | null
+          resolved_at: string | null
+          status: string | null
+          user_id: string
+        }
+        Insert: {
+          address?: string | null
+          alert_type?: string | null
+          created_at?: string | null
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          notes?: string | null
+          recording_url?: string | null
+          resolved_at?: string | null
+          status?: string | null
+          user_id: string
+        }
+        Update: {
+          address?: string | null
+          alert_type?: string | null
+          created_at?: string | null
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          notes?: string | null
+          recording_url?: string | null
+          resolved_at?: string | null
+          status?: string | null
+          user_id?: string
         }
         Relationships: []
       }
@@ -1053,6 +682,89 @@ export type Database = {
         }
         Relationships: []
       }
+      resource_library: {
+        Row: {
+          avg_rating: number | null
+          category: string[] | null
+          created_at: string | null
+          description: string | null
+          download_count: number | null
+          id: string
+          is_featured: boolean | null
+          resource_type: string
+          submitter_id: string | null
+          title: string
+          total_ratings: number | null
+          updated_at: string | null
+          url: string
+        }
+        Insert: {
+          avg_rating?: number | null
+          category?: string[] | null
+          created_at?: string | null
+          description?: string | null
+          download_count?: number | null
+          id?: string
+          is_featured?: boolean | null
+          resource_type: string
+          submitter_id?: string | null
+          title: string
+          total_ratings?: number | null
+          updated_at?: string | null
+          url: string
+        }
+        Update: {
+          avg_rating?: number | null
+          category?: string[] | null
+          created_at?: string | null
+          description?: string | null
+          download_count?: number | null
+          id?: string
+          is_featured?: boolean | null
+          resource_type?: string
+          submitter_id?: string | null
+          title?: string
+          total_ratings?: number | null
+          updated_at?: string | null
+          url?: string
+        }
+        Relationships: []
+      }
+      resource_ratings: {
+        Row: {
+          created_at: string | null
+          id: string
+          rating: number | null
+          resource_id: string
+          review: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          rating?: number | null
+          resource_id: string
+          review?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          rating?: number | null
+          resource_id?: string
+          review?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "resource_ratings_resource_id_fkey"
+            columns: ["resource_id"]
+            isOneToOne: false
+            referencedRelation: "resource_library"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       scanner_links: {
         Row: {
           broadcastify_url: string | null
@@ -1113,6 +825,197 @@ export type Database = {
         }
         Relationships: []
       }
+      success_stories: {
+        Row: {
+          case_type: string | null
+          created_at: string | null
+          id: string
+          is_verified: boolean | null
+          outcome: string | null
+          state: string | null
+          story: string
+          submitter_id: string | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          case_type?: string | null
+          created_at?: string | null
+          id?: string
+          is_verified?: boolean | null
+          outcome?: string | null
+          state?: string | null
+          story: string
+          submitter_id?: string | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          case_type?: string | null
+          created_at?: string | null
+          id?: string
+          is_verified?: boolean | null
+          outcome?: string | null
+          state?: string | null
+          story?: string
+          submitter_id?: string | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      thread_bookmarks: {
+        Row: {
+          created_at: string | null
+          id: string
+          thread_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          thread_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          thread_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "thread_bookmarks_thread_id_fkey"
+            columns: ["thread_id"]
+            isOneToOne: false
+            referencedRelation: "forum_threads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      thread_subscriptions: {
+        Row: {
+          created_at: string | null
+          id: string
+          thread_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          thread_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          thread_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "thread_subscriptions_thread_id_fkey"
+            columns: ["thread_id"]
+            isOneToOne: false
+            referencedRelation: "forum_threads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      thread_tags: {
+        Row: {
+          created_at: string | null
+          id: string
+          tag: string
+          thread_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          tag: string
+          thread_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          tag?: string
+          thread_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "thread_tags_thread_id_fkey"
+            columns: ["thread_id"]
+            isOneToOne: false
+            referencedRelation: "forum_threads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      thread_upvotes: {
+        Row: {
+          created_at: string | null
+          id: string
+          thread_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          thread_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          thread_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "thread_upvotes_thread_id_fkey"
+            columns: ["thread_id"]
+            isOneToOne: false
+            referencedRelation: "forum_threads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_profiles: {
+        Row: {
+          avatar_url: string | null
+          badges: string[] | null
+          bio: string | null
+          created_at: string | null
+          display_name: string | null
+          id: string
+          location: string | null
+          reputation_score: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          badges?: string[] | null
+          bio?: string | null
+          created_at?: string | null
+          display_name?: string | null
+          id: string
+          location?: string | null
+          reputation_score?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          badges?: string[] | null
+          bio?: string | null
+          created_at?: string | null
+          display_name?: string | null
+          id?: string
+          location?: string | null
+          reputation_score?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
@@ -1130,6 +1033,78 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      violation_agencies: {
+        Row: {
+          agency_id: string | null
+          created_at: string | null
+          id: string
+          violation_id: string | null
+        }
+        Insert: {
+          agency_id?: string | null
+          created_at?: string | null
+          id?: string
+          violation_id?: string | null
+        }
+        Update: {
+          agency_id?: string | null
+          created_at?: string | null
+          id?: string
+          violation_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "violation_agencies_agency_id_fkey"
+            columns: ["agency_id"]
+            isOneToOne: false
+            referencedRelation: "agencies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "violation_agencies_violation_id_fkey"
+            columns: ["violation_id"]
+            isOneToOne: false
+            referencedRelation: "violations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      violation_officers: {
+        Row: {
+          created_at: string | null
+          id: string
+          officer_id: string | null
+          violation_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          officer_id?: string | null
+          violation_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          officer_id?: string | null
+          violation_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "violation_officers_officer_id_fkey"
+            columns: ["officer_id"]
+            isOneToOne: false
+            referencedRelation: "officers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "violation_officers_violation_id_fkey"
+            columns: ["violation_id"]
+            isOneToOne: false
+            referencedRelation: "violations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       violations: {
         Row: {
@@ -1176,189 +1151,6 @@ export type Database = {
           title?: string
           updated_at?: string
           user_id?: string | null
-        }
-        Relationships: []
-      }
-      notifications: {
-        Row: {
-          comment_id: string | null
-          content: string | null
-          created_at: string | null
-          from_user_id: string | null
-          id: string
-          is_read: boolean | null
-          message_id: string | null
-          post_id: string | null
-          thread_id: string | null
-          type:
-            | "like"
-            | "comment"
-            | "share"
-            | "follow"
-            | "mention"
-            | "reply"
-            | "message"
-            | "violation_comment"
-            | "thread_reply"
-            | "badge_earned"
-          user_id: string
-          violation_comment_id: string | null
-          violation_id: string | null
-        }
-        Insert: {
-          comment_id?: string | null
-          content?: string | null
-          created_at?: string | null
-          from_user_id?: string | null
-          id?: string
-          is_read?: boolean | null
-          message_id?: string | null
-          post_id?: string | null
-          thread_id?: string | null
-          type:
-            | "like"
-            | "comment"
-            | "share"
-            | "follow"
-            | "mention"
-            | "reply"
-            | "message"
-            | "violation_comment"
-            | "thread_reply"
-            | "badge_earned"
-          user_id: string
-          violation_comment_id?: string | null
-          violation_id?: string | null
-        }
-        Update: {
-          comment_id?: string | null
-          content?: string | null
-          created_at?: string | null
-          from_user_id?: string | null
-          id?: string
-          is_read?: boolean | null
-          message_id?: string | null
-          post_id?: string | null
-          thread_id?: string | null
-          type?:
-            | "like"
-            | "comment"
-            | "share"
-            | "follow"
-            | "mention"
-            | "reply"
-            | "message"
-            | "violation_comment"
-            | "thread_reply"
-            | "badge_earned"
-          user_id?: string
-          violation_comment_id?: string | null
-          violation_id?: string | null
-        }
-        Relationships: []
-      }
-      user_connections: {
-        Row: {
-          created_at: string | null
-          follower_id: string
-          following_id: string
-          id: string
-        }
-        Insert: {
-          created_at?: string | null
-          follower_id: string
-          following_id: string
-          id?: string
-        }
-        Update: {
-          created_at?: string | null
-          follower_id?: string
-          following_id?: string
-          id?: string
-        }
-        Relationships: []
-      }
-      user_profiles: {
-        Row: {
-          avatar_url: string | null
-          bio: string | null
-          created_at: string
-          display_name: string | null
-          helper_score: number | null
-          helpful_answers: number | null
-          id: string
-          is_public: boolean | null
-          is_verified: boolean | null
-          last_seen_at: string | null
-          location_city: string | null
-          location_state: string | null
-          messages_sent_count: number | null
-          posts_created: number | null
-          reputation_points: number | null
-          role: Database["public"]["Enums"]["app_role"] | null
-          show_email: boolean | null
-          show_location: boolean | null
-          threads_created: number | null
-          twitter_handle: string | null
-          updated_at: string
-          user_id: string
-          username: string | null
-          violations_count: number | null
-          website_url: string | null
-        }
-        Insert: {
-          avatar_url?: string | null
-          bio?: string | null
-          created_at?: string
-          display_name?: string | null
-          helper_score?: number | null
-          helpful_answers?: number | null
-          id?: string
-          is_public?: boolean | null
-          is_verified?: boolean | null
-          last_seen_at?: string | null
-          location_city?: string | null
-          location_state?: string | null
-          messages_sent_count?: number | null
-          posts_created?: number | null
-          reputation_points?: number | null
-          role?: Database["public"]["Enums"]["app_role"] | null
-          show_email?: boolean | null
-          show_location?: boolean | null
-          threads_created?: number | null
-          twitter_handle?: string | null
-          updated_at?: string
-          user_id: string
-          username?: string | null
-          violations_count?: number | null
-          website_url?: string | null
-        }
-        Update: {
-          avatar_url?: string | null
-          bio?: string | null
-          created_at?: string
-          display_name?: string | null
-          helper_score?: number | null
-          helpful_answers?: number | null
-          id?: string
-          is_public?: boolean | null
-          is_verified?: boolean | null
-          last_seen_at?: string | null
-          location_city?: string | null
-          location_state?: string | null
-          messages_sent_count?: number | null
-          posts_created?: number | null
-          reputation_points?: number | null
-          role?: Database["public"]["Enums"]["app_role"] | null
-          show_email?: boolean | null
-          show_location?: boolean | null
-          threads_created?: number | null
-          twitter_handle?: string | null
-          updated_at?: string
-          user_id?: string
-          username?: string | null
-          violations_count?: number | null
-          website_url?: string | null
         }
         Relationships: []
       }

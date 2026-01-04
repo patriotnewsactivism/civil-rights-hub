@@ -262,16 +262,15 @@ export const PanicButton = () => {
 
     const alertPayload = {
       user_id: user.id,
-      latitude: latitude ?? "0",
-      longitude: longitude ?? "0",
+      latitude: location.latitude ?? 0,
+      longitude: location.longitude ?? 0,
       address:
         location.city || location.state
           ? [location.city, location.state].filter(Boolean).join(", ")
           : null,
       alert_type: testMode ? "test" : alertType,
-      message: message.trim() ? message.trim() : null,
-      contacts_notified: testMode ? [] : notifiedContacts,
-    } satisfies Database["public"]["Tables"]["panic_alerts"]["Insert"];
+      notes: message.trim() ? message.trim() : null,
+    };
 
     const { data, error } = await supabase.from("panic_alerts").insert(alertPayload).select().single();
 

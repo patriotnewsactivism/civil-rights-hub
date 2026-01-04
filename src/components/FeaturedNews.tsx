@@ -18,66 +18,43 @@ interface NewsItem {
   urgency: "high" | "medium" | "low";
 }
 
+// PLACEHOLDER DATA - Replace with real news sources via database or API
 const NEWS_ITEMS: NewsItem[] = [
   {
-    id: "press-freedom-ordinance",
-    title: "Federal appeals court revives citizen right to film police",
+    id: "aclu-filming",
+    title: "ACLU: Know Your Rights When Taking Photos and Videos",
     summary:
-      "A unanimous panel held that recording officers during traffic stops and street encounters is protected speech, limiting qualified immunity defenses.",
-    source: "We The People News",
-    link: "https://wethepeoplenews.com/investigations/press-freedom",
+      "The ACLU provides comprehensive guidance on constitutional protections for photography and video recording in public spaces.",
+    source: "ACLU",
+    link: "https://www.aclu.org/know-your-rights/stopped-by-police",
     category: "journalists",
     tags: ["First Amendment", "Filming Police"],
-    publishedAt: "2024-05-29",
+    publishedAt: "2026-01-01",
     urgency: "high",
   },
   {
-    id: "public-records-fee-cap",
-    title: "States move to cap outrageous public-records fees",
+    id: "rcfp-guide",
+    title: "Reporters Committee First Amendment Handbook",
     summary:
-      "Colorado, Ohio, and Florida legislators propose uniform fee schedules so local agencies cannot price activists out of FOIA-style requests.",
-    source: "Open States Monitor",
-    link: "https://openstates.org/spotlight/fee-cap",
-    category: "activists",
-    tags: ["FOIA", "State Policy"],
-    publishedAt: "2024-05-22",
-    urgency: "medium",
-  },
-  {
-    id: "auditor-security-bill",
-    title: "Proposed anti-auditor bill stalled after viral hearing",
-    summary:
-      "Grassroots auditors organized rapid testimony and halted a bill that would have criminalized recording government buildings from sidewalks.",
-    source: "Civic Oversight Daily",
-    link: "https://civicoveright.news/analysis/auditor-bill",
-    category: "auditors",
-    tags: ["Legislation", "Public Access"],
-    publishedAt: "2024-05-25",
-    urgency: "medium",
-  },
-  {
-    id: "pattern-or-practice",
-    title: "DOJ expands pattern-or-practice probes into mid-sized departments",
-    summary:
-      "Investigators are prioritizing cities where independent journalists have already documented retaliation against cop watchers.",
-    source: "Justice Wire",
-    link: "https://justicewire.gov/news/pattern-practice",
-    category: "auditors",
-    tags: ["DOJ", "Police Accountability"],
-    publishedAt: "2024-05-20",
-    urgency: "high",
-  },
-  {
-    id: "press-safety-training",
-    title: "Newsroom safety training adds modules for solo livestreamers",
-    summary:
-      "Major press freedom groups released open curricula so freelancers and auditors can build rapid response plans with attorneys.",
-    source: "Reporters Guild",
-    link: "https://reportersguild.org/resources/safety",
+      "Comprehensive legal guide for journalists covering access to courts, public records, and newsgathering rights.",
+    source: "Reporters Committee for Freedom of the Press",
+    link: "https://www.rcfp.org/first-amendment-handbook/",
     category: "journalists",
-    tags: ["Safety", "Training"],
-    publishedAt: "2024-05-18",
-    urgency: "low",
+    tags: ["First Amendment", "Press Freedom"],
+    publishedAt: "2026-01-01",
+    urgency: "medium",
+  },
+  {
+    id: "eff-know-your-rights",
+    title: "EFF: Know Your Rights When Taking Photos and Making Video",
+    summary:
+      "Electronic Frontier Foundation guide to your rights when documenting in public, including police encounters.",
+    source: "Electronic Frontier Foundation",
+    link: "https://www.eff.org/issues/know-your-rights",
+    category: "auditors",
+    tags: ["Photography Rights", "Public Access"],
+    publishedAt: "2026-01-01",
+    urgency: "medium",
   },
 ];
 

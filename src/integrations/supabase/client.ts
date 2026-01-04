@@ -7,13 +7,12 @@ const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 
 // Validate environment variables
 if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
-  console.error("❌ Missing Supabase environment variables!");
-  console.error("VITE_SUPABASE_URL:", SUPABASE_URL ? "Set" : "Missing");
-  console.error("VITE_SUPABASE_PUBLISHABLE_KEY:", SUPABASE_PUBLISHABLE_KEY ? "Set" : "Missing");
-  console.error("The app will continue but Supabase features will not work.");
-  console.error("Please configure these environment variables in Vercel:");
-  console.error("  VITE_SUPABASE_URL");
-  console.error("  VITE_SUPABASE_PUBLISHABLE_KEY");
+  console.warn("⚠️  Supabase environment variables not configured");
+  console.warn("The app will continue with limited functionality.");
+  console.warn("Configure VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY to enable database features.");
+} else {
+  console.log("✅ Supabase client initialized");
+  console.log("   URL:", SUPABASE_URL);
 }
 
 const createDummyClient = (): SupabaseClient<Database> => {

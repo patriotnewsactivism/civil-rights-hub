@@ -1,4 +1,4 @@
--- Comprehensive Cleanup and Verified Data Migration
+-- Verified Data Cleanup Migration
 -- GOAL: Remove ALL fabricated/hallucinated data and add ONLY verified, real information
 -- CRITICAL: NO fake bar numbers, NO fabricated contact info, NO made-up organizations
 
@@ -6,12 +6,11 @@
 -- STEP 1: CLEAN UP FABRICATED ATTORNEY DATA
 -- ============================================
 
--- Remove attorneys with clearly fabricated bar numbers (format like CA-12345)
+-- Remove attorneys with clearly fabricated bar numbers (format like CA-12345, NY-67890, etc.)
 DELETE FROM public.attorneys
-WHERE bar_number ~ '^[A-Z]{2}-[0-9]+$'
-  AND bar_number NOT IN (SELECT bar_number FROM public.attorneys WHERE verified = true);
+WHERE bar_number ~ '^[A-Z]{2}-[0-9]+$';
 
--- Remove attorneys with fake 555 phone numbers
+-- Remove attorneys with fake 555 phone numbers (555 is reserved for fictional use)
 DELETE FROM public.attorneys
 WHERE phone LIKE '%-555-%';
 
@@ -21,17 +20,12 @@ WHERE email LIKE '%@example.%'
    OR email LIKE '%@fake.%'
    OR email LIKE '%@placeholder.%';
 
--- Keep only legitimate civil rights organizations (ACLU, NAACP LDF, etc.)
--- These are VERIFIED organizations with real contact info
+-- Keep only legitimate civil rights organizations (ACLU, NAACP LDF, EJI, etc.)
+-- These are VERIFIED organizations with real contact info from their official websites
 
 -- ============================================
 -- STEP 2: ADD MATTHEW REARDON AND VERIFIED ACTIVISTS
 -- ============================================
-
--- First, clear potentially fabricated activists
-DELETE FROM public.activists
-WHERE verified = false
-  AND channel_url IS NULL;
 
 -- Add Matthew Reardon (We The People News / Tyrant Cam) - THE USER
 INSERT INTO public.activists (
@@ -124,21 +118,6 @@ INSERT INTO public.activists (
  'California-based First Amendment auditor and news channel',
  ARRAY['First Amendment Audits', 'Police Accountability', 'Local News'], true),
 
-('First Amendment Auditor', 'FAA', 'Unknown', 'YouTube',
- 'https://www.youtube.com/@FirstAmendmentAuditor',
- 'First Amendment auditor documenting interactions with government officials',
- ARRAY['First Amendment Audits', 'Police Accountability', 'Public Recording'], true),
-
-('Accountability For All', 'AFA', 'Unknown', 'YouTube',
- 'https://www.youtube.com/@AccountabilityForAll',
- 'First Amendment auditor focused on holding government accountable',
- ARRAY['First Amendment Audits', 'Police Accountability', 'Government Transparency'], true),
-
-('News Now Patrick', 'News Now Patrick', 'Unknown', 'YouTube',
- 'https://www.youtube.com/@NewsNowPatrick',
- 'First Amendment auditor and news reporter',
- ARRAY['First Amendment Audits', 'Police Accountability', 'Local News'], true),
-
 ('Jeff Gray', 'HONORYOUROATH', 'Florida', 'YouTube',
  'https://www.youtube.com/@HONORYOUROATH',
  'Pioneer First Amendment auditor known for Honor Your Oath project, testing public officials knowledge of constitutional rights',
@@ -149,9 +128,14 @@ INSERT INTO public.activists (
  'Nebraska-based First Amendment auditor and local news channel',
  ARRAY['First Amendment Audits', 'Police Accountability', 'Local News'], true),
 
-('News Now Houston Jose', 'Jose Gonzalez', 'Texas', 'YouTube',
- 'https://www.youtube.com/@NewsNowHoustonJose',
- 'Houston-area First Amendment auditor',
+('Accountability For All', 'AFA', 'Unknown', 'YouTube',
+ 'https://www.youtube.com/@AccountabilityForAll',
+ 'First Amendment auditor focused on holding government accountable',
+ ARRAY['First Amendment Audits', 'Police Accountability', 'Government Transparency'], true),
+
+('News Now Patrick', 'News Now Patrick', 'Unknown', 'YouTube',
+ 'https://www.youtube.com/@NewsNowPatrick',
+ 'First Amendment auditor and news reporter',
  ARRAY['First Amendment Audits', 'Police Accountability', 'Local News'], true)
 
 ON CONFLICT DO NOTHING;
@@ -159,10 +143,6 @@ ON CONFLICT DO NOTHING;
 -- ============================================
 -- STEP 3: ADD ALL MAJOR FEDERAL FOIA AGENCIES
 -- ============================================
-
--- Clear any potentially fabricated FOIA agency data
-DELETE FROM public.foia_agencies
-WHERE is_active = false;
 
 -- Insert ALL major federal agencies for FOIA requests
 INSERT INTO public.foia_agencies (
@@ -235,10 +215,10 @@ INSERT INTO public.foia_agencies (
 
 ('Internal Revenue Service', 'IRS', 'Federal', 'Washington DC',
  'Stop 211, PO Box 621506, Atlanta, GA 30362', 'Stop 211', '30362',
- 'None - must use mail', '877-891-6035', 'IRS FOIA Officer', 'FOIA Request Office',
+ NULL, '877-891-6035', 'IRS FOIA Officer', 'FOIA Request Office',
  NULL, 'https://www.irs.gov/privacy-disclosure/irs-freedom-of-information',
  20, true, 'Duplication: $0.20/page', true,
- false, false, true, 'Tax return info requires Form 4506-T', true),
+ false, false, true, 'Tax return info requires Form 4506-T. Must use mail.', true),
 
 ('Department of Health and Human Services', 'HHS', 'Federal', 'Washington DC',
  '200 Independence Avenue, SW, Washington, DC 20201', '200 Independence Avenue, SW', '20201',
@@ -320,17 +300,17 @@ INSERT INTO public.foia_agencies (
 -- Independent Agencies
 ('Central Intelligence Agency', 'CIA', 'Federal', 'Washington DC',
  'Washington, DC 20505', 'Washington, DC', '20505',
- 'None - use online portal', '703-613-1287', 'Information and Privacy Coordinator', 'Information Management Services',
+ NULL, '703-613-1287', 'Information and Privacy Coordinator', 'Information Management Services',
  'https://www.cia.gov/readingroom/foia-request-submission', 'https://www.cia.gov',
  45, true, 'Duplication: $0.10/page', true,
- false, true, true, 'Extended response times for classified review', true),
+ false, true, true, 'Extended response times for classified review. Use online portal.', true),
 
 ('National Security Agency', 'NSA', 'Federal', 'Maryland',
  'NSA/CSS FOIA/PA Office, 9800 Savage Road, Suite 6932, Fort Meade, MD 20755', '9800 Savage Road', '20755',
- 'None - use mail', '301-688-6527', 'NSA FOIA Officer', 'FOIA/PA Office',
+ NULL, '301-688-6527', 'NSA FOIA Officer', 'FOIA/PA Office',
  NULL, 'https://www.nsa.gov',
  45, true, 'Duplication: $0.10/page', true,
- false, false, true, 'Signals intelligence, classified programs', true),
+ false, false, true, 'Signals intelligence, classified programs. Must use mail.', true),
 
 ('Federal Communications Commission', 'FCC', 'Federal', 'Washington DC',
  '45 L Street NE, Washington, DC 20554', '45 L Street NE', '20554',
@@ -409,13 +389,6 @@ INSERT INTO public.foia_agencies (
  20, true, 'Duplication: $0.10/page', true,
  true, true, true, 'Loan records, disaster assistance', true),
 
-('Postal Regulatory Commission', 'PRC', 'Federal', 'Washington DC',
- '901 New York Avenue, NW, Suite 200, Washington, DC 20268', '901 New York Avenue, NW', '20268',
- 'foia@prc.gov', '202-789-6840', 'PRC FOIA Officer', 'Office of Secretary and Administration',
- 'https://www.prc.gov/foia', 'https://www.prc.gov',
- 20, true, 'Duplication: $0.10/page', true,
- true, true, true, 'Postal rate decisions, mail service', true),
-
 ('United States Postal Service', 'USPS', 'Federal', 'Washington DC',
  '475 L Enfant Plaza, SW, Room 3033, Washington, DC 20260', '475 L Enfant Plaza, SW', '20260',
  'foia@usps.gov', '202-268-2608', 'USPS FOIA Officer', 'Records Office',
@@ -436,13 +409,6 @@ INSERT INTO public.foia_agencies (
  'https://www.whitehouse.gov/omb/information-regulatory-affairs/information-policy/foia/', 'https://www.whitehouse.gov/omb',
  20, true, 'Duplication: $0.10/page', true,
  true, true, true, 'Budget documents, regulatory review', true),
-
-('Commodity Futures Trading Commission', 'CFTC', 'Federal', 'Washington DC',
- '1155 21st Street, NW, Washington, DC 20581', '1155 21st Street, NW', '20581',
- 'FOIASubmissions@cftc.gov', '202-418-5105', 'CFTC FOIA Officer', 'Office of General Counsel',
- 'https://www.cftc.gov/FOI/index.htm', 'https://www.cftc.gov',
- 20, true, 'Duplication: $0.10/page', true,
- true, true, true, 'Commodity trading records, enforcement', true),
 
 ('Federal Deposit Insurance Corporation', 'FDIC', 'Federal', 'Washington DC',
  '550 17th Street, NW, Washington, DC 20429', '550 17th Street, NW', '20429',
@@ -507,20 +473,6 @@ INSERT INTO public.foia_agencies (
  20, true, 'Duplication: $0.10/page', true,
  true, true, true, 'Aviation safety, pilot records, incident reports', true),
 
-('Federal Highway Administration', 'FHWA', 'Federal', 'Washington DC',
- '1200 New Jersey Avenue, SE, Washington, DC 20590', '1200 New Jersey Avenue, SE', '20590',
- 'foia.fhwa@dot.gov', '202-366-4853', 'FHWA FOIA Officer', 'Office of Chief Counsel',
- 'https://www.fhwa.dot.gov/foia/', 'https://www.fhwa.dot.gov',
- 20, true, 'Duplication: $0.10/page', true,
- true, true, true, 'Highway safety, infrastructure data', true),
-
-('Federal Motor Carrier Safety Administration', 'FMCSA', 'Federal', 'Washington DC',
- '1200 New Jersey Avenue, SE, Washington, DC 20590', '1200 New Jersey Avenue, SE', '20590',
- 'FMCSA.FOIA@dot.gov', '202-366-8044', 'FMCSA FOIA Officer', 'Office of Chief Counsel',
- 'https://www.fmcsa.dot.gov/foia', 'https://www.fmcsa.dot.gov',
- 20, true, 'Duplication: $0.10/page', true,
- true, true, true, 'Trucking safety, carrier records', true),
-
 ('National Highway Traffic Safety Administration', 'NHTSA', 'Federal', 'Washington DC',
  '1200 New Jersey Avenue, SE, Washington, DC 20590', '1200 New Jersey Avenue, SE', '20590',
  'nhtsa.foiapa@dot.gov', '202-366-2870', 'NHTSA FOIA Officer', 'Office of Chief Counsel',
@@ -561,136 +513,112 @@ ON CONFLICT DO NOTHING;
 -- ============================================
 -- STEP 4: ADD VIOLATIVE FEDERAL/STATE LAWS
 -- Laws that have been found to violate civil/constitutional rights
+-- Uses the correct schema: title, short_name, category, statute_citation, year_enacted,
+--                         summary, key_provisions, protected_classes, enforcing_agency
 -- ============================================
 
 -- Add violative laws to federal_laws table
 INSERT INTO public.federal_laws (
-  title, citation, category, summary, protections, effective_date, enforcement_agency
+  title, short_name, category, statute_citation, year_enacted, summary, key_provisions, protected_classes, enforcing_agency
 ) VALUES
 
 -- Laws declared unconstitutional or violative
-('Defense of Marriage Act (DOMA) - Section 3', '1 U.S.C. 7 (struck down)', 'LGBTQ Rights',
+('Defense of Marriage Act - Section 3 (Struck Down)', 'DOMA Section 3', 'LGBTQ Rights',
+ '1 U.S.C. 7 (struck down by Windsor)', 1996,
  'Defined marriage as between one man and one woman for federal purposes. Struck down by Supreme Court in United States v. Windsor (2013) as unconstitutional violation of Fifth Amendment due process.',
- ARRAY['Ruled unconstitutional', 'Violated equal protection', 'Discriminated against same-sex couples'],
- '1996-09-21', 'Supreme Court (declared unconstitutional)'),
+ ARRAY['Denied federal benefits to same-sex couples', 'Ruled unconstitutional in 2013', 'Violated equal protection'],
+ ARRAY['Same-sex couples', 'LGBTQ persons'],
+ 'Supreme Court (declared unconstitutional)'),
 
-('Alien and Sedition Acts of 1798', 'Historical - Expired', 'Free Speech',
- 'Made it a crime to publish false, scandalous, or malicious writing against the government. Widely considered unconstitutional violation of First Amendment, though never formally struck down before expiration.',
- ARRAY['Violated First Amendment', 'Criminalized political speech', 'Used to prosecute critics'],
- '1798-07-14', 'Historical'),
-
-('Espionage Act of 1917 - Sedition Provisions', '18 U.S.C. 793-798', 'Free Speech',
- 'Used to prosecute anti-war speech and press. While core provisions remain, seditious conspiracy provisions and broad speech restrictions have been limited by courts.',
- ARRAY['Chilling effect on speech', 'Used against journalists', 'Whistleblower prosecutions'],
- '1917-06-15', 'Department of Justice'),
-
-('Japanese American Internment - Executive Order 9066', 'E.O. 9066 (rescinded)', 'Civil Rights',
+('Japanese American Internment - Executive Order 9066 (Rescinded)', 'E.O. 9066', 'Civil Rights',
+ 'E.O. 9066 (rescinded 1976)', 1942,
  'Authorized internment of Japanese Americans during WWII. Formally rescinded 1976. Supreme Court upheld in Korematsu (1944) but that decision was later repudiated by Court in Trump v. Hawaii (2018).',
- ARRAY['Mass civil rights violation', 'Racial discrimination', 'Due process violations'],
- '1942-02-19', 'Historical - Rescinded'),
+ ARRAY['Mass civil rights violation', 'Forced relocation', 'Property confiscation', 'Korematsu repudiated'],
+ ARRAY['Japanese Americans', 'Asian Americans'],
+ 'Historical - Rescinded'),
 
-('Patriot Act - Section 215', '50 U.S.C. 1861 (expired/reformed)', 'Privacy',
+('Patriot Act - Section 215 (Reformed)', 'Patriot Act Sec 215', 'Privacy',
+ '50 U.S.C. 1861 (reformed by USA FREEDOM Act)', 2001,
  'Allowed bulk collection of phone metadata. NSA mass surveillance program under this section found unlawful by Second Circuit. Reformed by USA FREEDOM Act (2015).',
- ARRAY['Mass surveillance', 'Fourth Amendment concerns', 'Reformed after Snowden revelations'],
- '2001-10-26', 'FISA Court / DOJ'),
+ ARRAY['Mass surveillance authorized', 'Fourth Amendment concerns', 'Reformed after Snowden revelations'],
+ ARRAY['All Americans', 'Privacy rights'],
+ 'FISA Court / DOJ'),
 
-('Stop-and-Frisk Policies (NYC)', 'Local Policy', 'Fourth Amendment',
- 'NYPD policy found unconstitutional in Floyd v. City of New York (2013). Court found policy violated Fourth Amendment (unreasonable searches) and Fourteenth Amendment (racial profiling).',
- ARRAY['Fourth Amendment violation', 'Racial profiling', 'Unconstitutional policing'],
- 'Policy Era', 'Federal Court'),
-
-('Voter ID Laws - Various States', 'Various State Laws', 'Voting Rights',
- 'Strict voter ID requirements in several states found to discriminate against minority voters. Texas voter ID law struck down; North Carolina law described as targeting Black voters with surgical precision.',
- ARRAY['Voting discrimination', 'Disproportionate impact on minorities', 'Fourteenth/Fifteenth Amendment'],
- 'Various', 'DOJ Voting Section'),
-
-('Anti-Sodomy Laws', 'Various State Laws (struck down)', 'LGBTQ Rights',
+('Anti-Sodomy Laws (Struck Down)', 'Sodomy Laws', 'LGBTQ Rights',
+ 'Various State Laws - struck down by Lawrence v. Texas', 2003,
  'State laws criminalizing consensual same-sex relations struck down as unconstitutional in Lawrence v. Texas (2003) as violating due process liberty interests.',
- ARRAY['Privacy violation', 'Discriminatory enforcement', 'Fourteenth Amendment'],
- 'Various', 'Supreme Court'),
+ ARRAY['Privacy violation', 'Discriminatory enforcement', 'Fourteenth Amendment liberty'],
+ ARRAY['LGBTQ persons'],
+ 'Supreme Court (declared unconstitutional)'),
 
-('Separate But Equal - Plessy v. Ferguson', 'Historical Doctrine', 'Civil Rights',
+('Separate But Equal Doctrine (Overturned)', 'Plessy v. Ferguson', 'Civil Rights',
+ 'Historical Doctrine - overturned by Brown v. Board', 1896,
  'Doctrine permitting racial segregation overturned by Brown v. Board of Education (1954). Segregation laws throughout South were unconstitutional violations of equal protection.',
- ARRAY['Racial discrimination', 'Equal protection violation', 'Systemic civil rights violations'],
- '1896-1954', 'Supreme Court (overturned)'),
+ ARRAY['Racial discrimination', 'Equal protection violation', 'Overturned in 1954'],
+ ARRAY['African Americans', 'Racial minorities'],
+ 'Supreme Court (overturned 1954)'),
 
-('Poll Taxes', 'Various State Laws (unconstitutional)', 'Voting Rights',
+('Poll Taxes (Unconstitutional)', 'Poll Taxes', 'Voting Rights',
+ '24th Amendment abolished for federal elections', 1964,
  'Taxes required to vote, used to disenfranchise Black voters and poor whites. Prohibited in federal elections by 24th Amendment (1964) and in all elections by Harper v. Virginia (1966).',
- ARRAY['Voting discrimination', 'Economic disenfranchisement', 'Fourteenth/Fifteenth Amendment'],
- 'Historical', 'Constitutional Amendment'),
+ ARRAY['Voting discrimination', 'Economic disenfranchisement', 'Abolished by 24th Amendment'],
+ ARRAY['African Americans', 'Low-income voters'],
+ 'Constitutional Amendment'),
 
-('Literacy Tests for Voting', 'Various State Laws (banned)', 'Voting Rights',
+('Literacy Tests for Voting (Banned)', 'Literacy Tests', 'Voting Rights',
+ 'Voting Rights Act of 1965 banned', 1965,
  'Tests used to prevent Black citizens from voting. Banned nationwide by Voting Rights Act of 1965. Courts found tests were discriminatory in purpose and effect.',
- ARRAY['Voting discrimination', 'Racial discrimination', 'Fifteenth Amendment violation'],
- 'Historical', 'Voting Rights Act'),
+ ARRAY['Voting discrimination', 'Racial discrimination', 'Banned by VRA 1965'],
+ ARRAY['African Americans', 'Racial minorities'],
+ 'DOJ Voting Section'),
 
-('California Prop 8', 'Cal. Const. Art. I, Sec. 7.5 (struck down)', 'LGBTQ Rights',
+('California Proposition 8 (Struck Down)', 'Prop 8', 'LGBTQ Rights',
+ 'Cal. Const. Art. I, Sec. 7.5 (struck down)', 2008,
  'Ballot initiative banning same-sex marriage. Struck down by federal courts as unconstitutional violation of due process and equal protection.',
  ARRAY['Marriage discrimination', 'Equal protection violation', 'Due process violation'],
- '2008-11-04', 'Federal Courts'),
+ ARRAY['Same-sex couples', 'LGBTQ persons'],
+ 'Federal Courts'),
 
-('Arizona SB 1070 - Show Me Your Papers', 'A.R.S. 11-1051 (partially struck down)', 'Immigration/Civil Rights',
+('Arizona SB 1070 - Show Me Your Papers (Partially Struck Down)', 'SB 1070', 'Immigration',
+ 'A.R.S. 11-1051 (partially struck down)', 2010,
  'Arizona immigration law allowing police to check immigration status. Key provisions struck down by Supreme Court in Arizona v. United States (2012) as preempted by federal law.',
  ARRAY['Racial profiling concerns', 'Federal preemption', 'Fourth Amendment issues'],
- '2010-04-23', 'Supreme Court'),
+ ARRAY['Immigrants', 'Latinos', 'Persons perceived as foreign'],
+ 'Supreme Court'),
 
-('Qualified Immunity Doctrine', 'Judicially Created', 'Police Accountability',
+('Qualified Immunity Doctrine', 'Qualified Immunity', 'Police Accountability',
+ 'Judicially created doctrine', 1967,
  'Court-created doctrine shielding officers from civil rights lawsuits unless they violate clearly established law. Criticized for preventing accountability and considered by many to violate Section 1983.',
  ARRAY['Prevents police accountability', 'Section 1983 limitation', 'Reform efforts ongoing'],
- '1967 (Pierson v. Ray)', 'Courts'),
+ ARRAY['Civil rights plaintiffs', 'Victims of police misconduct'],
+ 'Federal Courts'),
 
-('Civil Asset Forfeiture - Equitable Sharing', 'DOJ Policy', 'Due Process',
+('Civil Asset Forfeiture', 'Asset Forfeiture', 'Due Process',
+ 'Various Federal and State Laws', 1984,
  'Allows seizure of property without criminal conviction. Courts have found various applications violate due process. Reforms ongoing but practice continues to face constitutional challenges.',
  ARRAY['Due process concerns', 'Property rights violations', 'Fifth Amendment issues'],
- 'Ongoing', 'DOJ/Local Law Enforcement'),
+ ARRAY['Property owners', 'Criminal defendants'],
+ 'DOJ/Local Law Enforcement'),
 
-('Seditious Conspiracy - 18 USC 2384', '18 U.S.C. 2384', 'Free Speech',
- 'Criminalizes conspiracy to overthrow government. Historically used against labor organizers and political dissidents. Revived in modern prosecutions with First Amendment concerns.',
- ARRAY['First Amendment concerns', 'Political prosecution risk', 'Broad interpretation concerns'],
- '1861', 'Department of Justice'),
-
-('Material Support for Terrorism', '18 U.S.C. 2339B', 'Free Speech/Association',
- 'Criminalizes material support to designated terrorist organizations. Holder v. Humanitarian Law Project (2010) upheld broad interpretation, but dissent raised serious First Amendment concerns.',
- ARRAY['First Amendment concerns', 'Associational freedom', 'Vague standards'],
- '1996', 'Department of Justice'),
-
-('No Fly List - Due Process', 'Various', 'Due Process',
+('No Fly List Procedures (Found Unconstitutional)', 'No Fly List', 'Due Process',
+ 'Various TSA/DHS Regulations', 2001,
  'Government terror watch list with no clear standards or adequate process to challenge. Courts have found procedures violate due process (Latif v. Holder, 2014).',
  ARRAY['Due process violation', 'No meaningful review', 'Constitutional concerns'],
- 'Post-9/11', 'DHS/FBI'),
+ ARRAY['Travelers', 'Muslim Americans'],
+ 'DHS/TSA'),
 
-('Felon Disenfranchisement Laws', 'Various State Laws', 'Voting Rights',
+('Felon Disenfranchisement Laws', 'Felon Voting Bans', 'Voting Rights',
+ 'Various State Laws', NULL,
  'Laws permanently or temporarily revoking voting rights from people with felony convictions. Disproportionately impacts minority communities. Florida Amendment 4 restored rights to 1.4 million.',
- ARRAY['Voting discrimination', 'Disproportionate racial impact', 'Fourteenth Amendment concerns'],
- 'Various', 'State Governments')
+ ARRAY['Voting discrimination', 'Disproportionate racial impact', 'Varies by state'],
+ ARRAY['Formerly incarcerated persons', 'African Americans'],
+ 'State Governments')
 
 ON CONFLICT DO NOTHING;
 
--- Add note about data verification
+-- Add comment explaining the data
 COMMENT ON TABLE public.activists IS 'Directory of First Amendment auditors and civil rights activists. Users should verify information independently. All entries are based on publicly available information about known auditors with verifiable YouTube channels.';
 
 COMMENT ON TABLE public.foia_agencies IS 'Directory of federal government agencies for FOIA requests. State and local agencies coming soon. Contact information sourced from official .gov websites.';
 
 COMMENT ON TABLE public.federal_laws IS 'Federal civil rights laws and statutes, including laws that have been found violative of constitutional rights. Includes both protective laws and historically problematic laws for educational purposes.';
-
--- Add announcement for state/local FOIA agencies
-INSERT INTO public.forum_threads (category, title, content, username, is_pinned)
-VALUES (
-  'Announcements',
-  'State and Local FOIA Agencies Coming Soon',
-  'We are actively compiling a comprehensive directory of state and local government agencies for FOIA/public records requests. This will include:
-
-- All 50 state attorney general offices
-- State police and highway patrol agencies
-- Major city police departments
-- County sheriff offices
-- State departments of corrections
-- And more!
-
-In the meantime, you can find federal agency FOIA contacts in our FOIA Builder section. For state-specific requests, we recommend checking your state''s Attorney General website or Secretary of State office for guidance.
-
-Stay tuned for updates!',
-  'Civil Rights Hub Admin',
-  true
-)
-ON CONFLICT DO NOTHING;

@@ -12,7 +12,8 @@
       "Bash(npm run lint)",
       "Bash(tee:*)",
       "Bash(curl:*)",
-      "Bash(psql:*)"
+      "Bash(psql:*)",
+      "Bash(grep:*)"
     ],
     "deny": [],
     "ask": []

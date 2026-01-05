@@ -79,6 +79,101 @@
     "bio": "Defends civil liberties in Texas with focus on border rights, criminal justice reform, and voting access."
   },
   {
+    "id": "benjamin-campagna-texas",
+    "name": "Benjamin Campagna",
+    "firm_name": "Campagna Law Firm",
+    "state": "Texas",
+    "city": "Houston",
+    "email": "contact@campagnalaw.com",
+    "phone": "713-489-1954",
+    "website": "https://www.campagnalaw.com",
+    "specialties": [
+      "Police Misconduct",
+      "Constitutional Rights",
+      "Criminal Defense"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": 15,
+    "bio": "Civil rights and criminal defense attorney representing Texans in police misconduct, protest defense, and constitutional litigation."
+  },
+  {
+    "id": "courtney-vincent-texas",
+    "name": "Courtney Vincent",
+    "firm_name": "Vincent Law PLLC",
+    "state": "Texas",
+    "city": "Dallas",
+    "email": "info@vincentlawpllc.com",
+    "phone": "214-761-6610",
+    "website": "https://www.vincentlawpllc.com",
+    "specialties": [
+      "Employment Discrimination",
+      "Police Accountability",
+      "Civil Rights Litigation"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": 12,
+    "bio": "Represents clients in employment discrimination, police accountability, and civil rights disputes across North Texas."
+  },
+  {
+    "id": "texas-attorney-group",
+    "name": "Texas Attorney Group",
+    "firm_name": "Texas Attorney Group",
+    "state": "Texas",
+    "city": "Houston",
+    "email": "contact@texasattorneygroup.com",
+    "phone": "888-744-0229",
+    "website": "https://texasattorneygroup.com",
+    "specialties": [
+      "Civil Rights",
+      "Personal Injury",
+      "Consumer Protection"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Network of Texas attorneys handling civil rights, consumer, and injury claims with statewide coverage."
+  },
+  {
+    "id": "cj-grisham-texas",
+    "name": "CJ Grisham",
+    "firm_name": "Open Carry Texas Legal Support",
+    "state": "Texas",
+    "city": "Temple",
+    "email": "cj@opencarrytexas.org",
+    "phone": "254-784-9900",
+    "website": "https://www.opencarrytexas.org",
+    "specialties": [
+      "First Amendment",
+      "Second Amendment",
+      "Protest Defense"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Civil rights advocate supporting Texans facing protest-related charges and constitutional rights disputes."
+  },
+  {
+    "id": "lone-star-legal-aid",
+    "name": "Lone Star Legal Aid",
+    "firm_name": "Lone Star Legal Aid",
+    "state": "Texas",
+    "city": "Houston",
+    "email": "info@lonestarlegal.org",
+    "phone": "713-652-0077",
+    "website": "https://www.lonestarlegal.org",
+    "specialties": [
+      "Housing Rights",
+      "Disaster Recovery",
+      "Civil Rights"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Largest provider of free civil legal services in Texas, offering civil rights advocacy for low-income communities."
+  },
+  {
     "id": "aclu-of-florida",
     "name": "ACLU of Florida",
     "firm_name": "American Civil Liberties Union",
@@ -96,6 +191,25 @@
     "bar_number": null,
     "years_experience": null,
     "bio": "Champions individual rights and liberties throughout Florida, with significant work on voting rights restoration and criminal justice reform."
+  },
+  {
+    "id": "florida-justice-institute",
+    "name": "Florida Justice Institute",
+    "firm_name": "Florida Justice Institute",
+    "state": "Florida",
+    "city": "Miami",
+    "email": "info@floridajusticeinstitute.org",
+    "phone": "305-358-2081",
+    "website": "https://www.floridajusticeinstitute.org",
+    "specialties": [
+      "Prison Conditions",
+      "Police Misconduct",
+      "Civil Rights Litigation"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Nonprofit civil rights law firm focusing on prison reform, police misconduct, and impact litigation across Florida."
   },
   {
     "id": "aclu-of-illinois",
@@ -421,6 +535,25 @@
     "bio": "Defends civil liberties in Louisiana, state with highest incarceration rate in nation."
   },
   {
+    "id": "promise-of-justice-initiative",
+    "name": "Promise of Justice Initiative",
+    "firm_name": "Promise of Justice Initiative",
+    "state": "Louisiana",
+    "city": "New Orleans",
+    "email": "info@promiseofjustice.org",
+    "phone": "504-529-5955",
+    "website": "https://promiseofjustice.org",
+    "specialties": [
+      "Death Penalty",
+      "Prison Conditions",
+      "Civil Rights"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Nonprofit law firm advocating for humane prison conditions and fighting death penalty abuses across Louisiana."
+  },
+  {
     "id": "aclu-of-maine",
     "name": "ACLU of Maine",
     "firm_name": "American Civil Liberties Union",
@@ -533,6 +666,25 @@
     "bar_number": null,
     "years_experience": null,
     "bio": "Fights for civil rights in Mississippi with focus on voting rights and criminal justice."
+  },
+  {
+    "id": "mississippi-center-for-justice",
+    "name": "Mississippi Center for Justice",
+    "firm_name": "Mississippi Center for Justice",
+    "state": "Mississippi",
+    "city": "Jackson",
+    "email": "info@mscenterforjustice.org",
+    "phone": "601-352-2269",
+    "website": "https://mscenterforjustice.org",
+    "specialties": [
+      "Housing Rights",
+      "Voting Rights",
+      "Education Equity"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Public interest law firm tackling racial and economic injustice through litigation and community advocacy across Mississippi."
   },
   {
     "id": "aclu-of-missouri",
@@ -820,6 +972,25 @@
     "bio": "Protects constitutional rights of South Carolinians through strategic litigation."
   },
   {
+    "id": "sc-appleseed-legal-justice-center",
+    "name": "South Carolina Appleseed Legal Justice Center",
+    "firm_name": "South Carolina Appleseed Legal Justice Center",
+    "state": "South Carolina",
+    "city": "Columbia",
+    "email": "info@scjustice.org",
+    "phone": "803-779-1113",
+    "website": "https://www.scjustice.org",
+    "specialties": [
+      "Immigration Rights",
+      "Housing Justice",
+      "Economic Justice"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Advocates for low-income South Carolinians through policy work and civil rights litigation on housing, immigration, and economic justice."
+  },
+  {
     "id": "aclu-of-south-dakota",
     "name": "ACLU of South Dakota",
     "firm_name": "American Civil Liberties Union",
@@ -856,6 +1027,25 @@
     "bar_number": null,
     "years_experience": null,
     "bio": "Protects constitutional freedoms of Tennesseans through litigation and advocacy."
+  },
+  {
+    "id": "just-city-memphis",
+    "name": "Just City",
+    "firm_name": "Just City",
+    "state": "Tennessee",
+    "city": "Memphis",
+    "email": "info@justcity.org",
+    "phone": "901-206-2226",
+    "website": "https://justcity.org",
+    "specialties": [
+      "Bail Reform",
+      "Expungement",
+      "Criminal Justice Reform"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Memphis-based civil rights nonprofit advancing fair justice through bail reform advocacy, expungement services, and impact litigation."
   },
   {
     "id": "aclu-of-utah",
@@ -1008,5 +1198,24 @@
     "bar_number": null,
     "years_experience": null,
     "bio": "Protects civil liberties in nation's capital with focus on police reform and statehood."
+  },
+  {
+    "id": "washington-lawyers-committee",
+    "name": "Washington Lawyers' Committee for Civil Rights and Urban Affairs",
+    "firm_name": "Washington Lawyers' Committee",
+    "state": "District of Columbia",
+    "city": "Washington",
+    "email": "info@washlaw.org",
+    "phone": "202-319-1000",
+    "website": "https://www.washlaw.org",
+    "specialties": [
+      "Employment Discrimination",
+      "Fair Housing",
+      "Police Accountability"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Nonprofit legal organization partnering with pro bono counsel to pursue civil rights and economic justice cases in the District of Columbia."
   }
 ]

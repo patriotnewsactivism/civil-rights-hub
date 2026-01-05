@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Attorney Database Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <h1>Attorney Database Verification</h1>
+    <div id="results"></div>
+
+    <script>
+        const supabaseUrl = 'https://vrdnrbjnitptxrexdlao.supabase.co';
+        const supabaseKey = 'sb_publishable_eZY_OtCHVuJsJgpzNEjb0w_8umav4aS';
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        async function checkAttorneys() {
+            const resultsDiv = document.getElementById('results');
+
+            // Count by state
+            const states = ['Texas', 'Louisiana', 'Mississippi', 'Tennessee', 'South Carolina', 'Florida', 'Washington DC'];
+
+            resultsDiv.innerHTML = '<h2>Attorney Count by State:</h2>';
+
+            for (const state of states) {
+                const { data, count, error } = await supabase
+                    .from('attorneys')
+                    .select('*', { count: 'exact', head: false })
+                    .eq('state', state);
+
+                if (error) {
+                    resultsDiv.innerHTML += `<p>${state}: Error - ${error.message}</p>`;
+                } else {
+                    resultsDiv.innerHTML += `<p><strong>${state}</strong>: ${count} attorneys</p>`;
+                }
+            }
+
+            // Check for specific Texas attorneys
+            resultsDiv.innerHTML += '<h2>Specific Texas Attorneys:</h2>';
+
+            const { data: texasAttorneys, error: texasError } = await supabase
+                .from('attorneys')
+                .select('name, firm, city')
+                .eq('state', 'Texas')
+                .or('name.ilike.%Campagna%,name.ilike.%Vincent%,firm.ilike.%Texas Attorney Group%,firm.ilike.%Lone Star Legal%');
+
+            if (texasError) {
+                resultsDiv.innerHTML += `<p>Error: ${texasError.message}</p>`;
+            } else {
+                texasAttorneys.forEach(att => {
+                    resultsDiv.innerHTML += `<p>${att.name} - ${att.firm} (${att.city})</p>`;
+                });
+            }
+
+            // Total count
+            const { count: totalCount, error: totalError } = await supabase
+                .from('attorneys')
+                .select('*', { count: 'exact', head: true });
+
+            if (!totalError) {
+                resultsDiv.innerHTML += `<h2>Total Attorneys in Database: ${totalCount}</h2>`;
+            }
+        }
+
+        checkAttorneys();
+    </script>
+</body>
+</html>

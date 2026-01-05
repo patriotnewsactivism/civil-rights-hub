@@ -8,19 +8,24 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { toast } from "sonner";
 import { Send, MessageSquare } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
-import type { Database } from "@/integrations/supabase/types";
-
-type ProfileRow = Database["public"]["Tables"]["profiles"]["Row"];
-type DirectMessageRow = Database["public"]["Tables"]["direct_messages"]["Row"];
 
 interface ProfileSummary {
   id: string;
   display_name: string | null;
   avatar_url: string | null;
-  role: ProfileRow["role"];
 }
 
-type Message = DirectMessageRow;
+interface Message {
+  id: string;
+  content: string;
+  sender_id: string;
+  recipient_id: string;
+  is_read: boolean | null;
+  is_deleted_by_sender: boolean | null;
+  is_deleted_by_recipient: boolean | null;
+  created_at: string | null;
+  read_at: string | null;
+}
 
 export function DirectMessages() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -58,7 +63,6 @@ export function DirectMessages() {
     }
 
     return messages.filter((message) => {
-      // Filter out messages deleted by current user
       if (message.sender_id === currentUserId && message.is_deleted_by_sender) {
         return false;
       }
@@ -83,8 +87,8 @@ export function DirectMessages() {
     if (participantIds.length === 0) return;
 
     const { data, error } = await supabase
-      .from("profiles")
-      .select("id, display_name, avatar_url, role")
+      .from("user_profiles")
+      .select("id, display_name, avatar_url")
       .in("id", participantIds);
 
     if (error) {
@@ -95,7 +99,7 @@ export function DirectMessages() {
     setProfiles((current) => {
       const map = new Map(current.map((profile) => [profile.id, profile] as const));
       for (const profile of data ?? []) {
-        map.set(profile.id, profile);
+        map.set(profile.id, profile as ProfileSummary);
       }
       return Array.from(map.values());
     });
@@ -105,8 +109,8 @@ export function DirectMessages() {
     if (!currentUserId) return;
 
     const { data, error } = await supabase
-      .from("profiles")
-      .select("id, display_name, avatar_url, role")
+      .from("user_profiles")
+      .select("id, display_name, avatar_url")
       .neq("id", currentUserId);
 
     if (error) {
@@ -117,7 +121,7 @@ export function DirectMessages() {
     setProfiles((current) => {
       const map = new Map(current.map((profile) => [profile.id, profile] as const));
       for (const profile of data ?? []) {
-        map.set(profile.id, profile);
+        map.set(profile.id, profile as ProfileSummary);
       }
       return Array.from(map.values());
     });
@@ -287,7 +291,6 @@ export function DirectMessages() {
                   </Avatar>
                   <div className="min-w-0 flex-1">
                     <p className="truncate font-medium">{user.display_name ?? "Community member"}</p>
-                    <p className="text-xs capitalize text-muted-foreground">{user.role ?? "user"}</p>
                   </div>
                   {unreadCount > 0 && (
                     <span className="flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground">
@@ -319,7 +322,6 @@ export function DirectMessages() {
                 </Avatar>
                 <div>
                   <p className="font-semibold">{currentContact.display_name ?? "Community member"}</p>
-                  <p className="text-xs capitalize text-muted-foreground">{currentContact.role ?? "user"}</p>
                 </div>
               </div>
             </CardHeader>

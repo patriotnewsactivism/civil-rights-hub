@@ -72,7 +72,7 @@ export function OfficerAccountability() {
     try {
       let query = supabase
         .from("agencies")
-        .select("id, name, agency_type, state, city, total_complaints, total_violations, website")
+        .select("id, name, agency_type, state, city, total_complaints, website")
         .order("total_complaints", { ascending: false });
 
       if (selectedState !== "all") {

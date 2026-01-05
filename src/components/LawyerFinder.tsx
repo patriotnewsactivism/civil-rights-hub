@@ -44,7 +44,7 @@ export function LawyerFinder() {
   const [selectedState, setSelectedState] = useState<string>("all");
   const [selectedSpecialty, setSelectedSpecialty] = useState<string>("all");
   const [proBonoOnly, setProBonoOnly] = useState(false);
-  const [usingFallback, setUsingFallback] = useState(false);
+  const [fallbackStatus, setFallbackStatus] = useState<"none" | "empty" | "error">("none");
 
   const fetchAttorneys = useCallback(async () => {
     setLoading(true);
@@ -58,17 +58,17 @@ export function LawyerFinder() {
 
       if (data && data.length > 0) {
         setAttorneys(data as AttorneyRecord[]);
-        setUsingFallback(false);
+        setFallbackStatus("none");
       } else {
         setAttorneys(ATTORNEY_FALLBACK_DATA);
-        setUsingFallback(true);
+        setFallbackStatus("empty");
       }
     } catch (error) {
       console.error("Error fetching attorneys:", error);
       setAttorneys(ATTORNEY_FALLBACK_DATA);
-      setUsingFallback(true);
+      setFallbackStatus("error");
       toast.error("Failed to load attorneys", {
-        description: "Showing verified fallback directory.",
+        description: "Supabase is unreachable right now. Showing verified fallback directory.",
       });
     } finally {
       setLoading(false);
@@ -198,13 +198,18 @@ export function LawyerFinder() {
         </CardContent>
       </Card>
 
-      {usingFallback && (
+      {fallbackStatus !== "none" && (
         <Alert className="border-dashed">
           <Database className="h-4 w-4" />
-          <AlertTitle>Offline directory loaded</AlertTitle>
+          <AlertTitle>
+            {fallbackStatus === "error"
+              ? "Supabase offline — using verified directory"
+              : "Verified directory loaded while data syncs"}
+          </AlertTitle>
           <AlertDescription>
-            Supabase data is unavailable, so we&rsquo;re showing the verified national and state
-            attorney roster to keep search results available.
+            {fallbackStatus === "error"
+              ? "Supabase is unreachable (maintenance, network issue, or offline). The verified national and state attorney roster is bundled locally so search stays available."
+              : "Supabase is online but has no attorney records yet. Showing the verified national and state roster until the live directory syncs."}
           </AlertDescription>
         </Alert>
       )}

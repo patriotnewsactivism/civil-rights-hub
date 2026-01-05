@@ -1,21 +1,30 @@
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
-import { Mail, Send, Inbox, Star, Trash2, Search, User as UserIcon, X, MessageSquare } from "lucide-react";
+import { Mail, Send, Inbox, Trash2, Search, User as UserIcon, X, MessageSquare } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import type { Database } from "@/integrations/supabase/types";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
 
-type DirectMessageRow = Database["public"]["Tables"]["direct_messages"]["Row"];
-type ProfileRow = Database["public"]["Tables"]["profiles"]["Row"];
+interface UserProfile {
+  id: string;
+  display_name: string | null;
+  avatar_url: string | null;
+}
 
-type MessageProfile =
-  | (Pick<ProfileRow, "display_name"> & { id?: string | null })
-  | null;
+interface DirectMessage {
+  id: string;
+  content: string;
+  sender_id: string;
+  recipient_id: string;
+  is_read: boolean | null;
+  is_deleted_by_sender: boolean | null;
+  is_deleted_by_recipient: boolean | null;
+  created_at: string | null;
+}
 
-type MessageWithProfiles = DirectMessageRow & {
-  sender: MessageProfile;
-  recipient: MessageProfile;
-};
+interface MessageWithProfiles extends DirectMessage {
+  sender: UserProfile | null;
+  recipient: UserProfile | null;
+}
 
 type ComposeFormState = {
   recipient_id: string;
@@ -38,7 +47,7 @@ export default function MessagingPanel() {
   const [composeForm, setComposeForm] = useState<ComposeFormState>(INITIAL_FORM_STATE);
   const [currentUser, setCurrentUser] = useState<SupabaseUser | null>(null);
   const [unreadCount, setUnreadCount] = useState(0);
-  const [availableUsers, setAvailableUsers] = useState<ProfileRow[]>([]);
+  const [availableUsers, setAvailableUsers] = useState<UserProfile[]>([]);
 
   const loadCurrentUser = useCallback(async () => {
     const { data } = await supabase.auth.getUser();
@@ -53,12 +62,12 @@ export default function MessagingPanel() {
     if (!currentUser) return;
 
     const { data } = await supabase
-      .from("profiles")
-      .select("*")
+      .from("user_profiles")
+      .select("id, display_name, avatar_url")
       .neq("id", currentUser.id)
       .order("display_name");
 
-    setAvailableUsers(data ?? []);
+    setAvailableUsers((data ?? []) as UserProfile[]);
   }, [currentUser]);
 
   useEffect(() => {
@@ -95,11 +104,11 @@ export default function MessagingPanel() {
       });
 
       const { data: profiles } = await supabase
-        .from("profiles")
-        .select("id, display_name")
+        .from("user_profiles")
+        .select("id, display_name, avatar_url")
         .in("id", Array.from(userIds));
 
-      const profileMap = new Map(profiles?.map((p) => [p.id, p]) ?? []);
+      const profileMap = new Map((profiles ?? []).map((p) => [p.id, p as UserProfile]));
 
       const messagesWithProfiles: MessageWithProfiles[] = (data ?? []).map((msg) => ({
         ...msg,
@@ -172,7 +181,7 @@ export default function MessagingPanel() {
       if (!message) return;
 
       const isSender = message.sender_id === currentUser.id;
-      const updates: Partial<DirectMessageRow> = isSender
+      const updates = isSender
         ? { is_deleted_by_sender: true }
         : { is_deleted_by_recipient: true };
 
@@ -266,7 +275,7 @@ export default function MessagingPanel() {
                     <option value="">Select a recipient...</option>
                     {availableUsers.map((user) => (
                       <option key={user.id} value={user.id}>
-                        {user.display_name || user.email}
+                        {user.display_name || "Community member"}
                       </option>
                     ))}
                   </select>

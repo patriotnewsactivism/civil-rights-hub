@@ -10,53 +10,129 @@ import { toast } from "sonner";
 import { Heart, MessageCircle, Upload, X, FileText, Music, Image as ImageIcon } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import type { ChangeEvent } from "react";
-import type { Database } from "@/integrations/supabase/types";
 
-type PostRow = Database["public"]["Tables"]["posts"]["Row"];
-type LikeRow = Database["public"]["Tables"]["likes"]["Row"];
-type CommentRow = Database["public"]["Tables"]["comments"]["Row"];
-type ProfileRow = Database["public"]["Tables"]["profiles"]["Row"];
+interface UserProfile {
+  id: string;
+  display_name: string | null;
+  avatar_url: string | null;
+}
 
-type PostQueryResult = PostRow & {
-  profiles: Pick<ProfileRow, "display_name" | "avatar_url" | "role"> | null;
-  likes: Pick<LikeRow, "id" | "user_id">[];
-  comments: (Pick<CommentRow, "id" | "content" | "user_id"> & {
-    profiles: Pick<ProfileRow, "display_name"> | null;
-  })[];
-};
+interface Post {
+  id: string;
+  content: string;
+  media_urls: string[] | null;
+  media_types: string[] | null;
+  created_at: string;
+  user_id: string;
+}
+
+interface Like {
+  id: string;
+  user_id: string;
+}
+
+interface Comment {
+  id: string;
+  content: string;
+  user_id: string;
+  profile?: UserProfile | null;
+}
+
+interface PostWithDetails extends Post {
+  profile: UserProfile | null;
+  likes: Like[];
+  comments: Comment[];
+}
 
 export function SocialFeed() {
-  const [posts, setPosts] = useState<PostQueryResult[]>([]);
+  const [posts, setPosts] = useState<PostWithDetails[]>([]);
   const [newPost, setNewPost] = useState("");
   const [uploading, setUploading] = useState(false);
   const [mediaFiles, setMediaFiles] = useState<File[]>([]);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
 
   const fetchPosts = useCallback(async () => {
-    const { data, error } = await supabase
+    // Fetch posts
+    const { data: postsData, error: postsError } = await supabase
       .from("posts")
-      .select(`
-        id,
-        content,
-        media_urls,
-        media_types,
-        created_at,
-        user_id,
-        profiles!posts_user_id_fkey(display_name, avatar_url, role),
-        likes(id, user_id),
-        comments(id, content, user_id, profiles!comments_user_id_fkey(display_name))
-      `)
+      .select("*")
       .order("created_at", { ascending: false })
-      .limit(50)
-      .returns<PostQueryResult[]>();
+      .limit(50);
 
-    if (error) {
+    if (postsError) {
       toast.error("Failed to load posts");
       setPosts([]);
       return;
     }
 
-    setPosts(data ?? []);
+    const typedPosts = (postsData ?? []) as Post[];
+    
+    if (typedPosts.length === 0) {
+      setPosts([]);
+      return;
+    }
+
+    // Get unique user IDs
+    const userIds = [...new Set(typedPosts.map((p) => p.user_id))];
+    const postIds = typedPosts.map((p) => p.id);
+
+    // Fetch profiles
+    const { data: profilesData } = await supabase
+      .from("user_profiles")
+      .select("id, display_name, avatar_url")
+      .in("id", userIds);
+
+    const profileMap = new Map((profilesData ?? []).map((p) => [p.id, p as UserProfile]));
+
+    // Fetch likes
+    const { data: likesData } = await supabase
+      .from("likes")
+      .select("id, user_id, post_id")
+      .in("post_id", postIds);
+
+    const likesMap = new Map<string, Like[]>();
+    (likesData ?? []).forEach((like) => {
+      const existing = likesMap.get(like.post_id) ?? [];
+      existing.push({ id: like.id, user_id: like.user_id });
+      likesMap.set(like.post_id, existing);
+    });
+
+    // Fetch comments
+    const { data: commentsData } = await supabase
+      .from("comments")
+      .select("id, content, user_id, post_id")
+      .in("post_id", postIds);
+
+    // Get comment user profiles
+    const commentUserIds = [...new Set((commentsData ?? []).map((c) => c.user_id))];
+    const { data: commentProfilesData } = await supabase
+      .from("user_profiles")
+      .select("id, display_name, avatar_url")
+      .in("id", commentUserIds);
+
+    const commentProfileMap = new Map((commentProfilesData ?? []).map((p) => [p.id, p as UserProfile]));
+
+    const commentsMap = new Map<string, Comment[]>();
+    (commentsData ?? []).forEach((comment) => {
+      const existing = commentsMap.get(comment.post_id) ?? [];
+      existing.push({
+        id: comment.id,
+        content: comment.content,
+        user_id: comment.user_id,
+        profile: commentProfileMap.get(comment.user_id) ?? null,
+      });
+      commentsMap.set(comment.post_id, existing);
+    });
+
+    // Combine all data
+    const postsWithDetails: PostWithDetails[] = typedPosts.map((post) => ({
+      ...post,
+      profile: profileMap.get(post.user_id) ?? null,
+      likes: likesMap.get(post.id) ?? [],
+      comments: commentsMap.get(post.id) ?? [],
+    }));
+
+    setPosts(postsWithDetails);
   }, []);
 
   const handleFileSelect = (event: ChangeEvent<HTMLInputElement>) => {
@@ -305,17 +381,12 @@ export function SocialFeed() {
           <CardHeader>
             <div className="flex items-start gap-3">
               <Avatar>
-                <AvatarImage src={post.profiles?.avatar_url ?? ""} />
-                <AvatarFallback>{post.profiles?.display_name?.[0] ?? "U"}</AvatarFallback>
+                <AvatarImage src={post.profile?.avatar_url ?? ""} />
+                <AvatarFallback>{post.profile?.display_name?.[0] ?? "U"}</AvatarFallback>
               </Avatar>
               <div className="flex-1">
                 <div className="flex items-center gap-2">
-                  <span className="font-semibold">{post.profiles?.display_name ?? "Anonymous"}</span>
-                  {post.profiles?.role && post.profiles.role !== "user" && (
-                    <Badge variant="secondary" className="text-xs">
-                      {post.profiles.role}
-                    </Badge>
-                  )}
+                  <span className="font-semibold">{post.profile?.display_name ?? "Anonymous"}</span>
                 </div>
                 <p className="text-xs text-muted-foreground">
                   {formatDistanceToNow(new Date(post.created_at), { addSuffix: true })}
@@ -360,7 +431,7 @@ export function SocialFeed() {
               <div className="space-y-3 rounded-lg bg-muted/50 p-3 text-sm">
                 {post.comments.map((comment) => (
                   <div key={comment.id}>
-                    <p className="font-medium">{comment.profiles?.display_name ?? "Community member"}</p>
+                    <p className="font-medium">{comment.profile?.display_name ?? "Community member"}</p>
                     <p>{comment.content}</p>
                   </div>
                 ))}

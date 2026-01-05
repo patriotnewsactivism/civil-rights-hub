@@ -1,14 +1,34 @@
-import { useEffect, useState, useMemo, useCallback } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { useState } from "react";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Check, ChevronsUpDown, Building2, Mail, Phone, Globe, Clock, DollarSign } from "lucide-react";
+import { Check, ChevronsUpDown, Building2, Clock, DollarSign } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { Database } from "@/integrations/supabase/types";
 
-type FOIAAgency = Database["public"]["Tables"]["foia_agencies"]["Row"];
+// Static FOIA agency data for federal agencies
+const FEDERAL_AGENCIES = [
+  { id: "fbi", name: "Federal Bureau of Investigation", acronym: "FBI", agency_type: "Federal", standard_response_days: 20, has_fees: true, fee_waiver_available: true },
+  { id: "doj", name: "Department of Justice", acronym: "DOJ", agency_type: "Federal", standard_response_days: 20, has_fees: true, fee_waiver_available: true },
+  { id: "dhs", name: "Department of Homeland Security", acronym: "DHS", agency_type: "Federal", standard_response_days: 20, has_fees: true, fee_waiver_available: true },
+  { id: "ice", name: "Immigration and Customs Enforcement", acronym: "ICE", agency_type: "Federal", standard_response_days: 20, has_fees: true, fee_waiver_available: true },
+  { id: "cbp", name: "Customs and Border Protection", acronym: "CBP", agency_type: "Federal", standard_response_days: 20, has_fees: true, fee_waiver_available: true },
+  { id: "dod", name: "Department of Defense", acronym: "DOD", agency_type: "Federal", standard_response_days: 20, has_fees: true, fee_waiver_available: true },
+  { id: "cia", name: "Central Intelligence Agency", acronym: "CIA", agency_type: "Federal", standard_response_days: 20, has_fees: true, fee_waiver_available: true },
+  { id: "epa", name: "Environmental Protection Agency", acronym: "EPA", agency_type: "Federal", standard_response_days: 20, has_fees: true, fee_waiver_available: true },
+  { id: "hhs", name: "Department of Health and Human Services", acronym: "HHS", agency_type: "Federal", standard_response_days: 20, has_fees: true, fee_waiver_available: true },
+  { id: "usda", name: "Department of Agriculture", acronym: "USDA", agency_type: "Federal", standard_response_days: 20, has_fees: true, fee_waiver_available: true },
+];
+
+export interface FOIAAgency {
+  id: string;
+  name: string;
+  acronym?: string;
+  agency_type: string;
+  standard_response_days?: number;
+  has_fees?: boolean;
+  fee_waiver_available?: boolean;
+}
 
 interface FOIAAgencySelectorProps {
   onSelect: (agency: FOIAAgency | null) => void;
@@ -21,62 +41,22 @@ interface FOIAAgencySelectorProps {
 export function FOIAAgencySelector({
   onSelect,
   selectedAgencyId,
-  agencyType,
-  state,
   className,
 }: FOIAAgencySelectorProps) {
   const [open, setOpen] = useState(false);
-  const [agencies, setAgencies] = useState<FOIAAgency[]>([]);
-  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const fetchAgencies = useCallback(async () => {
-    setLoading(true);
-    try {
-      let query = supabase
-        .from("foia_agencies")
-        .select("*")
-        .eq("is_active", true)
-        .order("name");
+  const agencies = FEDERAL_AGENCIES;
 
-      if (agencyType) {
-        query = query.eq("agency_type", agencyType);
-      }
+  const filteredAgencies = searchQuery.trim()
+    ? agencies.filter((agency) =>
+        `${agency.name} ${agency.acronym || ""}`
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase())
+      )
+    : agencies;
 
-      if (state && agencyType !== "Federal") {
-        query = query.eq("state", state);
-      }
-
-      const { data, error } = await query;
-
-      if (error) throw error;
-      setAgencies(data || []);
-    } catch (error) {
-      console.error("Error fetching FOIA agencies:", error);
-      setAgencies([]);
-    } finally {
-      setLoading(false);
-    }
-  }, [agencyType, state]);
-
-  useEffect(() => {
-    void fetchAgencies();
-  }, [fetchAgencies]);
-
-  const filteredAgencies = useMemo(() => {
-    if (!searchQuery.trim()) return agencies;
-    const normalized = searchQuery.toLowerCase();
-    return agencies.filter((agency) =>
-      `${agency.name} ${agency.acronym || ""} ${agency.foia_office_name || ""}`
-        .toLowerCase()
-        .includes(normalized)
-    );
-  }, [agencies, searchQuery]);
-
-  const selectedAgency = useMemo(
-    () => agencies.find((agency) => agency.id === selectedAgencyId) || null,
-    [agencies, selectedAgencyId]
-  );
+  const selectedAgency = agencies.find((agency) => agency.id === selectedAgencyId) || null;
 
   const handleSelect = (agency: FOIAAgency) => {
     onSelect(agency);
@@ -94,9 +74,7 @@ export function FOIAAgencySelector({
             className="w-full justify-between"
           >
             <span className="truncate">
-              {loading
-                ? "Loading agencies..."
-                : selectedAgency
+              {selectedAgency
                 ? `${selectedAgency.name}${selectedAgency.acronym ? ` (${selectedAgency.acronym})` : ""}`
                 : "Select FOIA agency..."}
             </span>
@@ -156,51 +134,11 @@ export function FOIAAgencySelector({
               {selectedAgency.acronym && (
                 <p className="text-sm text-muted-foreground">{selectedAgency.acronym}</p>
               )}
-              {selectedAgency.foia_office_name && (
-                <p className="text-sm text-muted-foreground mt-1">
-                  FOIA Office: {selectedAgency.foia_office_name}
-                </p>
-              )}
             </div>
             <Badge>{selectedAgency.agency_type}</Badge>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
-            {selectedAgency.foia_email && (
-              <div className="flex items-center gap-2">
-                <Mail className="h-4 w-4 text-muted-foreground" />
-                <a
-                  href={`mailto:${selectedAgency.foia_email}`}
-                  className="text-primary hover:underline truncate"
-                >
-                  {selectedAgency.foia_email}
-                </a>
-              </div>
-            )}
-
-            {selectedAgency.foia_phone && (
-              <div className="flex items-center gap-2">
-                <Phone className="h-4 w-4 text-muted-foreground" />
-                <a href={`tel:${selectedAgency.foia_phone}`} className="text-primary hover:underline">
-                  {selectedAgency.foia_phone}
-                </a>
-              </div>
-            )}
-
-            {selectedAgency.foia_online_portal_url && (
-              <div className="flex items-center gap-2">
-                <Globe className="h-4 w-4 text-muted-foreground" />
-                <a
-                  href={selectedAgency.foia_online_portal_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-primary hover:underline truncate"
-                >
-                  Online Portal
-                </a>
-              </div>
-            )}
-
             {selectedAgency.standard_response_days && (
               <div className="flex items-center gap-2">
                 <Clock className="h-4 w-4 text-muted-foreground" />
@@ -216,42 +154,6 @@ export function FOIAAgencySelector({
                 </span>
               </div>
             )}
-          </div>
-
-          {selectedAgency.mailing_address && (
-            <div className="pt-2 border-t text-sm">
-              <p className="text-muted-foreground mb-1">Mailing Address:</p>
-              <p className="whitespace-pre-line">{selectedAgency.mailing_address}</p>
-            </div>
-          )}
-
-          {selectedAgency.notes && (
-            <div className="pt-2 border-t text-sm">
-              <p className="text-muted-foreground mb-1">Important Notes:</p>
-              <p className="whitespace-pre-line">{selectedAgency.notes}</p>
-            </div>
-          )}
-
-          {selectedAgency.foia_guide_url && (
-            <div className="pt-2">
-              <a
-                href={selectedAgency.foia_guide_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-sm text-primary hover:underline flex items-center gap-1"
-              >
-                <Globe className="h-3 w-3" />
-                View FOIA Guide for this Agency
-              </a>
-            </div>
-          )}
-
-          <div className="pt-2 flex flex-wrap gap-2 text-xs">
-            {selectedAgency.accepts_email && <Badge variant="secondary">Accepts Email</Badge>}
-            {selectedAgency.accepts_online && <Badge variant="secondary">Online Portal</Badge>}
-            {selectedAgency.accepts_mail && <Badge variant="secondary">Accepts Mail</Badge>}
-            {selectedAgency.accepts_fax && <Badge variant="secondary">Accepts Fax</Badge>}
-            {selectedAgency.accepts_in_person && <Badge variant="secondary">In-Person Requests</Badge>}
           </div>
         </div>
       )}

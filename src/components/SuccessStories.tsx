@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   Dialog,
@@ -19,7 +18,6 @@ import {
 import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import type { Database } from "@/integrations/supabase/types";
 
 const OUTCOMES = [
   "Charges Dropped",
@@ -29,18 +27,25 @@ const OUTCOMES = [
   "Community Win",
 ];
 
-type SuccessStory = Database["public"]["Tables"]["success_stories"]["Row"];
+interface SuccessStory {
+  id: string;
+  title: string;
+  story: string;
+  outcome: string | null;
+  state: string | null;
+  case_type: string | null;
+  is_verified: boolean | null;
+  submitter_id: string | null;
+  created_at: string | null;
+  updated_at: string | null;
+}
 
 type StoryFormState = {
   title: string;
   story: string;
   outcome: string;
   state: string;
-  city: string;
-  incident_type: string;
-  resolution_date: string;
-  is_anonymous: boolean;
-  submitter_name: string;
+  case_type: string;
 };
 
 const initialStory: StoryFormState = {
@@ -48,11 +53,7 @@ const initialStory: StoryFormState = {
   story: "",
   outcome: OUTCOMES[0] ?? "",
   state: "",
-  city: "",
-  incident_type: "",
-  resolution_date: "",
-  is_anonymous: false,
-  submitter_name: "",
+  case_type: "",
 };
 
 export const SuccessStories = () => {
@@ -70,8 +71,8 @@ export const SuccessStories = () => {
     setLoading(true);
     const { data, error } = await supabase
       .from("success_stories")
-      .select("*")
-      .eq("is_approved", true)
+      .select("id, title, story, outcome, state, case_type, is_verified, submitter_id, created_at, updated_at")
+      .eq("is_verified", true)
       .order("created_at", { ascending: false })
       .limit(50);
 
@@ -106,7 +107,7 @@ export const SuccessStories = () => {
     setFiltered(next);
   }, [stories, stateFilter, outcomeFilter]);
 
-  const states = useMemo(() => Array.from(new Set(stories.map((story) => story.state))).filter(Boolean), [stories]);
+  const states = useMemo(() => Array.from(new Set(stories.map((story) => story.state).filter(Boolean))), [stories]);
 
   const handleSubmitStory = async () => {
     if (!storyForm.title || !storyForm.story || !storyForm.outcome) {
@@ -118,21 +119,15 @@ export const SuccessStories = () => {
       return;
     }
 
-    const payload: Database["public"]["Tables"]["success_stories"]["Insert"] = {
+    const { error } = await supabase.from("success_stories").insert({
       title: storyForm.title,
       story: storyForm.story,
       outcome: storyForm.outcome,
       state: storyForm.state || null,
-      city: storyForm.city || null,
-      incident_type: storyForm.incident_type || null,
-      resolution_date: storyForm.resolution_date || null,
-      is_anonymous: storyForm.is_anonymous,
-      submitter_name: storyForm.is_anonymous ? null : storyForm.submitter_name || null,
-      submitted_by: user?.id ?? null,
-      is_approved: false,
-    };
-
-    const { error } = await supabase.from("success_stories").insert(payload);
+      case_type: storyForm.case_type || null,
+      submitter_id: user?.id ?? null,
+      is_verified: false,
+    });
 
     if (error) {
       toast({
@@ -230,51 +225,19 @@ export const SuccessStories = () => {
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">Incident type</label>
+                  <label className="text-sm font-medium">Case type</label>
                   <Input
                     placeholder="Protest, traffic stop, lawsuit..."
-                    value={storyForm.incident_type}
-                    onChange={(event) => setStoryForm((state) => ({ ...state, incident_type: event.target.value }))}
+                    value={storyForm.case_type}
+                    onChange={(event) => setStoryForm((state) => ({ ...state, case_type: event.target.value }))}
                   />
                 </div>
               </div>
-              <div className="grid gap-4 md:grid-cols-2">
-                <Input
-                  placeholder="State"
-                  value={storyForm.state}
-                  onChange={(event) => setStoryForm((state) => ({ ...state, state: event.target.value.toUpperCase() }))}
-                />
-                <Input
-                  placeholder="City"
-                  value={storyForm.city}
-                  onChange={(event) => setStoryForm((state) => ({ ...state, city: event.target.value }))}
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Resolution date</label>
-                <Input
-                  type="date"
-                  value={storyForm.resolution_date}
-                  onChange={(event) => setStoryForm((state) => ({ ...state, resolution_date: event.target.value }))}
-                />
-              </div>
-              <div className="flex items-start gap-3 rounded-lg border p-3">
-                <Switch
-                  checked={storyForm.is_anonymous}
-                  onCheckedChange={(checked) => setStoryForm((state) => ({ ...state, is_anonymous: checked }))}
-                />
-                <div className="space-y-1">
-                  <p className="font-semibold">Share anonymously</p>
-                  <p className="text-sm text-muted-foreground">Keep your name private while still uplifting your success.</p>
-                </div>
-              </div>
-              {!storyForm.is_anonymous && (
-                <Input
-                  placeholder="Your name or organization"
-                  value={storyForm.submitter_name}
-                  onChange={(event) => setStoryForm((state) => ({ ...state, submitter_name: event.target.value }))}
-                />
-              )}
+              <Input
+                placeholder="State (e.g. CA)"
+                value={storyForm.state}
+                onChange={(event) => setStoryForm((state) => ({ ...state, state: event.target.value.toUpperCase() }))}
+              />
             </div>
             <DialogFooter>
               <Button variant="ghost" onClick={() => setSubmitDialogOpen(false)}>
@@ -295,7 +258,7 @@ export const SuccessStories = () => {
           <SelectContent>
             <SelectItem value="">All states</SelectItem>
             {states.map((state) => (
-              <SelectItem key={state} value={state}>
+              <SelectItem key={state} value={state!}>
                 {state}
               </SelectItem>
             ))}
@@ -332,7 +295,7 @@ export const SuccessStories = () => {
               <CardHeader className="space-y-2">
                 <div className="flex items-center justify-between gap-2">
                   <CardTitle className="text-lg font-semibold">{story.title}</CardTitle>
-                  {story.is_featured && <Badge className="bg-emerald-100 text-emerald-800">Featured</Badge>}
+                  {story.is_verified && <Badge className="bg-emerald-100 text-emerald-800">Verified</Badge>}
                 </div>
                 <CardDescription>{story.story.slice(0, 160)}{story.story.length > 160 ? "…" : ""}</CardDescription>
               </CardHeader>
@@ -340,31 +303,20 @@ export const SuccessStories = () => {
                 <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
                   {story.state && (
                     <Badge variant="outline">
-                      <MapPin className="mr-1 h-3 w-3" /> {story.city ? `${story.city}, ` : ""}{story.state}
+                      <MapPin className="mr-1 h-3 w-3" /> {story.state}
                     </Badge>
                   )}
-                  <Badge variant="outline">{story.outcome}</Badge>
-                  {story.incident_type && <Badge variant="outline">{story.incident_type}</Badge>}
+                  {story.outcome && <Badge variant="outline">{story.outcome}</Badge>}
+                  {story.case_type && <Badge variant="outline">{story.case_type}</Badge>}
                 </div>
-                {story.resolution_date && (
-                  <p className="text-xs text-muted-foreground">Resolved on {new Date(story.resolution_date).toLocaleDateString()}</p>
-                )}
               </CardContent>
               <CardFooter className="flex flex-wrap items-center justify-between gap-2">
                 <div className="flex flex-col text-xs text-muted-foreground">
-                  {story.submitter_name && !story.is_anonymous ? (
-                    <span>Shared by {story.submitter_name}</span>
-                  ) : (
-                    <span>Anonymous submission</span>
-                  )}
-                  <span>{new Date(story.created_at).toLocaleDateString()}</span>
+                  <span>{story.created_at && new Date(story.created_at).toLocaleDateString()}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Button variant="outline" size="sm" onClick={() => void handleShare(story)}>
                     <Share2 className="mr-2 h-4 w-4" /> Share
-                  </Button>
-                  <Button variant="ghost" size="sm" disabled>
-                    <Heart className="mr-2 h-4 w-4" /> {story.like_count ?? 0}
                   </Button>
                 </div>
               </CardFooter>

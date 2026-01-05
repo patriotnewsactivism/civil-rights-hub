@@ -18,12 +18,33 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import type { Database } from "@/integrations/supabase/types";
 
 const RESOURCE_TYPES = ["pdf", "video", "link", "image", "audio", "document"] as const;
 
-type Resource = Database["public"]["Tables"]["resource_library"]["Row"];
-type ResourceRating = Database["public"]["Tables"]["resource_ratings"]["Row"];
+interface Resource {
+  id: string;
+  title: string;
+  description: string | null;
+  resource_type: string;
+  category: string[] | null;
+  url: string;
+  download_count: number | null;
+  avg_rating: number | null;
+  total_ratings: number | null;
+  is_featured: boolean | null;
+  submitter_id: string | null;
+  created_at: string | null;
+  updated_at: string | null;
+}
+
+interface ResourceRating {
+  id: string;
+  resource_id: string;
+  user_id: string;
+  rating: number | null;
+  review: string | null;
+  created_at: string | null;
+}
 
 type UploadFormState = {
   title: string;
@@ -58,7 +79,7 @@ export const ResourceLibrary = () => {
     setLoading(true);
     const { data, error } = await supabase
       .from("resource_library")
-      .select("*")
+      .select("id, title, description, resource_type, category, url, download_count, avg_rating, total_ratings, is_featured, submitter_id, created_at, updated_at")
       .order("created_at", { ascending: false })
       .limit(100);
 
@@ -136,13 +157,18 @@ export const ResourceLibrary = () => {
       return;
     }
 
-    const payload: Database["public"]["Tables"]["resource_ratings"]["Insert"] = {
-      resource_id: resource.id,
-      user_id: user.id,
-      rating: score,
-    };
-
-    const { data, error } = await supabase.from("resource_ratings").upsert(payload, { onConflict: "resource_id,user_id" }).select("*").single();
+    const { data, error } = await supabase
+      .from("resource_ratings")
+      .upsert(
+        {
+          resource_id: resource.id,
+          user_id: user.id,
+          rating: score,
+        },
+        { onConflict: "resource_id,user_id" }
+      )
+      .select("*")
+      .single();
 
     if (error) {
       toast({
@@ -176,16 +202,14 @@ export const ResourceLibrary = () => {
       return;
     }
 
-    const payload: Database["public"]["Tables"]["resource_library"]["Insert"] = {
+    const { error } = await supabase.from("resource_library").insert({
       title: formState.title,
       description: formState.description || null,
       resource_type: formState.resource_type,
       category: [formState.category],
       url: formState.url,
       submitter_id: user.id,
-    };
-
-    const { error } = await supabase.from("resource_library").insert(payload);
+    });
 
     if (error) {
       toast({

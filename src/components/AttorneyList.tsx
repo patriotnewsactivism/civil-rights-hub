@@ -101,8 +101,8 @@ export default function AttorneyList({ searchQuery, selectedState, selectedSpeci
           <div className="flex justify-between items-start">
             <div>
               <h3 className="text-xl font-bold text-gray-900">{lawyer.name}</h3>
-              {lawyer.firm && (
-                <p className="text-sm text-gray-600 font-medium">{lawyer.firm}</p>
+              {lawyer.firm_name && (
+                <p className="text-sm text-gray-600 font-medium">{lawyer.firm_name}</p>
               )}
             </div>
             <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full font-semibold">

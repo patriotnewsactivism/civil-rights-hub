@@ -51,13 +51,29 @@ export function LawyerFinder() {
     try {
       const { data, error } = await supabase
         .from("attorneys")
-        .select("*")
+        .select("id, name, firm_name, state, city, email, phone, website, specialties, accepts_pro_bono, bar_number, years_experience, bio")
         .order("name");
 
       if (error) throw error;
 
       if (data && data.length > 0) {
-        setAttorneys(data as AttorneyRecord[]);
+        // Map database rows to AttorneyRecord type
+        const mapped: AttorneyRecord[] = data.map((row) => ({
+          id: row.id,
+          name: row.name,
+          firm_name: row.firm_name,
+          state: row.state,
+          city: row.city,
+          email: row.email,
+          phone: row.phone,
+          website: row.website,
+          specialties: row.specialties ?? [],
+          accepts_pro_bono: row.accepts_pro_bono ?? false,
+          bar_number: row.bar_number,
+          years_experience: row.years_experience,
+          bio: row.bio,
+        }));
+        setAttorneys(mapped);
         setFallbackStatus("none");
       } else {
         setAttorneys(ATTORNEY_FALLBACK_DATA);
@@ -68,7 +84,7 @@ export function LawyerFinder() {
       setAttorneys(ATTORNEY_FALLBACK_DATA);
       setFallbackStatus("error");
       toast.error("Failed to load attorneys", {
-        description: "Supabase is unreachable right now. Showing verified fallback directory.",
+        description: "Showing verified fallback directory.",
       });
     } finally {
       setLoading(false);
@@ -203,13 +219,13 @@ export function LawyerFinder() {
           <Database className="h-4 w-4" />
           <AlertTitle>
             {fallbackStatus === "error"
-              ? "Supabase offline — using verified directory"
+              ? "Database offline — using verified directory"
               : "Verified directory loaded while data syncs"}
           </AlertTitle>
           <AlertDescription>
             {fallbackStatus === "error"
-              ? "Supabase is unreachable (maintenance, network issue, or offline). The verified national and state attorney roster is bundled locally so search stays available."
-              : "Supabase is online but has no attorney records yet. Showing the verified national and state roster until the live directory syncs."}
+              ? "The database is unreachable. Showing the verified national and state attorney roster."
+              : "No attorney records yet. Showing the verified national and state roster until the live directory syncs."}
           </AlertDescription>
         </Alert>
       )}

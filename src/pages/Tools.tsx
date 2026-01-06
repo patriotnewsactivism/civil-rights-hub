@@ -1,9 +1,15 @@
+import { Suspense, lazy } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { ResourceCommandCenter } from "@/components/ResourceCommandCenter";
 import { ViolationReport } from "@/components/ViolationReport";
 import { SEO } from "@/components/SEO";
 import { StatePreferenceBanner } from "@/components/StatePreferenceBanner";
+
+const ResourceCommandCenter = lazy(() =>
+  import("@/components/ResourceCommandCenter").then((module) => ({
+    default: module.ResourceCommandCenter,
+  }))
+);
 
 const Tools = () => (
   <div className="min-h-screen flex flex-col">
@@ -25,7 +31,11 @@ const Tools = () => (
           </p>
         </div>
         <StatePreferenceBanner />
-        <ResourceCommandCenter />
+        <Suspense
+          fallback={<div className="py-8 text-center text-muted-foreground">Loading tools…</div>}
+        >
+          <ResourceCommandCenter />
+        </Suspense>
         <ViolationReport />
       </div>
     </main>

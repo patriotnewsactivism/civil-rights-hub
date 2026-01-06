@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { Suspense, lazy, useMemo, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -30,7 +30,6 @@ import { InteractiveMap } from "@/components/InteractiveMap";
 import { StateSelector } from "@/components/StateSelector";
 import { PoliceScanner } from "@/components/PoliceScanner";
 import { LawyerFinder } from "@/components/LawyerFinder";
-import { AttorneySeoContent } from "@/components/AttorneySeoContent";
 import { ActivistDirectory } from "@/components/ActivistDirectory";
 import { OfficerAccountability } from "@/components/OfficerAccountability";
 import { FOIABuilder } from "@/components/FOIABuilder";
@@ -42,6 +41,12 @@ import { Resources } from "@/components/Resources";
 import { toast } from "sonner";
 import { useJurisdiction } from "@/hooks/useJurisdiction";
 import { DEFAULT_JURISDICTION } from "@/data/usStates";
+
+const AttorneySeoContent = lazy(() =>
+  import("@/components/AttorneySeoContent").then((module) => ({
+    default: module.AttorneySeoContent,
+  }))
+);
 
 interface ResourceDefinition {
   id: string;
@@ -113,7 +118,13 @@ const createResourceDefinitions = (
     description: "See which firms collaborate with We The People News investigations and what cases they champion.",
     category: "Legal Support",
     keywords: ["seo", "attorney", "profiles"],
-    render: () => <AttorneySeoContent />,
+    render: () => (
+      <Suspense
+        fallback={<div className="py-6 text-center text-muted-foreground">Loading attorney profiles…</div>}
+      >
+        <AttorneySeoContent />
+      </Suspense>
+    ),
   },
   {
     id: "activist-directory",

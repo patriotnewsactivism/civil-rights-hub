@@ -1,7 +1,11 @@
+import { Suspense, lazy } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { FeaturedNews } from "@/components/FeaturedNews";
 import { SEO } from "@/components/SEO";
+
+const FeaturedNews = lazy(() =>
+  import("@/components/FeaturedNews").then((module) => ({ default: module.FeaturedNews }))
+);
 
 const Newsroom = () => (
   <div className="min-h-screen flex flex-col">
@@ -22,7 +26,11 @@ const Newsroom = () => (
             updated” dates live here, separate from opinion posts.
           </p>
         </div>
-        <FeaturedNews />
+        <Suspense
+          fallback={<div className="py-8 text-center text-muted-foreground">Loading newsroom…</div>}
+        >
+          <FeaturedNews />
+        </Suspense>
       </div>
     </main>
     <Footer />

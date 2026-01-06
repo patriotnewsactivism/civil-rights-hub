@@ -7,18 +7,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { FOIAAgencySelector } from "./FOIAAgencySelector";
-import { FileText, Send, Download, Save, Clock, Sparkles, Info, Calendar } from "lucide-react";
+import { FileText, Send, Download, Save, Calendar, Info } from "lucide-react";
 import { toast } from "sonner";
 import { addBusinessDays, format } from "date-fns";
-import type { Database } from "@/integrations/supabase/types";
-
-type FOIAAgency = Database["public"]["Tables"]["foia_agencies"]["Row"];
-type FOIATemplate = Database["public"]["Tables"]["foia_templates"]["Row"];
 
 const AGENCY_TYPES = ["Federal", "State", "County", "Municipal"] as const;
 const US_STATES = [
@@ -32,31 +25,170 @@ const US_STATES = [
   "Wisconsin", "Wyoming"
 ];
 
+// State-specific response deadlines (in business days)
+const STATE_RESPONSE_DAYS: Record<string, number> = {
+  "Alabama": 10,
+  "Alaska": 10,
+  "Arizona": 5,
+  "Arkansas": 3,
+  "California": 10,
+  "Colorado": 3,
+  "Connecticut": 4,
+  "Delaware": 15,
+  "Florida": 0, // "Prompt" response required
+  "Georgia": 3,
+  "Hawaii": 10,
+  "Idaho": 3,
+  "Illinois": 5,
+  "Indiana": 7,
+  "Iowa": 10,
+  "Kansas": 3,
+  "Kentucky": 3,
+  "Louisiana": 3,
+  "Maine": 5,
+  "Maryland": 30,
+  "Massachusetts": 10,
+  "Michigan": 5,
+  "Minnesota": 10,
+  "Mississippi": 7,
+  "Missouri": 3,
+  "Montana": 5,
+  "Nebraska": 4,
+  "Nevada": 5,
+  "New Hampshire": 5,
+  "New Jersey": 7,
+  "New Mexico": 15,
+  "New York": 5,
+  "North Carolina": 10,
+  "North Dakota": 10,
+  "Ohio": 10,
+  "Oklahoma": 10,
+  "Oregon": 5,
+  "Pennsylvania": 5,
+  "Rhode Island": 10,
+  "South Carolina": 15,
+  "South Dakota": 10,
+  "Tennessee": 7,
+  "Texas": 10,
+  "Utah": 10,
+  "Vermont": 3,
+  "Virginia": 5,
+  "Washington": 5,
+  "West Virginia": 5,
+  "Wisconsin": 10,
+  "Wyoming": 10,
+  "Federal": 20, // Federal FOIA standard
+};
+
 interface FOIARequestFormProps {
   onRequestCreated?: () => void;
 }
 
+// Common FOIA request templates
+const REQUEST_TEMPLATES = [
+  {
+    id: "police-records",
+    title: "Police Records Request",
+    subject: "Request for Police Incident Records",
+    body: `Pursuant to the Freedom of Information Act (or applicable state public records law), I am requesting access to and copies of the following records:
+
+All records related to [DESCRIBE INCIDENT - include date, location, case number if known], including but not limited to:
+
+1. Incident reports and police reports
+2. Body-worn camera footage
+3. Dash camera footage
+4. 911 call recordings and dispatch logs
+5. Witness statements
+6. Officer notes and memoranda
+7. Any photographs or video evidence
+8. Use of force reports (if applicable)
+9. Arrest records (if applicable)
+
+I am requesting a waiver of all fees associated with this request. [If applicable: As a member of the news media / researcher / representative of a non-profit organization, I am entitled to reduced fees under the applicable statute.]
+
+If my request is denied in whole or in part, please cite the specific exemption(s) and provide any reasonably segregable non-exempt portions.
+
+Please respond within the time frame required by law.`,
+    type: "Police Records"
+  },
+  {
+    id: "body-camera",
+    title: "Body Camera Footage Request",
+    subject: "Request for Body-Worn Camera Footage",
+    body: `Pursuant to the Freedom of Information Act (or applicable state public records law), I am requesting access to and copies of:
+
+All body-worn camera footage from officers involved in [DESCRIBE INCIDENT - include date, time, location, officer names/badge numbers if known].
+
+Specifically, I request:
+1. Complete, unedited footage from all officers present
+2. Any audio recordings associated with the footage
+3. Metadata showing date, time, and duration of recordings
+4. Chain of custody documentation
+
+I understand that certain portions may require redaction for privacy purposes, but request that any redactions be limited to only what is legally required.
+
+I am requesting a fee waiver as this information is in the public interest and will contribute to public understanding of government operations.
+
+Please provide a response within the statutory time frame.`,
+    type: "Body Camera"
+  },
+  {
+    id: "use-of-force",
+    title: "Use of Force Records",
+    subject: "Request for Use of Force Documentation",
+    body: `Pursuant to the Freedom of Information Act (or applicable state public records law), I am requesting access to and copies of:
+
+All use of force records and documentation for [SPECIFY: specific incident / officer / time period / department-wide statistics].
+
+This request includes:
+1. Use of force reports and incident documentation
+2. Internal affairs investigation files
+3. Citizen complaint records
+4. Disciplinary actions taken
+5. Training records related to use of force
+6. Department policies on use of force
+7. Statistical data on use of force incidents
+
+I am requesting a fee waiver as this request serves the public interest in government accountability and transparency.
+
+Please respond within the required statutory time frame.`,
+    type: "Use of Force"
+  },
+  {
+    id: "general-records",
+    title: "General Records Request",
+    subject: "Public Records Request",
+    body: `Pursuant to the Freedom of Information Act (or applicable state public records law), I am requesting access to and copies of:
+
+[DESCRIBE THE RECORDS YOU ARE SEEKING - be as specific as possible about dates, subjects, departments, and types of documents]
+
+If you determine that some portions of the requested records are exempt from disclosure, please provide all reasonably segregable non-exempt portions.
+
+I am requesting a waiver of fees associated with this request. [EXPLAIN WHY - public interest, news media, educational purpose, etc.]
+
+Please notify me if the fees will exceed $[AMOUNT] before processing this request.
+
+Please respond within the time frame required by law. If you have any questions, please contact me at the information provided below.`,
+    type: "General"
+  }
+];
+
 export function FOIARequestForm({ onRequestCreated }: FOIARequestFormProps) {
   const { user } = useAuth();
 
-  // Agency selection
+  // Form state
   const [agencyType, setAgencyType] = useState<typeof AGENCY_TYPES[number]>("Federal");
   const [state, setState] = useState<string>("");
-  const [selectedAgency, setSelectedAgency] = useState<FOIAAgency | null>(null);
-
-  // Template selection
-  const [templates, setTemplates] = useState<FOIATemplate[]>([]);
-  const [selectedTemplate, setSelectedTemplate] = useState<FOIATemplate | null>(null);
-  const [loadingTemplates, setLoadingTemplates] = useState(false);
-
+  const [agencyName, setAgencyName] = useState("");
+  const [selectedTemplateId, setSelectedTemplateId] = useState<string>("");
+  
   // Request details
   const [subject, setSubject] = useState("");
   const [requestBody, setRequestBody] = useState("");
   const [requesterName, setRequesterName] = useState("");
   const [requesterEmail, setRequesterEmail] = useState("");
   const [requesterAddress, setRequesterAddress] = useState("");
-  const [customDetails, setCustomDetails] = useState("");
-
+  
   // Form state
   const [submitting, setSubmitting] = useState(false);
   const [calculatedDeadline, setCalculatedDeadline] = useState<Date | null>(null);
@@ -69,93 +201,51 @@ export function FOIARequestForm({ onRequestCreated }: FOIARequestFormProps) {
     }
   }, [user]);
 
-  // Calculate deadline when agency selected
+  // Calculate deadline based on state
   useEffect(() => {
-    if (selectedAgency?.standard_response_days) {
-      const deadline = addBusinessDays(new Date(), selectedAgency.standard_response_days);
+    const responseDays = agencyType === "Federal" 
+      ? STATE_RESPONSE_DAYS["Federal"]
+      : state ? STATE_RESPONSE_DAYS[state] : null;
+    
+    if (responseDays && responseDays > 0) {
+      const deadline = addBusinessDays(new Date(), responseDays);
       setCalculatedDeadline(deadline);
+    } else if (responseDays === 0) {
+      // Florida and similar "prompt response" states
+      setCalculatedDeadline(null);
     } else {
       setCalculatedDeadline(null);
     }
-  }, [selectedAgency]);
+  }, [agencyType, state]);
 
-  // Load templates based on agency
-  const fetchTemplates = useCallback(async () => {
-    if (!selectedAgency) {
-      setTemplates([]);
-      return;
+  // Apply template
+  const handleTemplateSelect = (templateId: string) => {
+    setSelectedTemplateId(templateId);
+    const template = REQUEST_TEMPLATES.find(t => t.id === templateId);
+    if (template) {
+      setSubject(template.subject);
+      setRequestBody(template.body);
     }
-
-    setLoadingTemplates(true);
-    try {
-      let query = supabase
-        .from("foia_templates")
-        .select("*")
-        .order("use_count", { ascending: false });
-
-      if (selectedAgency.agency_type === "Federal") {
-        query = query.or("agency_type.eq.Federal,template_type.eq.General");
-      } else if (selectedAgency.state) {
-        query = query.or(
-          `state.eq.${selectedAgency.state},agency_type.eq.${selectedAgency.agency_type},template_type.eq.General`
-        );
-      }
-
-      const { data, error } = await query.limit(10);
-
-      if (error) throw error;
-      setTemplates(data || []);
-    } catch (error) {
-      console.error("Error fetching templates:", error);
-      toast.error("Failed to load request templates");
-    } finally {
-      setLoadingTemplates(false);
-    }
-  }, [selectedAgency]);
-
-  useEffect(() => {
-    void fetchTemplates();
-  }, [fetchTemplates]);
-
-  // Apply template when selected
-  const handleTemplateSelect = (template: FOIATemplate) => {
-    setSelectedTemplate(template);
-    setSubject(template.subject_line);
-    setRequestBody(template.template_body);
   };
 
   // Generate full request letter
-  const generateRequestLetter = () => {
+  const generateRequestLetter = useCallback(() => {
     const today = format(new Date(), "MMMM d, yyyy");
-    const agencyName = selectedAgency?.name || "[Agency Name]";
-    const agencyAddress = selectedAgency?.mailing_address || "[Agency Address]";
-
+    
     let letter = `${today}\n\n`;
-    letter += `${agencyName}\n`;
-    letter += `${agencyAddress}\n\n`;
-
-    if (selectedAgency?.foia_contact_name) {
-      letter += `Attn: ${selectedAgency.foia_contact_name}\n`;
-    }
-    if (selectedAgency?.foia_office_name) {
-      letter += `${selectedAgency.foia_office_name}\n`;
-    }
-
-    letter += `\nFREEDOM OF INFORMATION ACT REQUEST\n\n`;
+    letter += `${agencyName || "[Agency Name]"}\n`;
+    letter += `[Agency Address]\n\n`;
+    letter += `FREEDOM OF INFORMATION ACT REQUEST\n\n`;
     letter += `Dear FOIA Officer:\n\n`;
 
-    // Replace template placeholders
+    // Replace placeholders in body
     let body = requestBody;
     body = body.replace(/\[YOUR_NAME\]/g, requesterName);
     body = body.replace(/\[YOUR_EMAIL\]/g, requesterEmail);
     body = body.replace(/\[YOUR_ADDRESS\]/g, requesterAddress || "");
     body = body.replace(/\[SUBJECT\]/g, subject);
-    body = body.replace(/\[DETAILS\]/g, customDetails);
-    body = body.replace(/\[AGENCY_NAME\]/g, agencyName);
-    body = body.replace(/\[STATE\]/g, selectedAgency?.state || "");
 
     letter += body;
-
     letter += `\n\nSincerely,\n\n`;
     letter += `${requesterName}\n`;
     letter += `${requesterEmail}\n`;
@@ -164,7 +254,7 @@ export function FOIARequestForm({ onRequestCreated }: FOIARequestFormProps) {
     }
 
     return letter;
-  };
+  }, [agencyName, requestBody, requesterName, requesterEmail, requesterAddress, subject]);
 
   const handleDownload = () => {
     const letter = generateRequestLetter();
@@ -172,7 +262,7 @@ export function FOIARequestForm({ onRequestCreated }: FOIARequestFormProps) {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `FOIA-Request-${selectedAgency?.acronym || "Agency"}-${format(new Date(), "yyyy-MM-dd")}.txt`;
+    a.download = `FOIA-Request-${format(new Date(), "yyyy-MM-dd")}.txt`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -186,33 +276,27 @@ export function FOIARequestForm({ onRequestCreated }: FOIARequestFormProps) {
       return;
     }
 
-    if (!selectedAgency || !subject || !requestBody) {
-      toast.error("Please select an agency and fill in request details");
+    if (!agencyName || !subject || !requestBody) {
+      toast.error("Please fill in agency name and request details");
       return;
     }
 
     setSubmitting(true);
     try {
-      const payload: Database["public"]["Tables"]["foia_requests"]["Insert"] = {
+      const { error } = await supabase.from("foia_requests").insert({
         user_id: user.id,
-        agency_id: selectedAgency.id,
-        agency_name: selectedAgency.name,
-        state: selectedAgency.state || "",
+        agency_name: agencyName,
+        state: agencyType === "Federal" ? "Federal" : state,
         subject,
-        details: `${requestBody}\n\n${customDetails}`,
+        details: requestBody,
         requester_name: requesterName,
         requester_email: requesterEmail,
         requester_address: requesterAddress || null,
         status: "draft",
-        request_type: "Other",
+        request_type: REQUEST_TEMPLATES.find(t => t.id === selectedTemplateId)?.type || "General",
         submitted_at: null,
         response_due_date: null,
-        template_id: selectedTemplate?.id || null,
-        response_text: null,
-        response_deadline: null,
-      };
-
-      const { error } = await supabase.from("foia_requests").insert(payload);
+      });
 
       if (error) throw error;
 
@@ -233,7 +317,7 @@ export function FOIARequestForm({ onRequestCreated }: FOIARequestFormProps) {
       return;
     }
 
-    if (!selectedAgency || !subject || !requestBody || !requesterName || !requesterEmail) {
+    if (!agencyName || !subject || !requestBody || !requesterName || !requesterEmail) {
       toast.error("Please complete all required fields");
       return;
     }
@@ -243,41 +327,24 @@ export function FOIARequestForm({ onRequestCreated }: FOIARequestFormProps) {
       const submittedAt = new Date().toISOString();
       const deadline = calculatedDeadline ? calculatedDeadline.toISOString() : null;
 
-      const payload: Database["public"]["Tables"]["foia_requests"]["Insert"] = {
+      const { error } = await supabase.from("foia_requests").insert({
         user_id: user.id,
-        agency_id: selectedAgency.id,
-        agency_name: selectedAgency.name,
-        state: selectedAgency.state || "",
+        agency_name: agencyName,
+        state: agencyType === "Federal" ? "Federal" : state,
         subject,
-        details: `${requestBody}\n\n${customDetails}`,
+        details: requestBody,
         requester_name: requesterName,
         requester_email: requesterEmail,
         requester_address: requesterAddress || null,
         status: "submitted",
-        request_type: "Other",
+        request_type: REQUEST_TEMPLATES.find(t => t.id === selectedTemplateId)?.type || "General",
         submitted_at: submittedAt,
         response_due_date: deadline,
-        response_deadline: deadline,
-        template_id: selectedTemplate?.id || null,
-        response_text: null,
-      };
-
-      const { data, error } = await supabase.from("foia_requests").insert(payload).select().single();
+      });
 
       if (error) throw error;
 
-      // Create initial update record
-      if (data) {
-        await supabase.from("foia_request_updates").insert({
-          request_id: data.id,
-          update_type: "status_change",
-          message: "Request submitted to agency",
-          old_status: "draft",
-          new_status: "submitted",
-        });
-      }
-
-      toast.success("Request submitted and tracked!");
+      toast.success("Request submitted and tracking started!");
       onRequestCreated?.();
       resetForm();
     } catch (error) {
@@ -289,11 +356,10 @@ export function FOIARequestForm({ onRequestCreated }: FOIARequestFormProps) {
   };
 
   const resetForm = () => {
-    setSelectedAgency(null);
-    setSelectedTemplate(null);
+    setAgencyName("");
+    setSelectedTemplateId("");
     setSubject("");
     setRequestBody("");
-    setCustomDetails("");
     setRequesterAddress("");
   };
 
@@ -309,8 +375,13 @@ export function FOIARequestForm({ onRequestCreated }: FOIARequestFormProps) {
     );
   }
 
+  const responseDays = agencyType === "Federal" 
+    ? STATE_RESPONSE_DAYS["Federal"]
+    : state ? STATE_RESPONSE_DAYS[state] : null;
+
   return (
     <div className="space-y-6">
+      {/* Agency Selection */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -318,7 +389,7 @@ export function FOIARequestForm({ onRequestCreated }: FOIARequestFormProps) {
             Select Agency
           </CardTitle>
           <CardDescription>
-            Choose the federal, state, county, or local agency you want to submit a request to
+            Choose the agency type and enter the agency name
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -358,199 +429,169 @@ export function FOIARequestForm({ onRequestCreated }: FOIARequestFormProps) {
             )}
           </div>
 
-          <FOIAAgencySelector
-            onSelect={setSelectedAgency}
-            selectedAgencyId={selectedAgency?.id}
-            agencyType={agencyType}
-            state={agencyType !== "Federal" ? state : null}
-          />
+          <div className="space-y-2">
+            <Label htmlFor="agency-name">Agency Name *</Label>
+            <Input
+              id="agency-name"
+              value={agencyName}
+              onChange={(e) => setAgencyName(e.target.value)}
+              placeholder="e.g., Los Angeles Police Department, FBI, City of Austin"
+            />
+          </div>
 
-          {calculatedDeadline && (
+          {responseDays !== null && (
             <Alert>
               <Calendar className="h-4 w-4" />
               <AlertDescription>
-                <span className="font-semibold">Estimated Response Deadline:</span>{" "}
-                {format(calculatedDeadline, "MMMM d, yyyy")} ({selectedAgency?.standard_response_days} business days)
+                {responseDays === 0 ? (
+                  <span><strong>Response Requirement:</strong> Prompt response required (no specific deadline)</span>
+                ) : calculatedDeadline ? (
+                  <span>
+                    <strong>Estimated Response Deadline:</strong>{" "}
+                    {format(calculatedDeadline, "MMMM d, yyyy")} ({responseDays} business days)
+                  </span>
+                ) : null}
               </AlertDescription>
             </Alert>
           )}
         </CardContent>
       </Card>
 
-      {selectedAgency && (
-        <>
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Sparkles className="h-5 w-5" />
-                Request Template (Optional)
-              </CardTitle>
-              <CardDescription>
-                Start with a pre-written template or write your own request from scratch
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {loadingTemplates ? (
-                <p className="text-sm text-muted-foreground">Loading templates...</p>
-              ) : templates.length === 0 ? (
-                <p className="text-sm text-muted-foreground">No templates available for this agency type</p>
-              ) : (
-                <Tabs defaultValue="templates">
-                  <TabsList>
-                    <TabsTrigger value="templates">Available Templates</TabsTrigger>
-                  </TabsList>
-                  <TabsContent value="templates" className="space-y-2 mt-4">
-                    {templates.map((template) => (
-                      <button
-                        key={template.id}
-                        onClick={() => handleTemplateSelect(template)}
-                        className={`w-full text-left p-4 rounded-lg border ${
-                          selectedTemplate?.id === template.id
-                            ? "border-primary bg-primary/5"
-                            : "border-border hover:border-primary/50"
-                        } transition-colors`}
-                      >
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <h4 className="font-semibold">{template.title}</h4>
-                            <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
-                              {template.instructions}
-                            </p>
-                          </div>
-                          {template.is_popular && (
-                            <Badge variant="secondary" className="ml-2">
-                              Popular
-                            </Badge>
-                          )}
-                        </div>
-                        {template.use_count && template.use_count > 0 && (
-                          <p className="text-xs text-muted-foreground mt-2">
-                            Used {template.use_count} times
-                          </p>
-                        )}
-                      </button>
-                    ))}
-                  </TabsContent>
-                </Tabs>
-              )}
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Request Details</CardTitle>
-              <CardDescription>
-                Customize your request with specific information about the records you're seeking
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="subject">Subject / Request Title *</Label>
-                <Input
-                  id="subject"
-                  value={subject}
-                  onChange={(e) => setSubject(e.target.value)}
-                  placeholder="e.g., Body camera footage from incident on Main St, January 15, 2026"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="request-body">Request Letter *</Label>
-                <Textarea
-                  id="request-body"
-                  value={requestBody}
-                  onChange={(e) => setRequestBody(e.target.value)}
-                  rows={12}
-                  placeholder="Enter your request letter or select a template above to get started..."
-                  className="font-mono text-sm"
-                />
-                <p className="text-xs text-muted-foreground">
-                  You can use placeholders: [YOUR_NAME], [YOUR_EMAIL], [SUBJECT], [DETAILS], [AGENCY_NAME]
-                </p>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="custom-details">Additional Details (Optional)</Label>
-                <Textarea
-                  id="custom-details"
-                  value={customDetails}
-                  onChange={(e) => setCustomDetails(e.target.value)}
-                  rows={4}
-                  placeholder="Add any additional details, dates, case numbers, or clarifying information..."
-                />
-              </div>
-
-              <Separator />
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="requester-name">Your Full Name *</Label>
-                  <Input
-                    id="requester-name"
-                    value={requesterName}
-                    onChange={(e) => setRequesterName(e.target.value)}
-                    placeholder="John Doe"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="requester-email">Your Email *</Label>
-                  <Input
-                    id="requester-email"
-                    type="email"
-                    value={requesterEmail}
-                    onChange={(e) => setRequesterEmail(e.target.value)}
-                    placeholder="john@example.com"
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="requester-address">Mailing Address (Optional)</Label>
-                <Input
-                  id="requester-address"
-                  value={requesterAddress}
-                  onChange={(e) => setRequesterAddress(e.target.value)}
-                  placeholder="123 Main St, City, State ZIP"
-                />
-              </div>
-            </CardContent>
-          </Card>
-
-          {selectedTemplate && (
-            <Alert>
-              <Info className="h-4 w-4" />
-              <AlertDescription>
-                <div className="space-y-2">
-                  <p className="font-semibold">Template Instructions:</p>
-                  <p className="text-sm whitespace-pre-line">{selectedTemplate.instructions}</p>
-                  {selectedTemplate.submission_method && selectedTemplate.submission_method.length > 0 && (
-                    <p className="text-sm">
-                      <span className="font-semibold">Submission Methods:</span>{" "}
-                      {selectedTemplate.submission_method.join(", ")}
+      {/* Template Selection */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Info className="h-5 w-5" />
+            Request Template (Optional)
+          </CardTitle>
+          <CardDescription>
+            Start with a pre-written template or write your own request
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid gap-2">
+            {REQUEST_TEMPLATES.map((template) => (
+              <button
+                key={template.id}
+                onClick={() => handleTemplateSelect(template.id)}
+                className={`w-full text-left p-4 rounded-lg border transition-colors ${
+                  selectedTemplateId === template.id
+                    ? "border-primary bg-primary/5"
+                    : "border-border hover:border-primary/50"
+                }`}
+              >
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <h4 className="font-semibold">{template.title}</h4>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      {template.subject}
                     </p>
-                  )}
+                  </div>
+                  <Badge variant="secondary" className="ml-2">
+                    {template.type}
+                  </Badge>
                 </div>
-              </AlertDescription>
-            </Alert>
-          )}
-
-          <div className="flex flex-wrap gap-3">
-            <Button onClick={handleSubmitRequest} disabled={submitting} className="flex-1 sm:flex-none">
-              <Send className="h-4 w-4 mr-2" />
-              {submitting ? "Submitting..." : "Submit & Track Request"}
-            </Button>
-            <Button onClick={handleSaveDraft} disabled={submitting} variant="outline" className="flex-1 sm:flex-none">
-              <Save className="h-4 w-4 mr-2" />
-              Save as Draft
-            </Button>
-            <Button onClick={handleDownload} variant="outline" className="flex-1 sm:flex-none">
-              <Download className="h-4 w-4 mr-2" />
-              Download Letter
-            </Button>
+              </button>
+            ))}
           </div>
-        </>
-      )}
+        </CardContent>
+      </Card>
+
+      {/* Request Details */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Request Details</CardTitle>
+          <CardDescription>
+            Customize your request with specific information
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="subject">Subject / Request Title *</Label>
+            <Input
+              id="subject"
+              value={subject}
+              onChange={(e) => setSubject(e.target.value)}
+              placeholder="e.g., Body camera footage from incident on Main St, January 15, 2026"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="request-body">Request Letter *</Label>
+            <Textarea
+              id="request-body"
+              value={requestBody}
+              onChange={(e) => setRequestBody(e.target.value)}
+              rows={12}
+              placeholder="Enter your request letter or select a template above..."
+              className="font-mono text-sm"
+            />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="requester-name">Your Name *</Label>
+              <Input
+                id="requester-name"
+                value={requesterName}
+                onChange={(e) => setRequesterName(e.target.value)}
+                placeholder="Full legal name"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="requester-email">Your Email *</Label>
+              <Input
+                id="requester-email"
+                type="email"
+                value={requesterEmail}
+                onChange={(e) => setRequesterEmail(e.target.value)}
+                placeholder="email@example.com"
+              />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="requester-address">Mailing Address (Optional)</Label>
+            <Textarea
+              id="requester-address"
+              value={requesterAddress}
+              onChange={(e) => setRequesterAddress(e.target.value)}
+              rows={2}
+              placeholder="Your mailing address for receiving physical documents"
+            />
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Actions */}
+      <div className="flex flex-wrap gap-4">
+        <Button
+          variant="outline"
+          onClick={handleDownload}
+          disabled={!subject || !requestBody}
+        >
+          <Download className="mr-2 h-4 w-4" />
+          Download Letter
+        </Button>
+        
+        <Button
+          variant="secondary"
+          onClick={handleSaveDraft}
+          disabled={submitting || !agencyName || !subject}
+        >
+          <Save className="mr-2 h-4 w-4" />
+          Save Draft
+        </Button>
+        
+        <Button
+          onClick={handleSubmitRequest}
+          disabled={submitting || !agencyName || !subject || !requestBody || !requesterName || !requesterEmail}
+        >
+          <Send className="mr-2 h-4 w-4" />
+          Submit & Track
+        </Button>
+      </div>
     </div>
   );
 }

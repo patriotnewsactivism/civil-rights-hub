@@ -254,8 +254,9 @@ export const useEmergencyRecorder = (): EmergencyRecorderState => {
         frontChunksRef.current = [];
       };
 
-      frontRecorder.onerror = (event: MediaRecorderErrorEvent) => {
-        setError(event.error?.message ?? "A recording error occurred.");
+      frontRecorder.onerror = (event: Event) => {
+        const recorderEvent = event as Event & { error?: DOMException };
+        setError(recorderEvent.error?.message ?? "A recording error occurred.");
       };
 
       frontRecorder.start(1000);
@@ -305,8 +306,9 @@ export const useEmergencyRecorder = (): EmergencyRecorderState => {
             backChunksRef.current = [];
           };
 
-          backRecorder.onerror = (event: MediaRecorderErrorEvent) => {
-            setError(event.error?.message ?? "Background camera recording failed.");
+          backRecorder.onerror = (event: Event) => {
+            const recorderEvent = event as Event & { error?: DOMException };
+            setError(recorderEvent.error?.message ?? "Background camera recording failed.");
           };
 
           backRecorder.start(1000);

@@ -1217,5 +1217,1462 @@
     "bar_number": null,
     "years_experience": null,
     "bio": "Nonprofit legal organization partnering with pro bono counsel to pursue civil rights and economic justice cases in the District of Columbia."
+  },
+  {
+    "id": "allan-lamar-armstrong",
+    "name": "Allan Lamar Armstrong",
+    "firm_name": "Armstrong Law Center",
+    "state": "Alabama",
+    "city": "Birmingham",
+    "email": null,
+    "phone": "205-201-1529",
+    "website": "https://armstronglawcenter.com",
+    "specialties": [
+      "Civil Rights",
+      "Business",
+      "Consumer",
+      "Employment"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Birmingham attorney representing clients in civil rights, employment, consumer, and business disputes."
+  },
+  {
+    "id": "leroy-maxwell-jr",
+    "name": "Leroy Maxwell Jr.",
+    "firm_name": "Maxwell & Tillman",
+    "state": "Alabama",
+    "city": "Birmingham",
+    "email": null,
+    "phone": "205-216-3304",
+    "website": "https://www.mxlawfirm.com",
+    "specialties": [
+      "Civil Rights",
+      "Personal Injury",
+      "Criminal Defense"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Civil rights and trial lawyer handling discrimination, injury, and criminal defense matters across Alabama."
+  },
+  {
+    "id": "adam-w-pittman",
+    "name": "Adam W. Pittman",
+    "firm_name": "Cory Watson Attorneys",
+    "state": "Alabama",
+    "city": "Birmingham",
+    "email": null,
+    "phone": "877-562-0000",
+    "website": "https://www.corywatson.com",
+    "specialties": [
+      "Civil Rights",
+      "Consumer",
+      "Employment",
+      "Products Liability"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Litigator at Cory Watson Attorneys focused on civil rights, consumer protection, employment disputes, and product liability."
+  },
+  {
+    "id": "kira-fonteneau",
+    "name": "Kira Fonteneau",
+    "firm_name": null,
+    "state": "Alabama",
+    "city": "Birmingham",
+    "email": null,
+    "phone": "205-564-9005",
+    "website": "https://kirafonteneau.com",
+    "specialties": [
+      "Civil Rights",
+      "Employment"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Employment and civil rights attorney advocating for workers facing discrimination and retaliation."
+  },
+  {
+    "id": "doug-a-dellaccio-jr",
+    "name": "Doug A. Dellaccio Jr.",
+    "firm_name": "Cory Watson Attorneys",
+    "state": "Alabama",
+    "city": "Birmingham",
+    "email": null,
+    "phone": "877-562-0000",
+    "website": "https://www.corywatson.com",
+    "specialties": [
+      "Civil Rights",
+      "Environmental",
+      "Personal Injury"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Trial lawyer handling civil rights, environmental harm, and injury claims for Alabama residents."
+  },
+  {
+    "id": "benjamin-h-cooper",
+    "name": "Benjamin H. Cooper",
+    "firm_name": null,
+    "state": "Alabama",
+    "city": "Birmingham",
+    "email": null,
+    "phone": "205-307-6006",
+    "website": "https://bencooperlaw.com",
+    "specialties": [
+      "Civil Rights",
+      "Appeals",
+      "Estate Planning",
+      "Probate"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Represents clients in civil rights litigation and appellate matters alongside estate planning and probate work."
+  },
+  {
+    "id": "ashley-r-rhea",
+    "name": "Ashley R. Rhea",
+    "firm_name": "Rhea Law LLC",
+    "state": "Alabama",
+    "city": "Birmingham",
+    "email": null,
+    "phone": "205-675-0476",
+    "website": "https://rhealawllc.com",
+    "specialties": [
+      "Civil Rights",
+      "Education",
+      "Employment"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Birmingham employment and education lawyer representing individuals in discrimination and civil rights matters."
+  },
+  {
+    "id": "jason-matthew-bledsoe",
+    "name": "Jason Matthew Bledsoe",
+    "firm_name": null,
+    "state": "Alabama",
+    "city": "Montgomery",
+    "email": null,
+    "phone": "334-242-7443",
+    "website": null,
+    "specialties": [
+      "Civil Rights",
+      "Administrative",
+      "Appeals",
+      "Personal Injury"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Montgomery-based attorney focusing on civil rights, administrative appeals, and injury matters."
+  },
+  {
+    "id": "amber-lynn-ladner",
+    "name": "Amber Lynn Ladner",
+    "firm_name": null,
+    "state": "Alabama",
+    "city": "Clanton",
+    "email": null,
+    "phone": "205-802-8823",
+    "website": null,
+    "specialties": [
+      "Civil Rights",
+      "Criminal Defense",
+      "Divorce",
+      "White Collar Crime"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Trial attorney serving the Birmingham metro area with experience in civil rights, criminal, and family law matters."
+  },
+  {
+    "id": "richard-brown",
+    "name": "Richard Brown",
+    "firm_name": "Constangy, Brooks, Smith & Prophete, LLP",
+    "state": "Alabama",
+    "city": "Hoover",
+    "email": null,
+    "phone": "205-252-9321",
+    "website": null,
+    "specialties": [
+      "Civil Rights",
+      "Employment",
+      "Immigration",
+      "Arbitration and Mediation"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Employment and civil rights lawyer advising employers and employees on workplace disputes and immigration issues."
+  },
+  {
+    "id": "roderick-van-daniel",
+    "name": "Roderick Van Daniel",
+    "firm_name": null,
+    "state": "Alabama",
+    "city": "Birmingham",
+    "email": null,
+    "phone": "205-919-8454",
+    "website": null,
+    "specialties": [
+      "Civil Rights",
+      "Criminal Defense",
+      "Personal Injury"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Handles civil rights, criminal defense, and personal injury cases for clients in Birmingham."
+  },
+  {
+    "id": "adam-michael-porter",
+    "name": "Adam Michael Porter",
+    "firm_name": null,
+    "state": "Alabama",
+    "city": "Birmingham",
+    "email": null,
+    "phone": "205-322-8999",
+    "website": null,
+    "specialties": [
+      "Civil Rights",
+      "Divorce",
+      "Family",
+      "Social Security Disability"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Birmingham attorney assisting clients with civil rights, family law, and disability benefit matters."
+  },
+  {
+    "id": "eric-sheffer",
+    "name": "Eric Sheffer",
+    "firm_name": null,
+    "state": "Alabama",
+    "city": "Birmingham",
+    "email": null,
+    "phone": "205-314-0500",
+    "website": null,
+    "specialties": [
+      "Civil Rights",
+      "Employment"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Employment lawyer focusing on discrimination and civil rights litigation in Birmingham."
+  },
+  {
+    "id": "sylvia-wayfer",
+    "name": "Sylvia Wayfer",
+    "firm_name": null,
+    "state": "Alabama",
+    "city": "Birmingham",
+    "email": null,
+    "phone": "855-202-9984",
+    "website": null,
+    "specialties": [
+      "Civil Rights",
+      "Criminal Defense",
+      "Immigration",
+      "Traffic Tickets"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Provides representation in civil rights, immigration, and criminal defense matters across Birmingham."
+  },
+  {
+    "id": "edward-still",
+    "name": "Edward Still",
+    "firm_name": null,
+    "state": "Alabama",
+    "city": "Birmingham",
+    "email": null,
+    "phone": "205-335-9652",
+    "website": null,
+    "specialties": [
+      "Civil Rights",
+      "Voting Rights"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Veteran civil rights lawyer with a focus on voting rights and election law cases in Alabama."
+  },
+  {
+    "id": "jeremy-r-thomas",
+    "name": "Jeremy R. Thomas",
+    "firm_name": null,
+    "state": "Alabama",
+    "city": "Birmingham",
+    "email": null,
+    "phone": "205-335-9652",
+    "website": null,
+    "specialties": [
+      "Civil Rights",
+      "Family",
+      "Landlord-Tenant",
+      "Divorce"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Birmingham attorney assisting clients with civil rights, housing, and family law disputes."
+  },
+  {
+    "id": "anthony-jerome-muhammad",
+    "name": "Anthony Jerome Muhammad",
+    "firm_name": "Muhammad & Muhammad",
+    "state": "Alabama",
+    "city": "Birmingham",
+    "email": null,
+    "phone": "205-428-9000",
+    "website": "https://www.amalawfirm.com",
+    "specialties": [
+      "Civil Rights",
+      "Business",
+      "Criminal Defense",
+      "Estate Planning"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Handles civil rights, business, and criminal matters through the Muhammad & Muhammad firm in Birmingham."
+  },
+  {
+    "id": "dg-pantazis-jr",
+    "name": "D.G. Pantazis Jr.",
+    "firm_name": "Wiggins Childs Pantazis Fisher & Goldfarb",
+    "state": "Alabama",
+    "city": "Birmingham",
+    "email": null,
+    "phone": "205-314-0507",
+    "website": null,
+    "specialties": [
+      "Civil Rights",
+      "Business",
+      "Employment",
+      "Personal Injury"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Litigator with Wiggins Childs handling civil rights, employment, and complex injury cases."
+  },
+  {
+    "id": "john-james-coleman-iii",
+    "name": "John James Coleman III",
+    "firm_name": null,
+    "state": "Alabama",
+    "city": "Birmingham",
+    "email": null,
+    "phone": "205-251-3000",
+    "website": null,
+    "specialties": [
+      "Civil Rights",
+      "Antitrust",
+      "Employment",
+      "Health Care"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Represents clients in civil rights, antitrust, and employment matters in Birmingham."
+  },
+  {
+    "id": "frank-gerard-alfano",
+    "name": "Frank Gerard Alfano",
+    "firm_name": null,
+    "state": "Alabama",
+    "city": "Birmingham",
+    "email": null,
+    "phone": "205-254-3216",
+    "website": null,
+    "specialties": [
+      "Civil Rights",
+      "Personal Injury",
+      "Social Security Disability"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Birmingham lawyer handling disability benefits, injury cases, and civil rights claims."
+  },
+  {
+    "id": "james-michael-kendrick",
+    "name": "James Michael Kendrick",
+    "firm_name": null,
+    "state": "Alabama",
+    "city": "Birmingham",
+    "email": null,
+    "phone": "205-252-3233",
+    "website": null,
+    "specialties": [
+      "Civil Rights",
+      "Business",
+      "Criminal Defense",
+      "DUI"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Provides representation in civil rights, business disputes, and criminal defense matters."
+  },
+  {
+    "id": "david-paul-condon",
+    "name": "David Paul Condon",
+    "firm_name": null,
+    "state": "Alabama",
+    "city": "Birmingham",
+    "email": null,
+    "phone": "205-871-2133",
+    "website": null,
+    "specialties": [
+      "Civil Rights",
+      "Education",
+      "Employment"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Represents employees and students in civil rights, education, and employment disputes."
+  },
+  {
+    "id": "jeannine-cline-jacobson",
+    "name": "Jeannine Cline Jacobson",
+    "firm_name": null,
+    "state": "Alabama",
+    "city": "Birmingham",
+    "email": null,
+    "phone": "305-735-3750",
+    "website": null,
+    "specialties": [
+      "Civil Rights",
+      "Bankruptcy",
+      "Business",
+      "Employment"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Birmingham attorney covering civil rights, bankruptcy, employment, and business litigation."
+  },
+  {
+    "id": "laura-parchman",
+    "name": "Laura Parchman",
+    "firm_name": null,
+    "state": "Alabama",
+    "city": "Birmingham",
+    "email": null,
+    "phone": "205-521-8370",
+    "website": null,
+    "specialties": [
+      "Civil Rights",
+      "Education",
+      "Employment"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Focuses on education and employment-related civil rights issues for Alabama clients."
+  },
+  {
+    "id": "john-richard-carrigan",
+    "name": "John Richard Carrigan",
+    "firm_name": null,
+    "state": "Alabama",
+    "city": "Birmingham",
+    "email": null,
+    "phone": "205-328-1900",
+    "website": null,
+    "specialties": [
+      "Civil Rights",
+      "Employment",
+      "Social Security Disability"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Handles employment discrimination and disability benefits claims with a civil rights focus."
+  },
+  {
+    "id": "wiggins-childs-pantazis-fisher-goldfarb",
+    "name": "Wiggins, Childs, Pantazis, Fisher & Goldfarb, LLC",
+    "firm_name": "Wiggins Childs",
+    "state": "Alabama",
+    "city": "Birmingham",
+    "email": "info@wigginschilds.com",
+    "phone": "205-314-0500",
+    "website": "https://www.wigginschilds.com",
+    "specialties": [
+      "Civil Rights",
+      "Employment",
+      "Class Actions"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Leading plaintiffs' firm in Alabama handling complex civil rights and employment discrimination litigation."
+  },
+  {
+    "id": "john-d-saxon-pc",
+    "name": "John D. Saxon, P.C.",
+    "firm_name": "John D. Saxon, P.C.",
+    "state": "Alabama",
+    "city": "Birmingham",
+    "email": null,
+    "phone": "205-324-0223",
+    "website": "https://www.saxonattorney.com",
+    "specialties": [
+      "Civil Rights",
+      "Employment",
+      "Education Law"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Employment and civil rights firm representing workers and students in discrimination and education law matters."
+  },
+  {
+    "id": "meredith-marie-render",
+    "name": "Meredith Marie Render",
+    "firm_name": null,
+    "state": "Alabama",
+    "city": "Tuscaloosa",
+    "email": null,
+    "phone": "205-348-7853",
+    "website": "https://www.law.ua.edu",
+    "specialties": [
+      "Civil Rights",
+      "Constitutional Law"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Constitutional law scholar at the University of Alabama engaged in civil rights research and litigation support."
+  },
+  {
+    "id": "scott-d-mccoy",
+    "name": "Scott D. McCoy",
+    "firm_name": null,
+    "state": "Alabama",
+    "city": "Montgomery",
+    "email": null,
+    "phone": "334-224-4309",
+    "website": null,
+    "specialties": [
+      "Civil Rights",
+      "Administrative Law"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Montgomery attorney practicing civil rights and administrative law."
+  },
+  {
+    "id": "e-peyton-faulk",
+    "name": "E. Peyton Faulk",
+    "firm_name": "Law Offices of E. Peyton Faulk, LLC",
+    "state": "Alabama",
+    "city": "Montgomery",
+    "email": null,
+    "phone": "334-263-7733",
+    "website": "https://faulklaw.justia.net",
+    "specialties": [
+      "Civil Rights",
+      "Employment",
+      "Personal Injury"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Represents plaintiffs in civil rights, employment discrimination, and personal injury cases."
+  },
+  {
+    "id": "jonathan-d-townsend",
+    "name": "Jonathan D. Townsend",
+    "firm_name": null,
+    "state": "Alabama",
+    "city": "Tuscaloosa",
+    "email": null,
+    "phone": "205-349-2009",
+    "website": "https://www.cctr.law",
+    "specialties": [
+      "Civil Rights",
+      "Business",
+      "Estate Planning",
+      "Probate"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Tuscaloosa attorney advising on civil rights, business matters, and estate planning for Alabama clients."
+  },
+  {
+    "id": "mark-wayne-sabel-jr",
+    "name": "Mark Wayne Sabel Jr.",
+    "firm_name": null,
+    "state": "Alabama",
+    "city": "Montgomery",
+    "email": null,
+    "phone": "334-271-2770",
+    "website": null,
+    "specialties": [
+      "Civil Rights",
+      "Environmental",
+      "Personal Injury"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Handles environmental, personal injury, and civil rights litigation from Montgomery."
+  },
+  {
+    "id": "charles-richard-hill-jr",
+    "name": "Charles Richard Hill Jr.",
+    "firm_name": null,
+    "state": "Alabama",
+    "city": "Montgomery",
+    "email": null,
+    "phone": "334-241-8000",
+    "website": null,
+    "specialties": [
+      "Civil Rights",
+      "Business",
+      "Insurance Defense",
+      "Workers' Compensation"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Montgomery lawyer practicing civil rights alongside business and insurance defense matters."
+  },
+  {
+    "id": "kyle-david-sawyer",
+    "name": "Kyle David Sawyer",
+    "firm_name": null,
+    "state": "Alabama",
+    "city": "Montgomery",
+    "email": null,
+    "phone": "334-954-5040",
+    "website": null,
+    "specialties": [
+      "Civil Rights"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Civil rights attorney serving clients in Montgomery and surrounding counties."
+  },
+  {
+    "id": "angela-kay-reitler",
+    "name": "Angela Kay Reitler",
+    "firm_name": null,
+    "state": "Alabama",
+    "city": "Montgomery",
+    "email": null,
+    "phone": "334-954-3760",
+    "website": null,
+    "specialties": [
+      "Civil Rights",
+      "Business",
+      "Personal Injury",
+      "Products Liability"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Represents individuals and businesses in civil rights, injury, and product liability matters."
+  },
+  {
+    "id": "ronnie-williams",
+    "name": "Ronnie Williams",
+    "firm_name": null,
+    "state": "Alabama",
+    "city": "Mobile",
+    "email": null,
+    "phone": "251-432-6985",
+    "website": null,
+    "specialties": [
+      "Civil Rights",
+      "Bankruptcy",
+      "Employment",
+      "Personal Injury"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Mobile attorney assisting clients with civil rights, employment, bankruptcy, and injury cases."
+  },
+  {
+    "id": "byron-anthony-lassiter",
+    "name": "Byron Anthony Lassiter",
+    "firm_name": null,
+    "state": "Alabama",
+    "city": "Mobile",
+    "email": null,
+    "phone": "251-478-5297",
+    "website": null,
+    "specialties": [
+      "Civil Rights",
+      "Social Security Disability"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Focuses on disability and civil rights claims for clients in Mobile and South Alabama."
+  },
+  {
+    "id": "kenneth-joseph-riemer",
+    "name": "Kenneth Joseph Riemer",
+    "firm_name": null,
+    "state": "Alabama",
+    "city": "Mobile",
+    "email": null,
+    "phone": "251-432-9212",
+    "website": null,
+    "specialties": [
+      "Civil Rights",
+      "Bankruptcy",
+      "Business",
+      "Consumer Rights"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Represents consumers and small businesses in civil rights, bankruptcy, and consumer protection matters."
+  },
+  {
+    "id": "jeanna-davis-chappell",
+    "name": "Jeanna Davis Chappell",
+    "firm_name": null,
+    "state": "Alabama",
+    "city": "Mobile",
+    "email": null,
+    "phone": "251-441-5391",
+    "website": null,
+    "specialties": [
+      "Civil Rights",
+      "Bankruptcy",
+      "Business",
+      "Collections"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Mobile lawyer working on civil rights, business disputes, collections, and bankruptcy cases."
+  },
+  {
+    "id": "kent-mcphail",
+    "name": "Kent McPhail",
+    "firm_name": null,
+    "state": "Alabama",
+    "city": "Mobile",
+    "email": null,
+    "phone": "251-438-2333",
+    "website": null,
+    "specialties": [
+      "Civil Rights",
+      "Bankruptcy",
+      "Business",
+      "Collections"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Handles civil rights, bankruptcy, and business litigation matters in Mobile."
+  },
+  {
+    "id": "benjamin-hamilton-jarrell",
+    "name": "Benjamin Hamilton Jarrell",
+    "firm_name": null,
+    "state": "Alabama",
+    "city": "Huntsville",
+    "email": null,
+    "phone": "256-713-4383",
+    "website": "https://www.rocketcitylawyers.com",
+    "specialties": [
+      "Civil Rights",
+      "Business",
+      "Estate Planning"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Huntsville attorney advising on civil rights litigation, business matters, and estate planning."
+  },
+  {
+    "id": "rebekah-keith-mckinney",
+    "name": "Rebekah Keith McKinney",
+    "firm_name": "Watson McKinney LLP",
+    "state": "Alabama",
+    "city": "Huntsville",
+    "email": null,
+    "phone": "800-294-5112",
+    "website": "https://watsonmckinney.com",
+    "specialties": [
+      "Civil Rights",
+      "Consumer",
+      "Divorce",
+      "Family"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Represents individuals in civil rights, consumer protection, and family law matters across North Alabama."
+  },
+  {
+    "id": "timothy-m-mcfalls",
+    "name": "Timothy M. McFalls",
+    "firm_name": null,
+    "state": "Alabama",
+    "city": "Huntsville",
+    "email": null,
+    "phone": "888-539-3110",
+    "website": null,
+    "specialties": [
+      "Civil Rights",
+      "Elder Law"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Attorney providing civil rights and elder law representation in Huntsville."
+  },
+  {
+    "id": "patrick-mccarty-lamar",
+    "name": "Patrick McCarty Lamar",
+    "firm_name": null,
+    "state": "Alabama",
+    "city": "Huntsville",
+    "email": null,
+    "phone": "256-534-4355",
+    "website": null,
+    "specialties": [
+      "Civil Rights",
+      "Medical Malpractice",
+      "Personal Injury",
+      "Products Liability"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Litigator handling medical malpractice, injury, and civil rights cases in North Alabama."
+  },
+  {
+    "id": "clint-ladon-maze",
+    "name": "Clint LaDon Maze",
+    "firm_name": null,
+    "state": "Alabama",
+    "city": "Arab",
+    "email": null,
+    "phone": "256-586-9000",
+    "website": null,
+    "specialties": [
+      "Civil Rights",
+      "Business",
+      "Employment",
+      "Intellectual Property"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Arab-based attorney working on civil rights, business, and employment matters."
+  },
+  {
+    "id": "henry-f-sherrod-iii",
+    "name": "Henry F. Sherrod III",
+    "firm_name": null,
+    "state": "Alabama",
+    "city": "Florence",
+    "email": null,
+    "phone": "888-764-4141",
+    "website": "https://alabamacivilrightslawyer.com",
+    "specialties": [
+      "Civil Rights",
+      "Police Misconduct",
+      "Medical Malpractice"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Civil rights litigator focusing on police misconduct and serious injury cases in North Alabama."
+  },
+  {
+    "id": "joel-l-sogol",
+    "name": "Joel L. Sogol",
+    "firm_name": null,
+    "state": "Alabama",
+    "city": "Tuscaloosa",
+    "email": null,
+    "phone": "205-345-0966",
+    "website": "https://joelsogol.com",
+    "specialties": [
+      "Civil Rights",
+      "Criminal Defense",
+      "DUI",
+      "Personal Injury"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Tuscaloosa trial lawyer representing clients in civil rights, criminal defense, and injury matters."
+  },
+  {
+    "id": "brian-donald-turner",
+    "name": "Brian Donald Turner",
+    "firm_name": "Turner & Turner",
+    "state": "Alabama",
+    "city": "Tuscaloosa",
+    "email": null,
+    "phone": "205-752-1502",
+    "website": "https://turnerandturnerlaw.com",
+    "specialties": [
+      "Civil Rights",
+      "Asbestos",
+      "Consumer Law"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Handles consumer and civil rights litigation through Turner & Turner in Tuscaloosa."
+  },
+  {
+    "id": "albert-j-lopez",
+    "name": "Albert J. Lopez",
+    "firm_name": null,
+    "state": "Alabama",
+    "city": "Tuscaloosa",
+    "email": null,
+    "phone": "205-348-9831",
+    "website": "https://www.law.ua.edu",
+    "specialties": [
+      "Civil Rights",
+      "Constitutional Law"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Constitutional law professor at the University of Alabama contributing to civil rights scholarship and practice."
+  },
+  {
+    "id": "reuben-wright-cook",
+    "name": "Reuben Wright Cook",
+    "firm_name": null,
+    "state": "Alabama",
+    "city": "Tuscaloosa",
+    "email": null,
+    "phone": "205-759-4630",
+    "website": null,
+    "specialties": [
+      "Civil Rights",
+      "Education",
+      "Social Security Disability"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Tuscaloosa attorney practicing civil rights, education law, and disability claims."
+  },
+  {
+    "id": "david-hamill-dowdy",
+    "name": "David Hamill Dowdy",
+    "firm_name": null,
+    "state": "Alabama",
+    "city": "Tuscaloosa",
+    "email": null,
+    "phone": "205-349-4887",
+    "website": null,
+    "specialties": [
+      "Civil Rights",
+      "Criminal Defense",
+      "DUI",
+      "Divorce"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Provides criminal defense and civil rights representation in Tuscaloosa."
+  },
+  {
+    "id": "albert-jones",
+    "name": "Albert Jones",
+    "firm_name": null,
+    "state": "Alabama",
+    "city": "Tuscaloosa",
+    "email": null,
+    "phone": "205-345-0806",
+    "website": null,
+    "specialties": [
+      "Civil Rights",
+      "Divorce",
+      "Family",
+      "Personal Injury"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Tuscaloosa lawyer handling family law, injury, and civil rights disputes."
+  },
+  {
+    "id": "james-d-smith",
+    "name": "James D. Smith",
+    "firm_name": null,
+    "state": "Alabama",
+    "city": "Tuscaloosa",
+    "email": null,
+    "phone": "205-759-4004",
+    "website": null,
+    "specialties": [
+      "Civil Rights",
+      "Consumer",
+      "Criminal Defense",
+      "Family"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Represents clients in consumer, criminal, family, and civil rights matters in Tuscaloosa."
+  },
+  {
+    "id": "bryan-fair",
+    "name": "Bryan Fair",
+    "firm_name": null,
+    "state": "Alabama",
+    "city": "Tuscaloosa",
+    "email": null,
+    "phone": "205-348-7494",
+    "website": "https://www.law.ua.edu",
+    "specialties": [
+      "Civil Rights",
+      "Constitutional Law"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "University of Alabama professor specializing in constitutional and civil rights law."
+  },
+  {
+    "id": "barbara-h-agricola",
+    "name": "Barbara H. Agricola",
+    "firm_name": "Agricola Law, LLC",
+    "state": "Alabama",
+    "city": "Opelika",
+    "email": null,
+    "phone": "334-759-7557",
+    "website": "https://www.agricolalaw.com",
+    "specialties": [
+      "Civil Rights",
+      "Education",
+      "Employment",
+      "Family"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Opelika attorney representing clients in civil rights, employment, and education law matters."
+  },
+  {
+    "id": "jason-l-wollitz",
+    "name": "Jason L. Wollitz",
+    "firm_name": null,
+    "state": "Alabama",
+    "city": "Bessemer",
+    "email": null,
+    "phone": "205-541-6033",
+    "website": null,
+    "specialties": [
+      "Civil Rights",
+      "Criminal Defense",
+      "DUI",
+      "White Collar Crime"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Bessemer criminal defense and civil rights attorney serving Jefferson County."
+  },
+  {
+    "id": "lateefah-muhammad",
+    "name": "Lateefah Muhammad",
+    "firm_name": null,
+    "state": "Alabama",
+    "city": "Tuskegee",
+    "email": null,
+    "phone": "334-727-1997",
+    "website": null,
+    "specialties": [
+      "Civil Rights",
+      "Divorce",
+      "Personal Injury",
+      "Real Estate"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Tuskegee attorney handling civil rights, personal injury, and family law matters."
+  },
+  {
+    "id": "stephen-talmadge-etheredge",
+    "name": "Stephen Talmadge Etheredge",
+    "firm_name": null,
+    "state": "Alabama",
+    "city": "Dothan",
+    "email": null,
+    "phone": "334-793-3377",
+    "website": null,
+    "specialties": [
+      "Civil Rights",
+      "Business",
+      "Personal Injury",
+      "Real Estate"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Dothan lawyer representing clients in civil rights, business, and injury matters."
+  },
+  {
+    "id": "chad-allen-hopper",
+    "name": "Chad Allen Hopper",
+    "firm_name": null,
+    "state": "Alabama",
+    "city": "Centre",
+    "email": null,
+    "phone": "256-927-5764",
+    "website": null,
+    "specialties": [
+      "Civil Rights",
+      "Criminal Defense",
+      "DUI",
+      "Divorce"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Centre-based attorney focusing on civil rights, criminal defense, and family law."
+  },
+  {
+    "id": "horace-hendrix-nation-iv",
+    "name": "Horace Hendrix Nation IV",
+    "firm_name": null,
+    "state": "Alabama",
+    "city": "Jasper",
+    "email": null,
+    "phone": "205-221-1044",
+    "website": null,
+    "specialties": [
+      "Civil Rights",
+      "Personal Injury",
+      "Social Security Disability",
+      "Workers' Compensation"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Jasper attorney working on disability, injury, and civil rights claims."
+  },
+  {
+    "id": "thomas-mcallister-semmes",
+    "name": "Thomas McAllister Semmes",
+    "firm_name": null,
+    "state": "Alabama",
+    "city": "Anniston",
+    "email": null,
+    "phone": "256-236-7354",
+    "website": null,
+    "specialties": [
+      "Civil Rights",
+      "Bankruptcy",
+      "Social Security Disability"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Anniston lawyer practicing in civil rights, bankruptcy, and disability matters."
+  },
+  {
+    "id": "michael-sharp-speakman",
+    "name": "Michael Sharp Speakman",
+    "firm_name": null,
+    "state": "Alabama",
+    "city": "Auburn",
+    "email": null,
+    "phone": "334-821-0091",
+    "website": null,
+    "specialties": [
+      "Civil Rights",
+      "Business",
+      "Criminal Defense",
+      "Divorce"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Auburn attorney representing clients in civil rights, business, and criminal matters."
+  },
+  {
+    "id": "steven-todd-speakman",
+    "name": "Steven Todd Speakman",
+    "firm_name": null,
+    "state": "Alabama",
+    "city": "Auburn",
+    "email": null,
+    "phone": "334-821-0091",
+    "website": null,
+    "specialties": [
+      "Civil Rights",
+      "Criminal Defense",
+      "DUI",
+      "Divorce"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Provides criminal defense and civil rights representation for clients in Auburn."
+  },
+  {
+    "id": "teresa-powers-martin",
+    "name": "Teresa Powers Martin",
+    "firm_name": null,
+    "state": "Alabama",
+    "city": "Killen",
+    "email": null,
+    "phone": null,
+    "website": null,
+    "specialties": [
+      "Civil Rights",
+      "Divorce",
+      "Elder Law",
+      "Estate Planning"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Attorney in Killen handling elder law, estate planning, and civil rights issues."
+  },
+  {
+    "id": "howell-thomas-heflin-jr",
+    "name": "Howell Thomas Heflin Jr.",
+    "firm_name": null,
+    "state": "Alabama",
+    "city": "Tuscumbia",
+    "email": null,
+    "phone": "256-383-3661",
+    "website": null,
+    "specialties": [
+      "Civil Rights",
+      "Business",
+      "Consumer",
+      "Education"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Tuscumbia attorney advising on civil rights, consumer protection, and education matters."
+  },
+  {
+    "id": "joseph-earl-sawyer-jr",
+    "name": "Joseph Earl Sawyer Jr.",
+    "firm_name": null,
+    "state": "Alabama",
+    "city": "Enterprise",
+    "email": null,
+    "phone": "334-347-6447",
+    "website": null,
+    "specialties": [
+      "Civil Rights",
+      "Bankruptcy",
+      "Business",
+      "Collections"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Enterprise lawyer focused on civil rights, bankruptcy, and business collection matters."
+  },
+  {
+    "id": "elizabeth-ragsdale-howard",
+    "name": "Elizabeth Ragsdale Howard",
+    "firm_name": null,
+    "state": "Alabama",
+    "city": "Gadsden",
+    "email": null,
+    "phone": "256-442-0208",
+    "website": null,
+    "specialties": [
+      "Civil Rights",
+      "Insurance Defense",
+      "Municipal Law"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Gadsden attorney practicing civil rights, municipal law, and insurance defense."
+  },
+  {
+    "id": "elisa-smith-rives",
+    "name": "Elisa Smith Rives",
+    "firm_name": null,
+    "state": "Alabama",
+    "city": "Guntersville",
+    "email": null,
+    "phone": "256-582-3559",
+    "website": null,
+    "specialties": [
+      "Civil Rights"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Guntersville attorney providing general civil rights representation."
+  },
+  {
+    "id": "anna-zhuromskaya",
+    "name": "Anna Zhuromskaya",
+    "firm_name": null,
+    "state": "Alabama",
+    "city": "Fairhope",
+    "email": null,
+    "phone": "251-202-3074",
+    "website": null,
+    "specialties": [
+      "Civil Rights",
+      "Bankruptcy",
+      "Business",
+      "Consumer Law"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Fairhope lawyer assisting clients with consumer, business, and civil rights matters."
+  },
+  {
+    "id": "gray-langford-sapp-mcgowan-gray-nathanson",
+    "name": "Gray, Langford, Sapp, McGowan, Gray & Nathanson, P.C.",
+    "firm_name": "Gray Langford Sapp McGowan Gray & Nathanson, P.C.",
+    "state": "Alabama",
+    "city": "Tuskegee",
+    "email": null,
+    "phone": "334-727-4830",
+    "website": null,
+    "specialties": [
+      "Civil Rights",
+      "Personal Injury",
+      "Employment"
+    ],
+    "accepts_pro_bono": false,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Historic civil rights firm founded by Fred D. Gray representing plaintiffs in discrimination and injury cases."
+  },
+  {
+    "id": "southern-poverty-law-center",
+    "name": "Southern Poverty Law Center",
+    "firm_name": "SPLC",
+    "state": "Alabama",
+    "city": "Montgomery",
+    "email": null,
+    "phone": "334-956-8200",
+    "website": "https://www.splcenter.org",
+    "specialties": [
+      "Civil Rights",
+      "Impact Litigation",
+      "Hate Crimes",
+      "Education Equity"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Nonprofit legal advocacy organization providing free representation in impact civil rights cases."
+  },
+  {
+    "id": "aclu-of-alabama",
+    "name": "ACLU of Alabama",
+    "firm_name": "American Civil Liberties Union of Alabama",
+    "state": "Alabama",
+    "city": "Montgomery",
+    "email": "info@aclualabama.org",
+    "phone": "334-265-2754",
+    "website": "https://www.aclualabama.org",
+    "specialties": [
+      "Civil Rights",
+      "Constitutional Law",
+      "Voting Rights",
+      "Criminal Justice Reform"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "State ACLU affiliate defending civil liberties including free speech, voting access, and criminal justice reform."
+  },
+  {
+    "id": "equal-justice-initiative",
+    "name": "Equal Justice Initiative",
+    "firm_name": "EJI",
+    "state": "Alabama",
+    "city": "Montgomery",
+    "email": "info@eji.org",
+    "phone": "334-269-1803",
+    "website": "https://eji.org",
+    "specialties": [
+      "Civil Rights",
+      "Death Penalty",
+      "Wrongful Convictions",
+      "Criminal Justice Reform"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Nonprofit law organization providing free representation in death penalty, wrongful conviction, and civil rights cases."
+  },
+  {
+    "id": "legal-services-alabama",
+    "name": "Legal Services Alabama",
+    "firm_name": "LSA",
+    "state": "Alabama",
+    "city": "Montgomery",
+    "email": null,
+    "phone": "866-456-4995",
+    "website": "https://legalservicesalabama.org",
+    "specialties": [
+      "Civil Rights",
+      "Housing",
+      "Public Benefits",
+      "Consumer Protection"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Statewide nonprofit law firm providing free civil legal aid to low-income Alabamians."
+  },
+  {
+    "id": "alabama-disabilities-advocacy-program",
+    "name": "Alabama Disabilities Advocacy Program",
+    "firm_name": "ADAP",
+    "state": "Alabama",
+    "city": "Tuscaloosa",
+    "email": "adap@adap.ua.edu",
+    "phone": "205-348-4928",
+    "website": "https://adap.ua.edu",
+    "specialties": [
+      "Civil Rights",
+      "Disability Rights",
+      "Education",
+      "Accessibility"
+    ],
+    "accepts_pro_bono": true,
+    "bar_number": null,
+    "years_experience": null,
+    "bio": "Protection and advocacy system for people with disabilities in Alabama offering free legal representation."
   }
 ]

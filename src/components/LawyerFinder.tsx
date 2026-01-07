@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { useGeolocation } from "@/hooks/useGeolocation";
+import { useJurisdiction } from "@/hooks/useJurisdiction";
+import { DEFAULT_JURISDICTION } from "@/data/usStates";
 import { Search, MapPin, Mail, Phone, Globe, Scale, Database } from "lucide-react";
 import { toast } from "sonner";
 import { ATTORNEY_FALLBACK_DATA } from "@/lib/attorneyFallback";
@@ -37,7 +38,7 @@ const SPECIALTIES = [
 ];
 
 export function LawyerFinder() {
-  const { state: userState, loading: locationLoading } = useGeolocation();
+  const { state: jurisdictionState } = useJurisdiction();
   const [attorneys, setAttorneys] = useState<AttorneyRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -91,11 +92,14 @@ export function LawyerFinder() {
     }
   }, []);
 
+  // Sync with jurisdiction context when it changes
   useEffect(() => {
-    if (userState && !locationLoading) {
-      setSelectedState(userState);
+    if (jurisdictionState && jurisdictionState !== DEFAULT_JURISDICTION) {
+      setSelectedState(jurisdictionState);
+    } else {
+      setSelectedState("all");
     }
-  }, [userState, locationLoading]);
+  }, [jurisdictionState]);
 
   useEffect(() => {
     void fetchAttorneys();

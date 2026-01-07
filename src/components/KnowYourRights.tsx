@@ -5,7 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Download, FileText, Scale, AlertCircle, Phone, Shield, HelpCircle, ExternalLink } from "lucide-react";
-import { useGeolocation } from "@/hooks/useGeolocation";
+import { useJurisdiction } from "@/hooks/useJurisdiction";
+import { DEFAULT_JURISDICTION } from "@/data/usStates";
 import jsPDF from "jspdf";
 
 type EmergencyContactLink = {
@@ -337,7 +338,8 @@ const emergencyContacts: EmergencyContactCategory[] = [
 ];
 
 export const KnowYourRights = () => {
-  const { state, loading } = useGeolocation();
+  const { state: jurisdictionState } = useJurisdiction();
+  const state = jurisdictionState === DEFAULT_JURISDICTION ? null : jurisdictionState;
   const [selectedRight, setSelectedRight] = useState<string | null>(null);
 
   const downloadPDF = (amendment: string) => {
@@ -455,7 +457,7 @@ export const KnowYourRights = () => {
             <p className="text-muted-foreground text-sm md:text-base lg:text-lg max-w-2xl mx-auto px-4">
               Quick-access constitutional guides, scenario playbooks, and emergency contacts.
             </p>
-            {!loading && state && (
+            {state && (
               <Badge variant="outline" className="mt-3 md:mt-4 text-xs md:text-sm">
                 <FileText className="h-3 w-3 md:h-4 md:w-4 mr-2" />
                 Showing information for: {state}

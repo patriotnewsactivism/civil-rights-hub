@@ -625,7 +625,7 @@ export const PanicButton = () => {
                       </Button>
                     )}
                   </div>
-                  {alert.message && <p className="mt-2 text-sm">“{alert.message}”</p>}
+                  {alert.notes && <p className="mt-2 text-sm">"{alert.notes}"</p>}
                 </div>
               ))}
           </div>

@@ -119,6 +119,35 @@ const rightsData = {
       "No reasonable expectation of privacy exists in public spaces",
       "Always maintain a safe distance that doesn't interfere with police operations"
     ]
+  },
+  "ADA Title II": {
+    summary: "Americans with Disabilities Act - Government Services & Police Interactions",
+    details: [
+      "Title II prohibits disability discrimination by state and local governments in ALL services, programs, and activities",
+      "Police departments MUST provide reasonable accommodations during encounters with disabled individuals",
+      "Officers must recognize and accommodate communication disabilities (deaf, hard of hearing, speech impairments)",
+      "Mental health conditions and intellectual disabilities must be accommodated - not criminalized",
+      "Physical force policies must account for disabilities affecting mobility, coordination, or response time",
+      "Government facilities (courts, police stations, jails) must be physically accessible",
+      "Individuals can request sign language interpreters, written communication, or other auxiliary aids",
+      "You can file ADA complaints with the DOJ Civil Rights Division within 180 days of discrimination",
+      "Remedies include injunctive relief, compensatory damages, and attorney's fees",
+      "Contact ADA Information Line: 1-800-514-0301 (voice) or 1-833-610-1264 (TTY)"
+    ]
+  },
+  "ADA & Police Encounters": {
+    summary: "Disability rights during law enforcement interactions",
+    details: [
+      "Police must modify policies/practices to accommodate disabilities under Title II",
+      "Failure to accommodate can result in excessive force, wrongful arrest, or denial of services",
+      "Deaf individuals have the right to effective communication - officers must use interpreters or written notes",
+      "Individuals with autism, PTSD, or mental illness may not respond typically to commands - this is NOT resistance",
+      "Officers cannot arrest someone solely because of disability-related behavior",
+      "If detained, you can request disability accommodations immediately",
+      "Jails and prisons must provide wheelchair access, medical care, and communication aids",
+      "Service animals must be accommodated in all government facilities and during police encounters",
+      "File complaints: DOJ ADA hotline, your state's protection & advocacy organization, or federal court"
+    ]
   }
 };
 
@@ -210,6 +239,21 @@ const whatToDoScenarios = [
       "File a complaint with the department's internal affairs and civilian oversight board",
       "Contact civil rights organizations like ACLU, NAACP, or local legal aid"
     ]
+  },
+  {
+    title: "If You Have a Disability During a Police Encounter",
+    steps: [
+      "You are protected under ADA Title II - police MUST provide reasonable accommodations",
+      "If safe to do so, calmly inform the officer: 'I have a disability that affects [communication/mobility/response time]'",
+      "Deaf/hard of hearing: Request written communication or a sign language interpreter",
+      "If you carry a disability notification card, present it to the officer",
+      "Officers cannot arrest you solely for disability-related behavior (stimming, slow response, atypical movements)",
+      "If you have a mental health crisis, ask for a Crisis Intervention Team (CIT) trained officer",
+      "Request accommodations immediately if detained: accessible cell, medications, communication aids",
+      "Document everything: officer names, badge numbers, denial of accommodations, use of force",
+      "File ADA complaints with DOJ Civil Rights Division (1-800-514-0301) within 180 days",
+      "Contact your state's Protection & Advocacy organization for free legal help"
+    ]
   }
 ];
 
@@ -230,6 +274,17 @@ const emergencyContacts: EmergencyContactCategory[] = [
       { name: "Southern Poverty Law Center", number: "334-956-8200", description: "Civil rights advocacy" },
       { name: "National Immigration Law Center", number: "213-639-3900", description: "Immigrant rights" },
       { name: "Transgender Law Center", number: "510-380-8229", description: "Trans rights advocacy" }
+    ]
+  },
+  {
+    category: "Disability Rights (ADA)",
+    contacts: [
+      { name: "ADA Information Line", number: "1-800-514-0301", description: "DOJ Civil Rights Division - file complaints, get ADA guidance" },
+      { name: "ADA TTY Line", number: "1-833-610-1264", description: "Accessible hotline for deaf/hard of hearing" },
+      { name: "Disability Rights Advocates", number: "510-665-8644", description: "National disability rights litigation", website: "www.dralegal.org" },
+      { name: "National Disability Rights Network", number: "202-408-9514", description: "Protection & advocacy agencies in every state", website: "www.ndrn.org" },
+      { name: "Bazelon Center for Mental Health Law", number: "202-467-5730", description: "Mental health disability rights", website: "www.bazelon.org" },
+      { name: "Autistic Self Advocacy Network", number: "202-596-9933", description: "Autism rights and police training resources", website: "www.autisticadvocacy.org" }
     ]
   },
   {

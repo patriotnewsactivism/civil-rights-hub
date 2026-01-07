@@ -348,6 +348,101 @@ export type Database = {
           },
         ]
       }
+      foia_agencies: {
+        Row: {
+          agency_type: string
+          city: string | null
+          created_at: string | null
+          foia_address: string | null
+          foia_email: string | null
+          foia_phone: string | null
+          foia_url: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          notes: string | null
+          response_days: number | null
+          state: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          agency_type: string
+          city?: string | null
+          created_at?: string | null
+          foia_address?: string | null
+          foia_email?: string | null
+          foia_phone?: string | null
+          foia_url?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          notes?: string | null
+          response_days?: number | null
+          state?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          agency_type?: string
+          city?: string | null
+          created_at?: string | null
+          foia_address?: string | null
+          foia_email?: string | null
+          foia_phone?: string | null
+          foia_url?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          notes?: string | null
+          response_days?: number | null
+          state?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      foia_request_updates: {
+        Row: {
+          attachment_url: string | null
+          created_at: string | null
+          created_by: string | null
+          id: string
+          new_status: string | null
+          notes: string | null
+          previous_status: string | null
+          request_id: string
+          update_type: string
+        }
+        Insert: {
+          attachment_url?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          new_status?: string | null
+          notes?: string | null
+          previous_status?: string | null
+          request_id: string
+          update_type: string
+        }
+        Update: {
+          attachment_url?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          new_status?: string | null
+          notes?: string | null
+          previous_status?: string | null
+          request_id?: string
+          update_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "foia_request_updates_request_id_fkey"
+            columns: ["request_id"]
+            isOneToOne: false
+            referencedRelation: "foia_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       foia_requests: {
         Row: {
           agency_name: string
@@ -402,6 +497,48 @@ export type Database = {
           submitted_at?: string | null
           updated_at?: string | null
           user_id?: string
+        }
+        Relationships: []
+      }
+      foia_templates: {
+        Row: {
+          applicable_agency_types: string[] | null
+          body_template: string
+          category: string
+          created_at: string | null
+          description: string | null
+          id: string
+          is_featured: boolean | null
+          subject_template: string
+          title: string
+          updated_at: string | null
+          usage_count: number | null
+        }
+        Insert: {
+          applicable_agency_types?: string[] | null
+          body_template: string
+          category: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_featured?: boolean | null
+          subject_template: string
+          title: string
+          updated_at?: string | null
+          usage_count?: number | null
+        }
+        Update: {
+          applicable_agency_types?: string[] | null
+          body_template?: string
+          category?: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_featured?: boolean | null
+          subject_template?: string
+          title?: string
+          updated_at?: string | null
+          usage_count?: number | null
         }
         Relationships: []
       }

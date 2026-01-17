@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { StateQuickSelect } from "@/components/StateQuickSelect";
+import { NotificationBell } from "@/components/NotificationBell";
 
 export function Header() {
   const { user } = useAuth();
@@ -119,16 +120,19 @@ export function Header() {
 
           {/* User Actions - Always Visible */}
           {user && (
-            <Button variant="ghost" size="icon" asChild className="relative h-9 w-9">
-              <Link to="/community?tab=messages" aria-label="Messages">
-                <MessageCircle className="h-4 w-4 md:h-5 md:w-5" />
-                {unreadMessages > 0 && (
-                  <span className="absolute -top-1 -right-1 inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold text-primary-foreground">
-                    {Math.min(unreadMessages, 99)}
-                  </span>
-                )}
-              </Link>
-            </Button>
+            <>
+              <NotificationBell />
+              <Button variant="ghost" size="icon" asChild className="relative h-9 w-9">
+                <Link to="/community?tab=messages" aria-label="Messages">
+                  <MessageCircle className="h-4 w-4 md:h-5 md:w-5" />
+                  {unreadMessages > 0 && (
+                    <span className="absolute -top-1 -right-1 inline-flex h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold text-primary-foreground">
+                      {Math.min(unreadMessages, 99)}
+                    </span>
+                  )}
+                </Link>
+              </Button>
+            </>
           )}
 
           {/* Auth Button / Community Button */}

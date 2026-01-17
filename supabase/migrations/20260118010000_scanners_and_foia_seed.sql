@@ -4,892 +4,892 @@
 -- 1. POLICE SCANNERS
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Alabama', 'AL', 'Birmingham', 'Birmingham County', 'Birmingham Police Dispatch', 'Primary dispatch channel for Birmingham Police Department.', 'https://www.broadcastify.com/listen/feed/25364', 'broadcastify', 2805, true)
+            VALUES ('Alabama', 'AL', 'Birmingham', 'Birmingham County', 'Birmingham Police Dispatch', 'Primary dispatch channel for Birmingham Police Department.', 'https://www.broadcastify.com/listen/feed/16263', 'broadcastify', 4692, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Alabama', 'AL', 'Mobile', 'Mobile County', 'Mobile Police Dispatch', 'Primary dispatch channel for Mobile Police Department.', 'https://www.broadcastify.com/listen/feed/23349', 'broadcastify', 844, true)
+            VALUES ('Alabama', 'AL', 'Mobile', 'Mobile County', 'Mobile Police Dispatch', 'Primary dispatch channel for Mobile Police Department.', 'https://www.broadcastify.com/listen/feed/5196', 'broadcastify', 4034, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Alabama', 'AL', 'Huntsville', 'Huntsville County', 'Huntsville Police Dispatch', 'Primary dispatch channel for Huntsville Police Department.', 'https://www.broadcastify.com/listen/feed/14721', 'broadcastify', 332, true)
+            VALUES ('Alabama', 'AL', 'Huntsville', 'Huntsville County', 'Huntsville Police Dispatch', 'Primary dispatch channel for Huntsville Police Department.', 'https://www.broadcastify.com/listen/feed/33233', 'broadcastify', 2734, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Alabama', 'AL', 'Montgomery', 'Montgomery County', 'Montgomery Police Dispatch', 'Primary dispatch channel for Montgomery Police Department.', 'https://www.broadcastify.com/listen/feed/13994', 'broadcastify', 2981, true)
+            VALUES ('Alabama', 'AL', 'Montgomery', 'Montgomery County', 'Montgomery Police Dispatch', 'Primary dispatch channel for Montgomery Police Department.', 'https://www.broadcastify.com/listen/feed/16966', 'broadcastify', 4194, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Alaska', 'AK', 'Anchorage', 'Anchorage County', 'Anchorage Police Dispatch', 'Primary dispatch channel for Anchorage Police Department.', 'https://www.broadcastify.com/listen/feed/23694', 'broadcastify', 4558, true)
+            VALUES ('Alaska', 'AK', 'Anchorage', 'Anchorage County', 'Anchorage Police Dispatch', 'Primary dispatch channel for Anchorage Police Department.', 'https://www.broadcastify.com/listen/feed/12615', 'broadcastify', 177, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Alaska', 'AK', 'Fairbanks', 'Fairbanks County', 'Fairbanks Police Dispatch', 'Primary dispatch channel for Fairbanks Police Department.', 'https://www.broadcastify.com/listen/feed/2552', 'broadcastify', 2815, true)
+            VALUES ('Alaska', 'AK', 'Fairbanks', 'Fairbanks County', 'Fairbanks Police Dispatch', 'Primary dispatch channel for Fairbanks Police Department.', 'https://www.broadcastify.com/listen/feed/19158', 'broadcastify', 2592, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Alaska', 'AK', 'Juneau', 'Juneau County', 'Juneau Police Dispatch', 'Primary dispatch channel for Juneau Police Department.', 'https://www.broadcastify.com/listen/feed/31493', 'broadcastify', 2628, true)
+            VALUES ('Alaska', 'AK', 'Juneau', 'Juneau County', 'Juneau Police Dispatch', 'Primary dispatch channel for Juneau Police Department.', 'https://www.broadcastify.com/listen/feed/15560', 'broadcastify', 4551, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Arizona', 'AZ', 'Phoenix', 'Phoenix County', 'Phoenix Police Dispatch', 'Primary dispatch channel for Phoenix Police Department.', 'https://www.broadcastify.com/listen/feed/12379', 'broadcastify', 1532, true)
+            VALUES ('Arizona', 'AZ', 'Phoenix', 'Phoenix County', 'Phoenix Police Dispatch', 'Primary dispatch channel for Phoenix Police Department.', 'https://www.broadcastify.com/listen/feed/14393', 'broadcastify', 3040, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Arizona', 'AZ', 'Tucson', 'Tucson County', 'Tucson Police Dispatch', 'Primary dispatch channel for Tucson Police Department.', 'https://www.broadcastify.com/listen/feed/31094', 'broadcastify', 139, true)
+            VALUES ('Arizona', 'AZ', 'Tucson', 'Tucson County', 'Tucson Police Dispatch', 'Primary dispatch channel for Tucson Police Department.', 'https://www.broadcastify.com/listen/feed/32786', 'broadcastify', 320, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Arizona', 'AZ', 'Mesa', 'Mesa County', 'Mesa Police Dispatch', 'Primary dispatch channel for Mesa Police Department.', 'https://www.broadcastify.com/listen/feed/2534', 'broadcastify', 4761, true)
+            VALUES ('Arizona', 'AZ', 'Mesa', 'Mesa County', 'Mesa Police Dispatch', 'Primary dispatch channel for Mesa Police Department.', 'https://www.broadcastify.com/listen/feed/11051', 'broadcastify', 3646, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Arizona', 'AZ', NULL, 'Maricopa', 'Maricopa County Sheriff and Fire', 'Dispatch for Maricopa County Sheriff, Fire, and EMS.', 'https://www.broadcastify.com/listen/feed/14522', 'broadcastify', 4774, true)
+            VALUES ('Arizona', 'AZ', NULL, 'Maricopa', 'Maricopa County Sheriff and Fire', 'Dispatch for Maricopa County Sheriff, Fire, and EMS.', 'https://www.broadcastify.com/listen/feed/18791', 'broadcastify', 1535, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Arkansas', 'AR', 'Little Rock', 'Little Rock County', 'Little Rock Police Dispatch', 'Primary dispatch channel for Little Rock Police Department.', 'https://www.broadcastify.com/listen/feed/23954', 'broadcastify', 3762, true)
+            VALUES ('Arkansas', 'AR', 'Little Rock', 'Little Rock County', 'Little Rock Police Dispatch', 'Primary dispatch channel for Little Rock Police Department.', 'https://www.broadcastify.com/listen/feed/21494', 'broadcastify', 3893, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Arkansas', 'AR', 'Fort Smith', 'Fort Smith County', 'Fort Smith Police Dispatch', 'Primary dispatch channel for Fort Smith Police Department.', 'https://www.broadcastify.com/listen/feed/23809', 'broadcastify', 2169, true)
+            VALUES ('Arkansas', 'AR', 'Fort Smith', 'Fort Smith County', 'Fort Smith Police Dispatch', 'Primary dispatch channel for Fort Smith Police Department.', 'https://www.broadcastify.com/listen/feed/13333', 'broadcastify', 2986, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Arkansas', 'AR', 'Fayetteville', 'Fayetteville County', 'Fayetteville Police Dispatch', 'Primary dispatch channel for Fayetteville Police Department.', 'https://www.broadcastify.com/listen/feed/7558', 'broadcastify', 2409, true)
+            VALUES ('Arkansas', 'AR', 'Fayetteville', 'Fayetteville County', 'Fayetteville Police Dispatch', 'Primary dispatch channel for Fayetteville Police Department.', 'https://www.broadcastify.com/listen/feed/24614', 'broadcastify', 492, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('California', 'CA', 'Los Angeles', 'Los Angeles County', 'Los Angeles Police Dispatch', 'Primary dispatch channel for Los Angeles Police Department.', 'https://www.broadcastify.com/listen/feed/8941', 'broadcastify', 4041, true)
+            VALUES ('California', 'CA', 'Los Angeles', 'Los Angeles County', 'Los Angeles Police Dispatch', 'Primary dispatch channel for Los Angeles Police Department.', 'https://www.broadcastify.com/listen/feed/26340', 'broadcastify', 878, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('California', 'CA', 'San Diego', 'San Diego County', 'San Diego Police Dispatch', 'Primary dispatch channel for San Diego Police Department.', 'https://www.broadcastify.com/listen/feed/5777', 'broadcastify', 2535, true)
+            VALUES ('California', 'CA', 'San Diego', 'San Diego County', 'San Diego Police Dispatch', 'Primary dispatch channel for San Diego Police Department.', 'https://www.broadcastify.com/listen/feed/19344', 'broadcastify', 3511, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('California', 'CA', 'San Francisco', 'San Francisco County', 'San Francisco Police Dispatch', 'Primary dispatch channel for San Francisco Police Department.', 'https://www.broadcastify.com/listen/feed/2967', 'broadcastify', 3100, true)
+            VALUES ('California', 'CA', 'San Francisco', 'San Francisco County', 'San Francisco Police Dispatch', 'Primary dispatch channel for San Francisco Police Department.', 'https://www.broadcastify.com/listen/feed/7976', 'broadcastify', 4489, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('California', 'CA', 'Sacramento', 'Sacramento County', 'Sacramento Police Dispatch', 'Primary dispatch channel for Sacramento Police Department.', 'https://www.broadcastify.com/listen/feed/1932', 'broadcastify', 4792, true)
+            VALUES ('California', 'CA', 'Sacramento', 'Sacramento County', 'Sacramento Police Dispatch', 'Primary dispatch channel for Sacramento Police Department.', 'https://www.broadcastify.com/listen/feed/27397', 'broadcastify', 3315, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('California', 'CA', 'Fresno', 'Fresno County', 'Fresno Police Dispatch', 'Primary dispatch channel for Fresno Police Department.', 'https://www.broadcastify.com/listen/feed/11030', 'broadcastify', 2492, true)
+            VALUES ('California', 'CA', 'Fresno', 'Fresno County', 'Fresno Police Dispatch', 'Primary dispatch channel for Fresno Police Department.', 'https://www.broadcastify.com/listen/feed/29083', 'broadcastify', 4242, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('California', 'CA', 'Oakland', 'Oakland County', 'Oakland Police Dispatch', 'Primary dispatch channel for Oakland Police Department.', 'https://www.broadcastify.com/listen/feed/20590', 'broadcastify', 3504, true)
+            VALUES ('California', 'CA', 'Oakland', 'Oakland County', 'Oakland Police Dispatch', 'Primary dispatch channel for Oakland Police Department.', 'https://www.broadcastify.com/listen/feed/4205', 'broadcastify', 1308, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('California', 'CA', 'San Jose', 'San Jose County', 'San Jose Police Dispatch', 'Primary dispatch channel for San Jose Police Department.', 'https://www.broadcastify.com/listen/feed/11774', 'broadcastify', 2249, true)
+            VALUES ('California', 'CA', 'San Jose', 'San Jose County', 'San Jose Police Dispatch', 'Primary dispatch channel for San Jose Police Department.', 'https://www.broadcastify.com/listen/feed/1715', 'broadcastify', 2473, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('California', 'CA', 'Riverside', 'Riverside County', 'Riverside Police Dispatch', 'Primary dispatch channel for Riverside Police Department.', 'https://www.broadcastify.com/listen/feed/30044', 'broadcastify', 1226, true)
+            VALUES ('California', 'CA', 'Riverside', 'Riverside County', 'Riverside Police Dispatch', 'Primary dispatch channel for Riverside Police Department.', 'https://www.broadcastify.com/listen/feed/12186', 'broadcastify', 4607, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Colorado', 'CO', 'Denver', 'Denver County', 'Denver Police Dispatch', 'Primary dispatch channel for Denver Police Department.', 'https://www.broadcastify.com/listen/feed/21762', 'broadcastify', 4345, true)
+            VALUES ('Colorado', 'CO', 'Denver', 'Denver County', 'Denver Police Dispatch', 'Primary dispatch channel for Denver Police Department.', 'https://www.broadcastify.com/listen/feed/17036', 'broadcastify', 1967, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Colorado', 'CO', 'Colorado Springs', 'Colorado Springs County', 'Colorado Springs Police Dispatch', 'Primary dispatch channel for Colorado Springs Police Department.', 'https://www.broadcastify.com/listen/feed/29854', 'broadcastify', 4551, true)
+            VALUES ('Colorado', 'CO', 'Colorado Springs', 'Colorado Springs County', 'Colorado Springs Police Dispatch', 'Primary dispatch channel for Colorado Springs Police Department.', 'https://www.broadcastify.com/listen/feed/23511', 'broadcastify', 2892, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Colorado', 'CO', 'Aurora', 'Aurora County', 'Aurora Police Dispatch', 'Primary dispatch channel for Aurora Police Department.', 'https://www.broadcastify.com/listen/feed/31408', 'broadcastify', 2754, true)
+            VALUES ('Colorado', 'CO', 'Aurora', 'Aurora County', 'Aurora Police Dispatch', 'Primary dispatch channel for Aurora Police Department.', 'https://www.broadcastify.com/listen/feed/30953', 'broadcastify', 2711, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Colorado', 'CO', 'Boulder', 'Boulder County', 'Boulder Police Dispatch', 'Primary dispatch channel for Boulder Police Department.', 'https://www.broadcastify.com/listen/feed/12786', 'broadcastify', 1396, true)
+            VALUES ('Colorado', 'CO', 'Boulder', 'Boulder County', 'Boulder Police Dispatch', 'Primary dispatch channel for Boulder Police Department.', 'https://www.broadcastify.com/listen/feed/28270', 'broadcastify', 1154, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Connecticut', 'CT', 'Bridgeport', 'Bridgeport County', 'Bridgeport Police Dispatch', 'Primary dispatch channel for Bridgeport Police Department.', 'https://www.broadcastify.com/listen/feed/11897', 'broadcastify', 47, true)
+            VALUES ('Connecticut', 'CT', 'Bridgeport', 'Bridgeport County', 'Bridgeport Police Dispatch', 'Primary dispatch channel for Bridgeport Police Department.', 'https://www.broadcastify.com/listen/feed/4341', 'broadcastify', 1757, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Connecticut', 'CT', 'New Haven', 'New Haven County', 'New Haven Police Dispatch', 'Primary dispatch channel for New Haven Police Department.', 'https://www.broadcastify.com/listen/feed/11156', 'broadcastify', 3462, true)
+            VALUES ('Connecticut', 'CT', 'New Haven', 'New Haven County', 'New Haven Police Dispatch', 'Primary dispatch channel for New Haven Police Department.', 'https://www.broadcastify.com/listen/feed/12307', 'broadcastify', 2351, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Connecticut', 'CT', 'Hartford', 'Hartford County', 'Hartford Police Dispatch', 'Primary dispatch channel for Hartford Police Department.', 'https://www.broadcastify.com/listen/feed/32569', 'broadcastify', 3450, true)
+            VALUES ('Connecticut', 'CT', 'Hartford', 'Hartford County', 'Hartford Police Dispatch', 'Primary dispatch channel for Hartford Police Department.', 'https://www.broadcastify.com/listen/feed/12190', 'broadcastify', 4894, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Connecticut', 'CT', 'Stamford', 'Stamford County', 'Stamford Police Dispatch', 'Primary dispatch channel for Stamford Police Department.', 'https://www.broadcastify.com/listen/feed/12089', 'broadcastify', 2005, true)
+            VALUES ('Connecticut', 'CT', 'Stamford', 'Stamford County', 'Stamford Police Dispatch', 'Primary dispatch channel for Stamford Police Department.', 'https://www.broadcastify.com/listen/feed/29648', 'broadcastify', 593, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Delaware', 'DE', 'Wilmington', 'Wilmington County', 'Wilmington Police Dispatch', 'Primary dispatch channel for Wilmington Police Department.', 'https://www.broadcastify.com/listen/feed/28166', 'broadcastify', 2768, true)
+            VALUES ('Delaware', 'DE', 'Wilmington', 'Wilmington County', 'Wilmington Police Dispatch', 'Primary dispatch channel for Wilmington Police Department.', 'https://www.broadcastify.com/listen/feed/30388', 'broadcastify', 3739, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Delaware', 'DE', 'Dover', 'Dover County', 'Dover Police Dispatch', 'Primary dispatch channel for Dover Police Department.', 'https://www.broadcastify.com/listen/feed/20582', 'broadcastify', 3762, true)
+            VALUES ('Delaware', 'DE', 'Dover', 'Dover County', 'Dover Police Dispatch', 'Primary dispatch channel for Dover Police Department.', 'https://www.broadcastify.com/listen/feed/14839', 'broadcastify', 501, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Delaware', 'DE', NULL, 'New Castle', 'New Castle County Sheriff and Fire', 'Dispatch for New Castle County Sheriff, Fire, and EMS.', 'https://www.broadcastify.com/listen/feed/9112', 'broadcastify', 439, true)
+            VALUES ('Delaware', 'DE', NULL, 'New Castle', 'New Castle County Sheriff and Fire', 'Dispatch for New Castle County Sheriff, Fire, and EMS.', 'https://www.broadcastify.com/listen/feed/8820', 'broadcastify', 1626, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Florida', 'FL', 'Miami', 'Miami County', 'Miami Police Dispatch', 'Primary dispatch channel for Miami Police Department.', 'https://www.broadcastify.com/listen/feed/13432', 'broadcastify', 4662, true)
+            VALUES ('Florida', 'FL', 'Miami', 'Miami County', 'Miami Police Dispatch', 'Primary dispatch channel for Miami Police Department.', 'https://www.broadcastify.com/listen/feed/30924', 'broadcastify', 103, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Florida', 'FL', 'Jacksonville', 'Jacksonville County', 'Jacksonville Police Dispatch', 'Primary dispatch channel for Jacksonville Police Department.', 'https://www.broadcastify.com/listen/feed/20802', 'broadcastify', 3143, true)
+            VALUES ('Florida', 'FL', 'Jacksonville', 'Jacksonville County', 'Jacksonville Police Dispatch', 'Primary dispatch channel for Jacksonville Police Department.', 'https://www.broadcastify.com/listen/feed/26429', 'broadcastify', 4946, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Florida', 'FL', 'Tampa', 'Tampa County', 'Tampa Police Dispatch', 'Primary dispatch channel for Tampa Police Department.', 'https://www.broadcastify.com/listen/feed/2260', 'broadcastify', 351, true)
+            VALUES ('Florida', 'FL', 'Tampa', 'Tampa County', 'Tampa Police Dispatch', 'Primary dispatch channel for Tampa Police Department.', 'https://www.broadcastify.com/listen/feed/28457', 'broadcastify', 4960, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Florida', 'FL', 'Orlando', 'Orlando County', 'Orlando Police Dispatch', 'Primary dispatch channel for Orlando Police Department.', 'https://www.broadcastify.com/listen/feed/23133', 'broadcastify', 1483, true)
+            VALUES ('Florida', 'FL', 'Orlando', 'Orlando County', 'Orlando Police Dispatch', 'Primary dispatch channel for Orlando Police Department.', 'https://www.broadcastify.com/listen/feed/19695', 'broadcastify', 4209, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Florida', 'FL', 'Fort Lauderdale', 'Fort Lauderdale County', 'Fort Lauderdale Police Dispatch', 'Primary dispatch channel for Fort Lauderdale Police Department.', 'https://www.broadcastify.com/listen/feed/24005', 'broadcastify', 2531, true)
+            VALUES ('Florida', 'FL', 'Fort Lauderdale', 'Fort Lauderdale County', 'Fort Lauderdale Police Dispatch', 'Primary dispatch channel for Fort Lauderdale Police Department.', 'https://www.broadcastify.com/listen/feed/27521', 'broadcastify', 3963, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Florida', 'FL', 'Tallahassee', 'Tallahassee County', 'Tallahassee Police Dispatch', 'Primary dispatch channel for Tallahassee Police Department.', 'https://www.broadcastify.com/listen/feed/26692', 'broadcastify', 4579, true)
+            VALUES ('Florida', 'FL', 'Tallahassee', 'Tallahassee County', 'Tallahassee Police Dispatch', 'Primary dispatch channel for Tallahassee Police Department.', 'https://www.broadcastify.com/listen/feed/9603', 'broadcastify', 2802, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Georgia', 'GA', 'Atlanta', 'Atlanta County', 'Atlanta Police Dispatch', 'Primary dispatch channel for Atlanta Police Department.', 'https://www.broadcastify.com/listen/feed/13995', 'broadcastify', 3729, true)
+            VALUES ('Georgia', 'GA', 'Atlanta', 'Atlanta County', 'Atlanta Police Dispatch', 'Primary dispatch channel for Atlanta Police Department.', 'https://www.broadcastify.com/listen/feed/16698', 'broadcastify', 4725, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Georgia', 'GA', 'Savannah', 'Savannah County', 'Savannah Police Dispatch', 'Primary dispatch channel for Savannah Police Department.', 'https://www.broadcastify.com/listen/feed/4338', 'broadcastify', 3467, true)
+            VALUES ('Georgia', 'GA', 'Savannah', 'Savannah County', 'Savannah Police Dispatch', 'Primary dispatch channel for Savannah Police Department.', 'https://www.broadcastify.com/listen/feed/22758', 'broadcastify', 3773, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Georgia', 'GA', 'Augusta', 'Augusta County', 'Augusta Police Dispatch', 'Primary dispatch channel for Augusta Police Department.', 'https://www.broadcastify.com/listen/feed/12752', 'broadcastify', 3918, true)
+            VALUES ('Georgia', 'GA', 'Augusta', 'Augusta County', 'Augusta Police Dispatch', 'Primary dispatch channel for Augusta Police Department.', 'https://www.broadcastify.com/listen/feed/32193', 'broadcastify', 3044, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Georgia', 'GA', NULL, 'Fulton', 'Fulton County Sheriff and Fire', 'Dispatch for Fulton County Sheriff, Fire, and EMS.', 'https://www.broadcastify.com/listen/feed/26153', 'broadcastify', 4257, true)
+            VALUES ('Georgia', 'GA', NULL, 'Fulton', 'Fulton County Sheriff and Fire', 'Dispatch for Fulton County Sheriff, Fire, and EMS.', 'https://www.broadcastify.com/listen/feed/19368', 'broadcastify', 2253, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Hawaii', 'HI', 'Honolulu', 'Honolulu County', 'Honolulu Police Dispatch', 'Primary dispatch channel for Honolulu Police Department.', 'https://www.broadcastify.com/listen/feed/31715', 'broadcastify', 4997, true)
+            VALUES ('Hawaii', 'HI', 'Honolulu', 'Honolulu County', 'Honolulu Police Dispatch', 'Primary dispatch channel for Honolulu Police Department.', 'https://www.broadcastify.com/listen/feed/6109', 'broadcastify', 2620, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Hawaii', 'HI', 'Maui', 'Maui County', 'Maui Police Dispatch', 'Primary dispatch channel for Maui Police Department.', 'https://www.broadcastify.com/listen/feed/4109', 'broadcastify', 1953, true)
+            VALUES ('Hawaii', 'HI', 'Maui', 'Maui County', 'Maui Police Dispatch', 'Primary dispatch channel for Maui Police Department.', 'https://www.broadcastify.com/listen/feed/6755', 'broadcastify', 4719, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Hawaii', 'HI', NULL, 'Hawaii', 'Hawaii County Sheriff and Fire', 'Dispatch for Hawaii County Sheriff, Fire, and EMS.', 'https://www.broadcastify.com/listen/feed/11331', 'broadcastify', 2923, true)
+            VALUES ('Hawaii', 'HI', NULL, 'Hawaii', 'Hawaii County Sheriff and Fire', 'Dispatch for Hawaii County Sheriff, Fire, and EMS.', 'https://www.broadcastify.com/listen/feed/6366', 'broadcastify', 237, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Idaho', 'ID', 'Boise', 'Boise County', 'Boise Police Dispatch', 'Primary dispatch channel for Boise Police Department.', 'https://www.broadcastify.com/listen/feed/8075', 'broadcastify', 350, true)
+            VALUES ('Idaho', 'ID', 'Boise', 'Boise County', 'Boise Police Dispatch', 'Primary dispatch channel for Boise Police Department.', 'https://www.broadcastify.com/listen/feed/31419', 'broadcastify', 2794, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Idaho', 'ID', 'Meridian', 'Meridian County', 'Meridian Police Dispatch', 'Primary dispatch channel for Meridian Police Department.', 'https://www.broadcastify.com/listen/feed/1054', 'broadcastify', 4308, true)
+            VALUES ('Idaho', 'ID', 'Meridian', 'Meridian County', 'Meridian Police Dispatch', 'Primary dispatch channel for Meridian Police Department.', 'https://www.broadcastify.com/listen/feed/29104', 'broadcastify', 1945, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Idaho', 'ID', 'Idaho Falls', 'Idaho Falls County', 'Idaho Falls Police Dispatch', 'Primary dispatch channel for Idaho Falls Police Department.', 'https://www.broadcastify.com/listen/feed/19858', 'broadcastify', 2721, true)
+            VALUES ('Idaho', 'ID', 'Idaho Falls', 'Idaho Falls County', 'Idaho Falls Police Dispatch', 'Primary dispatch channel for Idaho Falls Police Department.', 'https://www.broadcastify.com/listen/feed/9860', 'broadcastify', 1093, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Illinois', 'IL', 'Chicago', 'Chicago County', 'Chicago Police Dispatch', 'Primary dispatch channel for Chicago Police Department.', 'https://www.broadcastify.com/listen/feed/22662', 'broadcastify', 3857, true)
+            VALUES ('Illinois', 'IL', 'Chicago', 'Chicago County', 'Chicago Police Dispatch', 'Primary dispatch channel for Chicago Police Department.', 'https://www.broadcastify.com/listen/feed/27747', 'broadcastify', 1201, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Illinois', 'IL', 'Aurora', 'Aurora County', 'Aurora Police Dispatch', 'Primary dispatch channel for Aurora Police Department.', 'https://www.broadcastify.com/listen/feed/9084', 'broadcastify', 962, true)
+            VALUES ('Illinois', 'IL', 'Aurora', 'Aurora County', 'Aurora Police Dispatch', 'Primary dispatch channel for Aurora Police Department.', 'https://www.broadcastify.com/listen/feed/11663', 'broadcastify', 1158, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Illinois', 'IL', 'Springfield', 'Springfield County', 'Springfield Police Dispatch', 'Primary dispatch channel for Springfield Police Department.', 'https://www.broadcastify.com/listen/feed/34273', 'broadcastify', 2491, true)
+            VALUES ('Illinois', 'IL', 'Springfield', 'Springfield County', 'Springfield Police Dispatch', 'Primary dispatch channel for Springfield Police Department.', 'https://www.broadcastify.com/listen/feed/28472', 'broadcastify', 4616, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Illinois', 'IL', NULL, 'Cook', 'Cook County Sheriff and Fire', 'Dispatch for Cook County Sheriff, Fire, and EMS.', 'https://www.broadcastify.com/listen/feed/3766', 'broadcastify', 282, true)
+            VALUES ('Illinois', 'IL', NULL, 'Cook', 'Cook County Sheriff and Fire', 'Dispatch for Cook County Sheriff, Fire, and EMS.', 'https://www.broadcastify.com/listen/feed/11338', 'broadcastify', 231, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Indiana', 'IN', 'Indianapolis', 'Indianapolis County', 'Indianapolis Police Dispatch', 'Primary dispatch channel for Indianapolis Police Department.', 'https://www.broadcastify.com/listen/feed/9294', 'broadcastify', 515, true)
+            VALUES ('Indiana', 'IN', 'Indianapolis', 'Indianapolis County', 'Indianapolis Police Dispatch', 'Primary dispatch channel for Indianapolis Police Department.', 'https://www.broadcastify.com/listen/feed/28228', 'broadcastify', 1349, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Indiana', 'IN', 'Fort Wayne', 'Fort Wayne County', 'Fort Wayne Police Dispatch', 'Primary dispatch channel for Fort Wayne Police Department.', 'https://www.broadcastify.com/listen/feed/27154', 'broadcastify', 1002, true)
+            VALUES ('Indiana', 'IN', 'Fort Wayne', 'Fort Wayne County', 'Fort Wayne Police Dispatch', 'Primary dispatch channel for Fort Wayne Police Department.', 'https://www.broadcastify.com/listen/feed/3714', 'broadcastify', 1869, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Indiana', 'IN', 'Evansville', 'Evansville County', 'Evansville Police Dispatch', 'Primary dispatch channel for Evansville Police Department.', 'https://www.broadcastify.com/listen/feed/17717', 'broadcastify', 3129, true)
+            VALUES ('Indiana', 'IN', 'Evansville', 'Evansville County', 'Evansville Police Dispatch', 'Primary dispatch channel for Evansville Police Department.', 'https://www.broadcastify.com/listen/feed/32431', 'broadcastify', 3135, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Iowa', 'IA', 'Des Moines', 'Des Moines County', 'Des Moines Police Dispatch', 'Primary dispatch channel for Des Moines Police Department.', 'https://www.broadcastify.com/listen/feed/12713', 'broadcastify', 3223, true)
+            VALUES ('Iowa', 'IA', 'Des Moines', 'Des Moines County', 'Des Moines Police Dispatch', 'Primary dispatch channel for Des Moines Police Department.', 'https://www.broadcastify.com/listen/feed/13185', 'broadcastify', 1282, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Iowa', 'IA', 'Cedar Rapids', 'Cedar Rapids County', 'Cedar Rapids Police Dispatch', 'Primary dispatch channel for Cedar Rapids Police Department.', 'https://www.broadcastify.com/listen/feed/15346', 'broadcastify', 3560, true)
+            VALUES ('Iowa', 'IA', 'Cedar Rapids', 'Cedar Rapids County', 'Cedar Rapids Police Dispatch', 'Primary dispatch channel for Cedar Rapids Police Department.', 'https://www.broadcastify.com/listen/feed/16311', 'broadcastify', 839, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Iowa', 'IA', 'Davenport', 'Davenport County', 'Davenport Police Dispatch', 'Primary dispatch channel for Davenport Police Department.', 'https://www.broadcastify.com/listen/feed/26530', 'broadcastify', 3745, true)
+            VALUES ('Iowa', 'IA', 'Davenport', 'Davenport County', 'Davenport Police Dispatch', 'Primary dispatch channel for Davenport Police Department.', 'https://www.broadcastify.com/listen/feed/28102', 'broadcastify', 758, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Kansas', 'KS', 'Wichita', 'Wichita County', 'Wichita Police Dispatch', 'Primary dispatch channel for Wichita Police Department.', 'https://www.broadcastify.com/listen/feed/24417', 'broadcastify', 2715, true)
+            VALUES ('Kansas', 'KS', 'Wichita', 'Wichita County', 'Wichita Police Dispatch', 'Primary dispatch channel for Wichita Police Department.', 'https://www.broadcastify.com/listen/feed/7806', 'broadcastify', 4048, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Kansas', 'KS', 'Overland Park', 'Overland Park County', 'Overland Park Police Dispatch', 'Primary dispatch channel for Overland Park Police Department.', 'https://www.broadcastify.com/listen/feed/17898', 'broadcastify', 4120, true)
+            VALUES ('Kansas', 'KS', 'Overland Park', 'Overland Park County', 'Overland Park Police Dispatch', 'Primary dispatch channel for Overland Park Police Department.', 'https://www.broadcastify.com/listen/feed/3200', 'broadcastify', 3541, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Kansas', 'KS', 'Kansas City', 'Kansas City County', 'Kansas City Police Dispatch', 'Primary dispatch channel for Kansas City Police Department.', 'https://www.broadcastify.com/listen/feed/3399', 'broadcastify', 2269, true)
+            VALUES ('Kansas', 'KS', 'Kansas City', 'Kansas City County', 'Kansas City Police Dispatch', 'Primary dispatch channel for Kansas City Police Department.', 'https://www.broadcastify.com/listen/feed/18655', 'broadcastify', 1211, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Kentucky', 'KY', 'Louisville', 'Louisville County', 'Louisville Police Dispatch', 'Primary dispatch channel for Louisville Police Department.', 'https://www.broadcastify.com/listen/feed/16450', 'broadcastify', 1864, true)
+            VALUES ('Kentucky', 'KY', 'Louisville', 'Louisville County', 'Louisville Police Dispatch', 'Primary dispatch channel for Louisville Police Department.', 'https://www.broadcastify.com/listen/feed/18711', 'broadcastify', 242, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Kentucky', 'KY', 'Lexington', 'Lexington County', 'Lexington Police Dispatch', 'Primary dispatch channel for Lexington Police Department.', 'https://www.broadcastify.com/listen/feed/16439', 'broadcastify', 4451, true)
+            VALUES ('Kentucky', 'KY', 'Lexington', 'Lexington County', 'Lexington Police Dispatch', 'Primary dispatch channel for Lexington Police Department.', 'https://www.broadcastify.com/listen/feed/10897', 'broadcastify', 3959, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Kentucky', 'KY', 'Bowling Green', 'Bowling Green County', 'Bowling Green Police Dispatch', 'Primary dispatch channel for Bowling Green Police Department.', 'https://www.broadcastify.com/listen/feed/4115', 'broadcastify', 2873, true)
+            VALUES ('Kentucky', 'KY', 'Bowling Green', 'Bowling Green County', 'Bowling Green Police Dispatch', 'Primary dispatch channel for Bowling Green Police Department.', 'https://www.broadcastify.com/listen/feed/3281', 'broadcastify', 2347, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Louisiana', 'LA', 'New Orleans', 'New Orleans County', 'New Orleans Police Dispatch', 'Primary dispatch channel for New Orleans Police Department.', 'https://www.broadcastify.com/listen/feed/10475', 'broadcastify', 631, true)
+            VALUES ('Louisiana', 'LA', 'New Orleans', 'New Orleans County', 'New Orleans Police Dispatch', 'Primary dispatch channel for New Orleans Police Department.', 'https://www.broadcastify.com/listen/feed/30303', 'broadcastify', 1316, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Louisiana', 'LA', 'Baton Rouge', 'Baton Rouge County', 'Baton Rouge Police Dispatch', 'Primary dispatch channel for Baton Rouge Police Department.', 'https://www.broadcastify.com/listen/feed/13928', 'broadcastify', 1864, true)
+            VALUES ('Louisiana', 'LA', 'Baton Rouge', 'Baton Rouge County', 'Baton Rouge Police Dispatch', 'Primary dispatch channel for Baton Rouge Police Department.', 'https://www.broadcastify.com/listen/feed/13900', 'broadcastify', 973, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Louisiana', 'LA', 'Shreveport', 'Shreveport County', 'Shreveport Police Dispatch', 'Primary dispatch channel for Shreveport Police Department.', 'https://www.broadcastify.com/listen/feed/34903', 'broadcastify', 1710, true)
+            VALUES ('Louisiana', 'LA', 'Shreveport', 'Shreveport County', 'Shreveport Police Dispatch', 'Primary dispatch channel for Shreveport Police Department.', 'https://www.broadcastify.com/listen/feed/18918', 'broadcastify', 934, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Maine', 'ME', 'Portland', 'Portland County', 'Portland Police Dispatch', 'Primary dispatch channel for Portland Police Department.', 'https://www.broadcastify.com/listen/feed/20295', 'broadcastify', 4001, true)
+            VALUES ('Maine', 'ME', 'Portland', 'Portland County', 'Portland Police Dispatch', 'Primary dispatch channel for Portland Police Department.', 'https://www.broadcastify.com/listen/feed/16075', 'broadcastify', 3251, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Maine', 'ME', 'Lewiston', 'Lewiston County', 'Lewiston Police Dispatch', 'Primary dispatch channel for Lewiston Police Department.', 'https://www.broadcastify.com/listen/feed/32360', 'broadcastify', 710, true)
+            VALUES ('Maine', 'ME', 'Lewiston', 'Lewiston County', 'Lewiston Police Dispatch', 'Primary dispatch channel for Lewiston Police Department.', 'https://www.broadcastify.com/listen/feed/29107', 'broadcastify', 4328, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Maine', 'ME', 'Bangor', 'Bangor County', 'Bangor Police Dispatch', 'Primary dispatch channel for Bangor Police Department.', 'https://www.broadcastify.com/listen/feed/30487', 'broadcastify', 4216, true)
+            VALUES ('Maine', 'ME', 'Bangor', 'Bangor County', 'Bangor Police Dispatch', 'Primary dispatch channel for Bangor Police Department.', 'https://www.broadcastify.com/listen/feed/17933', 'broadcastify', 1886, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Maryland', 'MD', 'Baltimore', 'Baltimore County', 'Baltimore Police Dispatch', 'Primary dispatch channel for Baltimore Police Department.', 'https://www.broadcastify.com/listen/feed/14467', 'broadcastify', 1216, true)
+            VALUES ('Maryland', 'MD', 'Baltimore', 'Baltimore County', 'Baltimore Police Dispatch', 'Primary dispatch channel for Baltimore Police Department.', 'https://www.broadcastify.com/listen/feed/12449', 'broadcastify', 2648, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Maryland', 'MD', 'Annapolis', 'Annapolis County', 'Annapolis Police Dispatch', 'Primary dispatch channel for Annapolis Police Department.', 'https://www.broadcastify.com/listen/feed/9966', 'broadcastify', 816, true)
+            VALUES ('Maryland', 'MD', 'Annapolis', 'Annapolis County', 'Annapolis Police Dispatch', 'Primary dispatch channel for Annapolis Police Department.', 'https://www.broadcastify.com/listen/feed/14690', 'broadcastify', 1463, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Maryland', 'MD', NULL, 'Montgomery', 'Montgomery County Sheriff and Fire', 'Dispatch for Montgomery County Sheriff, Fire, and EMS.', 'https://www.broadcastify.com/listen/feed/10659', 'broadcastify', 3389, true)
+            VALUES ('Maryland', 'MD', NULL, 'Montgomery', 'Montgomery County Sheriff and Fire', 'Dispatch for Montgomery County Sheriff, Fire, and EMS.', 'https://www.broadcastify.com/listen/feed/9754', 'broadcastify', 4243, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Massachusetts', 'MA', 'Boston', 'Boston County', 'Boston Police Dispatch', 'Primary dispatch channel for Boston Police Department.', 'https://www.broadcastify.com/listen/feed/12517', 'broadcastify', 3943, true)
+            VALUES ('Massachusetts', 'MA', 'Boston', 'Boston County', 'Boston Police Dispatch', 'Primary dispatch channel for Boston Police Department.', 'https://www.broadcastify.com/listen/feed/8111', 'broadcastify', 81, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Massachusetts', 'MA', 'Worcester', 'Worcester County', 'Worcester Police Dispatch', 'Primary dispatch channel for Worcester Police Department.', 'https://www.broadcastify.com/listen/feed/9316', 'broadcastify', 2772, true)
+            VALUES ('Massachusetts', 'MA', 'Worcester', 'Worcester County', 'Worcester Police Dispatch', 'Primary dispatch channel for Worcester Police Department.', 'https://www.broadcastify.com/listen/feed/2545', 'broadcastify', 4850, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Massachusetts', 'MA', 'Springfield', 'Springfield County', 'Springfield Police Dispatch', 'Primary dispatch channel for Springfield Police Department.', 'https://www.broadcastify.com/listen/feed/10284', 'broadcastify', 1718, true)
+            VALUES ('Massachusetts', 'MA', 'Springfield', 'Springfield County', 'Springfield Police Dispatch', 'Primary dispatch channel for Springfield Police Department.', 'https://www.broadcastify.com/listen/feed/11429', 'broadcastify', 2972, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Michigan', 'MI', 'Detroit', 'Detroit County', 'Detroit Police Dispatch', 'Primary dispatch channel for Detroit Police Department.', 'https://www.broadcastify.com/listen/feed/17618', 'broadcastify', 954, true)
+            VALUES ('Michigan', 'MI', 'Detroit', 'Detroit County', 'Detroit Police Dispatch', 'Primary dispatch channel for Detroit Police Department.', 'https://www.broadcastify.com/listen/feed/6989', 'broadcastify', 4791, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Michigan', 'MI', 'Grand Rapids', 'Grand Rapids County', 'Grand Rapids Police Dispatch', 'Primary dispatch channel for Grand Rapids Police Department.', 'https://www.broadcastify.com/listen/feed/1124', 'broadcastify', 2311, true)
+            VALUES ('Michigan', 'MI', 'Grand Rapids', 'Grand Rapids County', 'Grand Rapids Police Dispatch', 'Primary dispatch channel for Grand Rapids Police Department.', 'https://www.broadcastify.com/listen/feed/24489', 'broadcastify', 3741, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Michigan', 'MI', 'Lansing', 'Lansing County', 'Lansing Police Dispatch', 'Primary dispatch channel for Lansing Police Department.', 'https://www.broadcastify.com/listen/feed/18729', 'broadcastify', 4489, true)
+            VALUES ('Michigan', 'MI', 'Lansing', 'Lansing County', 'Lansing Police Dispatch', 'Primary dispatch channel for Lansing Police Department.', 'https://www.broadcastify.com/listen/feed/30627', 'broadcastify', 4222, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Michigan', 'MI', NULL, 'Wayne', 'Wayne County Sheriff and Fire', 'Dispatch for Wayne County Sheriff, Fire, and EMS.', 'https://www.broadcastify.com/listen/feed/12859', 'broadcastify', 2075, true)
+            VALUES ('Michigan', 'MI', NULL, 'Wayne', 'Wayne County Sheriff and Fire', 'Dispatch for Wayne County Sheriff, Fire, and EMS.', 'https://www.broadcastify.com/listen/feed/14712', 'broadcastify', 330, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Minnesota', 'MN', 'Minneapolis', 'Minneapolis County', 'Minneapolis Police Dispatch', 'Primary dispatch channel for Minneapolis Police Department.', 'https://www.broadcastify.com/listen/feed/29571', 'broadcastify', 4739, true)
+            VALUES ('Minnesota', 'MN', 'Minneapolis', 'Minneapolis County', 'Minneapolis Police Dispatch', 'Primary dispatch channel for Minneapolis Police Department.', 'https://www.broadcastify.com/listen/feed/32524', 'broadcastify', 4117, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Minnesota', 'MN', 'St. Paul', 'St. Paul County', 'St. Paul Police Dispatch', 'Primary dispatch channel for St. Paul Police Department.', 'https://www.broadcastify.com/listen/feed/18453', 'broadcastify', 1347, true)
+            VALUES ('Minnesota', 'MN', 'St. Paul', 'St. Paul County', 'St. Paul Police Dispatch', 'Primary dispatch channel for St. Paul Police Department.', 'https://www.broadcastify.com/listen/feed/4681', 'broadcastify', 901, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Minnesota', 'MN', 'Rochester', 'Rochester County', 'Rochester Police Dispatch', 'Primary dispatch channel for Rochester Police Department.', 'https://www.broadcastify.com/listen/feed/18293', 'broadcastify', 1809, true)
+            VALUES ('Minnesota', 'MN', 'Rochester', 'Rochester County', 'Rochester Police Dispatch', 'Primary dispatch channel for Rochester Police Department.', 'https://www.broadcastify.com/listen/feed/31695', 'broadcastify', 866, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Mississippi', 'MS', 'Jackson', 'Jackson County', 'Jackson Police Dispatch', 'Primary dispatch channel for Jackson Police Department.', 'https://www.broadcastify.com/listen/feed/19425', 'broadcastify', 2912, true)
+            VALUES ('Mississippi', 'MS', 'Jackson', 'Jackson County', 'Jackson Police Dispatch', 'Primary dispatch channel for Jackson Police Department.', 'https://www.broadcastify.com/listen/feed/28910', 'broadcastify', 4126, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Mississippi', 'MS', 'Gulfport', 'Gulfport County', 'Gulfport Police Dispatch', 'Primary dispatch channel for Gulfport Police Department.', 'https://www.broadcastify.com/listen/feed/7907', 'broadcastify', 1291, true)
+            VALUES ('Mississippi', 'MS', 'Gulfport', 'Gulfport County', 'Gulfport Police Dispatch', 'Primary dispatch channel for Gulfport Police Department.', 'https://www.broadcastify.com/listen/feed/1702', 'broadcastify', 4014, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Mississippi', 'MS', 'Biloxi', 'Biloxi County', 'Biloxi Police Dispatch', 'Primary dispatch channel for Biloxi Police Department.', 'https://www.broadcastify.com/listen/feed/20365', 'broadcastify', 1953, true)
+            VALUES ('Mississippi', 'MS', 'Biloxi', 'Biloxi County', 'Biloxi Police Dispatch', 'Primary dispatch channel for Biloxi Police Department.', 'https://www.broadcastify.com/listen/feed/31628', 'broadcastify', 4701, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Missouri', 'MO', 'Kansas City', 'Kansas City County', 'Kansas City Police Dispatch', 'Primary dispatch channel for Kansas City Police Department.', 'https://www.broadcastify.com/listen/feed/1476', 'broadcastify', 1371, true)
+            VALUES ('Missouri', 'MO', 'Kansas City', 'Kansas City County', 'Kansas City Police Dispatch', 'Primary dispatch channel for Kansas City Police Department.', 'https://www.broadcastify.com/listen/feed/19291', 'broadcastify', 2813, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Missouri', 'MO', 'St. Louis', 'St. Louis County', 'St. Louis Police Dispatch', 'Primary dispatch channel for St. Louis Police Department.', 'https://www.broadcastify.com/listen/feed/1929', 'broadcastify', 1320, true)
+            VALUES ('Missouri', 'MO', 'St. Louis', 'St. Louis County', 'St. Louis Police Dispatch', 'Primary dispatch channel for St. Louis Police Department.', 'https://www.broadcastify.com/listen/feed/6786', 'broadcastify', 1496, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Missouri', 'MO', 'Springfield', 'Springfield County', 'Springfield Police Dispatch', 'Primary dispatch channel for Springfield Police Department.', 'https://www.broadcastify.com/listen/feed/31894', 'broadcastify', 335, true)
+            VALUES ('Missouri', 'MO', 'Springfield', 'Springfield County', 'Springfield Police Dispatch', 'Primary dispatch channel for Springfield Police Department.', 'https://www.broadcastify.com/listen/feed/34101', 'broadcastify', 4287, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Montana', 'MT', 'Billings', 'Billings County', 'Billings Police Dispatch', 'Primary dispatch channel for Billings Police Department.', 'https://www.broadcastify.com/listen/feed/28212', 'broadcastify', 3392, true)
+            VALUES ('Montana', 'MT', 'Billings', 'Billings County', 'Billings Police Dispatch', 'Primary dispatch channel for Billings Police Department.', 'https://www.broadcastify.com/listen/feed/28356', 'broadcastify', 2798, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Montana', 'MT', 'Missoula', 'Missoula County', 'Missoula Police Dispatch', 'Primary dispatch channel for Missoula Police Department.', 'https://www.broadcastify.com/listen/feed/17634', 'broadcastify', 1121, true)
+            VALUES ('Montana', 'MT', 'Missoula', 'Missoula County', 'Missoula Police Dispatch', 'Primary dispatch channel for Missoula Police Department.', 'https://www.broadcastify.com/listen/feed/22744', 'broadcastify', 194, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Montana', 'MT', 'Great Falls', 'Great Falls County', 'Great Falls Police Dispatch', 'Primary dispatch channel for Great Falls Police Department.', 'https://www.broadcastify.com/listen/feed/18218', 'broadcastify', 844, true)
+            VALUES ('Montana', 'MT', 'Great Falls', 'Great Falls County', 'Great Falls Police Dispatch', 'Primary dispatch channel for Great Falls Police Department.', 'https://www.broadcastify.com/listen/feed/3452', 'broadcastify', 2057, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Nebraska', 'NE', 'Omaha', 'Omaha County', 'Omaha Police Dispatch', 'Primary dispatch channel for Omaha Police Department.', 'https://www.broadcastify.com/listen/feed/7451', 'broadcastify', 3881, true)
+            VALUES ('Nebraska', 'NE', 'Omaha', 'Omaha County', 'Omaha Police Dispatch', 'Primary dispatch channel for Omaha Police Department.', 'https://www.broadcastify.com/listen/feed/31018', 'broadcastify', 4480, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Nebraska', 'NE', 'Lincoln', 'Lincoln County', 'Lincoln Police Dispatch', 'Primary dispatch channel for Lincoln Police Department.', 'https://www.broadcastify.com/listen/feed/18835', 'broadcastify', 4185, true)
+            VALUES ('Nebraska', 'NE', 'Lincoln', 'Lincoln County', 'Lincoln Police Dispatch', 'Primary dispatch channel for Lincoln Police Department.', 'https://www.broadcastify.com/listen/feed/9675', 'broadcastify', 4528, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Nebraska', 'NE', 'Bellevue', 'Bellevue County', 'Bellevue Police Dispatch', 'Primary dispatch channel for Bellevue Police Department.', 'https://www.broadcastify.com/listen/feed/9660', 'broadcastify', 2345, true)
+            VALUES ('Nebraska', 'NE', 'Bellevue', 'Bellevue County', 'Bellevue Police Dispatch', 'Primary dispatch channel for Bellevue Police Department.', 'https://www.broadcastify.com/listen/feed/5878', 'broadcastify', 296, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Nevada', 'NV', 'Las Vegas', 'Las Vegas County', 'Las Vegas Police Dispatch', 'Primary dispatch channel for Las Vegas Police Department.', 'https://www.broadcastify.com/listen/feed/27739', 'broadcastify', 3601, true)
+            VALUES ('Nevada', 'NV', 'Las Vegas', 'Las Vegas County', 'Las Vegas Police Dispatch', 'Primary dispatch channel for Las Vegas Police Department.', 'https://www.broadcastify.com/listen/feed/8555', 'broadcastify', 4673, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Nevada', 'NV', 'Reno', 'Reno County', 'Reno Police Dispatch', 'Primary dispatch channel for Reno Police Department.', 'https://www.broadcastify.com/listen/feed/20971', 'broadcastify', 4722, true)
+            VALUES ('Nevada', 'NV', 'Reno', 'Reno County', 'Reno Police Dispatch', 'Primary dispatch channel for Reno Police Department.', 'https://www.broadcastify.com/listen/feed/7250', 'broadcastify', 3627, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Nevada', 'NV', 'Henderson', 'Henderson County', 'Henderson Police Dispatch', 'Primary dispatch channel for Henderson Police Department.', 'https://www.broadcastify.com/listen/feed/30574', 'broadcastify', 3251, true)
+            VALUES ('Nevada', 'NV', 'Henderson', 'Henderson County', 'Henderson Police Dispatch', 'Primary dispatch channel for Henderson Police Department.', 'https://www.broadcastify.com/listen/feed/32441', 'broadcastify', 239, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Nevada', 'NV', NULL, 'Clark', 'Clark County Sheriff and Fire', 'Dispatch for Clark County Sheriff, Fire, and EMS.', 'https://www.broadcastify.com/listen/feed/17287', 'broadcastify', 638, true)
+            VALUES ('Nevada', 'NV', NULL, 'Clark', 'Clark County Sheriff and Fire', 'Dispatch for Clark County Sheriff, Fire, and EMS.', 'https://www.broadcastify.com/listen/feed/18554', 'broadcastify', 4241, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('New Hampshire', 'NH', 'Manchester', 'Manchester County', 'Manchester Police Dispatch', 'Primary dispatch channel for Manchester Police Department.', 'https://www.broadcastify.com/listen/feed/10835', 'broadcastify', 3859, true)
+            VALUES ('New Hampshire', 'NH', 'Manchester', 'Manchester County', 'Manchester Police Dispatch', 'Primary dispatch channel for Manchester Police Department.', 'https://www.broadcastify.com/listen/feed/30185', 'broadcastify', 1063, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('New Hampshire', 'NH', 'Nashua', 'Nashua County', 'Nashua Police Dispatch', 'Primary dispatch channel for Nashua Police Department.', 'https://www.broadcastify.com/listen/feed/18078', 'broadcastify', 4796, true)
+            VALUES ('New Hampshire', 'NH', 'Nashua', 'Nashua County', 'Nashua Police Dispatch', 'Primary dispatch channel for Nashua Police Department.', 'https://www.broadcastify.com/listen/feed/32190', 'broadcastify', 3550, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('New Hampshire', 'NH', 'Concord', 'Concord County', 'Concord Police Dispatch', 'Primary dispatch channel for Concord Police Department.', 'https://www.broadcastify.com/listen/feed/16238', 'broadcastify', 2507, true)
+            VALUES ('New Hampshire', 'NH', 'Concord', 'Concord County', 'Concord Police Dispatch', 'Primary dispatch channel for Concord Police Department.', 'https://www.broadcastify.com/listen/feed/20428', 'broadcastify', 3636, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('New Jersey', 'NJ', 'Newark', 'Newark County', 'Newark Police Dispatch', 'Primary dispatch channel for Newark Police Department.', 'https://www.broadcastify.com/listen/feed/31906', 'broadcastify', 1266, true)
+            VALUES ('New Jersey', 'NJ', 'Newark', 'Newark County', 'Newark Police Dispatch', 'Primary dispatch channel for Newark Police Department.', 'https://www.broadcastify.com/listen/feed/10702', 'broadcastify', 2049, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('New Jersey', 'NJ', 'Jersey City', 'Jersey City County', 'Jersey City Police Dispatch', 'Primary dispatch channel for Jersey City Police Department.', 'https://www.broadcastify.com/listen/feed/24157', 'broadcastify', 3273, true)
+            VALUES ('New Jersey', 'NJ', 'Jersey City', 'Jersey City County', 'Jersey City Police Dispatch', 'Primary dispatch channel for Jersey City Police Department.', 'https://www.broadcastify.com/listen/feed/18294', 'broadcastify', 2479, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('New Jersey', 'NJ', 'Paterson', 'Paterson County', 'Paterson Police Dispatch', 'Primary dispatch channel for Paterson Police Department.', 'https://www.broadcastify.com/listen/feed/1603', 'broadcastify', 4731, true)
+            VALUES ('New Jersey', 'NJ', 'Paterson', 'Paterson County', 'Paterson Police Dispatch', 'Primary dispatch channel for Paterson Police Department.', 'https://www.broadcastify.com/listen/feed/23724', 'broadcastify', 4985, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('New Jersey', 'NJ', 'Trenton', 'Trenton County', 'Trenton Police Dispatch', 'Primary dispatch channel for Trenton Police Department.', 'https://www.broadcastify.com/listen/feed/19705', 'broadcastify', 4396, true)
+            VALUES ('New Jersey', 'NJ', 'Trenton', 'Trenton County', 'Trenton Police Dispatch', 'Primary dispatch channel for Trenton Police Department.', 'https://www.broadcastify.com/listen/feed/10834', 'broadcastify', 296, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('New Mexico', 'NM', 'Albuquerque', 'Albuquerque County', 'Albuquerque Police Dispatch', 'Primary dispatch channel for Albuquerque Police Department.', 'https://www.broadcastify.com/listen/feed/8954', 'broadcastify', 2654, true)
+            VALUES ('New Mexico', 'NM', 'Albuquerque', 'Albuquerque County', 'Albuquerque Police Dispatch', 'Primary dispatch channel for Albuquerque Police Department.', 'https://www.broadcastify.com/listen/feed/33970', 'broadcastify', 181, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('New Mexico', 'NM', 'Las Cruces', 'Las Cruces County', 'Las Cruces Police Dispatch', 'Primary dispatch channel for Las Cruces Police Department.', 'https://www.broadcastify.com/listen/feed/27454', 'broadcastify', 3156, true)
+            VALUES ('New Mexico', 'NM', 'Las Cruces', 'Las Cruces County', 'Las Cruces Police Dispatch', 'Primary dispatch channel for Las Cruces Police Department.', 'https://www.broadcastify.com/listen/feed/27537', 'broadcastify', 1696, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('New Mexico', 'NM', 'Santa Fe', 'Santa Fe County', 'Santa Fe Police Dispatch', 'Primary dispatch channel for Santa Fe Police Department.', 'https://www.broadcastify.com/listen/feed/14055', 'broadcastify', 2945, true)
+            VALUES ('New Mexico', 'NM', 'Santa Fe', 'Santa Fe County', 'Santa Fe Police Dispatch', 'Primary dispatch channel for Santa Fe Police Department.', 'https://www.broadcastify.com/listen/feed/1576', 'broadcastify', 4233, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('New York', 'NY', 'New York City', 'New York City County', 'New York City Police Dispatch', 'Primary dispatch channel for New York City Police Department.', 'https://www.broadcastify.com/listen/feed/15241', 'broadcastify', 2784, true)
+            VALUES ('New York', 'NY', 'New York City', 'New York City County', 'New York City Police Dispatch', 'Primary dispatch channel for New York City Police Department.', 'https://www.broadcastify.com/listen/feed/2743', 'broadcastify', 2424, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('New York', 'NY', 'Buffalo', 'Buffalo County', 'Buffalo Police Dispatch', 'Primary dispatch channel for Buffalo Police Department.', 'https://www.broadcastify.com/listen/feed/18028', 'broadcastify', 3571, true)
+            VALUES ('New York', 'NY', 'Buffalo', 'Buffalo County', 'Buffalo Police Dispatch', 'Primary dispatch channel for Buffalo Police Department.', 'https://www.broadcastify.com/listen/feed/20511', 'broadcastify', 3501, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('New York', 'NY', 'Rochester', 'Rochester County', 'Rochester Police Dispatch', 'Primary dispatch channel for Rochester Police Department.', 'https://www.broadcastify.com/listen/feed/25540', 'broadcastify', 786, true)
+            VALUES ('New York', 'NY', 'Rochester', 'Rochester County', 'Rochester Police Dispatch', 'Primary dispatch channel for Rochester Police Department.', 'https://www.broadcastify.com/listen/feed/4796', 'broadcastify', 586, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('New York', 'NY', 'Albany', 'Albany County', 'Albany Police Dispatch', 'Primary dispatch channel for Albany Police Department.', 'https://www.broadcastify.com/listen/feed/5147', 'broadcastify', 241, true)
+            VALUES ('New York', 'NY', 'Albany', 'Albany County', 'Albany Police Dispatch', 'Primary dispatch channel for Albany Police Department.', 'https://www.broadcastify.com/listen/feed/19049', 'broadcastify', 1237, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('New York', 'NY', 'Syracuse', 'Syracuse County', 'Syracuse Police Dispatch', 'Primary dispatch channel for Syracuse Police Department.', 'https://www.broadcastify.com/listen/feed/11180', 'broadcastify', 95, true)
+            VALUES ('New York', 'NY', 'Syracuse', 'Syracuse County', 'Syracuse Police Dispatch', 'Primary dispatch channel for Syracuse Police Department.', 'https://www.broadcastify.com/listen/feed/2564', 'broadcastify', 4163, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('North Carolina', 'NC', 'Charlotte', 'Charlotte County', 'Charlotte Police Dispatch', 'Primary dispatch channel for Charlotte Police Department.', 'https://www.broadcastify.com/listen/feed/24451', 'broadcastify', 2226, true)
+            VALUES ('North Carolina', 'NC', 'Charlotte', 'Charlotte County', 'Charlotte Police Dispatch', 'Primary dispatch channel for Charlotte Police Department.', 'https://www.broadcastify.com/listen/feed/8892', 'broadcastify', 1910, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('North Carolina', 'NC', 'Raleigh', 'Raleigh County', 'Raleigh Police Dispatch', 'Primary dispatch channel for Raleigh Police Department.', 'https://www.broadcastify.com/listen/feed/30824', 'broadcastify', 3410, true)
+            VALUES ('North Carolina', 'NC', 'Raleigh', 'Raleigh County', 'Raleigh Police Dispatch', 'Primary dispatch channel for Raleigh Police Department.', 'https://www.broadcastify.com/listen/feed/17345', 'broadcastify', 4113, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('North Carolina', 'NC', 'Greensboro', 'Greensboro County', 'Greensboro Police Dispatch', 'Primary dispatch channel for Greensboro Police Department.', 'https://www.broadcastify.com/listen/feed/30835', 'broadcastify', 4320, true)
+            VALUES ('North Carolina', 'NC', 'Greensboro', 'Greensboro County', 'Greensboro Police Dispatch', 'Primary dispatch channel for Greensboro Police Department.', 'https://www.broadcastify.com/listen/feed/22247', 'broadcastify', 4417, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('North Carolina', 'NC', 'Durham', 'Durham County', 'Durham Police Dispatch', 'Primary dispatch channel for Durham Police Department.', 'https://www.broadcastify.com/listen/feed/15506', 'broadcastify', 322, true)
+            VALUES ('North Carolina', 'NC', 'Durham', 'Durham County', 'Durham Police Dispatch', 'Primary dispatch channel for Durham Police Department.', 'https://www.broadcastify.com/listen/feed/26431', 'broadcastify', 512, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('North Dakota', 'ND', 'Fargo', 'Fargo County', 'Fargo Police Dispatch', 'Primary dispatch channel for Fargo Police Department.', 'https://www.broadcastify.com/listen/feed/10658', 'broadcastify', 2173, true)
+            VALUES ('North Dakota', 'ND', 'Fargo', 'Fargo County', 'Fargo Police Dispatch', 'Primary dispatch channel for Fargo Police Department.', 'https://www.broadcastify.com/listen/feed/2787', 'broadcastify', 4476, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('North Dakota', 'ND', 'Bismarck', 'Bismarck County', 'Bismarck Police Dispatch', 'Primary dispatch channel for Bismarck Police Department.', 'https://www.broadcastify.com/listen/feed/30691', 'broadcastify', 966, true)
+            VALUES ('North Dakota', 'ND', 'Bismarck', 'Bismarck County', 'Bismarck Police Dispatch', 'Primary dispatch channel for Bismarck Police Department.', 'https://www.broadcastify.com/listen/feed/8937', 'broadcastify', 2948, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('North Dakota', 'ND', 'Grand Forks', 'Grand Forks County', 'Grand Forks Police Dispatch', 'Primary dispatch channel for Grand Forks Police Department.', 'https://www.broadcastify.com/listen/feed/19089', 'broadcastify', 3648, true)
+            VALUES ('North Dakota', 'ND', 'Grand Forks', 'Grand Forks County', 'Grand Forks Police Dispatch', 'Primary dispatch channel for Grand Forks Police Department.', 'https://www.broadcastify.com/listen/feed/10027', 'broadcastify', 880, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Ohio', 'OH', 'Columbus', 'Columbus County', 'Columbus Police Dispatch', 'Primary dispatch channel for Columbus Police Department.', 'https://www.broadcastify.com/listen/feed/29918', 'broadcastify', 774, true)
+            VALUES ('Ohio', 'OH', 'Columbus', 'Columbus County', 'Columbus Police Dispatch', 'Primary dispatch channel for Columbus Police Department.', 'https://www.broadcastify.com/listen/feed/34803', 'broadcastify', 3223, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Ohio', 'OH', 'Cleveland', 'Cleveland County', 'Cleveland Police Dispatch', 'Primary dispatch channel for Cleveland Police Department.', 'https://www.broadcastify.com/listen/feed/15771', 'broadcastify', 1825, true)
+            VALUES ('Ohio', 'OH', 'Cleveland', 'Cleveland County', 'Cleveland Police Dispatch', 'Primary dispatch channel for Cleveland Police Department.', 'https://www.broadcastify.com/listen/feed/27662', 'broadcastify', 3697, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Ohio', 'OH', 'Cincinnati', 'Cincinnati County', 'Cincinnati Police Dispatch', 'Primary dispatch channel for Cincinnati Police Department.', 'https://www.broadcastify.com/listen/feed/26003', 'broadcastify', 600, true)
+            VALUES ('Ohio', 'OH', 'Cincinnati', 'Cincinnati County', 'Cincinnati Police Dispatch', 'Primary dispatch channel for Cincinnati Police Department.', 'https://www.broadcastify.com/listen/feed/22270', 'broadcastify', 3597, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Ohio', 'OH', 'Toledo', 'Toledo County', 'Toledo Police Dispatch', 'Primary dispatch channel for Toledo Police Department.', 'https://www.broadcastify.com/listen/feed/21275', 'broadcastify', 4752, true)
+            VALUES ('Ohio', 'OH', 'Toledo', 'Toledo County', 'Toledo Police Dispatch', 'Primary dispatch channel for Toledo Police Department.', 'https://www.broadcastify.com/listen/feed/21898', 'broadcastify', 3791, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Oklahoma', 'OK', 'Oklahoma City', 'Oklahoma City County', 'Oklahoma City Police Dispatch', 'Primary dispatch channel for Oklahoma City Police Department.', 'https://www.broadcastify.com/listen/feed/2793', 'broadcastify', 4206, true)
+            VALUES ('Oklahoma', 'OK', 'Oklahoma City', 'Oklahoma City County', 'Oklahoma City Police Dispatch', 'Primary dispatch channel for Oklahoma City Police Department.', 'https://www.broadcastify.com/listen/feed/28683', 'broadcastify', 1535, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Oklahoma', 'OK', 'Tulsa', 'Tulsa County', 'Tulsa Police Dispatch', 'Primary dispatch channel for Tulsa Police Department.', 'https://www.broadcastify.com/listen/feed/3798', 'broadcastify', 2763, true)
+            VALUES ('Oklahoma', 'OK', 'Tulsa', 'Tulsa County', 'Tulsa Police Dispatch', 'Primary dispatch channel for Tulsa Police Department.', 'https://www.broadcastify.com/listen/feed/34608', 'broadcastify', 4289, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Oklahoma', 'OK', 'Norman', 'Norman County', 'Norman Police Dispatch', 'Primary dispatch channel for Norman Police Department.', 'https://www.broadcastify.com/listen/feed/2764', 'broadcastify', 2818, true)
+            VALUES ('Oklahoma', 'OK', 'Norman', 'Norman County', 'Norman Police Dispatch', 'Primary dispatch channel for Norman Police Department.', 'https://www.broadcastify.com/listen/feed/31623', 'broadcastify', 4009, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Oregon', 'OR', 'Portland', 'Portland County', 'Portland Police Dispatch', 'Primary dispatch channel for Portland Police Department.', 'https://www.broadcastify.com/listen/feed/20121', 'broadcastify', 2476, true)
+            VALUES ('Oregon', 'OR', 'Portland', 'Portland County', 'Portland Police Dispatch', 'Primary dispatch channel for Portland Police Department.', 'https://www.broadcastify.com/listen/feed/16679', 'broadcastify', 4989, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Oregon', 'OR', 'Salem', 'Salem County', 'Salem Police Dispatch', 'Primary dispatch channel for Salem Police Department.', 'https://www.broadcastify.com/listen/feed/30192', 'broadcastify', 2546, true)
+            VALUES ('Oregon', 'OR', 'Salem', 'Salem County', 'Salem Police Dispatch', 'Primary dispatch channel for Salem Police Department.', 'https://www.broadcastify.com/listen/feed/27365', 'broadcastify', 381, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Oregon', 'OR', 'Eugene', 'Eugene County', 'Eugene Police Dispatch', 'Primary dispatch channel for Eugene Police Department.', 'https://www.broadcastify.com/listen/feed/7883', 'broadcastify', 1234, true)
+            VALUES ('Oregon', 'OR', 'Eugene', 'Eugene County', 'Eugene Police Dispatch', 'Primary dispatch channel for Eugene Police Department.', 'https://www.broadcastify.com/listen/feed/26737', 'broadcastify', 4186, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Pennsylvania', 'PA', 'Philadelphia', 'Philadelphia County', 'Philadelphia Police Dispatch', 'Primary dispatch channel for Philadelphia Police Department.', 'https://www.broadcastify.com/listen/feed/30446', 'broadcastify', 643, true)
+            VALUES ('Pennsylvania', 'PA', 'Philadelphia', 'Philadelphia County', 'Philadelphia Police Dispatch', 'Primary dispatch channel for Philadelphia Police Department.', 'https://www.broadcastify.com/listen/feed/4584', 'broadcastify', 3274, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Pennsylvania', 'PA', 'Pittsburgh', 'Pittsburgh County', 'Pittsburgh Police Dispatch', 'Primary dispatch channel for Pittsburgh Police Department.', 'https://www.broadcastify.com/listen/feed/28140', 'broadcastify', 3772, true)
+            VALUES ('Pennsylvania', 'PA', 'Pittsburgh', 'Pittsburgh County', 'Pittsburgh Police Dispatch', 'Primary dispatch channel for Pittsburgh Police Department.', 'https://www.broadcastify.com/listen/feed/12419', 'broadcastify', 3674, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Pennsylvania', 'PA', 'Allentown', 'Allentown County', 'Allentown Police Dispatch', 'Primary dispatch channel for Allentown Police Department.', 'https://www.broadcastify.com/listen/feed/21040', 'broadcastify', 2178, true)
+            VALUES ('Pennsylvania', 'PA', 'Allentown', 'Allentown County', 'Allentown Police Dispatch', 'Primary dispatch channel for Allentown Police Department.', 'https://www.broadcastify.com/listen/feed/24421', 'broadcastify', 3181, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Pennsylvania', 'PA', 'Harrisburg', 'Harrisburg County', 'Harrisburg Police Dispatch', 'Primary dispatch channel for Harrisburg Police Department.', 'https://www.broadcastify.com/listen/feed/9240', 'broadcastify', 51, true)
+            VALUES ('Pennsylvania', 'PA', 'Harrisburg', 'Harrisburg County', 'Harrisburg Police Dispatch', 'Primary dispatch channel for Harrisburg Police Department.', 'https://www.broadcastify.com/listen/feed/4351', 'broadcastify', 50, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Rhode Island', 'RI', 'Providence', 'Providence County', 'Providence Police Dispatch', 'Primary dispatch channel for Providence Police Department.', 'https://www.broadcastify.com/listen/feed/12895', 'broadcastify', 2611, true)
+            VALUES ('Rhode Island', 'RI', 'Providence', 'Providence County', 'Providence Police Dispatch', 'Primary dispatch channel for Providence Police Department.', 'https://www.broadcastify.com/listen/feed/14190', 'broadcastify', 1368, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Rhode Island', 'RI', 'Warwick', 'Warwick County', 'Warwick Police Dispatch', 'Primary dispatch channel for Warwick Police Department.', 'https://www.broadcastify.com/listen/feed/32205', 'broadcastify', 3369, true)
+            VALUES ('Rhode Island', 'RI', 'Warwick', 'Warwick County', 'Warwick Police Dispatch', 'Primary dispatch channel for Warwick Police Department.', 'https://www.broadcastify.com/listen/feed/22483', 'broadcastify', 4406, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Rhode Island', 'RI', 'Cranston', 'Cranston County', 'Cranston Police Dispatch', 'Primary dispatch channel for Cranston Police Department.', 'https://www.broadcastify.com/listen/feed/6538', 'broadcastify', 4230, true)
+            VALUES ('Rhode Island', 'RI', 'Cranston', 'Cranston County', 'Cranston Police Dispatch', 'Primary dispatch channel for Cranston Police Department.', 'https://www.broadcastify.com/listen/feed/31073', 'broadcastify', 3046, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('South Carolina', 'SC', 'Charleston', 'Charleston County', 'Charleston Police Dispatch', 'Primary dispatch channel for Charleston Police Department.', 'https://www.broadcastify.com/listen/feed/30090', 'broadcastify', 1774, true)
+            VALUES ('South Carolina', 'SC', 'Charleston', 'Charleston County', 'Charleston Police Dispatch', 'Primary dispatch channel for Charleston Police Department.', 'https://www.broadcastify.com/listen/feed/17164', 'broadcastify', 3541, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('South Carolina', 'SC', 'Columbia', 'Columbia County', 'Columbia Police Dispatch', 'Primary dispatch channel for Columbia Police Department.', 'https://www.broadcastify.com/listen/feed/29141', 'broadcastify', 4511, true)
+            VALUES ('South Carolina', 'SC', 'Columbia', 'Columbia County', 'Columbia Police Dispatch', 'Primary dispatch channel for Columbia Police Department.', 'https://www.broadcastify.com/listen/feed/16687', 'broadcastify', 3821, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('South Carolina', 'SC', 'Greenville', 'Greenville County', 'Greenville Police Dispatch', 'Primary dispatch channel for Greenville Police Department.', 'https://www.broadcastify.com/listen/feed/22802', 'broadcastify', 3274, true)
+            VALUES ('South Carolina', 'SC', 'Greenville', 'Greenville County', 'Greenville Police Dispatch', 'Primary dispatch channel for Greenville Police Department.', 'https://www.broadcastify.com/listen/feed/30589', 'broadcastify', 3368, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('South Dakota', 'SD', 'Sioux Falls', 'Sioux Falls County', 'Sioux Falls Police Dispatch', 'Primary dispatch channel for Sioux Falls Police Department.', 'https://www.broadcastify.com/listen/feed/6257', 'broadcastify', 615, true)
+            VALUES ('South Dakota', 'SD', 'Sioux Falls', 'Sioux Falls County', 'Sioux Falls Police Dispatch', 'Primary dispatch channel for Sioux Falls Police Department.', 'https://www.broadcastify.com/listen/feed/29484', 'broadcastify', 3729, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('South Dakota', 'SD', 'Rapid City', 'Rapid City County', 'Rapid City Police Dispatch', 'Primary dispatch channel for Rapid City Police Department.', 'https://www.broadcastify.com/listen/feed/33188', 'broadcastify', 2855, true)
+            VALUES ('South Dakota', 'SD', 'Rapid City', 'Rapid City County', 'Rapid City Police Dispatch', 'Primary dispatch channel for Rapid City Police Department.', 'https://www.broadcastify.com/listen/feed/16012', 'broadcastify', 630, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('South Dakota', 'SD', 'Aberdeen', 'Aberdeen County', 'Aberdeen Police Dispatch', 'Primary dispatch channel for Aberdeen Police Department.', 'https://www.broadcastify.com/listen/feed/30776', 'broadcastify', 3919, true)
+            VALUES ('South Dakota', 'SD', 'Aberdeen', 'Aberdeen County', 'Aberdeen Police Dispatch', 'Primary dispatch channel for Aberdeen Police Department.', 'https://www.broadcastify.com/listen/feed/14170', 'broadcastify', 4139, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Tennessee', 'TN', 'Nashville', 'Nashville County', 'Nashville Police Dispatch', 'Primary dispatch channel for Nashville Police Department.', 'https://www.broadcastify.com/listen/feed/8038', 'broadcastify', 2376, true)
+            VALUES ('Tennessee', 'TN', 'Nashville', 'Nashville County', 'Nashville Police Dispatch', 'Primary dispatch channel for Nashville Police Department.', 'https://www.broadcastify.com/listen/feed/25756', 'broadcastify', 1428, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Tennessee', 'TN', 'Memphis', 'Memphis County', 'Memphis Police Dispatch', 'Primary dispatch channel for Memphis Police Department.', 'https://www.broadcastify.com/listen/feed/34401', 'broadcastify', 2664, true)
+            VALUES ('Tennessee', 'TN', 'Memphis', 'Memphis County', 'Memphis Police Dispatch', 'Primary dispatch channel for Memphis Police Department.', 'https://www.broadcastify.com/listen/feed/28265', 'broadcastify', 49, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Tennessee', 'TN', 'Knoxville', 'Knoxville County', 'Knoxville Police Dispatch', 'Primary dispatch channel for Knoxville Police Department.', 'https://www.broadcastify.com/listen/feed/30919', 'broadcastify', 933, true)
+            VALUES ('Tennessee', 'TN', 'Knoxville', 'Knoxville County', 'Knoxville Police Dispatch', 'Primary dispatch channel for Knoxville Police Department.', 'https://www.broadcastify.com/listen/feed/22104', 'broadcastify', 4660, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Tennessee', 'TN', 'Chattanooga', 'Chattanooga County', 'Chattanooga Police Dispatch', 'Primary dispatch channel for Chattanooga Police Department.', 'https://www.broadcastify.com/listen/feed/33575', 'broadcastify', 336, true)
+            VALUES ('Tennessee', 'TN', 'Chattanooga', 'Chattanooga County', 'Chattanooga Police Dispatch', 'Primary dispatch channel for Chattanooga Police Department.', 'https://www.broadcastify.com/listen/feed/20858', 'broadcastify', 2744, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Texas', 'TX', 'Houston', 'Houston County', 'Houston Police Dispatch', 'Primary dispatch channel for Houston Police Department.', 'https://www.broadcastify.com/listen/feed/19043', 'broadcastify', 4231, true)
+            VALUES ('Texas', 'TX', 'Houston', 'Houston County', 'Houston Police Dispatch', 'Primary dispatch channel for Houston Police Department.', 'https://www.broadcastify.com/listen/feed/22242', 'broadcastify', 3163, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Texas', 'TX', 'San Antonio', 'San Antonio County', 'San Antonio Police Dispatch', 'Primary dispatch channel for San Antonio Police Department.', 'https://www.broadcastify.com/listen/feed/20624', 'broadcastify', 730, true)
+            VALUES ('Texas', 'TX', 'San Antonio', 'San Antonio County', 'San Antonio Police Dispatch', 'Primary dispatch channel for San Antonio Police Department.', 'https://www.broadcastify.com/listen/feed/10264', 'broadcastify', 1424, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Texas', 'TX', 'Dallas', 'Dallas County', 'Dallas Police Dispatch', 'Primary dispatch channel for Dallas Police Department.', 'https://www.broadcastify.com/listen/feed/7656', 'broadcastify', 3163, true)
+            VALUES ('Texas', 'TX', 'Dallas', 'Dallas County', 'Dallas Police Dispatch', 'Primary dispatch channel for Dallas Police Department.', 'https://www.broadcastify.com/listen/feed/25257', 'broadcastify', 1682, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Texas', 'TX', 'Austin', 'Austin County', 'Austin Police Dispatch', 'Primary dispatch channel for Austin Police Department.', 'https://www.broadcastify.com/listen/feed/5287', 'broadcastify', 3352, true)
+            VALUES ('Texas', 'TX', 'Austin', 'Austin County', 'Austin Police Dispatch', 'Primary dispatch channel for Austin Police Department.', 'https://www.broadcastify.com/listen/feed/20277', 'broadcastify', 916, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Texas', 'TX', 'Fort Worth', 'Fort Worth County', 'Fort Worth Police Dispatch', 'Primary dispatch channel for Fort Worth Police Department.', 'https://www.broadcastify.com/listen/feed/1498', 'broadcastify', 2679, true)
+            VALUES ('Texas', 'TX', 'Fort Worth', 'Fort Worth County', 'Fort Worth Police Dispatch', 'Primary dispatch channel for Fort Worth Police Department.', 'https://www.broadcastify.com/listen/feed/17883', 'broadcastify', 2513, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Texas', 'TX', 'El Paso', 'El Paso County', 'El Paso Police Dispatch', 'Primary dispatch channel for El Paso Police Department.', 'https://www.broadcastify.com/listen/feed/16612', 'broadcastify', 3008, true)
+            VALUES ('Texas', 'TX', 'El Paso', 'El Paso County', 'El Paso Police Dispatch', 'Primary dispatch channel for El Paso Police Department.', 'https://www.broadcastify.com/listen/feed/23145', 'broadcastify', 924, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Utah', 'UT', 'Salt Lake City', 'Salt Lake City County', 'Salt Lake City Police Dispatch', 'Primary dispatch channel for Salt Lake City Police Department.', 'https://www.broadcastify.com/listen/feed/25930', 'broadcastify', 2429, true)
+            VALUES ('Utah', 'UT', 'Salt Lake City', 'Salt Lake City County', 'Salt Lake City Police Dispatch', 'Primary dispatch channel for Salt Lake City Police Department.', 'https://www.broadcastify.com/listen/feed/1067', 'broadcastify', 4117, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Utah', 'UT', 'West Valley City', 'West Valley City County', 'West Valley City Police Dispatch', 'Primary dispatch channel for West Valley City Police Department.', 'https://www.broadcastify.com/listen/feed/27275', 'broadcastify', 3741, true)
+            VALUES ('Utah', 'UT', 'West Valley City', 'West Valley City County', 'West Valley City Police Dispatch', 'Primary dispatch channel for West Valley City Police Department.', 'https://www.broadcastify.com/listen/feed/5262', 'broadcastify', 1600, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Utah', 'UT', 'Provo', 'Provo County', 'Provo Police Dispatch', 'Primary dispatch channel for Provo Police Department.', 'https://www.broadcastify.com/listen/feed/13424', 'broadcastify', 1788, true)
+            VALUES ('Utah', 'UT', 'Provo', 'Provo County', 'Provo Police Dispatch', 'Primary dispatch channel for Provo Police Department.', 'https://www.broadcastify.com/listen/feed/23302', 'broadcastify', 2801, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Vermont', 'VT', 'Burlington', 'Burlington County', 'Burlington Police Dispatch', 'Primary dispatch channel for Burlington Police Department.', 'https://www.broadcastify.com/listen/feed/10412', 'broadcastify', 4574, true)
+            VALUES ('Vermont', 'VT', 'Burlington', 'Burlington County', 'Burlington Police Dispatch', 'Primary dispatch channel for Burlington Police Department.', 'https://www.broadcastify.com/listen/feed/31187', 'broadcastify', 801, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Vermont', 'VT', 'South Burlington', 'South Burlington County', 'South Burlington Police Dispatch', 'Primary dispatch channel for South Burlington Police Department.', 'https://www.broadcastify.com/listen/feed/27533', 'broadcastify', 3342, true)
+            VALUES ('Vermont', 'VT', 'South Burlington', 'South Burlington County', 'South Burlington Police Dispatch', 'Primary dispatch channel for South Burlington Police Department.', 'https://www.broadcastify.com/listen/feed/3265', 'broadcastify', 3201, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Vermont', 'VT', 'Rutland', 'Rutland County', 'Rutland Police Dispatch', 'Primary dispatch channel for Rutland Police Department.', 'https://www.broadcastify.com/listen/feed/23834', 'broadcastify', 3218, true)
+            VALUES ('Vermont', 'VT', 'Rutland', 'Rutland County', 'Rutland Police Dispatch', 'Primary dispatch channel for Rutland Police Department.', 'https://www.broadcastify.com/listen/feed/24489', 'broadcastify', 4627, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Virginia', 'VA', 'Virginia Beach', 'Virginia Beach County', 'Virginia Beach Police Dispatch', 'Primary dispatch channel for Virginia Beach Police Department.', 'https://www.broadcastify.com/listen/feed/17159', 'broadcastify', 485, true)
+            VALUES ('Virginia', 'VA', 'Virginia Beach', 'Virginia Beach County', 'Virginia Beach Police Dispatch', 'Primary dispatch channel for Virginia Beach Police Department.', 'https://www.broadcastify.com/listen/feed/2882', 'broadcastify', 4953, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Virginia', 'VA', 'Norfolk', 'Norfolk County', 'Norfolk Police Dispatch', 'Primary dispatch channel for Norfolk Police Department.', 'https://www.broadcastify.com/listen/feed/17048', 'broadcastify', 4099, true)
+            VALUES ('Virginia', 'VA', 'Norfolk', 'Norfolk County', 'Norfolk Police Dispatch', 'Primary dispatch channel for Norfolk Police Department.', 'https://www.broadcastify.com/listen/feed/33235', 'broadcastify', 4706, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Virginia', 'VA', 'Richmond', 'Richmond County', 'Richmond Police Dispatch', 'Primary dispatch channel for Richmond Police Department.', 'https://www.broadcastify.com/listen/feed/5527', 'broadcastify', 2872, true)
+            VALUES ('Virginia', 'VA', 'Richmond', 'Richmond County', 'Richmond Police Dispatch', 'Primary dispatch channel for Richmond Police Department.', 'https://www.broadcastify.com/listen/feed/26181', 'broadcastify', 1443, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Virginia', 'VA', NULL, 'Fairfax', 'Fairfax County Sheriff and Fire', 'Dispatch for Fairfax County Sheriff, Fire, and EMS.', 'https://www.broadcastify.com/listen/feed/11890', 'broadcastify', 4797, true)
+            VALUES ('Virginia', 'VA', NULL, 'Fairfax', 'Fairfax County Sheriff and Fire', 'Dispatch for Fairfax County Sheriff, Fire, and EMS.', 'https://www.broadcastify.com/listen/feed/22057', 'broadcastify', 1462, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Washington', 'WA', 'Seattle', 'Seattle County', 'Seattle Police Dispatch', 'Primary dispatch channel for Seattle Police Department.', 'https://www.broadcastify.com/listen/feed/21907', 'broadcastify', 4078, true)
+            VALUES ('Washington', 'WA', 'Seattle', 'Seattle County', 'Seattle Police Dispatch', 'Primary dispatch channel for Seattle Police Department.', 'https://www.broadcastify.com/listen/feed/22855', 'broadcastify', 69, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Washington', 'WA', 'Spokane', 'Spokane County', 'Spokane Police Dispatch', 'Primary dispatch channel for Spokane Police Department.', 'https://www.broadcastify.com/listen/feed/18434', 'broadcastify', 1176, true)
+            VALUES ('Washington', 'WA', 'Spokane', 'Spokane County', 'Spokane Police Dispatch', 'Primary dispatch channel for Spokane Police Department.', 'https://www.broadcastify.com/listen/feed/10107', 'broadcastify', 1969, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Washington', 'WA', 'Tacoma', 'Tacoma County', 'Tacoma Police Dispatch', 'Primary dispatch channel for Tacoma Police Department.', 'https://www.broadcastify.com/listen/feed/34239', 'broadcastify', 3928, true)
+            VALUES ('Washington', 'WA', 'Tacoma', 'Tacoma County', 'Tacoma Police Dispatch', 'Primary dispatch channel for Tacoma Police Department.', 'https://www.broadcastify.com/listen/feed/8429', 'broadcastify', 4693, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Washington', 'WA', NULL, 'King', 'King County Sheriff and Fire', 'Dispatch for King County Sheriff, Fire, and EMS.', 'https://www.broadcastify.com/listen/feed/21658', 'broadcastify', 2364, true)
+            VALUES ('Washington', 'WA', NULL, 'King', 'King County Sheriff and Fire', 'Dispatch for King County Sheriff, Fire, and EMS.', 'https://www.broadcastify.com/listen/feed/33944', 'broadcastify', 2348, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('West Virginia', 'WV', 'Charleston', 'Charleston County', 'Charleston Police Dispatch', 'Primary dispatch channel for Charleston Police Department.', 'https://www.broadcastify.com/listen/feed/16343', 'broadcastify', 564, true)
+            VALUES ('West Virginia', 'WV', 'Charleston', 'Charleston County', 'Charleston Police Dispatch', 'Primary dispatch channel for Charleston Police Department.', 'https://www.broadcastify.com/listen/feed/31150', 'broadcastify', 4215, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('West Virginia', 'WV', 'Huntington', 'Huntington County', 'Huntington Police Dispatch', 'Primary dispatch channel for Huntington Police Department.', 'https://www.broadcastify.com/listen/feed/21403', 'broadcastify', 4348, true)
+            VALUES ('West Virginia', 'WV', 'Huntington', 'Huntington County', 'Huntington Police Dispatch', 'Primary dispatch channel for Huntington Police Department.', 'https://www.broadcastify.com/listen/feed/18591', 'broadcastify', 42, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('West Virginia', 'WV', 'Morgantown', 'Morgantown County', 'Morgantown Police Dispatch', 'Primary dispatch channel for Morgantown Police Department.', 'https://www.broadcastify.com/listen/feed/14755', 'broadcastify', 4654, true)
+            VALUES ('West Virginia', 'WV', 'Morgantown', 'Morgantown County', 'Morgantown Police Dispatch', 'Primary dispatch channel for Morgantown Police Department.', 'https://www.broadcastify.com/listen/feed/4022', 'broadcastify', 3957, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Wisconsin', 'WI', 'Milwaukee', 'Milwaukee County', 'Milwaukee Police Dispatch', 'Primary dispatch channel for Milwaukee Police Department.', 'https://www.broadcastify.com/listen/feed/19982', 'broadcastify', 2775, true)
+            VALUES ('Wisconsin', 'WI', 'Milwaukee', 'Milwaukee County', 'Milwaukee Police Dispatch', 'Primary dispatch channel for Milwaukee Police Department.', 'https://www.broadcastify.com/listen/feed/6868', 'broadcastify', 1648, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Wisconsin', 'WI', 'Madison', 'Madison County', 'Madison Police Dispatch', 'Primary dispatch channel for Madison Police Department.', 'https://www.broadcastify.com/listen/feed/31815', 'broadcastify', 4424, true)
+            VALUES ('Wisconsin', 'WI', 'Madison', 'Madison County', 'Madison Police Dispatch', 'Primary dispatch channel for Madison Police Department.', 'https://www.broadcastify.com/listen/feed/2495', 'broadcastify', 4303, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Wisconsin', 'WI', 'Green Bay', 'Green Bay County', 'Green Bay Police Dispatch', 'Primary dispatch channel for Green Bay Police Department.', 'https://www.broadcastify.com/listen/feed/7720', 'broadcastify', 4041, true)
+            VALUES ('Wisconsin', 'WI', 'Green Bay', 'Green Bay County', 'Green Bay Police Dispatch', 'Primary dispatch channel for Green Bay Police Department.', 'https://www.broadcastify.com/listen/feed/25393', 'broadcastify', 1648, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Wyoming', 'WY', 'Cheyenne', 'Cheyenne County', 'Cheyenne Police Dispatch', 'Primary dispatch channel for Cheyenne Police Department.', 'https://www.broadcastify.com/listen/feed/9879', 'broadcastify', 72, true)
+            VALUES ('Wyoming', 'WY', 'Cheyenne', 'Cheyenne County', 'Cheyenne Police Dispatch', 'Primary dispatch channel for Cheyenne Police Department.', 'https://www.broadcastify.com/listen/feed/14996', 'broadcastify', 4721, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Wyoming', 'WY', 'Casper', 'Casper County', 'Casper Police Dispatch', 'Primary dispatch channel for Casper Police Department.', 'https://www.broadcastify.com/listen/feed/22568', 'broadcastify', 4925, true)
+            VALUES ('Wyoming', 'WY', 'Casper', 'Casper County', 'Casper Police Dispatch', 'Primary dispatch channel for Casper Police Department.', 'https://www.broadcastify.com/listen/feed/17346', 'broadcastify', 3103, true)
             ON CONFLICT DO NOTHING;
             
 
             INSERT INTO public.scanner_links (state, state_code, city, county, scanner_name, description, broadcastify_url, link_type, listener_count, is_active)
-            VALUES ('Wyoming', 'WY', 'Laramie', 'Laramie County', 'Laramie Police Dispatch', 'Primary dispatch channel for Laramie Police Department.', 'https://www.broadcastify.com/listen/feed/5716', 'broadcastify', 2733, true)
+            VALUES ('Wyoming', 'WY', 'Laramie', 'Laramie County', 'Laramie Police Dispatch', 'Primary dispatch channel for Laramie Police Department.', 'https://www.broadcastify.com/listen/feed/16976', 'broadcastify', 2583, true)
             ON CONFLICT DO NOTHING;
             
 

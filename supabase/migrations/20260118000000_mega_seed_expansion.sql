@@ -4,2505 +4,2505 @@
 -- 1. ATTORNEYS
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Gregory Robinson', 'Law Offices of Gregory Robinson', 'Texas', 'San Antonio', ARRAY['First Amendment', 'Employment Discrimination'], ARRAY['Illegal Search', 'Racial Profiling', 'Police Brutality'], '379-369-1131', 'info@robinsonlaw.com', 'https://www.robinsongregorylaw.com', false, 'TE-80761', 6)
+        VALUES ('Ronald Nelson', 'Law Offices of Ronald Nelson', 'Missouri', 'Kansas City', ARRAY['Prisoners'' Rights'], ARRAY['Excessive Force', 'Police Brutality', 'Qualified Immunity'], '422-807-4027', 'info@nelsonlaw.com', 'https://www.nelsonronaldlaw.com', true, 'MI-80126', 22)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Barbara Anderson', 'Law Offices of Barbara Anderson', 'Massachusetts', 'Boston', ARRAY['Employment Discrimination', 'Voting Rights'], ARRAY['Qualified Immunity'], '914-806-1217', 'info@andersonlaw.com', 'https://www.andersonbarbaralaw.com', true, 'MA-28419', 21)
+        VALUES ('Eric Thomas', 'Law Offices of Eric Thomas', 'Ohio', 'Columbus', ARRAY['Constitutional Law', 'Wrongful Conviction', 'Civil Rights'], ARRAY['Section 1983'], '917-844-1862', 'info@thomaslaw.com', 'https://www.thomasericlaw.com', false, 'OH-52653', 17)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Raymond Young', 'Law Offices of Raymond Young', 'Arkansas', 'Little Rock', ARRAY['Voting Rights'], ARRAY['Protest Defense'], '944-632-3178', 'info@younglaw.com', 'https://www.youngraymondlaw.com', false, 'AR-19045', 27)
+        VALUES ('Richard Hill', 'Law Offices of Richard Hill', 'Missouri', 'Kansas City', ARRAY['Police Misconduct'], ARRAY['False Arrest'], '794-385-1060', 'info@hilllaw.com', 'https://www.hillrichardlaw.com', true, 'MI-91956', 8)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Donald Lopez', 'Law Offices of Donald Lopez', 'Tennessee', 'Memphis', ARRAY['Employment Discrimination'], ARRAY['Qualified Immunity', 'Protest Defense', 'Section 1983'], '755-435-6074', 'info@lopezlaw.com', 'https://www.lopezdonaldlaw.com', false, 'TE-92065', 24)
+        VALUES ('Frank Williams', 'Law Offices of Frank Williams', 'North Carolina', 'Greensboro', ARRAY['Constitutional Law', 'Police Misconduct', 'First Amendment'], ARRAY['Section 1983', 'Qualified Immunity'], '612-583-6499', 'info@williamslaw.com', 'https://www.williamsfranklaw.com', true, 'NO-62732', 33)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Ronald Thompson', 'Law Offices of Ronald Thompson', 'Mississippi', 'Southaven', ARRAY['Employment Discrimination', 'First Amendment', 'Wrongful Conviction'], ARRAY['Racial Profiling', 'Section 1983'], '846-447-4248', 'info@thompsonlaw.com', 'https://www.thompsonronaldlaw.com', true, 'MI-58276', 5)
+        VALUES ('Kenneth Parker', 'Law Offices of Kenneth Parker', 'Kansas', 'Wichita', ARRAY['Employment Discrimination'], ARRAY['Excessive Force', 'Police Brutality', 'Section 1983'], '797-386-3863', 'info@parkerlaw.com', 'https://www.parkerkennethlaw.com', true, 'KA-48610', 40)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Harold Brown', 'Law Offices of Harold Brown', 'Nevada', 'Reno', ARRAY['Wrongful Conviction', 'Prisoners' Rights', 'Police Misconduct'], ARRAY['Racial Profiling'], '878-674-4715', 'info@brownlaw.com', 'https://www.brownharoldlaw.com', true, 'NE-37533', 13)
+        VALUES ('Timothy Hall', 'Law Offices of Timothy Hall', 'West Virginia', 'Huntington', ARRAY['Prisoners'' Rights'], ARRAY['Excessive Force', 'Protest Defense', 'Qualified Immunity'], '203-464-7306', 'info@halllaw.com', 'https://www.halltimothylaw.com', true, 'WE-58492', 17)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Timothy Martin', 'Law Offices of Timothy Martin', 'South Carolina', 'Columbia', ARRAY['Voting Rights', 'Prisoners' Rights'], ARRAY['Police Brutality', 'Illegal Search'], '575-976-7124', 'info@martinlaw.com', 'https://www.martintimothylaw.com', false, 'SO-67026', 16)
+        VALUES ('Timothy Mitchell', 'Law Offices of Timothy Mitchell', 'New York', 'New York City', ARRAY['Civil Rights', 'Employment Discrimination', 'Police Misconduct'], ARRAY['Illegal Search', 'Police Brutality'], '233-623-4364', 'info@mitchelllaw.com', 'https://www.mitchelltimothylaw.com', true, 'NE-36197', 35)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('William Miller', 'Law Offices of William Miller', 'Arkansas', 'Fort Smith', ARRAY['Constitutional Law'], ARRAY['Section 1983'], '832-229-6279', 'info@millerlaw.com', 'https://www.millerwilliamlaw.com', true, 'AR-74468', 23)
+        VALUES ('Stephen Lee', 'Law Offices of Stephen Lee', 'Colorado', 'Denver', ARRAY['Housing Discrimination'], ARRAY['Section 1983'], '648-785-2018', 'info@leelaw.com', 'https://www.leestephenlaw.com', false, 'CO-29471', 27)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Edward Roberts', 'Law Offices of Edward Roberts', 'South Dakota', 'Sioux Falls', ARRAY['Constitutional Law', 'Wrongful Conviction', 'Police Misconduct'], ARRAY['Section 1983'], '214-956-3102', 'info@robertslaw.com', 'https://www.robertsedwardlaw.com', false, 'SO-97408', 33)
+        VALUES ('Paul Turner', 'Law Offices of Paul Turner', 'Michigan', 'Detroit', ARRAY['Voting Rights', 'Housing Discrimination'], ARRAY['Police Brutality', 'False Arrest', 'Excessive Force'], '261-321-7627', 'info@turnerlaw.com', 'https://www.turnerpaullaw.com', false, 'MI-67699', 35)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('George Bailey', 'Law Offices of George Bailey', 'Hawaii', 'Honolulu', ARRAY['Employment Discrimination'], ARRAY['Racial Profiling', 'Qualified Immunity', 'Section 1983'], '531-283-9680', 'info@baileylaw.com', 'https://www.baileygeorgelaw.com', true, 'HA-78928', 38)
+        VALUES ('Joshua Parker', 'Law Offices of Joshua Parker', 'Michigan', 'Grand Rapids', ARRAY['Civil Rights'], ARRAY['Excessive Force', 'Racial Profiling', 'Police Brutality'], '968-364-1988', 'info@parkerlaw.com', 'https://www.parkerjoshualaw.com', true, 'MI-77372', 28)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Raymond Walker', 'Law Offices of Raymond Walker', 'New Jersey', 'Jersey City', ARRAY['First Amendment'], ARRAY['Illegal Search', 'Police Brutality'], '229-264-7137', 'info@walkerlaw.com', 'https://www.walkerraymondlaw.com', false, 'NE-81598', 22)
+        VALUES ('Richard Young', 'Law Offices of Richard Young', 'New Jersey', 'Paterson', ARRAY['First Amendment', 'Civil Rights'], ARRAY['Excessive Force'], '568-996-7266', 'info@younglaw.com', 'https://www.youngrichardlaw.com', false, 'NE-49695', 23)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Paul Edwards', 'Law Offices of Paul Edwards', 'Nevada', 'Las Vegas', ARRAY['Police Misconduct'], ARRAY['Police Brutality', 'Qualified Immunity'], '937-534-7501', 'info@edwardslaw.com', 'https://www.edwardspaullaw.com', false, 'NE-55483', 27)
+        VALUES ('James Campbell', 'Law Offices of James Campbell', 'Kentucky', 'Lexington', ARRAY['Civil Rights', 'Voting Rights', 'Police Misconduct'], ARRAY['Excessive Force', 'Section 1983', 'Racial Profiling'], '503-576-4934', 'info@campbelllaw.com', 'https://www.campbelljameslaw.com', false, 'KE-39930', 6)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Daniel Campbell', 'Law Offices of Daniel Campbell', 'Utah', 'Provo', ARRAY['Voting Rights', 'Constitutional Law'], ARRAY['Protest Defense', 'Malicious Prosecution', 'Excessive Force'], '994-797-5405', 'info@campbelllaw.com', 'https://www.campbelldaniellaw.com', false, 'UT-31354', 13)
+        VALUES ('Kenneth Morgan', 'Law Offices of Kenneth Morgan', 'New Mexico', 'Las Cruces', ARRAY['First Amendment', 'Constitutional Law', 'Housing Discrimination'], ARRAY['Excessive Force', 'Protest Defense', 'Police Brutality'], '895-513-4942', 'info@morganlaw.com', 'https://www.morgankennethlaw.com', true, 'NE-77344', 8)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Gary Walker', 'Law Offices of Gary Walker', 'Mississippi', 'Southaven', ARRAY['Voting Rights', 'First Amendment'], ARRAY['Malicious Prosecution', 'Racial Profiling', 'Excessive Force'], '810-911-4216', 'info@walkerlaw.com', 'https://www.walkergarylaw.com', false, 'MI-36956', 10)
+        VALUES ('Walter Johnson', 'Law Offices of Walter Johnson', 'Idaho', 'Boise', ARRAY['Civil Rights', 'Wrongful Conviction', 'Housing Discrimination'], ARRAY['Malicious Prosecution'], '589-516-6691', 'info@johnsonlaw.com', 'https://www.johnsonwalterlaw.com', true, 'ID-46883', 21)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Christopher Parker', 'Law Offices of Christopher Parker', 'Minnesota', 'St. Paul', ARRAY['Housing Discrimination', 'First Amendment', 'Civil Rights'], ARRAY['False Arrest'], '672-804-3719', 'info@parkerlaw.com', 'https://www.parkerchristopherlaw.com', true, 'MI-51946', 15)
+        VALUES ('Thomas Davis', 'Law Offices of Thomas Davis', 'Florida', 'Tampa', ARRAY['Housing Discrimination', 'First Amendment', 'Voting Rights'], ARRAY['Qualified Immunity', 'Malicious Prosecution', 'Excessive Force'], '680-779-8276', 'info@davislaw.com', 'https://www.davisthomaslaw.com', false, 'FL-92554', 15)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Jason Mitchell', 'Law Offices of Jason Mitchell', 'West Virginia', 'Charleston', ARRAY['Prisoners' Rights', 'Wrongful Conviction'], ARRAY['Excessive Force', 'Racial Profiling'], '792-700-8475', 'info@mitchelllaw.com', 'https://www.mitchelljasonlaw.com', true, 'WE-34747', 36)
+        VALUES ('Kenneth Evans', 'Law Offices of Kenneth Evans', 'Hawaii', 'Hilo', ARRAY['Civil Rights'], ARRAY['False Arrest'], '349-835-9707', 'info@evanslaw.com', 'https://www.evanskennethlaw.com', true, 'HA-96857', 10)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Daniel Lewis', 'Law Offices of Daniel Lewis', 'Minnesota', 'St. Paul', ARRAY['Wrongful Conviction'], ARRAY['Police Brutality'], '695-873-2155', 'info@lewislaw.com', 'https://www.lewisdaniellaw.com', false, 'MI-66776', 33)
+        VALUES ('Jessica Clark', 'Law Offices of Jessica Clark', 'Iowa', 'Cedar Rapids', ARRAY['Housing Discrimination', 'Constitutional Law', 'Employment Discrimination'], ARRAY['Racial Profiling', 'Illegal Search', 'False Arrest'], '347-369-6116', 'info@clarklaw.com', 'https://www.clarkjessicalaw.com', true, 'IO-46394', 34)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Harold Carter', 'Law Offices of Harold Carter', 'Arkansas', 'Little Rock', ARRAY['Constitutional Law'], ARRAY['False Arrest'], '681-519-6952', 'info@carterlaw.com', 'https://www.carterharoldlaw.com', true, 'AR-20143', 37)
+        VALUES ('Jose Young', 'Law Offices of Jose Young', 'Idaho', 'Meridian', ARRAY['Police Misconduct'], ARRAY['Qualified Immunity', 'Section 1983'], '272-251-5506', 'info@younglaw.com', 'https://www.youngjoselaw.com', true, 'ID-17864', 30)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Scott Garcia', 'Law Offices of Scott Garcia', 'Delaware', 'Dover', ARRAY['Constitutional Law'], ARRAY['Protest Defense', 'Excessive Force', 'Police Brutality'], '719-942-5876', 'info@garcialaw.com', 'https://www.garciascottlaw.com', false, 'DE-45937', 31)
+        VALUES ('Steven Davis', 'Law Offices of Steven Davis', 'Ohio', 'Cincinnati', ARRAY['Wrongful Conviction', 'Police Misconduct'], ARRAY['Section 1983'], '221-353-5030', 'info@davislaw.com', 'https://www.davisstevenlaw.com', true, 'OH-14486', 40)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Ryan Brown', 'Law Offices of Ryan Brown', 'Colorado', 'Denver', ARRAY['Wrongful Conviction', 'Employment Discrimination', 'Civil Rights'], ARRAY['Malicious Prosecution', 'Illegal Search'], '253-473-6956', 'info@brownlaw.com', 'https://www.brownryanlaw.com', false, 'CO-27457', 15)
+        VALUES ('Karen Jones', 'Law Offices of Karen Jones', 'Louisiana', 'New Orleans', ARRAY['Voting Rights'], ARRAY['Section 1983', 'False Arrest'], '753-672-9888', 'info@joneslaw.com', 'https://www.joneskarenlaw.com', true, 'LO-23744', 35)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Jennifer Wilson', 'Law Offices of Jennifer Wilson', 'Pennsylvania', 'Pittsburgh', ARRAY['First Amendment'], ARRAY['Police Brutality', 'Section 1983', 'Racial Profiling'], '779-816-5073', 'info@wilsonlaw.com', 'https://www.wilsonjenniferlaw.com', false, 'PE-67428', 23)
+        VALUES ('Richard Walker', 'Law Offices of Richard Walker', 'Indiana', 'Evansville', ARRAY['Voting Rights', 'Housing Discrimination'], ARRAY['Qualified Immunity'], '478-867-8028', 'info@walkerlaw.com', 'https://www.walkerrichardlaw.com', false, 'IN-77515', 24)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('David Jones', 'Law Offices of David Jones', 'Colorado', 'Aurora', ARRAY['Constitutional Law'], ARRAY['Protest Defense', 'Section 1983'], '835-516-4940', 'info@joneslaw.com', 'https://www.jonesdavidlaw.com', false, 'CO-20773', 21)
+        VALUES ('Karen Mitchell', 'Law Offices of Karen Mitchell', 'Vermont', 'South Burlington', ARRAY['Civil Rights', 'Employment Discrimination'], ARRAY['Protest Defense'], '243-496-8181', 'info@mitchelllaw.com', 'https://www.mitchellkarenlaw.com', true, 'VE-49477', 8)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Brian Carter', 'Law Offices of Brian Carter', 'West Virginia', 'Huntington', ARRAY['Prisoners' Rights'], ARRAY['Qualified Immunity'], '864-728-7879', 'info@carterlaw.com', 'https://www.carterbrianlaw.com', false, 'WE-42540', 29)
+        VALUES ('Gary Johnson', 'Law Offices of Gary Johnson', 'Texas', 'Fort Worth', ARRAY['Civil Rights', 'Prisoners'' Rights'], ARRAY['False Arrest', 'Section 1983'], '740-645-9248', 'info@johnsonlaw.com', 'https://www.johnsongarylaw.com', false, 'TE-81279', 28)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('David Morgan', 'Law Offices of David Morgan', 'Nebraska', 'Bellevue', ARRAY['Civil Rights', 'Prisoners' Rights', 'Constitutional Law'], ARRAY['Police Brutality', 'Illegal Search', 'Malicious Prosecution'], '409-480-9678', 'info@morganlaw.com', 'https://www.morgandavidlaw.com', true, 'NE-55445', 40)
+        VALUES ('Jerry Taylor', 'Law Offices of Jerry Taylor', 'Indiana', 'Indianapolis', ARRAY['Civil Rights', 'Employment Discrimination', 'Police Misconduct'], ARRAY['Illegal Search', 'False Arrest'], '437-371-8082', 'info@taylorlaw.com', 'https://www.taylorjerrylaw.com', true, 'IN-39737', 39)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Jessica Martin', 'Law Offices of Jessica Martin', 'West Virginia', 'Huntington', ARRAY['Prisoners' Rights', 'Housing Discrimination'], ARRAY['Qualified Immunity'], '237-946-9735', 'info@martinlaw.com', 'https://www.martinjessicalaw.com', true, 'WE-98965', 7)
+        VALUES ('Mark Gonzalez', 'Law Offices of Mark Gonzalez', 'Connecticut', 'Stamford', ARRAY['Wrongful Conviction', 'Civil Rights', 'Police Misconduct'], ARRAY['Protest Defense', 'Illegal Search'], '819-720-7969', 'info@gonzalezlaw.com', 'https://www.gonzalezmarklaw.com', false, 'CO-70055', 36)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Steven Adams', 'Law Offices of Steven Adams', 'Illinois', 'Naperville', ARRAY['Prisoners' Rights', 'Wrongful Conviction'], ARRAY['False Arrest', 'Racial Profiling', 'Malicious Prosecution'], '476-447-7117', 'info@adamslaw.com', 'https://www.adamsstevenlaw.com', true, 'IL-44138', 8)
+        VALUES ('William Anderson', 'Law Offices of William Anderson', 'Illinois', 'Aurora', ARRAY['Constitutional Law'], ARRAY['Section 1983', 'Malicious Prosecution', 'Illegal Search'], '414-337-9998', 'info@andersonlaw.com', 'https://www.andersonwilliamlaw.com', false, 'IL-51046', 6)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Matthew Adams', 'Law Offices of Matthew Adams', 'Maryland', 'Frederick', ARRAY['Prisoners' Rights', 'Wrongful Conviction'], ARRAY['Malicious Prosecution', 'Qualified Immunity'], '242-907-4405', 'info@adamslaw.com', 'https://www.adamsmatthewlaw.com', false, 'MA-52890', 20)
+        VALUES ('Kevin Morgan', 'Law Offices of Kevin Morgan', 'Nevada', 'Henderson', ARRAY['Voting Rights', 'Police Misconduct', 'Prisoners'' Rights'], ARRAY['Protest Defense', 'Excessive Force'], '480-316-7727', 'info@morganlaw.com', 'https://www.morgankevinlaw.com', true, 'NE-70259', 28)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Dennis Phillips', 'Law Offices of Dennis Phillips', 'Michigan', 'Warren', ARRAY['First Amendment'], ARRAY['Racial Profiling', 'Malicious Prosecution'], '891-562-1240', 'info@phillipslaw.com', 'https://www.phillipsdennislaw.com', true, 'MI-55878', 23)
+        VALUES ('Joshua Adams', 'Law Offices of Joshua Adams', 'Arkansas', 'Fayetteville', ARRAY['Civil Rights'], ARRAY['Malicious Prosecution', 'Section 1983'], '396-275-8053', 'info@adamslaw.com', 'https://www.adamsjoshualaw.com', true, 'AR-21714', 31)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Timothy Lopez', 'Law Offices of Timothy Lopez', 'Mississippi', 'Southaven', ARRAY['Civil Rights'], ARRAY['Racial Profiling', 'Police Brutality', 'Excessive Force'], '520-687-4795', 'info@lopezlaw.com', 'https://www.lopeztimothylaw.com', false, 'MI-85544', 6)
+        VALUES ('Barbara Parker', 'Law Offices of Barbara Parker', 'Massachusetts', 'Springfield', ARRAY['Prisoners'' Rights'], ARRAY['Police Brutality', 'Qualified Immunity', 'Section 1983'], '909-917-6662', 'info@parkerlaw.com', 'https://www.parkerbarbaralaw.com', true, 'MA-11358', 24)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Arthur Wilson', 'Law Offices of Arthur Wilson', 'South Dakota', 'Aberdeen', ARRAY['Housing Discrimination', 'Wrongful Conviction'], ARRAY['Qualified Immunity'], '585-806-6539', 'info@wilsonlaw.com', 'https://www.wilsonarthurlaw.com', false, 'SO-69215', 18)
+        VALUES ('Dennis Taylor', 'Law Offices of Dennis Taylor', 'Mississippi', 'Southaven', ARRAY['Constitutional Law', 'Police Misconduct'], ARRAY['Malicious Prosecution', 'Excessive Force', 'Qualified Immunity'], '490-787-1734', 'info@taylorlaw.com', 'https://www.taylordennislaw.com', true, 'MI-83055', 24)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Kenneth Robinson', 'Law Offices of Kenneth Robinson', 'New Mexico', 'Las Cruces', ARRAY['Housing Discrimination', 'Constitutional Law', 'Prisoners' Rights'], ARRAY['Illegal Search'], '414-781-3616', 'info@robinsonlaw.com', 'https://www.robinsonkennethlaw.com', false, 'NE-37005', 17)
+        VALUES ('Dennis Wright', 'Law Offices of Dennis Wright', 'North Carolina', 'Greensboro', ARRAY['Voting Rights'], ARRAY['False Arrest', 'Racial Profiling', 'Police Brutality'], '796-939-4271', 'info@wrightlaw.com', 'https://www.wrightdennislaw.com', true, 'NO-64106', 24)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Sarah Roberts', 'Law Offices of Sarah Roberts', 'Ohio', 'Cincinnati', ARRAY['Civil Rights'], ARRAY['False Arrest', 'Excessive Force', 'Qualified Immunity'], '359-803-5411', 'info@robertslaw.com', 'https://www.robertssarahlaw.com', false, 'OH-96289', 7)
+        VALUES ('Jose Jones', 'Law Offices of Jose Jones', 'Hawaii', 'Kailua', ARRAY['Voting Rights', 'Police Misconduct', 'Civil Rights'], ARRAY['Protest Defense', 'Excessive Force', 'Police Brutality'], '805-827-7074', 'info@joneslaw.com', 'https://www.jonesjoselaw.com', true, 'HA-86263', 11)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Joseph Allen', 'Law Offices of Joseph Allen', 'South Carolina', 'Columbia', ARRAY['Constitutional Law'], ARRAY['False Arrest'], '573-263-6767', 'info@allenlaw.com', 'https://www.allenjosephlaw.com', true, 'SO-37567', 8)
+        VALUES ('Kenneth Clark', 'Law Offices of Kenneth Clark', 'Florida', 'St. Petersburg', ARRAY['Voting Rights', 'Prisoners'' Rights', 'Constitutional Law'], ARRAY['Section 1983'], '415-306-5548', 'info@clarklaw.com', 'https://www.clarkkennethlaw.com', true, 'FL-69346', 10)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Christopher Green', 'Law Offices of Christopher Green', 'Oklahoma', 'Tulsa', ARRAY['First Amendment', 'Employment Discrimination'], ARRAY['Illegal Search'], '562-303-2090', 'info@greenlaw.com', 'https://www.greenchristopherlaw.com', true, 'OK-29710', 31)
+        VALUES ('James Lewis', 'Law Offices of James Lewis', 'Kansas', 'Wichita', ARRAY['Constitutional Law', 'Housing Discrimination', 'Voting Rights'], ARRAY['False Arrest', 'Malicious Prosecution', 'Police Brutality'], '341-574-6875', 'info@lewislaw.com', 'https://www.lewisjameslaw.com', true, 'KA-58876', 8)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Harold Morgan', 'Law Offices of Harold Morgan', 'Washington', 'Seattle', ARRAY['Employment Discrimination', 'Voting Rights', 'Civil Rights'], ARRAY['Excessive Force', 'Malicious Prosecution'], '727-878-3256', 'info@morganlaw.com', 'https://www.morganharoldlaw.com', false, 'WA-18285', 10)
+        VALUES ('Kenneth Smith', 'Law Offices of Kenneth Smith', 'Idaho', 'Boise', ARRAY['Constitutional Law', 'Voting Rights', 'Employment Discrimination'], ARRAY['Illegal Search', 'Excessive Force'], '399-793-2254', 'info@smithlaw.com', 'https://www.smithkennethlaw.com', false, 'ID-34647', 34)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Brian Hill', 'Law Offices of Brian Hill', 'New Jersey', 'Paterson', ARRAY['Civil Rights', 'Employment Discrimination', 'Police Misconduct'], ARRAY['False Arrest'], '319-282-4102', 'info@hilllaw.com', 'https://www.hillbrianlaw.com', false, 'NE-13170', 36)
+        VALUES ('Patricia Wilson', 'Law Offices of Patricia Wilson', 'Vermont', 'Burlington', ARRAY['Voting Rights'], ARRAY['Racial Profiling', 'Malicious Prosecution'], '752-842-3742', 'info@wilsonlaw.com', 'https://www.wilsonpatricialaw.com', false, 'VE-34390', 32)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Walter Hall', 'Law Offices of Walter Hall', 'Massachusetts', 'Boston', ARRAY['Wrongful Conviction', 'Civil Rights'], ARRAY['Qualified Immunity', 'Excessive Force'], '774-915-1236', 'info@halllaw.com', 'https://www.hallwalterlaw.com', true, 'MA-77735', 22)
+        VALUES ('Jason Harris', 'Law Offices of Jason Harris', 'Nebraska', 'Lincoln', ARRAY['Wrongful Conviction', 'Prisoners'' Rights', 'Voting Rights'], ARRAY['Excessive Force', 'False Arrest', 'Section 1983'], '719-491-7797', 'info@harrislaw.com', 'https://www.harrisjasonlaw.com', true, 'NE-43751', 33)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Carl Robinson', 'Law Offices of Carl Robinson', 'Montana', 'Billings', ARRAY['Police Misconduct', 'First Amendment', 'Housing Discrimination'], ARRAY['Police Brutality'], '354-902-9595', 'info@robinsonlaw.com', 'https://www.robinsoncarllaw.com', false, 'MO-74079', 31)
+        VALUES ('Scott Williams', 'Law Offices of Scott Williams', 'Kansas', 'Kansas City', ARRAY['Police Misconduct'], ARRAY['Qualified Immunity', 'Protest Defense'], '640-691-2009', 'info@williamslaw.com', 'https://www.williamsscottlaw.com', false, 'KA-63303', 22)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Elizabeth Hill', 'Law Offices of Elizabeth Hill', 'Iowa', 'Des Moines', ARRAY['Constitutional Law', 'First Amendment', 'Civil Rights'], ARRAY['Illegal Search'], '981-223-3764', 'info@hilllaw.com', 'https://www.hillelizabethlaw.com', false, 'IO-81930', 32)
+        VALUES ('Jennifer Sanchez', 'Law Offices of Jennifer Sanchez', 'Florida', 'Jacksonville', ARRAY['Housing Discrimination'], ARRAY['Malicious Prosecution'], '734-695-4705', 'info@sanchezlaw.com', 'https://www.sanchezjenniferlaw.com', false, 'FL-47969', 5)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Karen Bell', 'Law Offices of Karen Bell', 'Arkansas', 'Fayetteville', ARRAY['Wrongful Conviction'], ARRAY['Racial Profiling', 'Illegal Search', 'Section 1983'], '777-624-6328', 'info@belllaw.com', 'https://www.bellkarenlaw.com', true, 'AR-22302', 24)
+        VALUES ('Joshua Jones', 'Law Offices of Joshua Jones', 'Tennessee', 'Nashville', ARRAY['Police Misconduct'], ARRAY['False Arrest', 'Racial Profiling'], '701-264-7279', 'info@joneslaw.com', 'https://www.jonesjoshualaw.com', true, 'TE-69552', 15)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Sarah Lopez', 'Law Offices of Sarah Lopez', 'Nevada', 'Reno', ARRAY['Civil Rights', 'Employment Discrimination'], ARRAY['Protest Defense', 'Malicious Prosecution'], '925-658-1874', 'info@lopezlaw.com', 'https://www.lopezsarahlaw.com', false, 'NE-64799', 23)
+        VALUES ('Kevin Davis', 'Law Offices of Kevin Davis', 'Delaware', 'Wilmington', ARRAY['Housing Discrimination', 'Voting Rights', 'Constitutional Law'], ARRAY['Police Brutality'], '258-350-8322', 'info@davislaw.com', 'https://www.daviskevinlaw.com', false, 'DE-95761', 20)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Sarah Adams', 'Law Offices of Sarah Adams', 'Delaware', 'Wilmington', ARRAY['Civil Rights'], ARRAY['Racial Profiling', 'Section 1983', 'Malicious Prosecution'], '409-544-3849', 'info@adamslaw.com', 'https://www.adamssarahlaw.com', true, 'DE-69558', 13)
+        VALUES ('Robert Jackson', 'Law Offices of Robert Jackson', 'North Dakota', 'Bismarck', ARRAY['Wrongful Conviction'], ARRAY['False Arrest'], '719-992-6411', 'info@jacksonlaw.com', 'https://www.jacksonrobertlaw.com', true, 'NO-99718', 7)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Arthur Miller', 'Law Offices of Arthur Miller', 'Louisiana', 'New Orleans', ARRAY['First Amendment', 'Housing Discrimination', 'Employment Discrimination'], ARRAY['Excessive Force'], '867-701-9786', 'info@millerlaw.com', 'https://www.millerarthurlaw.com', true, 'LO-34958', 5)
+        VALUES ('Linda Martinez', 'Law Offices of Linda Martinez', 'Washington', 'Tacoma', ARRAY['Voting Rights', 'First Amendment'], ARRAY['Protest Defense', 'Police Brutality'], '241-459-6374', 'info@martinezlaw.com', 'https://www.martinezlindalaw.com', false, 'WA-53799', 27)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Jerry Clark', 'Law Offices of Jerry Clark', 'Colorado', 'Aurora', ARRAY['Police Misconduct', 'Employment Discrimination', 'Housing Discrimination'], ARRAY['Protest Defense', 'Racial Profiling', 'Qualified Immunity'], '642-376-4210', 'info@clarklaw.com', 'https://www.clarkjerrylaw.com', false, 'CO-58292', 19)
+        VALUES ('Christopher Walker', 'Law Offices of Christopher Walker', 'Louisiana', 'New Orleans', ARRAY['Employment Discrimination', 'Wrongful Conviction', 'First Amendment'], ARRAY['Excessive Force', 'Malicious Prosecution', 'Section 1983'], '237-907-7131', 'info@walkerlaw.com', 'https://www.walkerchristopherlaw.com', false, 'LO-78126', 26)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Brian Adams', 'Law Offices of Brian Adams', 'Ohio', 'Columbus', ARRAY['Prisoners' Rights', 'Police Misconduct'], ARRAY['False Arrest'], '304-697-8798', 'info@adamslaw.com', 'https://www.adamsbrianlaw.com', false, 'OH-53868', 31)
+        VALUES ('Andrew Bell', 'Law Offices of Andrew Bell', 'Georgia', 'Columbus', ARRAY['Employment Discrimination', 'Housing Discrimination'], ARRAY['Protest Defense'], '920-772-2416', 'info@belllaw.com', 'https://www.bellandrewlaw.com', true, 'GE-10317', 21)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Edward Scott', 'Law Offices of Edward Scott', 'Connecticut', 'New Haven', ARRAY['Employment Discrimination', 'Prisoners' Rights', 'Housing Discrimination'], ARRAY['Illegal Search', 'Qualified Immunity'], '645-499-2594', 'info@scottlaw.com', 'https://www.scottedwardlaw.com', false, 'CO-27931', 26)
+        VALUES ('Jose Williams', 'Law Offices of Jose Williams', 'Arkansas', 'Fayetteville', ARRAY['Constitutional Law', 'Voting Rights', 'Housing Discrimination'], ARRAY['Section 1983', 'False Arrest'], '940-689-7715', 'info@williamslaw.com', 'https://www.williamsjoselaw.com', false, 'AR-19472', 15)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Carl Roberts', 'Law Offices of Carl Roberts', 'Oregon', 'Salem', ARRAY['First Amendment', 'Voting Rights'], ARRAY['False Arrest', 'Illegal Search'], '527-450-4099', 'info@robertslaw.com', 'https://www.robertscarllaw.com', false, 'OR-65994', 11)
+        VALUES ('Jerry Edwards', 'Law Offices of Jerry Edwards', 'Vermont', 'Rutland', ARRAY['Wrongful Conviction', 'Police Misconduct', 'Housing Discrimination'], ARRAY['Racial Profiling'], '200-467-6361', 'info@edwardslaw.com', 'https://www.edwardsjerrylaw.com', false, 'VE-38779', 20)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Barbara King', 'Law Offices of Barbara King', 'Idaho', 'Nampa', ARRAY['Civil Rights', 'Prisoners' Rights', 'First Amendment'], ARRAY['Protest Defense'], '508-625-3471', 'info@kinglaw.com', 'https://www.kingbarbaralaw.com', true, 'ID-33254', 5)
+        VALUES ('Andrew Taylor', 'Law Offices of Andrew Taylor', 'South Carolina', 'Charleston', ARRAY['Constitutional Law'], ARRAY['Excessive Force', 'Malicious Prosecution', 'Protest Defense'], '910-597-6361', 'info@taylorlaw.com', 'https://www.taylorandrewlaw.com', false, 'SO-42668', 14)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Linda Clark', 'Law Offices of Linda Clark', 'Ohio', 'Columbus', ARRAY['First Amendment', 'Voting Rights'], ARRAY['Protest Defense', 'Police Brutality', 'False Arrest'], '395-208-3075', 'info@clarklaw.com', 'https://www.clarklindalaw.com', true, 'OH-81781', 9)
+        VALUES ('Douglas Hernandez', 'Law Offices of Douglas Hernandez', 'California', 'San Jose', ARRAY['Constitutional Law', 'Voting Rights', 'Civil Rights'], ARRAY['Qualified Immunity', 'Malicious Prosecution'], '228-489-6344', 'info@hernandezlaw.com', 'https://www.hernandezdouglaslaw.com', true, 'CA-84694', 33)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Dennis Hernandez', 'Law Offices of Dennis Hernandez', 'Iowa', 'Davenport', ARRAY['Prisoners' Rights', 'Voting Rights'], ARRAY['Racial Profiling', 'False Arrest'], '964-618-3045', 'info@hernandezlaw.com', 'https://www.hernandezdennislaw.com', false, 'IO-85467', 25)
+        VALUES ('Anthony Clark', 'Law Offices of Anthony Clark', 'Delaware', 'Wilmington', ARRAY['Civil Rights', 'Housing Discrimination'], ARRAY['False Arrest'], '398-352-5138', 'info@clarklaw.com', 'https://www.clarkanthonylaw.com', false, 'DE-32471', 34)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Henry Miller', 'Law Offices of Henry Miller', 'Ohio', 'Cleveland', ARRAY['Prisoners' Rights'], ARRAY['Police Brutality'], '388-518-3188', 'info@millerlaw.com', 'https://www.millerhenrylaw.com', true, 'OH-25821', 5)
+        VALUES ('Patricia Young', 'Law Offices of Patricia Young', 'New York', 'New York City', ARRAY['Wrongful Conviction', 'Employment Discrimination', 'Civil Rights'], ARRAY['Illegal Search'], '537-813-6764', 'info@younglaw.com', 'https://www.youngpatricialaw.com', false, 'NE-46894', 25)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Roger Lewis', 'Law Offices of Roger Lewis', 'Delaware', 'Newark', ARRAY['Voting Rights', 'Employment Discrimination'], ARRAY['Excessive Force', 'Racial Profiling'], '804-981-8484', 'info@lewislaw.com', 'https://www.lewisrogerlaw.com', true, 'DE-58503', 34)
+        VALUES ('Sarah Collins', 'Law Offices of Sarah Collins', 'Arizona', 'Mesa', ARRAY['Civil Rights', 'Police Misconduct', 'Constitutional Law'], ARRAY['Police Brutality', 'Racial Profiling'], '887-894-1955', 'info@collinslaw.com', 'https://www.collinssarahlaw.com', true, 'AR-44347', 9)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('George Garcia', 'Law Offices of George Garcia', 'Maryland', 'Baltimore', ARRAY['Prisoners' Rights'], ARRAY['Police Brutality'], '520-903-8821', 'info@garcialaw.com', 'https://www.garciageorgelaw.com', true, 'MA-53090', 29)
+        VALUES ('Barbara Johnson', 'Law Offices of Barbara Johnson', 'New Hampshire', 'Manchester', ARRAY['Wrongful Conviction', 'Police Misconduct'], ARRAY['Racial Profiling', 'Protest Defense', 'False Arrest'], '992-306-9557', 'info@johnsonlaw.com', 'https://www.johnsonbarbaralaw.com', false, 'NE-37737', 13)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Dennis Williams', 'Law Offices of Dennis Williams', 'Illinois', 'Naperville', ARRAY['Constitutional Law'], ARRAY['Qualified Immunity', 'False Arrest', 'Malicious Prosecution'], '351-246-3877', 'info@williamslaw.com', 'https://www.williamsdennislaw.com', true, 'IL-31910', 26)
+        VALUES ('John Harris', 'Law Offices of John Harris', 'Arizona', 'Chandler', ARRAY['Wrongful Conviction', 'Constitutional Law'], ARRAY['Racial Profiling', 'Qualified Immunity'], '511-360-9632', 'info@harrislaw.com', 'https://www.harrisjohnlaw.com', false, 'AR-14342', 39)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Thomas Hill', 'Law Offices of Thomas Hill', 'Ohio', 'Cincinnati', ARRAY['Wrongful Conviction'], ARRAY['Section 1983', 'Police Brutality'], '214-551-7587', 'info@hilllaw.com', 'https://www.hillthomaslaw.com', true, 'OH-22008', 36)
+        VALUES ('Edward Moore', 'Law Offices of Edward Moore', 'Utah', 'West Valley City', ARRAY['Voting Rights'], ARRAY['Section 1983', 'Racial Profiling', 'Excessive Force'], '317-355-6468', 'info@moorelaw.com', 'https://www.mooreedwardlaw.com', false, 'UT-88410', 13)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Daniel Thomas', 'Law Offices of Daniel Thomas', 'Arkansas', 'Fayetteville', ARRAY['Housing Discrimination'], ARRAY['Qualified Immunity', 'False Arrest'], '968-882-1857', 'info@thomaslaw.com', 'https://www.thomasdaniellaw.com', false, 'AR-16158', 9)
+        VALUES ('Susan Phillips', 'Law Offices of Susan Phillips', 'Delaware', 'Wilmington', ARRAY['Prisoners'' Rights'], ARRAY['Qualified Immunity', 'False Arrest', 'Malicious Prosecution'], '974-295-1349', 'info@phillipslaw.com', 'https://www.phillipssusanlaw.com', true, 'DE-55609', 5)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Elizabeth Bailey', 'Law Offices of Elizabeth Bailey', 'Missouri', 'St. Louis', ARRAY['Wrongful Conviction', 'First Amendment'], ARRAY['Section 1983', 'False Arrest'], '763-253-3704', 'info@baileylaw.com', 'https://www.baileyelizabethlaw.com', true, 'MI-35047', 40)
+        VALUES ('Mary Morris', 'Law Offices of Mary Morris', 'Missouri', 'Kansas City', ARRAY['First Amendment'], ARRAY['False Arrest', 'Section 1983'], '292-985-4860', 'info@morrislaw.com', 'https://www.morrismarylaw.com', false, 'MI-37795', 37)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Ronald Cook', 'Law Offices of Ronald Cook', 'Idaho', 'Boise', ARRAY['Police Misconduct', 'Employment Discrimination', 'Prisoners' Rights'], ARRAY['Qualified Immunity', 'False Arrest'], '948-605-6730', 'info@cooklaw.com', 'https://www.cookronaldlaw.com', true, 'ID-57613', 38)
+        VALUES ('Harold Nelson', 'Law Offices of Harold Nelson', 'Kentucky', 'Bowling Green', ARRAY['Civil Rights'], ARRAY['False Arrest'], '315-543-7068', 'info@nelsonlaw.com', 'https://www.nelsonharoldlaw.com', true, 'KE-81434', 35)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Jennifer Carter', 'Law Offices of Jennifer Carter', 'Kansas', 'Overland Park', ARRAY['Housing Discrimination', 'Police Misconduct'], ARRAY['Excessive Force'], '918-870-9992', 'info@carterlaw.com', 'https://www.carterjenniferlaw.com', true, 'KA-26377', 24)
+        VALUES ('Jeffrey Reed', 'Law Offices of Jeffrey Reed', 'Oregon', 'Eugene', ARRAY['Civil Rights'], ARRAY['False Arrest'], '233-841-3781', 'info@reedlaw.com', 'https://www.reedjeffreylaw.com', false, 'OR-98922', 35)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Gregory Jackson', 'Law Offices of Gregory Jackson', 'California', 'Los Angeles', ARRAY['Constitutional Law', 'Housing Discrimination', 'Prisoners' Rights'], ARRAY['False Arrest'], '785-490-2564', 'info@jacksonlaw.com', 'https://www.jacksongregorylaw.com', false, 'CA-85458', 32)
+        VALUES ('Scott Walker', 'Law Offices of Scott Walker', 'Illinois', 'Naperville', ARRAY['Housing Discrimination', 'Constitutional Law', 'Employment Discrimination'], ARRAY['Malicious Prosecution'], '831-814-2316', 'info@walkerlaw.com', 'https://www.walkerscottlaw.com', true, 'IL-31303', 23)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('David Scott', 'Law Offices of David Scott', 'Oregon', 'Eugene', ARRAY['Prisoners' Rights', 'Police Misconduct'], ARRAY['Illegal Search', 'Police Brutality', 'Racial Profiling'], '254-834-3498', 'info@scottlaw.com', 'https://www.scottdavidlaw.com', false, 'OR-78983', 13)
+        VALUES ('Raymond Rogers', 'Law Offices of Raymond Rogers', 'Pennsylvania', 'Pittsburgh', ARRAY['Constitutional Law', 'Civil Rights', 'Police Misconduct'], ARRAY['Protest Defense', 'Qualified Immunity', 'Illegal Search'], '528-632-3913', 'info@rogerslaw.com', 'https://www.rogersraymondlaw.com', false, 'PE-22550', 39)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Thomas Smith', 'Law Offices of Thomas Smith', 'Colorado', 'Fort Collins', ARRAY['Wrongful Conviction', 'Police Misconduct'], ARRAY['Excessive Force', 'Qualified Immunity'], '367-358-1689', 'info@smithlaw.com', 'https://www.smiththomaslaw.com', false, 'CO-73251', 20)
+        VALUES ('Edward Turner', 'Law Offices of Edward Turner', 'Oklahoma', 'Norman', ARRAY['Civil Rights', 'First Amendment'], ARRAY['Racial Profiling'], '903-470-7284', 'info@turnerlaw.com', 'https://www.turneredwardlaw.com', false, 'OK-75981', 10)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('William Taylor', 'Law Offices of William Taylor', 'Michigan', 'Warren', ARRAY['Wrongful Conviction', 'Housing Discrimination'], ARRAY['Illegal Search'], '826-307-3631', 'info@taylorlaw.com', 'https://www.taylorwilliamlaw.com', true, 'MI-77880', 34)
+        VALUES ('Harold Rodriguez', 'Law Offices of Harold Rodriguez', 'West Virginia', 'Morgantown', ARRAY['Prisoners'' Rights', 'Civil Rights'], ARRAY['Illegal Search'], '722-659-4107', 'info@rodriguezlaw.com', 'https://www.rodriguezharoldlaw.com', true, 'WE-70218', 9)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Kevin Anderson', 'Law Offices of Kevin Anderson', 'Tennessee', 'Memphis', ARRAY['Prisoners' Rights', 'First Amendment'], ARRAY['Malicious Prosecution', 'Excessive Force', 'False Arrest'], '323-926-7656', 'info@andersonlaw.com', 'https://www.andersonkevinlaw.com', false, 'TE-97498', 24)
+        VALUES ('Timothy Thompson', 'Law Offices of Timothy Thompson', 'Georgia', 'Augusta', ARRAY['Civil Rights'], ARRAY['Protest Defense', 'Section 1983', 'Police Brutality'], '805-345-3646', 'info@thompsonlaw.com', 'https://www.thompsontimothylaw.com', true, 'GE-58448', 22)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Susan Murphy', 'Law Offices of Susan Murphy', 'Rhode Island', 'Cranston', ARRAY['Wrongful Conviction', 'Prisoners' Rights'], ARRAY['False Arrest', 'Qualified Immunity'], '883-337-1773', 'info@murphylaw.com', 'https://www.murphysusanlaw.com', true, 'RH-18540', 30)
+        VALUES ('Christopher Jackson', 'Law Offices of Christopher Jackson', 'North Carolina', 'Greensboro', ARRAY['Constitutional Law', 'Housing Discrimination', 'Voting Rights'], ARRAY['Excessive Force', 'Malicious Prosecution', 'Racial Profiling'], '875-291-2097', 'info@jacksonlaw.com', 'https://www.jacksonchristopherlaw.com', true, 'NO-64384', 24)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Kevin Gonzalez', 'Law Offices of Kevin Gonzalez', 'Vermont', 'Burlington', ARRAY['Housing Discrimination', 'Constitutional Law', 'Prisoners' Rights'], ARRAY['Section 1983', 'Racial Profiling'], '654-577-4811', 'info@gonzalezlaw.com', 'https://www.gonzalezkevinlaw.com', true, 'VE-60979', 21)
+        VALUES ('George Lee', 'Law Offices of George Lee', 'Delaware', 'Wilmington', ARRAY['Wrongful Conviction', 'First Amendment', 'Voting Rights'], ARRAY['Qualified Immunity', 'Racial Profiling', 'Excessive Force'], '281-536-3593', 'info@leelaw.com', 'https://www.leegeorgelaw.com', false, 'DE-84982', 13)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Kenneth Young', 'Law Offices of Kenneth Young', 'Montana', 'Missoula', ARRAY['Employment Discrimination', 'Housing Discrimination'], ARRAY['Section 1983'], '528-419-9774', 'info@younglaw.com', 'https://www.youngkennethlaw.com', false, 'MO-86214', 32)
+        VALUES ('Stephen Taylor', 'Law Offices of Stephen Taylor', 'Mississippi', 'Gulfport', ARRAY['Police Misconduct'], ARRAY['False Arrest'], '910-689-2924', 'info@taylorlaw.com', 'https://www.taylorstephenlaw.com', true, 'MI-56167', 13)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('David Walker', 'Law Offices of David Walker', 'New Mexico', 'Albuquerque', ARRAY['First Amendment', 'Police Misconduct', 'Employment Discrimination'], ARRAY['Excessive Force'], '983-668-5088', 'info@walkerlaw.com', 'https://www.walkerdavidlaw.com', true, 'NE-72564', 8)
+        VALUES ('Harold Anderson', 'Law Offices of Harold Anderson', 'Washington', 'Spokane', ARRAY['Wrongful Conviction', 'Constitutional Law'], ARRAY['Section 1983', 'Malicious Prosecution'], '985-589-2851', 'info@andersonlaw.com', 'https://www.andersonharoldlaw.com', false, 'WA-59986', 17)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Frank Campbell', 'Law Offices of Frank Campbell', 'Washington', 'Tacoma', ARRAY['Wrongful Conviction', 'Voting Rights'], ARRAY['Illegal Search', 'Racial Profiling'], '367-791-9454', 'info@campbelllaw.com', 'https://www.campbellfranklaw.com', true, 'WA-74982', 33)
+        VALUES ('David Collins', 'Law Offices of David Collins', 'Nevada', 'Las Vegas', ARRAY['Voting Rights'], ARRAY['Police Brutality', 'Malicious Prosecution'], '649-621-3102', 'info@collinslaw.com', 'https://www.collinsdavidlaw.com', true, 'NE-61021', 12)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Carl Perez', 'Law Offices of Carl Perez', 'Alaska', 'Juneau', ARRAY['Voting Rights', 'Wrongful Conviction'], ARRAY['Qualified Immunity'], '388-533-8770', 'info@perezlaw.com', 'https://www.perezcarllaw.com', true, 'AL-66606', 39)
+        VALUES ('Jennifer Campbell', 'Law Offices of Jennifer Campbell', 'Montana', 'Billings', ARRAY['Police Misconduct', 'Civil Rights', 'First Amendment'], ARRAY['Excessive Force', 'Qualified Immunity', 'Malicious Prosecution'], '606-411-7656', 'info@campbelllaw.com', 'https://www.campbelljenniferlaw.com', false, 'MO-70296', 40)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Steven Morris', 'Law Offices of Steven Morris', 'Virginia', 'Virginia Beach', ARRAY['Employment Discrimination', 'Civil Rights', 'Police Misconduct'], ARRAY['Excessive Force', 'Qualified Immunity'], '439-614-8715', 'info@morrislaw.com', 'https://www.morrisstevenlaw.com', false, 'VI-16886', 10)
+        VALUES ('James Allen', 'Law Offices of James Allen', 'Utah', 'Provo', ARRAY['Prisoners'' Rights', 'Voting Rights', 'Constitutional Law'], ARRAY['Malicious Prosecution', 'Police Brutality'], '525-339-4175', 'info@allenlaw.com', 'https://www.allenjameslaw.com', false, 'UT-30349', 5)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Christopher Cook', 'Law Offices of Christopher Cook', 'Kansas', 'Kansas City', ARRAY['Police Misconduct'], ARRAY['Excessive Force'], '848-674-7049', 'info@cooklaw.com', 'https://www.cookchristopherlaw.com', true, 'KA-46670', 28)
+        VALUES ('Harold Johnson', 'Law Offices of Harold Johnson', 'Oregon', 'Salem', ARRAY['Constitutional Law', 'Housing Discrimination'], ARRAY['Excessive Force', 'Protest Defense', 'Section 1983'], '528-756-8667', 'info@johnsonlaw.com', 'https://www.johnsonharoldlaw.com', false, 'OR-20473', 15)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Paul Murphy', 'Law Offices of Paul Murphy', 'Missouri', 'Springfield', ARRAY['Police Misconduct', 'First Amendment'], ARRAY['Illegal Search', 'Section 1983'], '585-239-8538', 'info@murphylaw.com', 'https://www.murphypaullaw.com', false, 'MI-57584', 12)
+        VALUES ('Gary Parker', 'Law Offices of Gary Parker', 'Illinois', 'Joliet', ARRAY['Voting Rights'], ARRAY['Protest Defense', 'Racial Profiling'], '390-681-9644', 'info@parkerlaw.com', 'https://www.parkergarylaw.com', false, 'IL-27833', 11)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Joseph Lewis', 'Law Offices of Joseph Lewis', 'Missouri', 'Kansas City', ARRAY['Housing Discrimination'], ARRAY['Protest Defense'], '717-654-3349', 'info@lewislaw.com', 'https://www.lewisjosephlaw.com', false, 'MI-75712', 28)
+        VALUES ('Arthur Lopez', 'Law Offices of Arthur Lopez', 'North Carolina', 'Greensboro', ARRAY['Voting Rights', 'Housing Discrimination'], ARRAY['Malicious Prosecution', 'Section 1983'], '463-378-1426', 'info@lopezlaw.com', 'https://www.lopezarthurlaw.com', false, 'NO-86006', 35)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Eric Green', 'Law Offices of Eric Green', 'Minnesota', 'Rochester', ARRAY['Wrongful Conviction'], ARRAY['Section 1983', 'Excessive Force'], '308-392-3312', 'info@greenlaw.com', 'https://www.greenericlaw.com', false, 'MI-51497', 20)
+        VALUES ('Edward Mitchell', 'Law Offices of Edward Mitchell', 'Arkansas', 'Fayetteville', ARRAY['Police Misconduct'], ARRAY['Illegal Search'], '844-404-2747', 'info@mitchelllaw.com', 'https://www.mitchelledwardlaw.com', true, 'AR-96917', 9)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Jennifer Anderson', 'Law Offices of Jennifer Anderson', 'New Mexico', 'Albuquerque', ARRAY['Civil Rights'], ARRAY['Qualified Immunity', 'Illegal Search'], '526-735-6119', 'info@andersonlaw.com', 'https://www.andersonjenniferlaw.com', false, 'NE-34800', 14)
+        VALUES ('Sarah Reed', 'Law Offices of Sarah Reed', 'New Jersey', 'Jersey City', ARRAY['First Amendment', 'Prisoners'' Rights', 'Employment Discrimination'], ARRAY['Illegal Search', 'Racial Profiling'], '882-688-3690', 'info@reedlaw.com', 'https://www.reedsarahlaw.com', true, 'NE-37353', 11)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Christopher Jackson', 'Law Offices of Christopher Jackson', 'West Virginia', 'Charleston', ARRAY['Employment Discrimination', 'Civil Rights', 'Police Misconduct'], ARRAY['Illegal Search'], '405-333-6302', 'info@jacksonlaw.com', 'https://www.jacksonchristopherlaw.com', false, 'WE-64704', 6)
+        VALUES ('Michael Lewis', 'Law Offices of Michael Lewis', 'Maryland', 'Rockville', ARRAY['Voting Rights'], ARRAY['False Arrest', 'Excessive Force', 'Section 1983'], '578-809-1542', 'info@lewislaw.com', 'https://www.lewismichaellaw.com', true, 'MA-26196', 35)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Andrew Jones', 'Law Offices of Andrew Jones', 'New Jersey', 'Newark', ARRAY['Civil Rights', 'Wrongful Conviction', 'Voting Rights'], ARRAY['Protest Defense', 'Excessive Force', 'Qualified Immunity'], '254-885-9932', 'info@joneslaw.com', 'https://www.jonesandrewlaw.com', false, 'NE-61744', 26)
+        VALUES ('Larry Phillips', 'Law Offices of Larry Phillips', 'Colorado', 'Colorado Springs', ARRAY['Civil Rights', 'Wrongful Conviction'], ARRAY['Qualified Immunity'], '232-553-4393', 'info@phillipslaw.com', 'https://www.phillipslarrylaw.com', false, 'CO-50705', 30)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Anthony Robinson', 'Law Offices of Anthony Robinson', 'Rhode Island', 'Warwick', ARRAY['Civil Rights', 'Voting Rights'], ARRAY['Qualified Immunity'], '799-743-3536', 'info@robinsonlaw.com', 'https://www.robinsonanthonylaw.com', false, 'RH-29639', 35)
+        VALUES ('Patricia Hill', 'Law Offices of Patricia Hill', 'Oregon', 'Eugene', ARRAY['Voting Rights'], ARRAY['Racial Profiling', 'Illegal Search', 'Section 1983'], '789-924-2505', 'info@hilllaw.com', 'https://www.hillpatricialaw.com', true, 'OR-85370', 29)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Douglas Anderson', 'Law Offices of Douglas Anderson', 'West Virginia', 'Charleston', ARRAY['First Amendment', 'Constitutional Law', 'Civil Rights'], ARRAY['Police Brutality', 'Protest Defense'], '436-807-3105', 'info@andersonlaw.com', 'https://www.andersondouglaslaw.com', false, 'WE-53541', 38)
+        VALUES ('Ronald Phillips', 'Law Offices of Ronald Phillips', 'Hawaii', 'Kailua', ARRAY['Wrongful Conviction'], ARRAY['Police Brutality'], '741-600-6585', 'info@phillipslaw.com', 'https://www.phillipsronaldlaw.com', true, 'HA-73829', 10)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Patrick Walker', 'Law Offices of Patrick Walker', 'California', 'Oakland', ARRAY['Voting Rights'], ARRAY['Excessive Force', 'Protest Defense'], '327-865-1587', 'info@walkerlaw.com', 'https://www.walkerpatricklaw.com', false, 'CA-45237', 32)
+        VALUES ('Jessica Thompson', 'Law Offices of Jessica Thompson', 'Ohio', 'Cleveland', ARRAY['Wrongful Conviction', 'Employment Discrimination'], ARRAY['False Arrest', 'Section 1983', 'Protest Defense'], '934-682-6067', 'info@thompsonlaw.com', 'https://www.thompsonjessicalaw.com', false, 'OH-57352', 5)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('James Taylor', 'Law Offices of James Taylor', 'Utah', 'West Valley City', ARRAY['Housing Discrimination', 'Constitutional Law', 'Police Misconduct'], ARRAY['Illegal Search'], '903-302-4572', 'info@taylorlaw.com', 'https://www.taylorjameslaw.com', false, 'UT-82982', 40)
+        VALUES ('Edward Martinez', 'Law Offices of Edward Martinez', 'South Dakota', 'Rapid City', ARRAY['Employment Discrimination'], ARRAY['Malicious Prosecution', 'Police Brutality', 'Qualified Immunity'], '614-994-1400', 'info@martinezlaw.com', 'https://www.martinezedwardlaw.com', false, 'SO-21912', 31)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Jennifer Harris', 'Law Offices of Jennifer Harris', 'New York', 'New York City', ARRAY['Wrongful Conviction', 'Employment Discrimination', 'Voting Rights'], ARRAY['Police Brutality', 'Excessive Force'], '961-450-5327', 'info@harrislaw.com', 'https://www.harrisjenniferlaw.com', true, 'NE-88761', 26)
+        VALUES ('Michael Garcia', 'Law Offices of Michael Garcia', 'West Virginia', 'Morgantown', ARRAY['Prisoners'' Rights', 'Voting Rights', 'Wrongful Conviction'], ARRAY['Police Brutality', 'Racial Profiling'], '699-890-4408', 'info@garcialaw.com', 'https://www.garciamichaellaw.com', false, 'WE-73958', 28)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Andrew Turner', 'Law Offices of Andrew Turner', 'South Dakota', 'Aberdeen', ARRAY['Housing Discrimination'], ARRAY['Illegal Search', 'Protest Defense'], '368-925-7237', 'info@turnerlaw.com', 'https://www.turnerandrewlaw.com', true, 'SO-96767', 21)
+        VALUES ('Thomas Edwards', 'Law Offices of Thomas Edwards', 'Pennsylvania', 'Philadelphia', ARRAY['First Amendment', 'Housing Discrimination'], ARRAY['Police Brutality'], '271-610-7638', 'info@edwardslaw.com', 'https://www.edwardsthomaslaw.com', true, 'PE-38020', 36)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Linda Adams', 'Law Offices of Linda Adams', 'California', 'San Jose', ARRAY['Civil Rights'], ARRAY['Excessive Force'], '844-293-7302', 'info@adamslaw.com', 'https://www.adamslindalaw.com', false, 'CA-37905', 22)
+        VALUES ('Barbara Evans', 'Law Offices of Barbara Evans', 'Mississippi', 'Jackson', ARRAY['Voting Rights', 'Housing Discrimination', 'Wrongful Conviction'], ARRAY['Malicious Prosecution'], '852-657-2111', 'info@evanslaw.com', 'https://www.evansbarbaralaw.com', true, 'MI-10266', 38)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Thomas Mitchell', 'Law Offices of Thomas Mitchell', 'Pennsylvania', 'Allentown', ARRAY['Wrongful Conviction', 'First Amendment', 'Civil Rights'], ARRAY['Protest Defense', 'Qualified Immunity', 'Illegal Search'], '918-946-8852', 'info@mitchelllaw.com', 'https://www.mitchellthomaslaw.com', false, 'PE-69050', 17)
+        VALUES ('Stephen Jones', 'Law Offices of Stephen Jones', 'Louisiana', 'Baton Rouge', ARRAY['Employment Discrimination'], ARRAY['Section 1983', 'Illegal Search'], '662-898-8102', 'info@joneslaw.com', 'https://www.jonesstephenlaw.com', true, 'LO-28157', 38)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Patricia Allen', 'Law Offices of Patricia Allen', 'Delaware', 'Newark', ARRAY['Housing Discrimination', 'Employment Discrimination', 'Prisoners' Rights'], ARRAY['Illegal Search', 'Racial Profiling', 'Protest Defense'], '563-505-4448', 'info@allenlaw.com', 'https://www.allenpatricialaw.com', false, 'DE-18968', 33)
+        VALUES ('Linda Bailey', 'Law Offices of Linda Bailey', 'Pennsylvania', 'Allentown', ARRAY['Constitutional Law', 'Housing Discrimination', 'Prisoners'' Rights'], ARRAY['Excessive Force', 'Qualified Immunity', 'Illegal Search'], '425-812-6294', 'info@baileylaw.com', 'https://www.baileylindalaw.com', false, 'PE-15959', 9)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Gregory Bailey', 'Law Offices of Gregory Bailey', 'California', 'Fresno', ARRAY['First Amendment'], ARRAY['Illegal Search', 'Excessive Force', 'Protest Defense'], '924-349-9782', 'info@baileylaw.com', 'https://www.baileygregorylaw.com', true, 'CA-61011', 19)
+        VALUES ('Douglas Stewart', 'Law Offices of Douglas Stewart', 'Kentucky', 'Louisville', ARRAY['Wrongful Conviction', 'Constitutional Law', 'Civil Rights'], ARRAY['Excessive Force'], '834-281-8158', 'info@stewartlaw.com', 'https://www.stewartdouglaslaw.com', true, 'KE-41314', 28)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Scott Young', 'Law Offices of Scott Young', 'Nevada', 'Henderson', ARRAY['Employment Discrimination', 'First Amendment', 'Wrongful Conviction'], ARRAY['Protest Defense', 'Illegal Search', 'Qualified Immunity'], '534-563-2907', 'info@younglaw.com', 'https://www.youngscottlaw.com', true, 'NE-36707', 21)
+        VALUES ('Charles Morgan', 'Law Offices of Charles Morgan', 'Maine', 'Portland', ARRAY['Employment Discrimination'], ARRAY['False Arrest', 'Illegal Search'], '488-985-7708', 'info@morganlaw.com', 'https://www.morgancharleslaw.com', true, 'MA-79785', 31)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('David Phillips', 'Law Offices of David Phillips', 'Illinois', 'Chicago', ARRAY['Civil Rights', 'First Amendment', 'Voting Rights'], ARRAY['False Arrest'], '630-750-4308', 'info@phillipslaw.com', 'https://www.phillipsdavidlaw.com', false, 'IL-82478', 12)
+        VALUES ('George Jones', 'Law Offices of George Jones', 'South Dakota', 'Rapid City', ARRAY['Voting Rights', 'Police Misconduct', 'Employment Discrimination'], ARRAY['Police Brutality', 'Malicious Prosecution'], '209-266-3164', 'info@joneslaw.com', 'https://www.jonesgeorgelaw.com', false, 'SO-68693', 10)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Jeffrey King', 'Law Offices of Jeffrey King', 'Rhode Island', 'Providence', ARRAY['Voting Rights', 'Police Misconduct'], ARRAY['Police Brutality', 'Racial Profiling', 'Protest Defense'], '317-902-5882', 'info@kinglaw.com', 'https://www.kingjeffreylaw.com', true, 'RH-91360', 33)
+        VALUES ('Thomas Campbell', 'Law Offices of Thomas Campbell', 'Florida', 'Orlando', ARRAY['Police Misconduct', 'Wrongful Conviction'], ARRAY['Qualified Immunity', 'Protest Defense'], '869-994-6509', 'info@campbelllaw.com', 'https://www.campbellthomaslaw.com', true, 'FL-58362', 26)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Harold Rodriguez', 'Law Offices of Harold Rodriguez', 'Texas', 'Austin', ARRAY['Wrongful Conviction', 'Police Misconduct', 'Employment Discrimination'], ARRAY['Qualified Immunity', 'Protest Defense', 'Racial Profiling'], '245-202-8083', 'info@rodriguezlaw.com', 'https://www.rodriguezharoldlaw.com', true, 'TE-94599', 29)
+        VALUES ('Scott Carter', 'Law Offices of Scott Carter', 'New Hampshire', 'Concord', ARRAY['Employment Discrimination', 'Wrongful Conviction', 'Prisoners'' Rights'], ARRAY['Malicious Prosecution', 'Excessive Force'], '468-348-9586', 'info@carterlaw.com', 'https://www.carterscottlaw.com', false, 'NE-93879', 40)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Christopher Thomas', 'Law Offices of Christopher Thomas', 'Pennsylvania', 'Philadelphia', ARRAY['Police Misconduct'], ARRAY['Protest Defense'], '658-716-5935', 'info@thomaslaw.com', 'https://www.thomaschristopherlaw.com', true, 'PE-64810', 8)
+        VALUES ('Steven Thomas', 'Law Offices of Steven Thomas', 'Alaska', 'Juneau', ARRAY['Housing Discrimination', 'Constitutional Law', 'Employment Discrimination'], ARRAY['Qualified Immunity', 'Police Brutality', 'Malicious Prosecution'], '592-263-9837', 'info@thomaslaw.com', 'https://www.thomasstevenlaw.com', false, 'AL-65043', 14)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Kevin Bell', 'Law Offices of Kevin Bell', 'Missouri', 'St. Louis', ARRAY['Voting Rights', 'Constitutional Law', 'First Amendment'], ARRAY['Racial Profiling', 'Excessive Force'], '469-636-6709', 'info@belllaw.com', 'https://www.bellkevinlaw.com', false, 'MI-70766', 30)
+        VALUES ('Brian Moore', 'Law Offices of Brian Moore', 'North Dakota', 'Bismarck', ARRAY['Employment Discrimination'], ARRAY['Section 1983', 'False Arrest', 'Police Brutality'], '298-545-8171', 'info@moorelaw.com', 'https://www.moorebrianlaw.com', false, 'NO-90111', 27)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Robert Carter', 'Law Offices of Robert Carter', 'Michigan', 'Grand Rapids', ARRAY['Constitutional Law', 'Voting Rights', 'Police Misconduct'], ARRAY['Malicious Prosecution', 'Police Brutality'], '540-324-7116', 'info@carterlaw.com', 'https://www.carterrobertlaw.com', true, 'MI-82515', 36)
+        VALUES ('George Turner', 'Law Offices of George Turner', 'Delaware', 'Wilmington', ARRAY['Prisoners'' Rights'], ARRAY['Protest Defense', 'Section 1983'], '314-689-5292', 'info@turnerlaw.com', 'https://www.turnergeorgelaw.com', false, 'DE-71436', 21)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Larry King', 'Law Offices of Larry King', 'Mississippi', 'Jackson', ARRAY['Housing Discrimination'], ARRAY['Illegal Search', 'Qualified Immunity'], '277-992-5872', 'info@kinglaw.com', 'https://www.kinglarrylaw.com', false, 'MI-85976', 10)
+        VALUES ('Carl Thomas', 'Law Offices of Carl Thomas', 'Nevada', 'Reno', ARRAY['Police Misconduct', 'First Amendment'], ARRAY['Excessive Force'], '850-496-6462', 'info@thomaslaw.com', 'https://www.thomascarllaw.com', true, 'NE-59484', 31)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Donald Moore', 'Law Offices of Donald Moore', 'Colorado', 'Denver', ARRAY['First Amendment', 'Wrongful Conviction'], ARRAY['Racial Profiling', 'Protest Defense', 'Malicious Prosecution'], '303-933-2849', 'info@moorelaw.com', 'https://www.mooredonaldlaw.com', false, 'CO-59109', 5)
+        VALUES ('Susan Mitchell', 'Law Offices of Susan Mitchell', 'South Carolina', 'Columbia', ARRAY['Wrongful Conviction'], ARRAY['Qualified Immunity'], '976-753-8431', 'info@mitchelllaw.com', 'https://www.mitchellsusanlaw.com', false, 'SO-60769', 14)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Harold Nelson', 'Law Offices of Harold Nelson', 'Illinois', 'Chicago', ARRAY['Constitutional Law', 'First Amendment'], ARRAY['Police Brutality', 'Excessive Force'], '567-957-3106', 'info@nelsonlaw.com', 'https://www.nelsonharoldlaw.com', false, 'IL-64624', 34)
+        VALUES ('Barbara Cook', 'Law Offices of Barbara Cook', 'Kentucky', 'Lexington', ARRAY['Constitutional Law', 'Voting Rights', 'Wrongful Conviction'], ARRAY['False Arrest'], '883-724-9067', 'info@cooklaw.com', 'https://www.cookbarbaralaw.com', true, 'KE-18574', 6)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Michael Scott', 'Law Offices of Michael Scott', 'Texas', 'Fort Worth', ARRAY['Civil Rights', 'Prisoners' Rights'], ARRAY['Section 1983', 'Police Brutality', 'Qualified Immunity'], '235-571-3438', 'info@scottlaw.com', 'https://www.scottmichaellaw.com', false, 'TE-56282', 6)
+        VALUES ('Jessica Edwards', 'Law Offices of Jessica Edwards', 'New York', 'Rochester', ARRAY['Police Misconduct', 'Wrongful Conviction', 'Constitutional Law'], ARRAY['Qualified Immunity', 'Section 1983'], '474-721-8632', 'info@edwardslaw.com', 'https://www.edwardsjessicalaw.com', true, 'NE-98129', 12)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Karen Garcia', 'Law Offices of Karen Garcia', 'Florida', 'Orlando', ARRAY['Housing Discrimination'], ARRAY['Illegal Search', 'Section 1983'], '341-751-5916', 'info@garcialaw.com', 'https://www.garciakarenlaw.com', false, 'FL-10488', 37)
+        VALUES ('Barbara Hill', 'Law Offices of Barbara Hill', 'Nebraska', 'Bellevue', ARRAY['Civil Rights'], ARRAY['Qualified Immunity', 'False Arrest', 'Racial Profiling'], '742-376-3915', 'info@hilllaw.com', 'https://www.hillbarbaralaw.com', false, 'NE-18714', 8)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Larry Hernandez', 'Law Offices of Larry Hernandez', 'Minnesota', 'St. Paul', ARRAY['Civil Rights'], ARRAY['Police Brutality', 'Excessive Force', 'Malicious Prosecution'], '554-464-8444', 'info@hernandezlaw.com', 'https://www.hernandezlarrylaw.com', false, 'MI-11854', 22)
+        VALUES ('Steven Lee', 'Law Offices of Steven Lee', 'Arizona', 'Mesa', ARRAY['Prisoners'' Rights', 'Employment Discrimination'], ARRAY['Protest Defense', 'Excessive Force', 'Malicious Prosecution'], '689-255-2204', 'info@leelaw.com', 'https://www.leestevenlaw.com', false, 'AR-37570', 34)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Michael Sanchez', 'Law Offices of Michael Sanchez', 'Maine', 'Lewiston', ARRAY['First Amendment', 'Employment Discrimination', 'Housing Discrimination'], ARRAY['Racial Profiling', 'Qualified Immunity'], '374-302-2408', 'info@sanchezlaw.com', 'https://www.sanchezmichaellaw.com', false, 'MA-84554', 21)
+        VALUES ('Paul Hill', 'Law Offices of Paul Hill', 'Missouri', 'St. Louis', ARRAY['Constitutional Law'], ARRAY['Qualified Immunity', 'Racial Profiling'], '696-442-6258', 'info@hilllaw.com', 'https://www.hillpaullaw.com', false, 'MI-97974', 22)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('George Perez', 'Law Offices of George Perez', 'Iowa', 'Cedar Rapids', ARRAY['Police Misconduct', 'Employment Discrimination', 'Wrongful Conviction'], ARRAY['Illegal Search', 'Section 1983'], '768-985-6237', 'info@perezlaw.com', 'https://www.perezgeorgelaw.com', false, 'IO-40856', 13)
+        VALUES ('Daniel Brown', 'Law Offices of Daniel Brown', 'Missouri', 'St. Louis', ARRAY['Voting Rights', 'Wrongful Conviction'], ARRAY['Police Brutality', 'Illegal Search'], '769-935-4199', 'info@brownlaw.com', 'https://www.browndaniellaw.com', true, 'MI-87588', 31)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Anthony Mitchell', 'Law Offices of Anthony Mitchell', 'Kentucky', 'Bowling Green', ARRAY['First Amendment', 'Employment Discrimination', 'Civil Rights'], ARRAY['False Arrest', 'Police Brutality'], '624-645-4384', 'info@mitchelllaw.com', 'https://www.mitchellanthonylaw.com', true, 'KE-36434', 25)
+        VALUES ('Ryan Murphy', 'Law Offices of Ryan Murphy', 'South Dakota', 'Rapid City', ARRAY['First Amendment'], ARRAY['Illegal Search', 'Police Brutality'], '464-279-8214', 'info@murphylaw.com', 'https://www.murphyryanlaw.com', false, 'SO-26709', 13)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Joshua Miller', 'Law Offices of Joshua Miller', 'Arkansas', 'Fort Smith', ARRAY['Constitutional Law', 'Voting Rights', 'Civil Rights'], ARRAY['Excessive Force', 'Qualified Immunity', 'Malicious Prosecution'], '317-273-9286', 'info@millerlaw.com', 'https://www.millerjoshualaw.com', false, 'AR-98016', 28)
+        VALUES ('Stephen Nelson', 'Law Offices of Stephen Nelson', 'New Mexico', 'Rio Rancho', ARRAY['Civil Rights', 'Prisoners'' Rights', 'Employment Discrimination'], ARRAY['Police Brutality', 'Section 1983'], '966-232-2870', 'info@nelsonlaw.com', 'https://www.nelsonstephenlaw.com', true, 'NE-65914', 7)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Eric Perez', 'Law Offices of Eric Perez', 'Arizona', 'Tucson', ARRAY['Constitutional Law'], ARRAY['Malicious Prosecution'], '224-960-5191', 'info@perezlaw.com', 'https://www.perezericlaw.com', true, 'AR-42275', 28)
+        VALUES ('Raymond Robinson', 'Law Offices of Raymond Robinson', 'Florida', 'Jacksonville', ARRAY['Housing Discrimination'], ARRAY['Malicious Prosecution', 'Protest Defense'], '462-878-5411', 'info@robinsonlaw.com', 'https://www.robinsonraymondlaw.com', false, 'FL-67739', 37)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Joseph Garcia', 'Law Offices of Joseph Garcia', 'Montana', 'Billings', ARRAY['Police Misconduct'], ARRAY['Section 1983', 'Racial Profiling', 'Malicious Prosecution'], '637-836-8868', 'info@garcialaw.com', 'https://www.garciajosephlaw.com', false, 'MO-90051', 34)
+        VALUES ('Michael Lopez', 'Law Offices of Michael Lopez', 'Kansas', 'Wichita', ARRAY['Prisoners'' Rights', 'Wrongful Conviction'], ARRAY['Illegal Search', 'Racial Profiling', 'Qualified Immunity'], '856-201-7988', 'info@lopezlaw.com', 'https://www.lopezmichaellaw.com', true, 'KA-16011', 10)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Jeffrey Scott', 'Law Offices of Jeffrey Scott', 'Pennsylvania', 'Philadelphia', ARRAY['Wrongful Conviction'], ARRAY['Illegal Search'], '644-992-3520', 'info@scottlaw.com', 'https://www.scottjeffreylaw.com', false, 'PE-60341', 12)
+        VALUES ('Ronald Brown', 'Law Offices of Ronald Brown', 'Rhode Island', 'Cranston', ARRAY['Constitutional Law'], ARRAY['Protest Defense'], '973-556-6468', 'info@brownlaw.com', 'https://www.brownronaldlaw.com', false, 'RH-51410', 24)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Andrew King', 'Law Offices of Andrew King', 'Arizona', 'Chandler', ARRAY['Housing Discrimination', 'Wrongful Conviction'], ARRAY['Police Brutality', 'Racial Profiling', 'Section 1983'], '353-812-8506', 'info@kinglaw.com', 'https://www.kingandrewlaw.com', false, 'AR-65141', 33)
+        VALUES ('Richard Reed', 'Law Offices of Richard Reed', 'Maine', 'Lewiston', ARRAY['Prisoners'' Rights'], ARRAY['Illegal Search', 'Protest Defense', 'Excessive Force'], '873-590-2861', 'info@reedlaw.com', 'https://www.reedrichardlaw.com', true, 'MA-41852', 22)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Donald Martin', 'Law Offices of Donald Martin', 'Kentucky', 'Lexington', ARRAY['Civil Rights', 'Wrongful Conviction'], ARRAY['Police Brutality', 'Excessive Force', 'Protest Defense'], '695-762-7275', 'info@martinlaw.com', 'https://www.martindonaldlaw.com', true, 'KE-87656', 12)
+        VALUES ('Peter Thompson', 'Law Offices of Peter Thompson', 'Oklahoma', 'Tulsa', ARRAY['Civil Rights'], ARRAY['Malicious Prosecution', 'Racial Profiling', 'Police Brutality'], '897-270-2627', 'info@thompsonlaw.com', 'https://www.thompsonpeterlaw.com', true, 'OK-10283', 22)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Arthur Bailey', 'Law Offices of Arthur Bailey', 'New Hampshire', 'Nashua', ARRAY['Employment Discrimination', 'First Amendment'], ARRAY['Illegal Search', 'Malicious Prosecution'], '450-284-1389', 'info@baileylaw.com', 'https://www.baileyarthurlaw.com', false, 'NE-34664', 22)
+        VALUES ('Jerry Stewart', 'Law Offices of Jerry Stewart', 'Florida', 'Jacksonville', ARRAY['Wrongful Conviction'], ARRAY['Malicious Prosecution', 'Qualified Immunity'], '300-844-4196', 'info@stewartlaw.com', 'https://www.stewartjerrylaw.com', true, 'FL-68711', 22)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Henry Harris', 'Law Offices of Henry Harris', 'Wyoming', 'Casper', ARRAY['Housing Discrimination', 'Police Misconduct', 'Prisoners' Rights'], ARRAY['Excessive Force', 'Qualified Immunity'], '242-454-3791', 'info@harrislaw.com', 'https://www.harrishenrylaw.com', true, 'WY-92594', 13)
+        VALUES ('Jose Davis', 'Law Offices of Jose Davis', 'New Hampshire', 'Manchester', ARRAY['Civil Rights', 'Police Misconduct', 'Employment Discrimination'], ARRAY['Qualified Immunity', 'Illegal Search', 'Racial Profiling'], '341-419-1634', 'info@davislaw.com', 'https://www.davisjoselaw.com', false, 'NE-95941', 24)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Andrew Harris', 'Law Offices of Andrew Harris', 'Michigan', 'Grand Rapids', ARRAY['First Amendment', 'Prisoners' Rights'], ARRAY['False Arrest', 'Protest Defense'], '378-897-3057', 'info@harrislaw.com', 'https://www.harrisandrewlaw.com', false, 'MI-85664', 13)
+        VALUES ('Susan Morris', 'Law Offices of Susan Morris', 'Arizona', 'Mesa', ARRAY['Voting Rights', 'Housing Discrimination', 'Wrongful Conviction'], ARRAY['Illegal Search'], '672-653-3991', 'info@morrislaw.com', 'https://www.morrissusanlaw.com', true, 'AR-91669', 33)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Paul Thompson', 'Law Offices of Paul Thompson', 'Wyoming', 'Cheyenne', ARRAY['Civil Rights', 'First Amendment'], ARRAY['Protest Defense'], '604-870-9826', 'info@thompsonlaw.com', 'https://www.thompsonpaullaw.com', true, 'WY-11254', 32)
+        VALUES ('Mary Sanchez', 'Law Offices of Mary Sanchez', 'Oregon', 'Portland', ARRAY['Civil Rights', 'Housing Discrimination'], ARRAY['Malicious Prosecution', 'Qualified Immunity', 'Protest Defense'], '719-771-9135', 'info@sanchezlaw.com', 'https://www.sanchezmarylaw.com', false, 'OR-80604', 21)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Sarah Lopez', 'Law Offices of Sarah Lopez', 'Nebraska', 'Bellevue', ARRAY['First Amendment', 'Employment Discrimination', 'Housing Discrimination'], ARRAY['Excessive Force', 'Protest Defense'], '975-934-3460', 'info@lopezlaw.com', 'https://www.lopezsarahlaw.com', true, 'NE-59254', 19)
+        VALUES ('Patricia Gonzalez', 'Law Offices of Patricia Gonzalez', 'Kansas', 'Kansas City', ARRAY['Wrongful Conviction'], ARRAY['Qualified Immunity', 'Police Brutality'], '503-496-6016', 'info@gonzalezlaw.com', 'https://www.gonzalezpatricialaw.com', true, 'KA-37388', 22)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Douglas Morris', 'Law Offices of Douglas Morris', 'Virginia', 'Norfolk', ARRAY['Police Misconduct'], ARRAY['Section 1983', 'Racial Profiling'], '442-645-6502', 'info@morrislaw.com', 'https://www.morrisdouglaslaw.com', false, 'VI-69774', 31)
+        VALUES ('Edward Hall', 'Law Offices of Edward Hall', 'Vermont', 'South Burlington', ARRAY['Wrongful Conviction'], ARRAY['Illegal Search'], '223-310-1640', 'info@halllaw.com', 'https://www.halledwardlaw.com', false, 'VE-44488', 17)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Kenneth Wilson', 'Law Offices of Kenneth Wilson', 'Idaho', 'Nampa', ARRAY['Voting Rights', 'Employment Discrimination', 'Constitutional Law'], ARRAY['False Arrest'], '682-289-4787', 'info@wilsonlaw.com', 'https://www.wilsonkennethlaw.com', false, 'ID-11681', 40)
+        VALUES ('Daniel Lee', 'Law Offices of Daniel Lee', 'Virginia', 'Virginia Beach', ARRAY['Housing Discrimination', 'Employment Discrimination'], ARRAY['Protest Defense'], '940-266-7606', 'info@leelaw.com', 'https://www.leedaniellaw.com', true, 'VI-30613', 11)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Jeffrey Roberts', 'Law Offices of Jeffrey Roberts', 'Wyoming', 'Cheyenne', ARRAY['Wrongful Conviction', 'First Amendment', 'Prisoners' Rights'], ARRAY['Malicious Prosecution'], '775-624-3481', 'info@robertslaw.com', 'https://www.robertsjeffreylaw.com', false, 'WY-34303', 35)
+        VALUES ('James White', 'Law Offices of James White', 'Nebraska', 'Bellevue', ARRAY['Civil Rights', 'Housing Discrimination', 'Wrongful Conviction'], ARRAY['Qualified Immunity', 'Police Brutality'], '268-272-9289', 'info@whitelaw.com', 'https://www.whitejameslaw.com', true, 'NE-40567', 22)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Brian Gonzalez', 'Law Offices of Brian Gonzalez', 'South Dakota', 'Aberdeen', ARRAY['Constitutional Law', 'Civil Rights'], ARRAY['Malicious Prosecution', 'Qualified Immunity', 'False Arrest'], '845-944-3334', 'info@gonzalezlaw.com', 'https://www.gonzalezbrianlaw.com', true, 'SO-62506', 20)
+        VALUES ('Ryan Turner', 'Law Offices of Ryan Turner', 'West Virginia', 'Charleston', ARRAY['Civil Rights'], ARRAY['Excessive Force'], '444-734-6770', 'info@turnerlaw.com', 'https://www.turnerryanlaw.com', false, 'WE-13678', 16)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Stephen Wilson', 'Law Offices of Stephen Wilson', 'Washington', 'Tacoma', ARRAY['Voting Rights'], ARRAY['Excessive Force', 'Protest Defense'], '498-917-7702', 'info@wilsonlaw.com', 'https://www.wilsonstephenlaw.com', false, 'WA-23496', 40)
+        VALUES ('Kenneth Roberts', 'Law Offices of Kenneth Roberts', 'Wisconsin', 'Milwaukee', ARRAY['Voting Rights', 'Employment Discrimination'], ARRAY['Excessive Force', 'Police Brutality'], '737-835-2932', 'info@robertslaw.com', 'https://www.robertskennethlaw.com', true, 'WI-78999', 7)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Roger Lopez', 'Law Offices of Roger Lopez', 'Florida', 'Miami', ARRAY['Constitutional Law'], ARRAY['Malicious Prosecution', 'False Arrest', 'Section 1983'], '318-796-2280', 'info@lopezlaw.com', 'https://www.lopezrogerlaw.com', true, 'FL-96484', 31)
+        VALUES ('John Harris', 'Law Offices of John Harris', 'Mississippi', 'Jackson', ARRAY['Prisoners'' Rights', 'Employment Discrimination', 'Housing Discrimination'], ARRAY['Racial Profiling'], '387-495-4928', 'info@harrislaw.com', 'https://www.harrisjohnlaw.com', true, 'MI-15225', 20)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Barbara Miller', 'Law Offices of Barbara Miller', 'West Virginia', 'Huntington', ARRAY['Civil Rights'], ARRAY['Illegal Search'], '510-653-2852', 'info@millerlaw.com', 'https://www.millerbarbaralaw.com', false, 'WE-96316', 10)
+        VALUES ('Gregory Lee', 'Law Offices of Gregory Lee', 'Alaska', 'Juneau', ARRAY['Voting Rights', 'Police Misconduct'], ARRAY['Illegal Search', 'Protest Defense', 'Racial Profiling'], '885-542-8754', 'info@leelaw.com', 'https://www.leegregorylaw.com', true, 'AL-19362', 14)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Larry Mitchell', 'Law Offices of Larry Mitchell', 'Alaska', 'Juneau', ARRAY['Employment Discrimination'], ARRAY['Malicious Prosecution'], '539-848-2485', 'info@mitchelllaw.com', 'https://www.mitchelllarrylaw.com', true, 'AL-32372', 18)
+        VALUES ('Jerry Miller', 'Law Offices of Jerry Miller', 'Georgia', 'Augusta', ARRAY['Police Misconduct'], ARRAY['Malicious Prosecution'], '991-717-3994', 'info@millerlaw.com', 'https://www.millerjerrylaw.com', false, 'GE-15934', 10)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Frank Morgan', 'Law Offices of Frank Morgan', 'Kentucky', 'Bowling Green', ARRAY['Wrongful Conviction', 'Housing Discrimination'], ARRAY['Protest Defense', 'Racial Profiling'], '760-991-7462', 'info@morganlaw.com', 'https://www.morganfranklaw.com', false, 'KE-96640', 12)
+        VALUES ('Linda Johnson', 'Law Offices of Linda Johnson', 'Utah', 'West Valley City', ARRAY['Employment Discrimination', 'First Amendment', 'Housing Discrimination'], ARRAY['Protest Defense', 'Illegal Search'], '349-376-9618', 'info@johnsonlaw.com', 'https://www.johnsonlindalaw.com', false, 'UT-37787', 14)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Barbara Hall', 'Law Offices of Barbara Hall', 'Ohio', 'Cincinnati', ARRAY['Wrongful Conviction', 'Police Misconduct'], ARRAY['Malicious Prosecution'], '661-960-5121', 'info@halllaw.com', 'https://www.hallbarbaralaw.com', false, 'OH-99174', 6)
+        VALUES ('Scott Lee', 'Law Offices of Scott Lee', 'Maryland', 'Frederick', ARRAY['First Amendment', 'Housing Discrimination'], ARRAY['Section 1983', 'Racial Profiling', 'Malicious Prosecution'], '553-645-3505', 'info@leelaw.com', 'https://www.leescottlaw.com', true, 'MA-57088', 10)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Henry Turner', 'Law Offices of Henry Turner', 'New York', 'Buffalo', ARRAY['Housing Discrimination', 'Civil Rights'], ARRAY['Protest Defense'], '809-548-7027', 'info@turnerlaw.com', 'https://www.turnerhenrylaw.com', false, 'NE-18489', 7)
+        VALUES ('Gregory Smith', 'Law Offices of Gregory Smith', 'South Dakota', 'Rapid City', ARRAY['Constitutional Law', 'Employment Discrimination', 'First Amendment'], ARRAY['Qualified Immunity'], '581-447-5642', 'info@smithlaw.com', 'https://www.smithgregorylaw.com', true, 'SO-85796', 17)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Paul Lee', 'Law Offices of Paul Lee', 'Idaho', 'Meridian', ARRAY['Prisoners' Rights'], ARRAY['Protest Defense', 'Racial Profiling', 'Excessive Force'], '828-313-5356', 'info@leelaw.com', 'https://www.leepaullaw.com', false, 'ID-92406', 29)
+        VALUES ('Scott Morgan', 'Law Offices of Scott Morgan', 'Kentucky', 'Louisville', ARRAY['Constitutional Law', 'Wrongful Conviction', 'Prisoners'' Rights'], ARRAY['Section 1983', 'Police Brutality', 'Protest Defense'], '470-581-3687', 'info@morganlaw.com', 'https://www.morganscottlaw.com', true, 'KE-82460', 36)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Daniel Scott', 'Law Offices of Daniel Scott', 'Idaho', 'Nampa', ARRAY['Wrongful Conviction'], ARRAY['Malicious Prosecution'], '237-958-4898', 'info@scottlaw.com', 'https://www.scottdaniellaw.com', true, 'ID-83960', 13)
+        VALUES ('Gregory Young', 'Law Offices of Gregory Young', 'Maryland', 'Baltimore', ARRAY['Police Misconduct', 'Wrongful Conviction'], ARRAY['Racial Profiling', 'Excessive Force', 'Qualified Immunity'], '528-309-7362', 'info@younglaw.com', 'https://www.younggregorylaw.com', false, 'MA-79061', 36)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Carl Brown', 'Law Offices of Carl Brown', 'Connecticut', 'New Haven', ARRAY['Prisoners' Rights', 'Housing Discrimination'], ARRAY['Racial Profiling', 'Section 1983'], '378-509-1916', 'info@brownlaw.com', 'https://www.browncarllaw.com', false, 'CO-41920', 35)
+        VALUES ('Scott Campbell', 'Law Offices of Scott Campbell', 'Tennessee', 'Nashville', ARRAY['Voting Rights', 'Housing Discrimination'], ARRAY['Malicious Prosecution', 'Illegal Search', 'Section 1983'], '209-516-2320', 'info@campbelllaw.com', 'https://www.campbellscottlaw.com', true, 'TE-23971', 38)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Elizabeth Hall', 'Law Offices of Elizabeth Hall', 'Montana', 'Missoula', ARRAY['Voting Rights'], ARRAY['Racial Profiling'], '300-483-9916', 'info@halllaw.com', 'https://www.hallelizabethlaw.com', false, 'MO-48614', 21)
+        VALUES ('Karen Gonzalez', 'Law Offices of Karen Gonzalez', 'Florida', 'Orlando', ARRAY['Constitutional Law'], ARRAY['Malicious Prosecution'], '638-405-2207', 'info@gonzalezlaw.com', 'https://www.gonzalezkarenlaw.com', true, 'FL-59161', 34)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Peter Campbell', 'Law Offices of Peter Campbell', 'Texas', 'Austin', ARRAY['First Amendment'], ARRAY['Illegal Search', 'Qualified Immunity'], '294-353-3896', 'info@campbelllaw.com', 'https://www.campbellpeterlaw.com', true, 'TE-31826', 20)
+        VALUES ('Thomas Garcia', 'Law Offices of Thomas Garcia', 'New Mexico', 'Las Cruces', ARRAY['Employment Discrimination', 'First Amendment'], ARRAY['Qualified Immunity', 'Racial Profiling', 'Protest Defense'], '430-436-6149', 'info@garcialaw.com', 'https://www.garciathomaslaw.com', false, 'NE-18392', 23)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Douglas Bell', 'Law Offices of Douglas Bell', 'Nebraska', 'Omaha', ARRAY['Prisoners' Rights', 'Civil Rights', 'Constitutional Law'], ARRAY['Protest Defense', 'Racial Profiling', 'Illegal Search'], '537-873-8792', 'info@belllaw.com', 'https://www.belldouglaslaw.com', true, 'NE-32773', 9)
+        VALUES ('Gary Turner', 'Law Offices of Gary Turner', 'Indiana', 'Fort Wayne', ARRAY['Wrongful Conviction', 'Constitutional Law', 'Prisoners'' Rights'], ARRAY['Police Brutality', 'Section 1983'], '917-970-8315', 'info@turnerlaw.com', 'https://www.turnergarylaw.com', true, 'IN-22206', 35)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Steven Roberts', 'Law Offices of Steven Roberts', 'Vermont', 'Burlington', ARRAY['Constitutional Law'], ARRAY['Excessive Force', 'Protest Defense', 'Malicious Prosecution'], '642-943-2231', 'info@robertslaw.com', 'https://www.robertsstevenlaw.com', true, 'VE-85558', 13)
+        VALUES ('Daniel Parker', 'Law Offices of Daniel Parker', 'Kentucky', 'Louisville', ARRAY['Voting Rights'], ARRAY['Police Brutality', 'Malicious Prosecution'], '347-625-4385', 'info@parkerlaw.com', 'https://www.parkerdaniellaw.com', true, 'KE-96137', 33)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Kenneth Phillips', 'Law Offices of Kenneth Phillips', 'Massachusetts', 'Boston', ARRAY['Employment Discrimination', 'First Amendment', 'Prisoners' Rights'], ARRAY['Protest Defense', 'Police Brutality', 'False Arrest'], '535-389-1855', 'info@phillipslaw.com', 'https://www.phillipskennethlaw.com', false, 'MA-91608', 35)
+        VALUES ('Matthew Hall', 'Law Offices of Matthew Hall', 'South Dakota', 'Aberdeen', ARRAY['Constitutional Law'], ARRAY['Protest Defense'], '745-577-4604', 'info@halllaw.com', 'https://www.hallmatthewlaw.com', true, 'SO-83674', 7)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Harold Johnson', 'Law Offices of Harold Johnson', 'Vermont', 'Burlington', ARRAY['Prisoners' Rights'], ARRAY['Malicious Prosecution'], '747-396-8739', 'info@johnsonlaw.com', 'https://www.johnsonharoldlaw.com', false, 'VE-13487', 34)
+        VALUES ('Donald King', 'Law Offices of Donald King', 'South Dakota', 'Rapid City', ARRAY['Housing Discrimination', 'Employment Discrimination', 'First Amendment'], ARRAY['Malicious Prosecution', 'Racial Profiling'], '213-273-8388', 'info@kinglaw.com', 'https://www.kingdonaldlaw.com', false, 'SO-19302', 36)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Frank Lee', 'Law Offices of Frank Lee', 'Pennsylvania', 'Allentown', ARRAY['First Amendment'], ARRAY['Racial Profiling', 'Protest Defense', 'Police Brutality'], '700-713-5229', 'info@leelaw.com', 'https://www.leefranklaw.com', true, 'PE-44647', 19)
+        VALUES ('Harold Jones', 'Law Offices of Harold Jones', 'Montana', 'Missoula', ARRAY['Housing Discrimination'], ARRAY['Qualified Immunity', 'Protest Defense'], '559-825-6471', 'info@joneslaw.com', 'https://www.jonesharoldlaw.com', true, 'MO-88931', 33)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Andrew Morgan', 'Law Offices of Andrew Morgan', 'New York', 'New York City', ARRAY['Civil Rights'], ARRAY['Police Brutality', 'False Arrest', 'Illegal Search'], '382-404-2079', 'info@morganlaw.com', 'https://www.morganandrewlaw.com', true, 'NE-25727', 27)
+        VALUES ('Sarah Lewis', 'Law Offices of Sarah Lewis', 'Idaho', 'Meridian', ARRAY['Housing Discrimination'], ARRAY['Excessive Force'], '712-321-7730', 'info@lewislaw.com', 'https://www.lewissarahlaw.com', true, 'ID-19638', 34)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Sarah Reed', 'Law Offices of Sarah Reed', 'Virginia', 'Virginia Beach', ARRAY['Civil Rights'], ARRAY['Excessive Force'], '201-830-9543', 'info@reedlaw.com', 'https://www.reedsarahlaw.com', true, 'VI-19598', 24)
+        VALUES ('Karen Allen', 'Law Offices of Karen Allen', 'Nevada', 'Las Vegas', ARRAY['Civil Rights', 'Police Misconduct'], ARRAY['Illegal Search'], '921-338-6248', 'info@allenlaw.com', 'https://www.allenkarenlaw.com', false, 'NE-95490', 30)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('George Williams', 'Law Offices of George Williams', 'Hawaii', 'Hilo', ARRAY['Voting Rights'], ARRAY['Qualified Immunity', 'Malicious Prosecution'], '737-492-9689', 'info@williamslaw.com', 'https://www.williamsgeorgelaw.com', false, 'HA-39866', 17)
+        VALUES ('Susan Lopez', 'Law Offices of Susan Lopez', 'Mississippi', 'Jackson', ARRAY['Voting Rights', 'Employment Discrimination'], ARRAY['Section 1983', 'Racial Profiling'], '560-242-8523', 'info@lopezlaw.com', 'https://www.lopezsusanlaw.com', true, 'MI-70827', 23)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Henry White', 'Law Offices of Henry White', 'Utah', 'West Valley City', ARRAY['Police Misconduct', 'Wrongful Conviction'], ARRAY['Section 1983'], '732-976-4072', 'info@whitelaw.com', 'https://www.whitehenrylaw.com', true, 'UT-59137', 21)
+        VALUES ('Paul Evans', 'Law Offices of Paul Evans', 'Kentucky', 'Louisville', ARRAY['First Amendment', 'Employment Discrimination'], ARRAY['Police Brutality'], '240-203-3355', 'info@evanslaw.com', 'https://www.evanspaullaw.com', false, 'KE-79252', 16)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Joseph Robinson', 'Law Offices of Joseph Robinson', 'Hawaii', 'Hilo', ARRAY['Constitutional Law', 'Voting Rights'], ARRAY['Racial Profiling', 'Police Brutality', 'Malicious Prosecution'], '253-364-3269', 'info@robinsonlaw.com', 'https://www.robinsonjosephlaw.com', false, 'HA-86146', 9)
+        VALUES ('Charles Cook', 'Law Offices of Charles Cook', 'Alabama', 'Huntsville', ARRAY['Constitutional Law', 'Prisoners'' Rights'], ARRAY['Protest Defense', 'Excessive Force'], '545-955-9607', 'info@cooklaw.com', 'https://www.cookcharleslaw.com', false, 'AL-94798', 28)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Gary White', 'Law Offices of Gary White', 'New Jersey', 'Paterson', ARRAY['Employment Discrimination'], ARRAY['Police Brutality', 'Excessive Force', 'Illegal Search'], '411-704-6934', 'info@whitelaw.com', 'https://www.whitegarylaw.com', true, 'NE-63115', 16)
+        VALUES ('Jeffrey Roberts', 'Law Offices of Jeffrey Roberts', 'Maine', 'Lewiston', ARRAY['Wrongful Conviction', 'Voting Rights'], ARRAY['Protest Defense', 'Qualified Immunity', 'Section 1983'], '669-745-9607', 'info@robertslaw.com', 'https://www.robertsjeffreylaw.com', false, 'MA-80590', 12)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Raymond Stewart', 'Law Offices of Raymond Stewart', 'Minnesota', 'Rochester', ARRAY['Civil Rights', 'Wrongful Conviction'], ARRAY['Racial Profiling', 'False Arrest', 'Malicious Prosecution'], '366-610-4669', 'info@stewartlaw.com', 'https://www.stewartraymondlaw.com', false, 'MI-83706', 36)
+        VALUES ('Jose Smith', 'Law Offices of Jose Smith', 'Arizona', 'Mesa', ARRAY['Voting Rights', 'Wrongful Conviction'], ARRAY['Protest Defense', 'Section 1983', 'Illegal Search'], '881-360-7586', 'info@smithlaw.com', 'https://www.smithjoselaw.com', false, 'AR-61673', 7)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Jessica Lewis', 'Law Offices of Jessica Lewis', 'Virginia', 'Norfolk', ARRAY['Police Misconduct'], ARRAY['False Arrest'], '843-705-2444', 'info@lewislaw.com', 'https://www.lewisjessicalaw.com', false, 'VI-75927', 5)
+        VALUES ('Larry Phillips', 'Law Offices of Larry Phillips', 'Florida', 'Jacksonville', ARRAY['Employment Discrimination', 'Prisoners'' Rights', 'First Amendment'], ARRAY['Racial Profiling'], '226-971-8222', 'info@phillipslaw.com', 'https://www.phillipslarrylaw.com', true, 'FL-23168', 27)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Dennis Martin', 'Law Offices of Dennis Martin', 'Michigan', 'Warren', ARRAY['Police Misconduct'], ARRAY['Racial Profiling', 'Malicious Prosecution'], '804-682-1796', 'info@martinlaw.com', 'https://www.martindennislaw.com', true, 'MI-79688', 34)
+        VALUES ('Barbara Moore', 'Law Offices of Barbara Moore', 'Mississippi', 'Southaven', ARRAY['Prisoners'' Rights', 'Wrongful Conviction'], ARRAY['Racial Profiling', 'Excessive Force', 'Protest Defense'], '437-294-4455', 'info@moorelaw.com', 'https://www.moorebarbaralaw.com', true, 'MI-37269', 8)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Jennifer White', 'Law Offices of Jennifer White', 'South Carolina', 'North Charleston', ARRAY['Wrongful Conviction', 'Housing Discrimination', 'Prisoners' Rights'], ARRAY['Section 1983'], '664-349-4962', 'info@whitelaw.com', 'https://www.whitejenniferlaw.com', true, 'SO-80465', 14)
+        VALUES ('James Murphy', 'Law Offices of James Murphy', 'Connecticut', 'New Haven', ARRAY['Constitutional Law'], ARRAY['Police Brutality'], '944-564-1193', 'info@murphylaw.com', 'https://www.murphyjameslaw.com', false, 'CO-47256', 35)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Barbara Moore', 'Law Offices of Barbara Moore', 'North Carolina', 'Greensboro', ARRAY['First Amendment', 'Prisoners' Rights'], ARRAY['Malicious Prosecution'], '971-986-6422', 'info@moorelaw.com', 'https://www.moorebarbaralaw.com', true, 'NO-48520', 16)
+        VALUES ('Douglas Reed', 'Law Offices of Douglas Reed', 'Michigan', 'Warren', ARRAY['Constitutional Law'], ARRAY['Section 1983', 'Protest Defense'], '881-927-2451', 'info@reedlaw.com', 'https://www.reeddouglaslaw.com', false, 'MI-97523', 12)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Raymond Morgan', 'Law Offices of Raymond Morgan', 'North Dakota', 'Fargo', ARRAY['Constitutional Law', 'Police Misconduct'], ARRAY['False Arrest'], '689-891-6213', 'info@morganlaw.com', 'https://www.morganraymondlaw.com', true, 'NO-47126', 39)
+        VALUES ('Carl Thomas', 'Law Offices of Carl Thomas', 'Utah', 'West Valley City', ARRAY['Civil Rights', 'Constitutional Law'], ARRAY['False Arrest', 'Protest Defense'], '884-610-1681', 'info@thomaslaw.com', 'https://www.thomascarllaw.com', false, 'UT-26792', 8)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Karen Rogers', 'Law Offices of Karen Rogers', 'Tennessee', 'Nashville', ARRAY['Voting Rights', 'Housing Discrimination'], ARRAY['Excessive Force', 'Protest Defense', 'Illegal Search'], '928-450-2873', 'info@rogerslaw.com', 'https://www.rogerskarenlaw.com', false, 'TE-88787', 18)
+        VALUES ('Harold Nelson', 'Law Offices of Harold Nelson', 'New Jersey', 'Newark', ARRAY['Voting Rights', 'First Amendment'], ARRAY['Qualified Immunity', 'Protest Defense', 'False Arrest'], '415-398-3795', 'info@nelsonlaw.com', 'https://www.nelsonharoldlaw.com', false, 'NE-67272', 27)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Henry Phillips', 'Law Offices of Henry Phillips', 'Indiana', 'Evansville', ARRAY['Constitutional Law', 'Civil Rights', 'Employment Discrimination'], ARRAY['Police Brutality', 'Excessive Force'], '589-365-9538', 'info@phillipslaw.com', 'https://www.phillipshenrylaw.com', true, 'IN-90122', 15)
+        VALUES ('George Baker', 'Law Offices of George Baker', 'Pennsylvania', 'Pittsburgh', ARRAY['Constitutional Law', 'Housing Discrimination', 'First Amendment'], ARRAY['Section 1983', 'Malicious Prosecution', 'Racial Profiling'], '468-478-4776', 'info@bakerlaw.com', 'https://www.bakergeorgelaw.com', false, 'PE-35001', 22)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Anthony Adams', 'Law Offices of Anthony Adams', 'Oregon', 'Salem', ARRAY['Constitutional Law'], ARRAY['False Arrest'], '628-489-1803', 'info@adamslaw.com', 'https://www.adamsanthonylaw.com', true, 'OR-96745', 22)
+        VALUES ('Ryan Wright', 'Law Offices of Ryan Wright', 'Ohio', 'Cincinnati', ARRAY['Voting Rights', 'Wrongful Conviction', 'Civil Rights'], ARRAY['Section 1983', 'Excessive Force', 'Qualified Immunity'], '324-987-2749', 'info@wrightlaw.com', 'https://www.wrightryanlaw.com', true, 'OH-88161', 23)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Daniel Rogers', 'Law Offices of Daniel Rogers', 'Indiana', 'Evansville', ARRAY['Police Misconduct', 'Employment Discrimination', 'Constitutional Law'], ARRAY['Illegal Search', 'Section 1983'], '536-439-7725', 'info@rogerslaw.com', 'https://www.rogersdaniellaw.com', true, 'IN-75825', 37)
+        VALUES ('Patricia Edwards', 'Law Offices of Patricia Edwards', 'Texas', 'Dallas', ARRAY['First Amendment', 'Housing Discrimination'], ARRAY['Protest Defense', 'Police Brutality'], '580-594-3722', 'info@edwardslaw.com', 'https://www.edwardspatricialaw.com', false, 'TE-21465', 6)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Joshua Lopez', 'Law Offices of Joshua Lopez', 'Ohio', 'Toledo', ARRAY['Employment Discrimination'], ARRAY['Malicious Prosecution'], '241-831-3504', 'info@lopezlaw.com', 'https://www.lopezjoshualaw.com', true, 'OH-97977', 26)
+        VALUES ('Patricia Phillips', 'Law Offices of Patricia Phillips', 'New Hampshire', 'Concord', ARRAY['Wrongful Conviction'], ARRAY['False Arrest', 'Excessive Force', 'Racial Profiling'], '533-718-9040', 'info@phillipslaw.com', 'https://www.phillipspatricialaw.com', false, 'NE-64959', 28)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Patrick Allen', 'Law Offices of Patrick Allen', 'Ohio', 'Toledo', ARRAY['Wrongful Conviction', 'Constitutional Law'], ARRAY['Racial Profiling'], '514-409-9435', 'info@allenlaw.com', 'https://www.allenpatricklaw.com', false, 'OH-16507', 20)
+        VALUES ('Jeffrey Cook', 'Law Offices of Jeffrey Cook', 'Arizona', 'Mesa', ARRAY['Employment Discrimination', 'Wrongful Conviction', 'Constitutional Law'], ARRAY['Section 1983', 'Protest Defense', 'Police Brutality'], '315-562-3340', 'info@cooklaw.com', 'https://www.cookjeffreylaw.com', true, 'AR-20299', 32)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Daniel Lopez', 'Law Offices of Daniel Lopez', 'Nebraska', 'Bellevue', ARRAY['Constitutional Law'], ARRAY['Section 1983', 'Protest Defense', 'Racial Profiling'], '503-394-8415', 'info@lopezlaw.com', 'https://www.lopezdaniellaw.com', true, 'NE-32778', 23)
+        VALUES ('John Taylor', 'Law Offices of John Taylor', 'Montana', 'Great Falls', ARRAY['Civil Rights', 'First Amendment', 'Housing Discrimination'], ARRAY['Police Brutality', 'Illegal Search'], '353-970-3073', 'info@taylorlaw.com', 'https://www.taylorjohnlaw.com', false, 'MO-25589', 23)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Karen Lee', 'Law Offices of Karen Lee', 'Wisconsin', 'Madison', ARRAY['Prisoners' Rights'], ARRAY['Section 1983', 'Racial Profiling'], '282-215-6802', 'info@leelaw.com', 'https://www.leekarenlaw.com', false, 'WI-40003', 16)
+        VALUES ('Walter Collins', 'Law Offices of Walter Collins', 'Connecticut', 'Stamford', ARRAY['Police Misconduct', 'Prisoners'' Rights'], ARRAY['Qualified Immunity', 'Protest Defense', 'Police Brutality'], '591-837-9441', 'info@collinslaw.com', 'https://www.collinswalterlaw.com', false, 'CO-90097', 31)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Joshua Morgan', 'Law Offices of Joshua Morgan', 'Texas', 'Austin', ARRAY['Wrongful Conviction', 'First Amendment'], ARRAY['Excessive Force', 'Illegal Search'], '221-687-2169', 'info@morganlaw.com', 'https://www.morganjoshualaw.com', true, 'TE-20719', 31)
+        VALUES ('Donald Collins', 'Law Offices of Donald Collins', 'Utah', 'Salt Lake City', ARRAY['Wrongful Conviction', 'Constitutional Law', 'Police Misconduct'], ARRAY['False Arrest'], '829-781-6732', 'info@collinslaw.com', 'https://www.collinsdonaldlaw.com', false, 'UT-27018', 28)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('John Cook', 'Law Offices of John Cook', 'Tennessee', 'Nashville', ARRAY['Wrongful Conviction', 'Prisoners' Rights', 'Police Misconduct'], ARRAY['Protest Defense', 'Illegal Search', 'False Arrest'], '676-499-6770', 'info@cooklaw.com', 'https://www.cookjohnlaw.com', true, 'TE-83885', 26)
+        VALUES ('Ryan Morgan', 'Law Offices of Ryan Morgan', 'Idaho', 'Boise', ARRAY['Wrongful Conviction', 'Civil Rights'], ARRAY['Police Brutality'], '206-586-6431', 'info@morganlaw.com', 'https://www.morganryanlaw.com', false, 'ID-46180', 40)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Patricia Anderson', 'Law Offices of Patricia Anderson', 'South Carolina', 'North Charleston', ARRAY['Employment Discrimination'], ARRAY['Excessive Force'], '866-644-7355', 'info@andersonlaw.com', 'https://www.andersonpatricialaw.com', true, 'SO-19625', 40)
+        VALUES ('Linda Sanchez', 'Law Offices of Linda Sanchez', 'Indiana', 'Indianapolis', ARRAY['Police Misconduct', 'Constitutional Law', 'First Amendment'], ARRAY['False Arrest'], '559-588-5467', 'info@sanchezlaw.com', 'https://www.sanchezlindalaw.com', true, 'IN-24171', 24)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Gary Hernandez', 'Law Offices of Gary Hernandez', 'Illinois', 'Chicago', ARRAY['Voting Rights', 'Civil Rights'], ARRAY['Qualified Immunity'], '985-277-6738', 'info@hernandezlaw.com', 'https://www.hernandezgarylaw.com', false, 'IL-48559', 36)
+        VALUES ('Roger Mitchell', 'Law Offices of Roger Mitchell', 'New York', 'Rochester', ARRAY['Housing Discrimination'], ARRAY['Protest Defense', 'False Arrest'], '734-753-6677', 'info@mitchelllaw.com', 'https://www.mitchellrogerlaw.com', true, 'NE-43479', 23)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Thomas Hill', 'Law Offices of Thomas Hill', 'Ohio', 'Cincinnati', ARRAY['Voting Rights', 'Constitutional Law', 'Housing Discrimination'], ARRAY['False Arrest'], '922-629-5602', 'info@hilllaw.com', 'https://www.hillthomaslaw.com', false, 'OH-88322', 20)
+        VALUES ('Carl Smith', 'Law Offices of Carl Smith', 'Indiana', 'Indianapolis', ARRAY['Employment Discrimination', 'Police Misconduct'], ARRAY['Section 1983', 'Malicious Prosecution', 'Illegal Search'], '577-976-3208', 'info@smithlaw.com', 'https://www.smithcarllaw.com', true, 'IN-90156', 18)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('William Williams', 'Law Offices of William Williams', 'Tennessee', 'Knoxville', ARRAY['Employment Discrimination'], ARRAY['Illegal Search'], '232-675-2612', 'info@williamslaw.com', 'https://www.williamswilliamlaw.com', false, 'TE-74829', 40)
+        VALUES ('Thomas Robinson', 'Law Offices of Thomas Robinson', 'Washington', 'Spokane', ARRAY['Constitutional Law', 'First Amendment'], ARRAY['Malicious Prosecution', 'Illegal Search'], '484-204-3328', 'info@robinsonlaw.com', 'https://www.robinsonthomaslaw.com', false, 'WA-73198', 27)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Douglas Evans', 'Law Offices of Douglas Evans', 'Vermont', 'South Burlington', ARRAY['Constitutional Law', 'Prisoners' Rights', 'First Amendment'], ARRAY['Malicious Prosecution', 'Excessive Force'], '654-761-2440', 'info@evanslaw.com', 'https://www.evansdouglaslaw.com', false, 'VE-33575', 23)
+        VALUES ('Michael King', 'Law Offices of Michael King', 'Massachusetts', 'Boston', ARRAY['Police Misconduct', 'Civil Rights', 'Constitutional Law'], ARRAY['Racial Profiling'], '968-665-5845', 'info@kinglaw.com', 'https://www.kingmichaellaw.com', false, 'MA-68326', 5)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Eric Hall', 'Law Offices of Eric Hall', 'Colorado', 'Fort Collins', ARRAY['Voting Rights', 'Police Misconduct'], ARRAY['Excessive Force'], '908-200-1063', 'info@halllaw.com', 'https://www.hallericlaw.com', false, 'CO-18501', 16)
+        VALUES ('Mark Martin', 'Law Offices of Mark Martin', 'Oklahoma', 'Oklahoma City', ARRAY['Police Misconduct', 'Wrongful Conviction', 'Civil Rights'], ARRAY['Malicious Prosecution', 'Qualified Immunity'], '684-329-1337', 'info@martinlaw.com', 'https://www.martinmarklaw.com', false, 'OK-25727', 7)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Kenneth Edwards', 'Law Offices of Kenneth Edwards', 'Hawaii', 'Hilo', ARRAY['Prisoners' Rights'], ARRAY['Illegal Search'], '885-361-1635', 'info@edwardslaw.com', 'https://www.edwardskennethlaw.com', false, 'HA-87828', 39)
+        VALUES ('Jeffrey Phillips', 'Law Offices of Jeffrey Phillips', 'Washington', 'Seattle', ARRAY['Civil Rights'], ARRAY['Illegal Search', 'False Arrest', 'Racial Profiling'], '845-246-5031', 'info@phillipslaw.com', 'https://www.phillipsjeffreylaw.com', false, 'WA-89420', 32)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Larry Bailey', 'Law Offices of Larry Bailey', 'Wisconsin', 'Green Bay', ARRAY['Prisoners' Rights', 'Police Misconduct', 'Civil Rights'], ARRAY['Section 1983', 'Excessive Force', 'False Arrest'], '791-683-2533', 'info@baileylaw.com', 'https://www.baileylarrylaw.com', true, 'WI-52867', 26)
+        VALUES ('Douglas Murphy', 'Law Offices of Douglas Murphy', 'Indiana', 'Indianapolis', ARRAY['Voting Rights', 'Housing Discrimination'], ARRAY['Illegal Search', 'Police Brutality'], '827-609-5191', 'info@murphylaw.com', 'https://www.murphydouglaslaw.com', true, 'IN-66842', 40)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Susan Edwards', 'Law Offices of Susan Edwards', 'Mississippi', 'Jackson', ARRAY['Housing Discrimination'], ARRAY['Section 1983', 'Excessive Force', 'Qualified Immunity'], '492-280-4994', 'info@edwardslaw.com', 'https://www.edwardssusanlaw.com', true, 'MI-28771', 11)
+        VALUES ('Daniel Williams', 'Law Offices of Daniel Williams', 'North Dakota', 'Grand Forks', ARRAY['First Amendment', 'Housing Discrimination', 'Constitutional Law'], ARRAY['Malicious Prosecution', 'Illegal Search'], '518-336-6621', 'info@williamslaw.com', 'https://www.williamsdaniellaw.com', true, 'NO-79137', 28)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Andrew Lopez', 'Law Offices of Andrew Lopez', 'Maryland', 'Frederick', ARRAY['Employment Discrimination', 'Prisoners' Rights'], ARRAY['Protest Defense', 'Malicious Prosecution'], '323-610-1683', 'info@lopezlaw.com', 'https://www.lopezandrewlaw.com', false, 'MA-86467', 29)
+        VALUES ('David Allen', 'Law Offices of David Allen', 'Delaware', 'Newark', ARRAY['Wrongful Conviction', 'Employment Discrimination'], ARRAY['False Arrest', 'Police Brutality'], '506-869-8771', 'info@allenlaw.com', 'https://www.allendavidlaw.com', false, 'DE-38301', 23)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Patrick Baker', 'Law Offices of Patrick Baker', 'Ohio', 'Cleveland', ARRAY['Voting Rights', 'Wrongful Conviction', 'Housing Discrimination'], ARRAY['False Arrest', 'Police Brutality'], '365-562-8490', 'info@bakerlaw.com', 'https://www.bakerpatricklaw.com', false, 'OH-69692', 27)
+        VALUES ('Christopher Carter', 'Law Offices of Christopher Carter', 'New Hampshire', 'Concord', ARRAY['Prisoners'' Rights', 'Voting Rights', 'First Amendment'], ARRAY['Excessive Force', 'Protest Defense', 'Racial Profiling'], '721-428-8366', 'info@carterlaw.com', 'https://www.carterchristopherlaw.com', true, 'NE-25222', 19)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('John Allen', 'Law Offices of John Allen', 'New Hampshire', 'Nashua', ARRAY['Prisoners' Rights'], ARRAY['Qualified Immunity'], '245-255-2497', 'info@allenlaw.com', 'https://www.allenjohnlaw.com', true, 'NE-58897', 31)
+        VALUES ('Steven Martinez', 'Law Offices of Steven Martinez', 'Florida', 'Tampa', ARRAY['Constitutional Law'], ARRAY['Racial Profiling'], '944-215-5031', 'info@martinezlaw.com', 'https://www.martinezstevenlaw.com', false, 'FL-96572', 29)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Jessica Scott', 'Law Offices of Jessica Scott', 'Montana', 'Great Falls', ARRAY['Housing Discrimination', 'Wrongful Conviction'], ARRAY['Protest Defense'], '700-505-6684', 'info@scottlaw.com', 'https://www.scottjessicalaw.com', false, 'MO-20694', 26)
+        VALUES ('Frank Adams', 'Law Offices of Frank Adams', 'Maine', 'Lewiston', ARRAY['Constitutional Law', 'Voting Rights', 'Prisoners'' Rights'], ARRAY['Section 1983', 'Illegal Search', 'Protest Defense'], '603-914-3869', 'info@adamslaw.com', 'https://www.adamsfranklaw.com', true, 'MA-77716', 15)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Joshua Gonzalez', 'Law Offices of Joshua Gonzalez', 'Maine', 'Lewiston', ARRAY['Civil Rights'], ARRAY['Malicious Prosecution', 'Illegal Search'], '840-387-9411', 'info@gonzalezlaw.com', 'https://www.gonzalezjoshualaw.com', false, 'MA-25943', 35)
+        VALUES ('Henry Harris', 'Law Offices of Henry Harris', 'Minnesota', 'Minneapolis', ARRAY['Prisoners'' Rights', 'Employment Discrimination'], ARRAY['False Arrest', 'Police Brutality'], '247-801-1635', 'info@harrislaw.com', 'https://www.harrishenrylaw.com', true, 'MI-19204', 6)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Carl Sanchez', 'Law Offices of Carl Sanchez', 'Tennessee', 'Knoxville', ARRAY['First Amendment', 'Constitutional Law'], ARRAY['Protest Defense', 'Malicious Prosecution'], '297-715-7228', 'info@sanchezlaw.com', 'https://www.sanchezcarllaw.com', true, 'TE-31525', 11)
+        VALUES ('Thomas Moore', 'Law Offices of Thomas Moore', 'New Hampshire', 'Nashua', ARRAY['Civil Rights', 'Employment Discrimination'], ARRAY['Qualified Immunity', 'Protest Defense', 'Police Brutality'], '311-605-9066', 'info@moorelaw.com', 'https://www.moorethomaslaw.com', false, 'NE-12745', 30)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Michael Thomas', 'Law Offices of Michael Thomas', 'New Mexico', 'Las Cruces', ARRAY['Employment Discrimination', 'Housing Discrimination'], ARRAY['Illegal Search', 'Excessive Force'], '919-257-7974', 'info@thomaslaw.com', 'https://www.thomasmichaellaw.com', false, 'NE-11928', 22)
+        VALUES ('Thomas Cook', 'Law Offices of Thomas Cook', 'Connecticut', 'Bridgeport', ARRAY['Wrongful Conviction'], ARRAY['Illegal Search'], '331-244-7661', 'info@cooklaw.com', 'https://www.cookthomaslaw.com', false, 'CO-12473', 19)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Richard Young', 'Law Offices of Richard Young', 'Virginia', 'Norfolk', ARRAY['Housing Discrimination', 'Prisoners' Rights'], ARRAY['Illegal Search'], '462-555-4845', 'info@younglaw.com', 'https://www.youngrichardlaw.com', false, 'VI-66411', 36)
+        VALUES ('Arthur Rogers', 'Law Offices of Arthur Rogers', 'Oregon', 'Portland', ARRAY['Housing Discrimination', 'Wrongful Conviction'], ARRAY['Excessive Force', 'Protest Defense'], '277-409-5550', 'info@rogerslaw.com', 'https://www.rogersarthurlaw.com', true, 'OR-87944', 10)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Brian Lewis', 'Law Offices of Brian Lewis', 'Massachusetts', 'Springfield', ARRAY['First Amendment'], ARRAY['Illegal Search'], '933-748-3209', 'info@lewislaw.com', 'https://www.lewisbrianlaw.com', false, 'MA-79792', 21)
+        VALUES ('Frank Lee', 'Law Offices of Frank Lee', 'Delaware', 'Newark', ARRAY['Police Misconduct'], ARRAY['Protest Defense'], '462-796-7479', 'info@leelaw.com', 'https://www.leefranklaw.com', false, 'DE-77032', 37)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('James Rogers', 'Law Offices of James Rogers', 'Washington', 'Seattle', ARRAY['First Amendment', 'Prisoners' Rights', 'Civil Rights'], ARRAY['False Arrest', 'Racial Profiling'], '888-897-2681', 'info@rogerslaw.com', 'https://www.rogersjameslaw.com', false, 'WA-85690', 19)
+        VALUES ('Barbara Rogers', 'Law Offices of Barbara Rogers', 'North Dakota', 'Fargo', ARRAY['Wrongful Conviction'], ARRAY['Racial Profiling', 'Police Brutality'], '268-749-8554', 'info@rogerslaw.com', 'https://www.rogersbarbaralaw.com', true, 'NO-56676', 28)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Linda Moore', 'Law Offices of Linda Moore', 'Rhode Island', 'Cranston', ARRAY['Wrongful Conviction', 'Civil Rights'], ARRAY['Section 1983', 'Malicious Prosecution'], '804-675-6554', 'info@moorelaw.com', 'https://www.moorelindalaw.com', true, 'RH-84006', 22)
+        VALUES ('Joseph Clark', 'Law Offices of Joseph Clark', 'North Dakota', 'Grand Forks', ARRAY['Voting Rights', 'First Amendment', 'Constitutional Law'], ARRAY['Protest Defense'], '940-438-1989', 'info@clarklaw.com', 'https://www.clarkjosephlaw.com', true, 'NO-69771', 36)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Robert Robinson', 'Law Offices of Robert Robinson', 'Kentucky', 'Lexington', ARRAY['Employment Discrimination', 'Police Misconduct', 'Housing Discrimination'], ARRAY['Racial Profiling'], '373-900-8180', 'info@robinsonlaw.com', 'https://www.robinsonrobertlaw.com', true, 'KE-56693', 11)
+        VALUES ('Sarah Lopez', 'Law Offices of Sarah Lopez', 'Rhode Island', 'Warwick', ARRAY['Voting Rights', 'Wrongful Conviction'], ARRAY['Protest Defense', 'Police Brutality', 'False Arrest'], '223-372-1945', 'info@lopezlaw.com', 'https://www.lopezsarahlaw.com', false, 'RH-77030', 35)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Robert Cook', 'Law Offices of Robert Cook', 'Connecticut', 'Hartford', ARRAY['Prisoners' Rights', 'Constitutional Law'], ARRAY['Protest Defense', 'Racial Profiling', 'Section 1983'], '362-269-7139', 'info@cooklaw.com', 'https://www.cookrobertlaw.com', true, 'CO-58931', 31)
+        VALUES ('George Adams', 'Law Offices of George Adams', 'Indiana', 'Fort Wayne', ARRAY['Voting Rights', 'Constitutional Law'], ARRAY['Police Brutality'], '257-388-3460', 'info@adamslaw.com', 'https://www.adamsgeorgelaw.com', false, 'IN-31143', 27)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Linda Gonzalez', 'Law Offices of Linda Gonzalez', 'West Virginia', 'Charleston', ARRAY['Police Misconduct', 'Voting Rights', 'Civil Rights'], ARRAY['Racial Profiling'], '956-897-6579', 'info@gonzalezlaw.com', 'https://www.gonzalezlindalaw.com', false, 'WE-26458', 18)
+        VALUES ('Carl Walker', 'Law Offices of Carl Walker', 'Georgia', 'Macon', ARRAY['First Amendment', 'Housing Discrimination', 'Police Misconduct'], ARRAY['Police Brutality', 'False Arrest', 'Section 1983'], '365-452-6128', 'info@walkerlaw.com', 'https://www.walkercarllaw.com', false, 'GE-41935', 15)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Walter Murphy', 'Law Offices of Walter Murphy', 'Ohio', 'Toledo', ARRAY['Constitutional Law', 'Housing Discrimination', 'Prisoners' Rights'], ARRAY['Racial Profiling'], '931-748-5250', 'info@murphylaw.com', 'https://www.murphywalterlaw.com', false, 'OH-53815', 21)
+        VALUES ('Timothy Parker', 'Law Offices of Timothy Parker', 'Minnesota', 'St. Paul', ARRAY['Employment Discrimination', 'Wrongful Conviction'], ARRAY['Section 1983', 'Malicious Prosecution', 'Illegal Search'], '771-244-3031', 'info@parkerlaw.com', 'https://www.parkertimothylaw.com', true, 'MI-90506', 5)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Susan Brown', 'Law Offices of Susan Brown', 'Minnesota', 'Rochester', ARRAY['Wrongful Conviction'], ARRAY['Excessive Force', 'False Arrest', 'Section 1983'], '784-840-5882', 'info@brownlaw.com', 'https://www.brownsusanlaw.com', true, 'MI-37305', 13)
+        VALUES ('Anthony Johnson', 'Law Offices of Anthony Johnson', 'Idaho', 'Meridian', ARRAY['First Amendment', 'Civil Rights'], ARRAY['Illegal Search', 'Malicious Prosecution'], '639-749-1077', 'info@johnsonlaw.com', 'https://www.johnsonanthonylaw.com', false, 'ID-31975', 9)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('James Roberts', 'Law Offices of James Roberts', 'Mississippi', 'Southaven', ARRAY['Constitutional Law', 'Prisoners' Rights'], ARRAY['Excessive Force'], '214-863-9946', 'info@robertslaw.com', 'https://www.robertsjameslaw.com', true, 'MI-53494', 17)
+        VALUES ('Scott Miller', 'Law Offices of Scott Miller', 'Connecticut', 'Bridgeport', ARRAY['Wrongful Conviction', 'Constitutional Law'], ARRAY['Racial Profiling'], '842-283-3973', 'info@millerlaw.com', 'https://www.millerscottlaw.com', true, 'CO-40622', 24)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Jerry Miller', 'Law Offices of Jerry Miller', 'Iowa', 'Des Moines', ARRAY['Civil Rights'], ARRAY['Racial Profiling', 'False Arrest', 'Police Brutality'], '926-612-8903', 'info@millerlaw.com', 'https://www.millerjerrylaw.com', false, 'IO-99427', 20)
+        VALUES ('Walter Lopez', 'Law Offices of Walter Lopez', 'Massachusetts', 'Worcester', ARRAY['Voting Rights', 'Wrongful Conviction', 'Prisoners'' Rights'], ARRAY['Malicious Prosecution'], '775-873-9878', 'info@lopezlaw.com', 'https://www.lopezwalterlaw.com', true, 'MA-74189', 23)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Jennifer Sanchez', 'Law Offices of Jennifer Sanchez', 'Mississippi', 'Jackson', ARRAY['Employment Discrimination', 'Civil Rights', 'Police Misconduct'], ARRAY['Police Brutality', 'Section 1983'], '934-471-7282', 'info@sanchezlaw.com', 'https://www.sanchezjenniferlaw.com', true, 'MI-68059', 15)
+        VALUES ('Henry Davis', 'Law Offices of Henry Davis', 'South Dakota', 'Aberdeen', ARRAY['Employment Discrimination', 'Housing Discrimination', 'Wrongful Conviction'], ARRAY['False Arrest', 'Excessive Force', 'Protest Defense'], '376-580-2989', 'info@davislaw.com', 'https://www.davishenrylaw.com', true, 'SO-23116', 12)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Frank Rogers', 'Law Offices of Frank Rogers', 'Oregon', 'Portland', ARRAY['Police Misconduct'], ARRAY['Illegal Search'], '282-297-6730', 'info@rogerslaw.com', 'https://www.rogersfranklaw.com', false, 'OR-76889', 28)
+        VALUES ('Michael Jones', 'Law Offices of Michael Jones', 'Virginia', 'Chesapeake', ARRAY['Employment Discrimination'], ARRAY['Section 1983', 'False Arrest', 'Police Brutality'], '251-613-7851', 'info@joneslaw.com', 'https://www.jonesmichaellaw.com', true, 'VI-66876', 17)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Sarah Lopez', 'Law Offices of Sarah Lopez', 'Maine', 'Lewiston', ARRAY['Employment Discrimination', 'Police Misconduct'], ARRAY['Racial Profiling', 'Malicious Prosecution'], '271-483-8531', 'info@lopezlaw.com', 'https://www.lopezsarahlaw.com', true, 'MA-97440', 26)
+        VALUES ('Dennis Taylor', 'Law Offices of Dennis Taylor', 'Iowa', 'Cedar Rapids', ARRAY['Constitutional Law', 'First Amendment', 'Employment Discrimination'], ARRAY['Protest Defense'], '748-218-9879', 'info@taylorlaw.com', 'https://www.taylordennislaw.com', false, 'IO-65976', 37)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Jason Thomas', 'Law Offices of Jason Thomas', 'Minnesota', 'St. Paul', ARRAY['Employment Discrimination', 'Housing Discrimination'], ARRAY['Excessive Force', 'Illegal Search'], '334-795-2066', 'info@thomaslaw.com', 'https://www.thomasjasonlaw.com', false, 'MI-87041', 7)
+        VALUES ('Anthony Hall', 'Law Offices of Anthony Hall', 'Vermont', 'Burlington', ARRAY['Wrongful Conviction'], ARRAY['Section 1983'], '329-836-4253', 'info@halllaw.com', 'https://www.hallanthonylaw.com', false, 'VE-33548', 9)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Larry Murphy', 'Law Offices of Larry Murphy', 'Washington', 'Spokane', ARRAY['Prisoners' Rights'], ARRAY['Malicious Prosecution', 'Racial Profiling', 'Section 1983'], '680-856-2142', 'info@murphylaw.com', 'https://www.murphylarrylaw.com', true, 'WA-36864', 31)
+        VALUES ('Dennis Stewart', 'Law Offices of Dennis Stewart', 'Alaska', 'Anchorage', ARRAY['First Amendment', 'Constitutional Law', 'Civil Rights'], ARRAY['Protest Defense'], '266-318-5589', 'info@stewartlaw.com', 'https://www.stewartdennislaw.com', true, 'AL-94341', 30)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Michael Johnson', 'Law Offices of Michael Johnson', 'South Carolina', 'Columbia', ARRAY['Housing Discrimination'], ARRAY['Police Brutality'], '946-906-4311', 'info@johnsonlaw.com', 'https://www.johnsonmichaellaw.com', true, 'SO-90654', 9)
+        VALUES ('Daniel White', 'Law Offices of Daniel White', 'Arizona', 'Phoenix', ARRAY['Prisoners'' Rights'], ARRAY['Malicious Prosecution', 'Illegal Search'], '204-228-4072', 'info@whitelaw.com', 'https://www.whitedaniellaw.com', true, 'AR-23546', 10)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Jerry Allen', 'Law Offices of Jerry Allen', 'Minnesota', 'St. Paul', ARRAY['Employment Discrimination'], ARRAY['Police Brutality'], '312-544-8602', 'info@allenlaw.com', 'https://www.allenjerrylaw.com', false, 'MI-30779', 40)
+        VALUES ('Anthony Morgan', 'Law Offices of Anthony Morgan', 'Illinois', 'Naperville', ARRAY['Constitutional Law', 'Employment Discrimination'], ARRAY['Excessive Force'], '454-211-2458', 'info@morganlaw.com', 'https://www.morgananthonylaw.com', false, 'IL-82462', 17)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Edward White', 'Law Offices of Edward White', 'South Carolina', 'Columbia', ARRAY['Prisoners' Rights', 'First Amendment'], ARRAY['Excessive Force', 'Malicious Prosecution'], '369-249-6256', 'info@whitelaw.com', 'https://www.whiteedwardlaw.com', true, 'SO-10367', 21)
+        VALUES ('Arthur Lopez', 'Law Offices of Arthur Lopez', 'Alaska', 'Juneau', ARRAY['Police Misconduct'], ARRAY['Protest Defense'], '367-335-9368', 'info@lopezlaw.com', 'https://www.lopezarthurlaw.com', false, 'AL-54267', 33)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('William Thompson', 'Law Offices of William Thompson', 'Tennessee', 'Nashville', ARRAY['Housing Discrimination', 'Wrongful Conviction'], ARRAY['Protest Defense', 'False Arrest', 'Section 1983'], '837-869-5878', 'info@thompsonlaw.com', 'https://www.thompsonwilliamlaw.com', true, 'TE-65624', 26)
+        VALUES ('Timothy Clark', 'Law Offices of Timothy Clark', 'North Carolina', 'Greensboro', ARRAY['Constitutional Law', 'Housing Discrimination', 'Employment Discrimination'], ARRAY['Racial Profiling'], '838-655-4257', 'info@clarklaw.com', 'https://www.clarktimothylaw.com', false, 'NO-39597', 31)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('George Mitchell', 'Law Offices of George Mitchell', 'Minnesota', 'Minneapolis', ARRAY['Police Misconduct', 'Civil Rights', 'First Amendment'], ARRAY['Police Brutality'], '821-452-5401', 'info@mitchelllaw.com', 'https://www.mitchellgeorgelaw.com', false, 'MI-99181', 8)
+        VALUES ('Edward Martinez', 'Law Offices of Edward Martinez', 'Arizona', 'Tucson', ARRAY['Police Misconduct', 'Voting Rights'], ARRAY['False Arrest'], '235-287-9315', 'info@martinezlaw.com', 'https://www.martinezedwardlaw.com', true, 'AR-54370', 31)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Raymond Perez', 'Law Offices of Raymond Perez', 'North Carolina', 'Charlotte', ARRAY['Civil Rights'], ARRAY['False Arrest', 'Police Brutality', 'Qualified Immunity'], '796-322-5908', 'info@perezlaw.com', 'https://www.perezraymondlaw.com', false, 'NO-23234', 23)
+        VALUES ('Robert Rodriguez', 'Law Offices of Robert Rodriguez', 'New York', 'Buffalo', ARRAY['Prisoners'' Rights'], ARRAY['Police Brutality', 'Qualified Immunity', 'Racial Profiling'], '393-983-8428', 'info@rodriguezlaw.com', 'https://www.rodriguezrobertlaw.com', true, 'NE-24472', 18)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Ronald Adams', 'Law Offices of Ronald Adams', 'Illinois', 'Aurora', ARRAY['Voting Rights'], ARRAY['Illegal Search', 'Excessive Force', 'False Arrest'], '677-210-3167', 'info@adamslaw.com', 'https://www.adamsronaldlaw.com', false, 'IL-78362', 19)
+        VALUES ('Jerry Garcia', 'Law Offices of Jerry Garcia', 'Illinois', 'Naperville', ARRAY['Prisoners'' Rights'], ARRAY['False Arrest', 'Illegal Search', 'Police Brutality'], '493-775-5336', 'info@garcialaw.com', 'https://www.garciajerrylaw.com', false, 'IL-62349', 5)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Kenneth Morgan', 'Law Offices of Kenneth Morgan', 'New Mexico', 'Las Cruces', ARRAY['Wrongful Conviction', 'Housing Discrimination'], ARRAY['Section 1983', 'Police Brutality'], '809-774-4819', 'info@morganlaw.com', 'https://www.morgankennethlaw.com', true, 'NE-57310', 24)
+        VALUES ('Andrew Sanchez', 'Law Offices of Andrew Sanchez', 'New Mexico', 'Albuquerque', ARRAY['Housing Discrimination'], ARRAY['Section 1983', 'Malicious Prosecution', 'Qualified Immunity'], '575-316-9834', 'info@sanchezlaw.com', 'https://www.sanchezandrewlaw.com', true, 'NE-30557', 35)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Ronald Thomas', 'Law Offices of Ronald Thomas', 'New Hampshire', 'Nashua', ARRAY['Wrongful Conviction', 'Police Misconduct', 'Constitutional Law'], ARRAY['Section 1983'], '666-226-2800', 'info@thomaslaw.com', 'https://www.thomasronaldlaw.com', true, 'NE-72447', 12)
+        VALUES ('Dennis Jones', 'Law Offices of Dennis Jones', 'Oregon', 'Eugene', ARRAY['First Amendment', 'Employment Discrimination'], ARRAY['False Arrest', 'Section 1983', 'Excessive Force'], '669-374-1661', 'info@joneslaw.com', 'https://www.jonesdennislaw.com', true, 'OR-59665', 7)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Patrick Scott', 'Law Offices of Patrick Scott', 'North Carolina', 'Raleigh', ARRAY['Prisoners' Rights'], ARRAY['Qualified Immunity'], '267-757-3289', 'info@scottlaw.com', 'https://www.scottpatricklaw.com', true, 'NO-53012', 39)
+        VALUES ('Jerry Davis', 'Law Offices of Jerry Davis', 'New Jersey', 'Jersey City', ARRAY['Voting Rights', 'Prisoners'' Rights'], ARRAY['Malicious Prosecution', 'False Arrest'], '277-345-2040', 'info@davislaw.com', 'https://www.davisjerrylaw.com', false, 'NE-55547', 29)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Douglas Murphy', 'Law Offices of Douglas Murphy', 'Missouri', 'Springfield', ARRAY['Prisoners' Rights', 'Employment Discrimination'], ARRAY['Excessive Force'], '629-267-5514', 'info@murphylaw.com', 'https://www.murphydouglaslaw.com', true, 'MI-85566', 39)
+        VALUES ('Daniel Miller', 'Law Offices of Daniel Miller', 'Wisconsin', 'Madison', ARRAY['Employment Discrimination', 'Constitutional Law', 'First Amendment'], ARRAY['False Arrest', 'Excessive Force', 'Illegal Search'], '935-769-9999', 'info@millerlaw.com', 'https://www.millerdaniellaw.com', false, 'WI-34305', 31)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Elizabeth King', 'Law Offices of Elizabeth King', 'Alaska', 'Anchorage', ARRAY['First Amendment', 'Wrongful Conviction', 'Housing Discrimination'], ARRAY['Illegal Search', 'Malicious Prosecution'], '774-888-4322', 'info@kinglaw.com', 'https://www.kingelizabethlaw.com', false, 'AL-37208', 33)
+        VALUES ('John Bailey', 'Law Offices of John Bailey', 'Maine', 'Bangor', ARRAY['Employment Discrimination', 'First Amendment'], ARRAY['False Arrest'], '663-763-6085', 'info@baileylaw.com', 'https://www.baileyjohnlaw.com', false, 'MA-18525', 40)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('George Cook', 'Law Offices of George Cook', 'New Hampshire', 'Manchester', ARRAY['Civil Rights', 'Police Misconduct', 'First Amendment'], ARRAY['Protest Defense'], '341-934-2154', 'info@cooklaw.com', 'https://www.cookgeorgelaw.com', false, 'NE-41346', 16)
+        VALUES ('Roger Jackson', 'Law Offices of Roger Jackson', 'Kentucky', 'Lexington', ARRAY['First Amendment', 'Voting Rights', 'Employment Discrimination'], ARRAY['Malicious Prosecution'], '627-414-5700', 'info@jacksonlaw.com', 'https://www.jacksonrogerlaw.com', false, 'KE-83141', 26)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Edward Rogers', 'Law Offices of Edward Rogers', 'Georgia', 'Macon', ARRAY['Prisoners' Rights', 'First Amendment'], ARRAY['Illegal Search'], '888-773-1697', 'info@rogerslaw.com', 'https://www.rogersedwardlaw.com', false, 'GE-51791', 36)
+        VALUES ('Harold Stewart', 'Law Offices of Harold Stewart', 'Maryland', 'Rockville', ARRAY['Police Misconduct'], ARRAY['Malicious Prosecution', 'Police Brutality'], '845-698-1480', 'info@stewartlaw.com', 'https://www.stewartharoldlaw.com', false, 'MA-63024', 8)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Christopher Hill', 'Law Offices of Christopher Hill', 'Washington', 'Tacoma', ARRAY['Wrongful Conviction', 'First Amendment', 'Constitutional Law'], ARRAY['Protest Defense', 'Police Brutality', 'False Arrest'], '643-692-4362', 'info@hilllaw.com', 'https://www.hillchristopherlaw.com', false, 'WA-10582', 12)
+        VALUES ('Daniel Morris', 'Law Offices of Daniel Morris', 'Colorado', 'Denver', ARRAY['Wrongful Conviction', 'Prisoners'' Rights'], ARRAY['Racial Profiling'], '961-370-2966', 'info@morrislaw.com', 'https://www.morrisdaniellaw.com', false, 'CO-50475', 17)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Christopher Robinson', 'Law Offices of Christopher Robinson', 'Georgia', 'Augusta', ARRAY['Police Misconduct', 'Housing Discrimination'], ARRAY['Police Brutality', 'Malicious Prosecution', 'Protest Defense'], '820-796-3028', 'info@robinsonlaw.com', 'https://www.robinsonchristopherlaw.com', true, 'GE-97886', 34)
+        VALUES ('Mark Lee', 'Law Offices of Mark Lee', 'Ohio', 'Cincinnati', ARRAY['Employment Discrimination', 'Constitutional Law', 'Civil Rights'], ARRAY['Protest Defense', 'Excessive Force'], '780-233-7283', 'info@leelaw.com', 'https://www.leemarklaw.com', false, 'OH-22079', 13)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Steven Reed', 'Law Offices of Steven Reed', 'Mississippi', 'Southaven', ARRAY['Housing Discrimination', 'Wrongful Conviction'], ARRAY['Section 1983'], '734-420-5761', 'info@reedlaw.com', 'https://www.reedstevenlaw.com', false, 'MI-93470', 14)
+        VALUES ('Charles Walker', 'Law Offices of Charles Walker', 'Arizona', 'Tucson', ARRAY['Housing Discrimination'], ARRAY['Police Brutality'], '515-266-4516', 'info@walkerlaw.com', 'https://www.walkercharleslaw.com', false, 'AR-81089', 16)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Dennis Baker', 'Law Offices of Dennis Baker', 'Rhode Island', 'Warwick', ARRAY['Constitutional Law', 'First Amendment'], ARRAY['Protest Defense', 'Police Brutality'], '851-658-2214', 'info@bakerlaw.com', 'https://www.bakerdennislaw.com', true, 'RH-19294', 25)
+        VALUES ('Carl Garcia', 'Law Offices of Carl Garcia', 'Montana', 'Great Falls', ARRAY['Housing Discrimination', 'Wrongful Conviction'], ARRAY['Protest Defense', 'Qualified Immunity', 'Racial Profiling'], '836-579-7598', 'info@garcialaw.com', 'https://www.garciacarllaw.com', false, 'MO-42149', 38)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Gregory Baker', 'Law Offices of Gregory Baker', 'Missouri', 'Kansas City', ARRAY['Housing Discrimination', 'Civil Rights', 'Wrongful Conviction'], ARRAY['Excessive Force', 'Section 1983', 'Malicious Prosecution'], '292-890-3587', 'info@bakerlaw.com', 'https://www.bakergregorylaw.com', false, 'MI-70345', 29)
+        VALUES ('Ronald Smith', 'Law Offices of Ronald Smith', 'Connecticut', 'Hartford', ARRAY['First Amendment'], ARRAY['Illegal Search'], '847-666-4074', 'info@smithlaw.com', 'https://www.smithronaldlaw.com', true, 'CO-23009', 33)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Linda Baker', 'Law Offices of Linda Baker', 'Massachusetts', 'Worcester', ARRAY['Civil Rights', 'Constitutional Law', 'Housing Discrimination'], ARRAY['Excessive Force', 'Qualified Immunity'], '518-844-3496', 'info@bakerlaw.com', 'https://www.bakerlindalaw.com', true, 'MA-61596', 34)
+        VALUES ('Dennis Roberts', 'Law Offices of Dennis Roberts', 'Rhode Island', 'Cranston', ARRAY['Employment Discrimination'], ARRAY['Qualified Immunity', 'Racial Profiling', 'Illegal Search'], '491-252-9517', 'info@robertslaw.com', 'https://www.robertsdennislaw.com', true, 'RH-74192', 37)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Jose Bailey', 'Law Offices of Jose Bailey', 'Nebraska', 'Omaha', ARRAY['Constitutional Law', 'Employment Discrimination', 'Prisoners' Rights'], ARRAY['Excessive Force', 'Racial Profiling'], '879-962-2397', 'info@baileylaw.com', 'https://www.baileyjoselaw.com', false, 'NE-95209', 28)
+        VALUES ('Patrick Davis', 'Law Offices of Patrick Davis', 'Arizona', 'Phoenix', ARRAY['Prisoners'' Rights'], ARRAY['Section 1983', 'False Arrest'], '355-618-5815', 'info@davislaw.com', 'https://www.davispatricklaw.com', false, 'AR-17468', 22)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Frank Morris', 'Law Offices of Frank Morris', 'Indiana', 'Indianapolis', ARRAY['Police Misconduct', 'Housing Discrimination'], ARRAY['Police Brutality', 'Racial Profiling'], '277-622-6622', 'info@morrislaw.com', 'https://www.morrisfranklaw.com', false, 'IN-33630', 40)
+        VALUES ('Raymond Clark', 'Law Offices of Raymond Clark', 'New Mexico', 'Las Cruces', ARRAY['Civil Rights', 'First Amendment', 'Housing Discrimination'], ARRAY['Qualified Immunity', 'False Arrest'], '950-856-1860', 'info@clarklaw.com', 'https://www.clarkraymondlaw.com', true, 'NE-29506', 11)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Ronald Murphy', 'Law Offices of Ronald Murphy', 'Vermont', 'Burlington', ARRAY['Prisoners' Rights', 'Voting Rights'], ARRAY['Racial Profiling', 'Section 1983', 'Protest Defense'], '615-899-9344', 'info@murphylaw.com', 'https://www.murphyronaldlaw.com', true, 'VE-17867', 20)
+        VALUES ('Brian Adams', 'Law Offices of Brian Adams', 'South Carolina', 'North Charleston', ARRAY['Voting Rights'], ARRAY['Qualified Immunity'], '224-558-7396', 'info@adamslaw.com', 'https://www.adamsbrianlaw.com', true, 'SO-98987', 27)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Susan Carter', 'Law Offices of Susan Carter', 'Pennsylvania', 'Pittsburgh', ARRAY['Police Misconduct', 'Constitutional Law'], ARRAY['Illegal Search', 'Malicious Prosecution', 'Excessive Force'], '651-975-6160', 'info@carterlaw.com', 'https://www.cartersusanlaw.com', false, 'PE-20811', 15)
+        VALUES ('Anthony King', 'Law Offices of Anthony King', 'Montana', 'Great Falls', ARRAY['Constitutional Law', 'Civil Rights'], ARRAY['Excessive Force'], '632-631-6173', 'info@kinglaw.com', 'https://www.kinganthonylaw.com', true, 'MO-14528', 8)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Joshua Gonzalez', 'Law Offices of Joshua Gonzalez', 'Massachusetts', 'Worcester', ARRAY['Voting Rights'], ARRAY['Section 1983', 'Illegal Search', 'Malicious Prosecution'], '359-682-2028', 'info@gonzalezlaw.com', 'https://www.gonzalezjoshualaw.com', true, 'MA-73723', 6)
+        VALUES ('Walter Lewis', 'Law Offices of Walter Lewis', 'South Dakota', 'Aberdeen', ARRAY['Wrongful Conviction', 'Civil Rights', 'Housing Discrimination'], ARRAY['Excessive Force', 'False Arrest', 'Police Brutality'], '829-363-2973', 'info@lewislaw.com', 'https://www.lewiswalterlaw.com', true, 'SO-71425', 10)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Jessica Phillips', 'Law Offices of Jessica Phillips', 'Oklahoma', 'Oklahoma City', ARRAY['Prisoners' Rights', 'Civil Rights'], ARRAY['Section 1983'], '422-274-4791', 'info@phillipslaw.com', 'https://www.phillipsjessicalaw.com', false, 'OK-81440', 38)
+        VALUES ('Karen Allen', 'Law Offices of Karen Allen', 'Wisconsin', 'Milwaukee', ARRAY['First Amendment'], ARRAY['Malicious Prosecution', 'Qualified Immunity'], '391-248-4959', 'info@allenlaw.com', 'https://www.allenkarenlaw.com', false, 'WI-60172', 7)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Henry Lopez', 'Law Offices of Henry Lopez', 'Virginia', 'Virginia Beach', ARRAY['Civil Rights', 'Voting Rights', 'Wrongful Conviction'], ARRAY['Excessive Force'], '668-435-5465', 'info@lopezlaw.com', 'https://www.lopezhenrylaw.com', false, 'VI-11158', 5)
+        VALUES ('Edward Edwards', 'Law Offices of Edward Edwards', 'Michigan', 'Detroit', ARRAY['First Amendment'], ARRAY['Police Brutality', 'False Arrest'], '921-620-1789', 'info@edwardslaw.com', 'https://www.edwardsedwardlaw.com', true, 'MI-62240', 12)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Christopher Johnson', 'Law Offices of Christopher Johnson', 'New Jersey', 'Jersey City', ARRAY['Housing Discrimination'], ARRAY['Qualified Immunity'], '904-344-1469', 'info@johnsonlaw.com', 'https://www.johnsonchristopherlaw.com', true, 'NE-39527', 8)
+        VALUES ('Anthony Moore', 'Law Offices of Anthony Moore', 'Florida', 'Orlando', ARRAY['Voting Rights', 'Housing Discrimination'], ARRAY['Malicious Prosecution', 'Section 1983'], '401-712-9224', 'info@moorelaw.com', 'https://www.mooreanthonylaw.com', false, 'FL-56130', 35)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Henry Lopez', 'Law Offices of Henry Lopez', 'California', 'Fresno', ARRAY['First Amendment'], ARRAY['Protest Defense'], '281-778-1856', 'info@lopezlaw.com', 'https://www.lopezhenrylaw.com', false, 'CA-87540', 37)
+        VALUES ('Ronald Scott', 'Law Offices of Ronald Scott', 'Delaware', 'Newark', ARRAY['Civil Rights', 'Constitutional Law'], ARRAY['Excessive Force'], '767-669-6512', 'info@scottlaw.com', 'https://www.scottronaldlaw.com', false, 'DE-86535', 29)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Donald Rogers', 'Law Offices of Donald Rogers', 'Oregon', 'Portland', ARRAY['Employment Discrimination'], ARRAY['Police Brutality', 'Protest Defense', 'Excessive Force'], '781-213-1373', 'info@rogerslaw.com', 'https://www.rogersdonaldlaw.com', false, 'OR-88061', 8)
+        VALUES ('Jose Parker', 'Law Offices of Jose Parker', 'Rhode Island', 'Providence', ARRAY['Housing Discrimination'], ARRAY['Malicious Prosecution', 'Racial Profiling', 'Section 1983'], '723-712-9213', 'info@parkerlaw.com', 'https://www.parkerjoselaw.com', false, 'RH-50222', 6)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Susan Edwards', 'Law Offices of Susan Edwards', 'West Virginia', 'Charleston', ARRAY['Housing Discrimination'], ARRAY['Section 1983', 'Protest Defense', 'False Arrest'], '464-974-5291', 'info@edwardslaw.com', 'https://www.edwardssusanlaw.com', true, 'WE-79969', 13)
+        VALUES ('Peter Hill', 'Law Offices of Peter Hill', 'Virginia', 'Chesapeake', ARRAY['Prisoners'' Rights', 'Housing Discrimination'], ARRAY['Qualified Immunity', 'Excessive Force'], '490-300-4568', 'info@hilllaw.com', 'https://www.hillpeterlaw.com', true, 'VI-71688', 24)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('James Lewis', 'Law Offices of James Lewis', 'New Jersey', 'Jersey City', ARRAY['Police Misconduct', 'Employment Discrimination'], ARRAY['False Arrest', 'Malicious Prosecution', 'Protest Defense'], '939-802-5347', 'info@lewislaw.com', 'https://www.lewisjameslaw.com', false, 'NE-16584', 26)
+        VALUES ('Jose Martinez', 'Law Offices of Jose Martinez', 'Iowa', 'Cedar Rapids', ARRAY['Prisoners'' Rights'], ARRAY['Qualified Immunity', 'False Arrest', 'Protest Defense'], '604-321-9618', 'info@martinezlaw.com', 'https://www.martinezjoselaw.com', false, 'IO-72516', 8)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Mark Baker', 'Law Offices of Mark Baker', 'Kentucky', 'Bowling Green', ARRAY['Constitutional Law'], ARRAY['Protest Defense'], '698-761-1409', 'info@bakerlaw.com', 'https://www.bakermarklaw.com', false, 'KE-84566', 39)
+        VALUES ('Kevin Wilson', 'Law Offices of Kevin Wilson', 'Connecticut', 'Bridgeport', ARRAY['Civil Rights', 'Constitutional Law', 'Employment Discrimination'], ARRAY['Excessive Force', 'Racial Profiling', 'Section 1983'], '894-238-1127', 'info@wilsonlaw.com', 'https://www.wilsonkevinlaw.com', true, 'CO-27942', 35)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Jerry Nelson', 'Law Offices of Jerry Nelson', 'Wyoming', 'Laramie', ARRAY['Constitutional Law'], ARRAY['Police Brutality', 'Malicious Prosecution'], '887-304-6871', 'info@nelsonlaw.com', 'https://www.nelsonjerrylaw.com', true, 'WY-76481', 19)
+        VALUES ('Donald White', 'Law Offices of Donald White', 'Utah', 'West Valley City', ARRAY['Prisoners'' Rights'], ARRAY['Section 1983', 'Protest Defense'], '286-582-4736', 'info@whitelaw.com', 'https://www.whitedonaldlaw.com', true, 'UT-79461', 10)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Edward Evans', 'Law Offices of Edward Evans', 'Wisconsin', 'Madison', ARRAY['First Amendment', 'Civil Rights'], ARRAY['False Arrest', 'Illegal Search'], '889-300-4876', 'info@evanslaw.com', 'https://www.evansedwardlaw.com', false, 'WI-59376', 21)
+        VALUES ('Eric Young', 'Law Offices of Eric Young', 'Hawaii', 'Honolulu', ARRAY['Constitutional Law', 'Voting Rights', 'Prisoners'' Rights'], ARRAY['Qualified Immunity'], '217-402-6205', 'info@younglaw.com', 'https://www.youngericlaw.com', false, 'HA-26308', 34)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Scott Collins', 'Law Offices of Scott Collins', 'Texas', 'Houston', ARRAY['Constitutional Law', 'Wrongful Conviction', 'Employment Discrimination'], ARRAY['Qualified Immunity', 'Excessive Force', 'Illegal Search'], '782-281-6643', 'info@collinslaw.com', 'https://www.collinsscottlaw.com', true, 'TE-89184', 9)
+        VALUES ('Gary Johnson', 'Law Offices of Gary Johnson', 'Oregon', 'Portland', ARRAY['Prisoners'' Rights', 'Police Misconduct', 'Wrongful Conviction'], ARRAY['Police Brutality', 'Excessive Force'], '282-696-6499', 'info@johnsonlaw.com', 'https://www.johnsongarylaw.com', true, 'OR-48740', 35)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('James Cook', 'Law Offices of James Cook', 'North Dakota', 'Bismarck', ARRAY['Employment Discrimination'], ARRAY['Police Brutality', 'Qualified Immunity', 'Racial Profiling'], '226-518-9460', 'info@cooklaw.com', 'https://www.cookjameslaw.com', false, 'NO-47589', 30)
+        VALUES ('David Allen', 'Law Offices of David Allen', 'South Dakota', 'Rapid City', ARRAY['Constitutional Law', 'Wrongful Conviction'], ARRAY['False Arrest', 'Protest Defense', 'Qualified Immunity'], '444-293-2469', 'info@allenlaw.com', 'https://www.allendavidlaw.com', true, 'SO-56346', 22)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Stephen Garcia', 'Law Offices of Stephen Garcia', 'Wisconsin', 'Green Bay', ARRAY['Employment Discrimination', 'Civil Rights', 'Prisoners' Rights'], ARRAY['Malicious Prosecution', 'Section 1983'], '649-292-7687', 'info@garcialaw.com', 'https://www.garciastephenlaw.com', false, 'WI-82095', 37)
+        VALUES ('David Wilson', 'Law Offices of David Wilson', 'Ohio', 'Cleveland', ARRAY['Police Misconduct'], ARRAY['Protest Defense', 'Racial Profiling', 'Malicious Prosecution'], '747-803-9936', 'info@wilsonlaw.com', 'https://www.wilsondavidlaw.com', false, 'OH-23132', 10)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Kenneth Jones', 'Law Offices of Kenneth Jones', 'South Dakota', 'Aberdeen', ARRAY['First Amendment'], ARRAY['Protest Defense', 'Police Brutality'], '864-400-5926', 'info@joneslaw.com', 'https://www.joneskennethlaw.com', false, 'SO-28795', 38)
+        VALUES ('Karen Rogers', 'Law Offices of Karen Rogers', 'Pennsylvania', 'Pittsburgh', ARRAY['Employment Discrimination', 'Housing Discrimination'], ARRAY['Malicious Prosecution'], '723-532-5838', 'info@rogerslaw.com', 'https://www.rogerskarenlaw.com', true, 'PE-20601', 15)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Stephen Carter', 'Law Offices of Stephen Carter', 'Missouri', 'Springfield', ARRAY['Wrongful Conviction'], ARRAY['Police Brutality'], '691-458-4403', 'info@carterlaw.com', 'https://www.carterstephenlaw.com', false, 'MI-47863', 26)
+        VALUES ('Walter Collins', 'Law Offices of Walter Collins', 'South Carolina', 'Columbia', ARRAY['Constitutional Law'], ARRAY['Police Brutality'], '301-858-4943', 'info@collinslaw.com', 'https://www.collinswalterlaw.com', false, 'SO-18461', 36)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Carl Williams', 'Law Offices of Carl Williams', 'Idaho', 'Nampa', ARRAY['Voting Rights', 'Housing Discrimination', 'Wrongful Conviction'], ARRAY['Section 1983', 'Qualified Immunity', 'Protest Defense'], '340-539-5329', 'info@williamslaw.com', 'https://www.williamscarllaw.com', false, 'ID-91832', 25)
+        VALUES ('Michael Carter', 'Law Offices of Michael Carter', 'Ohio', 'Toledo', ARRAY['Police Misconduct'], ARRAY['Qualified Immunity'], '849-487-6235', 'info@carterlaw.com', 'https://www.cartermichaellaw.com', false, 'OH-76180', 28)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Jerry Perez', 'Law Offices of Jerry Perez', 'South Carolina', 'Charleston', ARRAY['Employment Discrimination', 'Housing Discrimination', 'Constitutional Law'], ARRAY['Racial Profiling'], '327-434-8070', 'info@perezlaw.com', 'https://www.perezjerrylaw.com', false, 'SO-18590', 14)
+        VALUES ('Edward Lee', 'Law Offices of Edward Lee', 'Maine', 'Bangor', ARRAY['Voting Rights', 'Constitutional Law'], ARRAY['Qualified Immunity'], '992-292-9273', 'info@leelaw.com', 'https://www.leeedwardlaw.com', true, 'MA-55746', 12)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Harold Garcia', 'Law Offices of Harold Garcia', 'Connecticut', 'New Haven', ARRAY['Constitutional Law'], ARRAY['Section 1983', 'Racial Profiling'], '468-698-8776', 'info@garcialaw.com', 'https://www.garciaharoldlaw.com', false, 'CO-51808', 5)
+        VALUES ('Mary Mitchell', 'Law Offices of Mary Mitchell', 'Colorado', 'Colorado Springs', ARRAY['Wrongful Conviction'], ARRAY['Qualified Immunity', 'Malicious Prosecution', 'Police Brutality'], '885-232-1612', 'info@mitchelllaw.com', 'https://www.mitchellmarylaw.com', true, 'CO-29502', 14)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Jeffrey Bell', 'Law Offices of Jeffrey Bell', 'Massachusetts', 'Boston', ARRAY['Constitutional Law', 'Housing Discrimination'], ARRAY['Police Brutality', 'Illegal Search', 'Racial Profiling'], '787-253-2629', 'info@belllaw.com', 'https://www.belljeffreylaw.com', true, 'MA-64616', 12)
+        VALUES ('Mark Anderson', 'Law Offices of Mark Anderson', 'Rhode Island', 'Cranston', ARRAY['First Amendment', 'Housing Discrimination'], ARRAY['Protest Defense', 'Racial Profiling', 'Qualified Immunity'], '832-387-6712', 'info@andersonlaw.com', 'https://www.andersonmarklaw.com', false, 'RH-57318', 13)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Larry Moore', 'Law Offices of Larry Moore', 'New Mexico', 'Rio Rancho', ARRAY['Prisoners' Rights', 'Constitutional Law', 'Housing Discrimination'], ARRAY['Qualified Immunity'], '794-783-9860', 'info@moorelaw.com', 'https://www.moorelarrylaw.com', false, 'NE-50055', 37)
+        VALUES ('Joshua Morris', 'Law Offices of Joshua Morris', 'New Mexico', 'Albuquerque', ARRAY['Civil Rights', 'Constitutional Law', 'Prisoners'' Rights'], ARRAY['Malicious Prosecution', 'Police Brutality', 'Qualified Immunity'], '358-424-4948', 'info@morrislaw.com', 'https://www.morrisjoshualaw.com', false, 'NE-96771', 35)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Sarah Moore', 'Law Offices of Sarah Moore', 'Arizona', 'Phoenix', ARRAY['First Amendment', 'Police Misconduct'], ARRAY['Racial Profiling', 'False Arrest', 'Police Brutality'], '784-454-5601', 'info@moorelaw.com', 'https://www.mooresarahlaw.com', true, 'AR-28468', 27)
+        VALUES ('Mary Green', 'Law Offices of Mary Green', 'Kentucky', 'Lexington', ARRAY['Prisoners'' Rights'], ARRAY['False Arrest', 'Section 1983', 'Illegal Search'], '310-485-9572', 'info@greenlaw.com', 'https://www.greenmarylaw.com', true, 'KE-19415', 33)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('George Cook', 'Law Offices of George Cook', 'South Dakota', 'Sioux Falls', ARRAY['Voting Rights'], ARRAY['Racial Profiling'], '741-472-2495', 'info@cooklaw.com', 'https://www.cookgeorgelaw.com', true, 'SO-73164', 12)
+        VALUES ('Arthur Roberts', 'Law Offices of Arthur Roberts', 'Georgia', 'Augusta', ARRAY['Police Misconduct', 'Prisoners'' Rights'], ARRAY['False Arrest', 'Malicious Prosecution', 'Racial Profiling'], '692-843-9043', 'info@robertslaw.com', 'https://www.robertsarthurlaw.com', false, 'GE-20403', 36)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Stephen Bailey', 'Law Offices of Stephen Bailey', 'Louisiana', 'Baton Rouge', ARRAY['Wrongful Conviction', 'Civil Rights'], ARRAY['Racial Profiling', 'Police Brutality', 'Malicious Prosecution'], '846-443-9046', 'info@baileylaw.com', 'https://www.baileystephenlaw.com', true, 'LO-10908', 32)
+        VALUES ('Larry Scott', 'Law Offices of Larry Scott', 'Hawaii', 'Kailua', ARRAY['Housing Discrimination', 'Prisoners'' Rights'], ARRAY['Protest Defense'], '618-989-6600', 'info@scottlaw.com', 'https://www.scottlarrylaw.com', false, 'HA-59192', 34)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Joseph Scott', 'Law Offices of Joseph Scott', 'California', 'Sacramento', ARRAY['Prisoners' Rights', 'First Amendment'], ARRAY['Protest Defense', 'Illegal Search', 'Racial Profiling'], '724-983-6926', 'info@scottlaw.com', 'https://www.scottjosephlaw.com', true, 'CA-35856', 38)
+        VALUES ('Matthew Moore', 'Law Offices of Matthew Moore', 'Georgia', 'Atlanta', ARRAY['Civil Rights', 'Wrongful Conviction', 'Police Misconduct'], ARRAY['Excessive Force'], '759-697-2205', 'info@moorelaw.com', 'https://www.moorematthewlaw.com', false, 'GE-52705', 10)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Scott Jones', 'Law Offices of Scott Jones', 'California', 'San Jose', ARRAY['Voting Rights'], ARRAY['Police Brutality'], '497-363-7715', 'info@joneslaw.com', 'https://www.jonesscottlaw.com', true, 'CA-13677', 26)
+        VALUES ('Daniel Morris', 'Law Offices of Daniel Morris', 'Wisconsin', 'Madison', ARRAY['Civil Rights'], ARRAY['Malicious Prosecution'], '471-372-3052', 'info@morrislaw.com', 'https://www.morrisdaniellaw.com', false, 'WI-95881', 30)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Karen Turner', 'Law Offices of Karen Turner', 'Virginia', 'Virginia Beach', ARRAY['Police Misconduct', 'Civil Rights'], ARRAY['Excessive Force', 'False Arrest', 'Racial Profiling'], '338-377-3383', 'info@turnerlaw.com', 'https://www.turnerkarenlaw.com', true, 'VI-29776', 7)
+        VALUES ('Mark Moore', 'Law Offices of Mark Moore', 'Wisconsin', 'Madison', ARRAY['Voting Rights', 'Prisoners'' Rights'], ARRAY['Police Brutality', 'False Arrest'], '318-835-8696', 'info@moorelaw.com', 'https://www.mooremarklaw.com', false, 'WI-45736', 7)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Donald Hernandez', 'Law Offices of Donald Hernandez', 'Utah', 'West Valley City', ARRAY['Police Misconduct'], ARRAY['Police Brutality', 'Illegal Search', 'Protest Defense'], '849-892-9353', 'info@hernandezlaw.com', 'https://www.hernandezdonaldlaw.com', false, 'UT-84091', 17)
+        VALUES ('James White', 'Law Offices of James White', 'New Hampshire', 'Concord', ARRAY['First Amendment', 'Wrongful Conviction'], ARRAY['False Arrest'], '550-688-7273', 'info@whitelaw.com', 'https://www.whitejameslaw.com', true, 'NE-76867', 6)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Ronald Campbell', 'Law Offices of Ronald Campbell', 'Connecticut', 'New Haven', ARRAY['Voting Rights'], ARRAY['Malicious Prosecution', 'False Arrest'], '253-794-4197', 'info@campbelllaw.com', 'https://www.campbellronaldlaw.com', true, 'CO-26170', 34)
+        VALUES ('Peter Carter', 'Law Offices of Peter Carter', 'Wisconsin', 'Green Bay', ARRAY['Civil Rights', 'Wrongful Conviction'], ARRAY['Section 1983'], '339-373-6755', 'info@carterlaw.com', 'https://www.carterpeterlaw.com', true, 'WI-23123', 14)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Dennis Adams', 'Law Offices of Dennis Adams', 'Maine', 'Bangor', ARRAY['Prisoners' Rights'], ARRAY['Police Brutality'], '890-344-4390', 'info@adamslaw.com', 'https://www.adamsdennislaw.com', false, 'MA-58274', 8)
+        VALUES ('Gary Miller', 'Law Offices of Gary Miller', 'Indiana', 'Fort Wayne', ARRAY['First Amendment'], ARRAY['Illegal Search', 'Protest Defense'], '558-667-4069', 'info@millerlaw.com', 'https://www.millergarylaw.com', false, 'IN-68376', 37)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Jason Robinson', 'Law Offices of Jason Robinson', 'Tennessee', 'Memphis', ARRAY['Employment Discrimination'], ARRAY['Police Brutality', 'Protest Defense'], '794-482-4090', 'info@robinsonlaw.com', 'https://www.robinsonjasonlaw.com', false, 'TE-11377', 9)
+        VALUES ('Thomas Martin', 'Law Offices of Thomas Martin', 'Delaware', 'Dover', ARRAY['Constitutional Law', 'Housing Discrimination'], ARRAY['False Arrest', 'Excessive Force', 'Racial Profiling'], '603-581-1057', 'info@martinlaw.com', 'https://www.martinthomaslaw.com', true, 'DE-46533', 30)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Michael Nelson', 'Law Offices of Michael Nelson', 'Hawaii', 'Honolulu', ARRAY['Employment Discrimination'], ARRAY['Section 1983', 'Malicious Prosecution', 'Excessive Force'], '769-385-4518', 'info@nelsonlaw.com', 'https://www.nelsonmichaellaw.com', false, 'HA-73217', 36)
+        VALUES ('Ronald Rodriguez', 'Law Offices of Ronald Rodriguez', 'Pennsylvania', 'Philadelphia', ARRAY['Employment Discrimination', 'First Amendment', 'Prisoners'' Rights'], ARRAY['Protest Defense', 'Section 1983'], '827-366-8160', 'info@rodriguezlaw.com', 'https://www.rodriguezronaldlaw.com', false, 'PE-82025', 17)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Elizabeth Young', 'Law Offices of Elizabeth Young', 'Kentucky', 'Louisville', ARRAY['Constitutional Law'], ARRAY['Malicious Prosecution'], '817-423-8477', 'info@younglaw.com', 'https://www.youngelizabethlaw.com', false, 'KE-60369', 16)
+        VALUES ('Patrick Roberts', 'Law Offices of Patrick Roberts', 'North Carolina', 'Raleigh', ARRAY['Prisoners'' Rights', 'Housing Discrimination', 'Constitutional Law'], ARRAY['Section 1983', 'Protest Defense', 'Illegal Search'], '961-652-8983', 'info@robertslaw.com', 'https://www.robertspatricklaw.com', false, 'NO-22332', 40)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Jessica Jones', 'Law Offices of Jessica Jones', 'California', 'San Francisco', ARRAY['Wrongful Conviction'], ARRAY['Malicious Prosecution', 'Illegal Search', 'Section 1983'], '757-236-5564', 'info@joneslaw.com', 'https://www.jonesjessicalaw.com', false, 'CA-58404', 27)
+        VALUES ('Douglas Phillips', 'Law Offices of Douglas Phillips', 'Michigan', 'Grand Rapids', ARRAY['Housing Discrimination'], ARRAY['Protest Defense', 'False Arrest'], '214-300-5791', 'info@phillipslaw.com', 'https://www.phillipsdouglaslaw.com', false, 'MI-20415', 22)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Elizabeth Nelson', 'Law Offices of Elizabeth Nelson', 'Pennsylvania', 'Philadelphia', ARRAY['First Amendment'], ARRAY['Section 1983'], '275-414-1415', 'info@nelsonlaw.com', 'https://www.nelsonelizabethlaw.com', true, 'PE-33157', 19)
+        VALUES ('Jerry Lee', 'Law Offices of Jerry Lee', 'Nebraska', 'Lincoln', ARRAY['Police Misconduct'], ARRAY['Protest Defense', 'Racial Profiling'], '574-987-3330', 'info@leelaw.com', 'https://www.leejerrylaw.com', false, 'NE-16274', 29)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Walter Edwards', 'Law Offices of Walter Edwards', 'Delaware', 'Newark', ARRAY['Voting Rights', 'Prisoners' Rights'], ARRAY['Illegal Search', 'Racial Profiling', 'Section 1983'], '289-310-6643', 'info@edwardslaw.com', 'https://www.edwardswalterlaw.com', true, 'DE-92770', 20)
+        VALUES ('James Thompson', 'Law Offices of James Thompson', 'North Dakota', 'Fargo', ARRAY['Civil Rights'], ARRAY['Qualified Immunity'], '363-752-8449', 'info@thompsonlaw.com', 'https://www.thompsonjameslaw.com', true, 'NO-13069', 26)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Steven Baker', 'Law Offices of Steven Baker', 'Alaska', 'Juneau', ARRAY['Housing Discrimination', 'Wrongful Conviction'], ARRAY['Section 1983', 'Racial Profiling'], '853-865-2654', 'info@bakerlaw.com', 'https://www.bakerstevenlaw.com', false, 'AL-39859', 27)
+        VALUES ('Peter Adams', 'Law Offices of Peter Adams', 'Colorado', 'Aurora', ARRAY['Constitutional Law', 'Voting Rights', 'Civil Rights'], ARRAY['Protest Defense', 'Malicious Prosecution', 'Police Brutality'], '314-238-6879', 'info@adamslaw.com', 'https://www.adamspeterlaw.com', false, 'CO-36003', 9)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Charles Adams', 'Law Offices of Charles Adams', 'Oregon', 'Eugene', ARRAY['Police Misconduct'], ARRAY['Police Brutality', 'Racial Profiling'], '569-389-6279', 'info@adamslaw.com', 'https://www.adamscharleslaw.com', true, 'OR-89700', 6)
+        VALUES ('Joseph Harris', 'Law Offices of Joseph Harris', 'Mississippi', 'Jackson', ARRAY['Constitutional Law', 'Civil Rights', 'Employment Discrimination'], ARRAY['Section 1983', 'Excessive Force', 'Malicious Prosecution'], '642-430-3737', 'info@harrislaw.com', 'https://www.harrisjosephlaw.com', false, 'MI-35955', 12)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('John Lee', 'Law Offices of John Lee', 'Virginia', 'Virginia Beach', ARRAY['Constitutional Law', 'Prisoners' Rights', 'Housing Discrimination'], ARRAY['False Arrest', 'Malicious Prosecution'], '205-584-9694', 'info@leelaw.com', 'https://www.leejohnlaw.com', true, 'VI-90475', 27)
+        VALUES ('Harold Lewis', 'Law Offices of Harold Lewis', 'Pennsylvania', 'Philadelphia', ARRAY['Civil Rights', 'Wrongful Conviction', 'Employment Discrimination'], ARRAY['Racial Profiling'], '387-585-9244', 'info@lewislaw.com', 'https://www.lewisharoldlaw.com', true, 'PE-70921', 5)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Gary Clark', 'Law Offices of Gary Clark', 'Michigan', 'Detroit', ARRAY['Housing Discrimination', 'Prisoners' Rights'], ARRAY['False Arrest', 'Malicious Prosecution'], '956-355-7826', 'info@clarklaw.com', 'https://www.clarkgarylaw.com', false, 'MI-31085', 10)
+        VALUES ('Walter Bell', 'Law Offices of Walter Bell', 'Vermont', 'Burlington', ARRAY['First Amendment', 'Employment Discrimination', 'Police Misconduct'], ARRAY['Illegal Search', 'Section 1983', 'Malicious Prosecution'], '358-292-1443', 'info@belllaw.com', 'https://www.bellwalterlaw.com', false, 'VE-76428', 28)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Patricia Lopez', 'Law Offices of Patricia Lopez', 'Arkansas', 'Fort Smith', ARRAY['Employment Discrimination'], ARRAY['False Arrest', 'Excessive Force'], '602-640-2611', 'info@lopezlaw.com', 'https://www.lopezpatricialaw.com', false, 'AR-78633', 6)
+        VALUES ('James Lee', 'Law Offices of James Lee', 'New Mexico', 'Las Cruces', ARRAY['Wrongful Conviction', 'Constitutional Law'], ARRAY['Section 1983', 'Protest Defense', 'Qualified Immunity'], '273-756-6996', 'info@leelaw.com', 'https://www.leejameslaw.com', true, 'NE-22071', 21)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Peter Hill', 'Law Offices of Peter Hill', 'Washington', 'Tacoma', ARRAY['Prisoners' Rights'], ARRAY['Qualified Immunity', 'Section 1983'], '232-613-7763', 'info@hilllaw.com', 'https://www.hillpeterlaw.com', true, 'WA-87253', 14)
+        VALUES ('Kevin Gonzalez', 'Law Offices of Kevin Gonzalez', 'Louisiana', 'Shreveport', ARRAY['Prisoners'' Rights'], ARRAY['Excessive Force'], '524-329-7023', 'info@gonzalezlaw.com', 'https://www.gonzalezkevinlaw.com', true, 'LO-20358', 33)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Patricia Phillips', 'Law Offices of Patricia Phillips', 'Wyoming', 'Cheyenne', ARRAY['Constitutional Law', 'Civil Rights'], ARRAY['Illegal Search', 'Malicious Prosecution'], '517-210-3755', 'info@phillipslaw.com', 'https://www.phillipspatricialaw.com', false, 'WY-13725', 29)
+        VALUES ('Anthony Clark', 'Law Offices of Anthony Clark', 'New Jersey', 'Jersey City', ARRAY['Prisoners'' Rights'], ARRAY['Excessive Force'], '232-760-2457', 'info@clarklaw.com', 'https://www.clarkanthonylaw.com', false, 'NE-94141', 36)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Susan Miller', 'Law Offices of Susan Miller', 'Iowa', 'Cedar Rapids', ARRAY['Police Misconduct', 'Voting Rights'], ARRAY['Malicious Prosecution', 'Racial Profiling'], '554-905-7988', 'info@millerlaw.com', 'https://www.millersusanlaw.com', true, 'IO-17869', 40)
+        VALUES ('Jerry Bailey', 'Law Offices of Jerry Bailey', 'Illinois', 'Joliet', ARRAY['Employment Discrimination', 'Civil Rights'], ARRAY['Excessive Force', 'Qualified Immunity'], '552-389-7851', 'info@baileylaw.com', 'https://www.baileyjerrylaw.com', true, 'IL-34257', 20)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Kenneth Moore', 'Law Offices of Kenneth Moore', 'New Jersey', 'Newark', ARRAY['Prisoners' Rights', 'Wrongful Conviction'], ARRAY['Racial Profiling', 'Protest Defense', 'False Arrest'], '874-275-4893', 'info@moorelaw.com', 'https://www.moorekennethlaw.com', false, 'NE-94473', 8)
+        VALUES ('Carl Sanchez', 'Law Offices of Carl Sanchez', 'Wyoming', 'Cheyenne', ARRAY['Constitutional Law', 'Housing Discrimination', 'Civil Rights'], ARRAY['Protest Defense'], '509-537-2579', 'info@sanchezlaw.com', 'https://www.sanchezcarllaw.com', true, 'WY-45508', 38)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Andrew Sanchez', 'Law Offices of Andrew Sanchez', 'Arkansas', 'Fort Smith', ARRAY['Police Misconduct', 'Prisoners' Rights'], ARRAY['Police Brutality', 'Racial Profiling'], '224-399-4583', 'info@sanchezlaw.com', 'https://www.sanchezandrewlaw.com', true, 'AR-95576', 29)
+        VALUES ('George Lewis', 'Law Offices of George Lewis', 'Montana', 'Great Falls', ARRAY['Employment Discrimination', 'Wrongful Conviction', 'Prisoners'' Rights'], ARRAY['Malicious Prosecution', 'Racial Profiling'], '616-851-8582', 'info@lewislaw.com', 'https://www.lewisgeorgelaw.com', true, 'MO-98327', 28)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Robert Robinson', 'Law Offices of Robert Robinson', 'West Virginia', 'Charleston', ARRAY['Voting Rights', 'Prisoners' Rights'], ARRAY['Police Brutality'], '738-621-9907', 'info@robinsonlaw.com', 'https://www.robinsonrobertlaw.com', false, 'WE-15342', 26)
+        VALUES ('Mary Evans', 'Law Offices of Mary Evans', 'New Mexico', 'Las Cruces', ARRAY['Civil Rights', 'Voting Rights'], ARRAY['Protest Defense', 'False Arrest', 'Excessive Force'], '746-414-5924', 'info@evanslaw.com', 'https://www.evansmarylaw.com', true, 'NE-81516', 33)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Robert Clark', 'Law Offices of Robert Clark', 'Kansas', 'Kansas City', ARRAY['Voting Rights', 'First Amendment'], ARRAY['Protest Defense', 'False Arrest'], '744-754-6544', 'info@clarklaw.com', 'https://www.clarkrobertlaw.com', true, 'KA-77392', 13)
+        VALUES ('Christopher Perez', 'Law Offices of Christopher Perez', 'Pennsylvania', 'Pittsburgh', ARRAY['First Amendment', 'Police Misconduct', 'Civil Rights'], ARRAY['Malicious Prosecution'], '340-408-7005', 'info@perezlaw.com', 'https://www.perezchristopherlaw.com', false, 'PE-97163', 32)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Frank Turner', 'Law Offices of Frank Turner', 'Nevada', 'Las Vegas', ARRAY['Employment Discrimination', 'Constitutional Law', 'Police Misconduct'], ARRAY['False Arrest'], '993-350-3918', 'info@turnerlaw.com', 'https://www.turnerfranklaw.com', true, 'NE-92470', 36)
+        VALUES ('Linda Johnson', 'Law Offices of Linda Johnson', 'Florida', 'Miami', ARRAY['Civil Rights'], ARRAY['Police Brutality', 'False Arrest'], '472-760-4466', 'info@johnsonlaw.com', 'https://www.johnsonlindalaw.com', false, 'FL-99467', 19)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Kevin Thompson', 'Law Offices of Kevin Thompson', 'Delaware', 'Wilmington', ARRAY['Wrongful Conviction', 'Police Misconduct'], ARRAY['Illegal Search', 'Qualified Immunity', 'Protest Defense'], '835-734-8519', 'info@thompsonlaw.com', 'https://www.thompsonkevinlaw.com', false, 'DE-82427', 30)
+        VALUES ('Jessica Lee', 'Law Offices of Jessica Lee', 'Oklahoma', 'Oklahoma City', ARRAY['Prisoners'' Rights'], ARRAY['Police Brutality', 'False Arrest'], '203-790-3720', 'info@leelaw.com', 'https://www.leejessicalaw.com', true, 'OK-60267', 29)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Barbara Nelson', 'Law Offices of Barbara Nelson', 'Mississippi', 'Jackson', ARRAY['Civil Rights'], ARRAY['Illegal Search', 'Racial Profiling'], '233-420-3499', 'info@nelsonlaw.com', 'https://www.nelsonbarbaralaw.com', false, 'MI-19302', 11)
+        VALUES ('James Sanchez', 'Law Offices of James Sanchez', 'Alaska', 'Anchorage', ARRAY['Civil Rights', 'Constitutional Law', 'Housing Discrimination'], ARRAY['Illegal Search'], '438-878-4746', 'info@sanchezlaw.com', 'https://www.sanchezjameslaw.com', false, 'AL-60869', 10)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Edward Gonzalez', 'Law Offices of Edward Gonzalez', 'Kentucky', 'Louisville', ARRAY['Voting Rights', 'First Amendment'], ARRAY['Qualified Immunity', 'Protest Defense', 'Section 1983'], '876-905-4060', 'info@gonzalezlaw.com', 'https://www.gonzalezedwardlaw.com', false, 'KE-61032', 31)
+        VALUES ('Jeffrey Parker', 'Law Offices of Jeffrey Parker', 'West Virginia', 'Morgantown', ARRAY['Constitutional Law', 'Civil Rights', 'Prisoners'' Rights'], ARRAY['Qualified Immunity', 'Protest Defense'], '753-571-2330', 'info@parkerlaw.com', 'https://www.parkerjeffreylaw.com', true, 'WE-22356', 38)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Timothy Parker', 'Law Offices of Timothy Parker', 'Maryland', 'Baltimore', ARRAY['Voting Rights'], ARRAY['False Arrest'], '975-259-5413', 'info@parkerlaw.com', 'https://www.parkertimothylaw.com', true, 'MA-79215', 8)
+        VALUES ('Michael Clark', 'Law Offices of Michael Clark', 'Louisiana', 'Baton Rouge', ARRAY['Voting Rights', 'Housing Discrimination'], ARRAY['Section 1983', 'Illegal Search', 'Qualified Immunity'], '944-731-9298', 'info@clarklaw.com', 'https://www.clarkmichaellaw.com', true, 'LO-36581', 17)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Daniel Johnson', 'Law Offices of Daniel Johnson', 'Arkansas', 'Fayetteville', ARRAY['Housing Discrimination'], ARRAY['Racial Profiling', 'False Arrest'], '416-245-4154', 'info@johnsonlaw.com', 'https://www.johnsondaniellaw.com', true, 'AR-67322', 30)
+        VALUES ('Harold Wright', 'Law Offices of Harold Wright', 'Texas', 'Austin', ARRAY['Wrongful Conviction'], ARRAY['Racial Profiling', 'Malicious Prosecution'], '840-496-7152', 'info@wrightlaw.com', 'https://www.wrightharoldlaw.com', true, 'TE-17142', 5)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Karen Collins', 'Law Offices of Karen Collins', 'Rhode Island', 'Providence', ARRAY['Wrongful Conviction', 'Housing Discrimination'], ARRAY['Section 1983'], '476-774-5872', 'info@collinslaw.com', 'https://www.collinskarenlaw.com', true, 'RH-82770', 9)
+        VALUES ('Charles White', 'Law Offices of Charles White', 'California', 'Sacramento', ARRAY['Voting Rights', 'Constitutional Law', 'Police Misconduct'], ARRAY['Qualified Immunity'], '441-921-2524', 'info@whitelaw.com', 'https://www.whitecharleslaw.com', true, 'CA-51198', 38)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Douglas Nelson', 'Law Offices of Douglas Nelson', 'Wyoming', 'Casper', ARRAY['Employment Discrimination', 'Civil Rights'], ARRAY['Malicious Prosecution', 'Illegal Search'], '365-940-3802', 'info@nelsonlaw.com', 'https://www.nelsondouglaslaw.com', false, 'WY-22131', 35)
+        VALUES ('Jeffrey Nelson', 'Law Offices of Jeffrey Nelson', 'South Carolina', 'Columbia', ARRAY['Voting Rights'], ARRAY['False Arrest', 'Police Brutality', 'Qualified Immunity'], '607-715-2101', 'info@nelsonlaw.com', 'https://www.nelsonjeffreylaw.com', false, 'SO-25603', 35)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Ronald Thompson', 'Law Offices of Ronald Thompson', 'Wisconsin', 'Green Bay', ARRAY['First Amendment'], ARRAY['Malicious Prosecution'], '936-639-2247', 'info@thompsonlaw.com', 'https://www.thompsonronaldlaw.com', false, 'WI-71324', 14)
+        VALUES ('Jose Morris', 'Law Offices of Jose Morris', 'South Carolina', 'Charleston', ARRAY['First Amendment', 'Housing Discrimination', 'Police Misconduct'], ARRAY['Protest Defense'], '655-952-1536', 'info@morrislaw.com', 'https://www.morrisjoselaw.com', false, 'SO-83937', 11)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Jose Parker', 'Law Offices of Jose Parker', 'North Dakota', 'Fargo', ARRAY['Constitutional Law', 'First Amendment', 'Wrongful Conviction'], ARRAY['Police Brutality'], '271-756-4651', 'info@parkerlaw.com', 'https://www.parkerjoselaw.com', false, 'NO-70574', 31)
+        VALUES ('George Walker', 'Law Offices of George Walker', 'Washington', 'Seattle', ARRAY['Housing Discrimination', 'First Amendment'], ARRAY['False Arrest'], '856-482-6434', 'info@walkerlaw.com', 'https://www.walkergeorgelaw.com', true, 'WA-39820', 9)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Larry Bell', 'Law Offices of Larry Bell', 'Mississippi', 'Southaven', ARRAY['Employment Discrimination'], ARRAY['Illegal Search', 'False Arrest', 'Police Brutality'], '906-717-4170', 'info@belllaw.com', 'https://www.belllarrylaw.com', true, 'MI-60715', 28)
+        VALUES ('Larry Reed', 'Law Offices of Larry Reed', 'North Dakota', 'Bismarck', ARRAY['Constitutional Law', 'First Amendment', 'Voting Rights'], ARRAY['Police Brutality'], '854-226-9065', 'info@reedlaw.com', 'https://www.reedlarrylaw.com', false, 'NO-28247', 24)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Daniel Hill', 'Law Offices of Daniel Hill', 'Tennessee', 'Knoxville', ARRAY['Employment Discrimination', 'Constitutional Law'], ARRAY['Illegal Search', 'Racial Profiling'], '304-804-6603', 'info@hilllaw.com', 'https://www.hilldaniellaw.com', true, 'TE-16013', 20)
+        VALUES ('Gary Bailey', 'Law Offices of Gary Bailey', 'Indiana', 'Indianapolis', ARRAY['Employment Discrimination'], ARRAY['Racial Profiling', 'Section 1983', 'Malicious Prosecution'], '562-973-2051', 'info@baileylaw.com', 'https://www.baileygarylaw.com', true, 'IN-70323', 23)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Eric Adams', 'Law Offices of Eric Adams', 'California', 'Sacramento', ARRAY['Employment Discrimination', 'Police Misconduct'], ARRAY['Illegal Search', 'Qualified Immunity'], '926-414-5336', 'info@adamslaw.com', 'https://www.adamsericlaw.com', true, 'CA-41046', 6)
+        VALUES ('Timothy King', 'Law Offices of Timothy King', 'South Carolina', 'Charleston', ARRAY['Prisoners'' Rights', 'Civil Rights'], ARRAY['Excessive Force'], '482-638-4214', 'info@kinglaw.com', 'https://www.kingtimothylaw.com', true, 'SO-32357', 22)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Christopher King', 'Law Offices of Christopher King', 'Utah', 'Provo', ARRAY['Employment Discrimination', 'Civil Rights'], ARRAY['Illegal Search', 'Qualified Immunity', 'Racial Profiling'], '234-416-3706', 'info@kinglaw.com', 'https://www.kingchristopherlaw.com', true, 'UT-35562', 24)
+        VALUES ('Ryan King', 'Law Offices of Ryan King', 'Nevada', 'Henderson', ARRAY['Employment Discrimination'], ARRAY['False Arrest', 'Malicious Prosecution', 'Police Brutality'], '809-224-4339', 'info@kinglaw.com', 'https://www.kingryanlaw.com', true, 'NE-57736', 22)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Ronald Sanchez', 'Law Offices of Ronald Sanchez', 'California', 'Los Angeles', ARRAY['Wrongful Conviction', 'Voting Rights', 'First Amendment'], ARRAY['Protest Defense', 'False Arrest'], '592-229-3604', 'info@sanchezlaw.com', 'https://www.sanchezronaldlaw.com', true, 'CA-16433', 31)
+        VALUES ('Charles Williams', 'Law Offices of Charles Williams', 'Kansas', 'Kansas City', ARRAY['Voting Rights', 'Prisoners'' Rights'], ARRAY['Qualified Immunity', 'False Arrest'], '980-550-2365', 'info@williamslaw.com', 'https://www.williamscharleslaw.com', false, 'KA-43549', 19)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Stephen Rogers', 'Law Offices of Stephen Rogers', 'Michigan', 'Grand Rapids', ARRAY['Police Misconduct', 'Constitutional Law'], ARRAY['Excessive Force'], '342-573-7480', 'info@rogerslaw.com', 'https://www.rogersstephenlaw.com', true, 'MI-91072', 14)
+        VALUES ('Arthur Baker', 'Law Offices of Arthur Baker', 'Arizona', 'Mesa', ARRAY['Police Misconduct', 'First Amendment'], ARRAY['Racial Profiling', 'Qualified Immunity', 'Section 1983'], '349-648-5907', 'info@bakerlaw.com', 'https://www.bakerarthurlaw.com', true, 'AR-39586', 13)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Arthur Garcia', 'Law Offices of Arthur Garcia', 'Kentucky', 'Bowling Green', ARRAY['Constitutional Law', 'Employment Discrimination', 'Voting Rights'], ARRAY['Malicious Prosecution', 'Police Brutality'], '999-709-1729', 'info@garcialaw.com', 'https://www.garciaarthurlaw.com', false, 'KE-69484', 10)
+        VALUES ('Henry Scott', 'Law Offices of Henry Scott', 'Delaware', 'Wilmington', ARRAY['Prisoners'' Rights', 'Police Misconduct'], ARRAY['Section 1983', 'Racial Profiling', 'Qualified Immunity'], '435-606-6754', 'info@scottlaw.com', 'https://www.scotthenrylaw.com', false, 'DE-43992', 24)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Larry Bell', 'Law Offices of Larry Bell', 'New York', 'Buffalo', ARRAY['Housing Discrimination', 'Voting Rights'], ARRAY['Police Brutality'], '594-494-4635', 'info@belllaw.com', 'https://www.belllarrylaw.com', true, 'NE-63949', 23)
+        VALUES ('Gregory Young', 'Law Offices of Gregory Young', 'New Mexico', 'Albuquerque', ARRAY['Civil Rights', 'Employment Discrimination', 'Wrongful Conviction'], ARRAY['Illegal Search', 'Racial Profiling', 'False Arrest'], '303-648-4915', 'info@younglaw.com', 'https://www.younggregorylaw.com', true, 'NE-11307', 33)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Donald Davis', 'Law Offices of Donald Davis', 'Nevada', 'Henderson', ARRAY['Civil Rights'], ARRAY['False Arrest', 'Qualified Immunity', 'Protest Defense'], '817-577-6295', 'info@davislaw.com', 'https://www.davisdonaldlaw.com', false, 'NE-94879', 10)
+        VALUES ('Dennis Cook', 'Law Offices of Dennis Cook', 'Michigan', 'Grand Rapids', ARRAY['Prisoners'' Rights'], ARRAY['Protest Defense'], '899-209-5124', 'info@cooklaw.com', 'https://www.cookdennislaw.com', false, 'MI-96913', 14)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Elizabeth Robinson', 'Law Offices of Elizabeth Robinson', 'North Dakota', 'Grand Forks', ARRAY['Housing Discrimination'], ARRAY['Malicious Prosecution'], '346-333-4300', 'info@robinsonlaw.com', 'https://www.robinsonelizabethlaw.com', false, 'NO-76407', 14)
+        VALUES ('Henry Jackson', 'Law Offices of Henry Jackson', 'Utah', 'Salt Lake City', ARRAY['Wrongful Conviction'], ARRAY['Excessive Force', 'Police Brutality'], '703-935-4006', 'info@jacksonlaw.com', 'https://www.jacksonhenrylaw.com', true, 'UT-11458', 36)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Daniel Taylor', 'Law Offices of Daniel Taylor', 'Nevada', 'Las Vegas', ARRAY['Housing Discrimination', 'Prisoners' Rights'], ARRAY['Racial Profiling', 'Police Brutality'], '945-889-9096', 'info@taylorlaw.com', 'https://www.taylordaniellaw.com', false, 'NE-59139', 35)
+        VALUES ('Stephen Miller', 'Law Offices of Stephen Miller', 'Arizona', 'Mesa', ARRAY['Police Misconduct', 'Employment Discrimination'], ARRAY['Malicious Prosecution', 'Racial Profiling'], '222-543-8878', 'info@millerlaw.com', 'https://www.millerstephenlaw.com', true, 'AR-80128', 17)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Thomas Parker', 'Law Offices of Thomas Parker', 'Maryland', 'Rockville', ARRAY['Constitutional Law', 'Civil Rights', 'First Amendment'], ARRAY['Malicious Prosecution'], '951-321-4851', 'info@parkerlaw.com', 'https://www.parkerthomaslaw.com', true, 'MA-92269', 15)
+        VALUES ('Patrick Campbell', 'Law Offices of Patrick Campbell', 'Tennessee', 'Knoxville', ARRAY['Wrongful Conviction'], ARRAY['Illegal Search'], '492-805-6806', 'info@campbelllaw.com', 'https://www.campbellpatricklaw.com', false, 'TE-83409', 40)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Paul Allen', 'Law Offices of Paul Allen', 'Illinois', 'Aurora', ARRAY['Employment Discrimination', 'Police Misconduct'], ARRAY['Excessive Force', 'Qualified Immunity'], '479-869-5529', 'info@allenlaw.com', 'https://www.allenpaullaw.com', true, 'IL-29433', 28)
+        VALUES ('Walter Roberts', 'Law Offices of Walter Roberts', 'Louisiana', 'Shreveport', ARRAY['Police Misconduct'], ARRAY['Qualified Immunity', 'Excessive Force'], '946-929-7552', 'info@robertslaw.com', 'https://www.robertswalterlaw.com', false, 'LO-12728', 23)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Christopher Mitchell', 'Law Offices of Christopher Mitchell', 'Nebraska', 'Omaha', ARRAY['Constitutional Law'], ARRAY['False Arrest'], '525-228-8568', 'info@mitchelllaw.com', 'https://www.mitchellchristopherlaw.com', false, 'NE-90296', 9)
+        VALUES ('Kevin Hill', 'Law Offices of Kevin Hill', 'New York', 'Yonkers', ARRAY['Housing Discrimination'], ARRAY['Protest Defense', 'Section 1983'], '308-776-2367', 'info@hilllaw.com', 'https://www.hillkevinlaw.com', false, 'NE-35966', 8)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Barbara Murphy', 'Law Offices of Barbara Murphy', 'Massachusetts', 'Boston', ARRAY['First Amendment'], ARRAY['Illegal Search'], '816-849-6967', 'info@murphylaw.com', 'https://www.murphybarbaralaw.com', false, 'MA-74231', 19)
+        VALUES ('Timothy Anderson', 'Law Offices of Timothy Anderson', 'Alaska', 'Juneau', ARRAY['First Amendment', 'Housing Discrimination'], ARRAY['Section 1983', 'Protest Defense', 'Qualified Immunity'], '919-555-2451', 'info@andersonlaw.com', 'https://www.andersontimothylaw.com', true, 'AL-53816', 25)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Patricia Johnson', 'Law Offices of Patricia Johnson', 'Connecticut', 'New Haven', ARRAY['Employment Discrimination', 'Voting Rights'], ARRAY['Protest Defense', 'False Arrest'], '299-758-6110', 'info@johnsonlaw.com', 'https://www.johnsonpatricialaw.com', true, 'CO-13913', 9)
+        VALUES ('Ronald Martin', 'Law Offices of Ronald Martin', 'Oklahoma', 'Norman', ARRAY['Wrongful Conviction', 'First Amendment'], ARRAY['Section 1983', 'Protest Defense'], '638-744-8589', 'info@martinlaw.com', 'https://www.martinronaldlaw.com', false, 'OK-74568', 36)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Elizabeth Evans', 'Law Offices of Elizabeth Evans', 'Mississippi', 'Southaven', ARRAY['First Amendment', 'Police Misconduct', 'Civil Rights'], ARRAY['Section 1983'], '486-416-3498', 'info@evanslaw.com', 'https://www.evanselizabethlaw.com', false, 'MI-69275', 40)
+        VALUES ('George Martinez', 'Law Offices of George Martinez', 'Ohio', 'Columbus', ARRAY['Employment Discrimination', 'Constitutional Law', 'First Amendment'], ARRAY['False Arrest', 'Malicious Prosecution', 'Racial Profiling'], '736-701-8254', 'info@martinezlaw.com', 'https://www.martinezgeorgelaw.com', true, 'OH-82657', 13)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Henry Morris', 'Law Offices of Henry Morris', 'Washington', 'Tacoma', ARRAY['Civil Rights', 'Voting Rights'], ARRAY['Illegal Search'], '318-607-3235', 'info@morrislaw.com', 'https://www.morrishenrylaw.com', true, 'WA-74547', 14)
+        VALUES ('Arthur Mitchell', 'Law Offices of Arthur Mitchell', 'Tennessee', 'Nashville', ARRAY['Housing Discrimination', 'Employment Discrimination', 'Police Misconduct'], ARRAY['Section 1983'], '854-269-8581', 'info@mitchelllaw.com', 'https://www.mitchellarthurlaw.com', false, 'TE-60439', 31)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Frank Adams', 'Law Offices of Frank Adams', 'Arizona', 'Tucson', ARRAY['Wrongful Conviction', 'Police Misconduct', 'Housing Discrimination'], ARRAY['Racial Profiling'], '696-317-3537', 'info@adamslaw.com', 'https://www.adamsfranklaw.com', false, 'AR-44140', 30)
+        VALUES ('Donald Morgan', 'Law Offices of Donald Morgan', 'Michigan', 'Detroit', ARRAY['Voting Rights', 'Constitutional Law', 'Police Misconduct'], ARRAY['False Arrest', 'Police Brutality'], '213-354-9301', 'info@morganlaw.com', 'https://www.morgandonaldlaw.com', true, 'MI-86227', 7)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Harold Brown', 'Law Offices of Harold Brown', 'Maine', 'Bangor', ARRAY['Civil Rights', 'Housing Discrimination', 'Prisoners' Rights'], ARRAY['False Arrest', 'Racial Profiling', 'Police Brutality'], '523-930-2896', 'info@brownlaw.com', 'https://www.brownharoldlaw.com', false, 'MA-11137', 19)
+        VALUES ('Sarah Rogers', 'Law Offices of Sarah Rogers', 'Wisconsin', 'Milwaukee', ARRAY['Police Misconduct', 'Voting Rights', 'Civil Rights'], ARRAY['Racial Profiling'], '909-686-1008', 'info@rogerslaw.com', 'https://www.rogerssarahlaw.com', false, 'WI-58321', 36)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Karen Campbell', 'Law Offices of Karen Campbell', 'Arizona', 'Tucson', ARRAY['Constitutional Law', 'Civil Rights', 'Police Misconduct'], ARRAY['Malicious Prosecution', 'False Arrest'], '501-224-5745', 'info@campbelllaw.com', 'https://www.campbellkarenlaw.com', false, 'AR-66568', 38)
+        VALUES ('Mark Thomas', 'Law Offices of Mark Thomas', 'Illinois', 'Chicago', ARRAY['Employment Discrimination', 'Civil Rights'], ARRAY['Racial Profiling', 'False Arrest'], '828-996-3550', 'info@thomaslaw.com', 'https://www.thomasmarklaw.com', true, 'IL-64769', 15)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Gregory Lewis', 'Law Offices of Gregory Lewis', 'California', 'San Jose', ARRAY['Police Misconduct'], ARRAY['Malicious Prosecution'], '412-995-1169', 'info@lewislaw.com', 'https://www.lewisgregorylaw.com', false, 'CA-99251', 13)
+        VALUES ('Frank Moore', 'Law Offices of Frank Moore', 'Minnesota', 'Rochester', ARRAY['Prisoners'' Rights', 'Employment Discrimination'], ARRAY['Malicious Prosecution', 'Section 1983', 'Excessive Force'], '640-322-8953', 'info@moorelaw.com', 'https://www.moorefranklaw.com', true, 'MI-16042', 20)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Dennis Johnson', 'Law Offices of Dennis Johnson', 'Washington', 'Spokane', ARRAY['Wrongful Conviction', 'Civil Rights', 'First Amendment'], ARRAY['Racial Profiling', 'Protest Defense'], '512-669-3178', 'info@johnsonlaw.com', 'https://www.johnsondennislaw.com', true, 'WA-33318', 37)
+        VALUES ('Kenneth Gonzalez', 'Law Offices of Kenneth Gonzalez', 'Missouri', 'St. Louis', ARRAY['Prisoners'' Rights', 'Employment Discrimination'], ARRAY['Racial Profiling'], '418-956-3057', 'info@gonzalezlaw.com', 'https://www.gonzalezkennethlaw.com', true, 'MI-64973', 15)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Joseph Harris', 'Law Offices of Joseph Harris', 'Kentucky', 'Bowling Green', ARRAY['Employment Discrimination', 'Voting Rights', 'Prisoners' Rights'], ARRAY['Illegal Search', 'False Arrest', 'Section 1983'], '286-552-4223', 'info@harrislaw.com', 'https://www.harrisjosephlaw.com', true, 'KE-39492', 22)
+        VALUES ('David Roberts', 'Law Offices of David Roberts', 'Rhode Island', 'Cranston', ARRAY['Constitutional Law', 'Police Misconduct', 'Civil Rights'], ARRAY['Racial Profiling', 'Illegal Search'], '775-736-1086', 'info@robertslaw.com', 'https://www.robertsdavidlaw.com', false, 'RH-81557', 39)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Roger Stewart', 'Law Offices of Roger Stewart', 'California', 'Sacramento', ARRAY['Constitutional Law'], ARRAY['Protest Defense'], '638-557-8506', 'info@stewartlaw.com', 'https://www.stewartrogerlaw.com', false, 'CA-91288', 9)
+        VALUES ('Brian Rogers', 'Law Offices of Brian Rogers', 'Massachusetts', 'Springfield', ARRAY['First Amendment', 'Civil Rights'], ARRAY['False Arrest', 'Protest Defense'], '499-365-9114', 'info@rogerslaw.com', 'https://www.rogersbrianlaw.com', false, 'MA-28985', 36)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Frank Hill', 'Law Offices of Frank Hill', 'Maryland', 'Frederick', ARRAY['Housing Discrimination'], ARRAY['Police Brutality', 'Racial Profiling'], '447-304-7482', 'info@hilllaw.com', 'https://www.hillfranklaw.com', false, 'MA-77086', 28)
+        VALUES ('Daniel Jackson', 'Law Offices of Daniel Jackson', 'Alaska', 'Anchorage', ARRAY['Housing Discrimination', 'Wrongful Conviction'], ARRAY['Protest Defense', 'False Arrest'], '573-503-2899', 'info@jacksonlaw.com', 'https://www.jacksondaniellaw.com', true, 'AL-39318', 12)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Henry Moore', 'Law Offices of Henry Moore', 'Idaho', 'Meridian', ARRAY['Constitutional Law', 'Housing Discrimination'], ARRAY['Illegal Search', 'Malicious Prosecution', 'False Arrest'], '387-818-9276', 'info@moorelaw.com', 'https://www.moorehenrylaw.com', false, 'ID-63869', 35)
+        VALUES ('Joshua Wilson', 'Law Offices of Joshua Wilson', 'Virginia', 'Chesapeake', ARRAY['Civil Rights', 'First Amendment'], ARRAY['Section 1983', 'Protest Defense', 'Excessive Force'], '811-207-1983', 'info@wilsonlaw.com', 'https://www.wilsonjoshualaw.com', true, 'VI-71198', 16)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
         INSERT INTO public.attorneys (name, firm, state, city, practice_areas, specialties, phone, email, website, accepts_pro_bono, bar_number, years_experience)
-        VALUES ('Peter Adams', 'Law Offices of Peter Adams', 'Georgia', 'Macon', ARRAY['Employment Discrimination', 'Voting Rights'], ARRAY['Excessive Force', 'Protest Defense', 'Racial Profiling'], '879-638-9859', 'info@adamslaw.com', 'https://www.adamspeterlaw.com', true, 'GE-49572', 22)
+        VALUES ('Douglas Jackson', 'Law Offices of Douglas Jackson', 'Pennsylvania', 'Philadelphia', ARRAY['First Amendment', 'Voting Rights', 'Employment Discrimination'], ARRAY['Police Brutality'], '405-641-7296', 'info@jacksonlaw.com', 'https://www.jacksondouglaslaw.com', false, 'PE-53929', 29)
         ON CONFLICT (name, phone) DO NOTHING;
         
 
 -- 2. ACTIVISTS
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('John Wright', 'JohnAudits', 'Maine', 'Facebook', 'https://facebook.com/johnwright', ARRAY['Cop Watching', 'Public Records'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Sarah Lewis', 'SarahAudits', 'Missouri', 'Twitch', 'https://twitch.com/sarahlewis', ARRAY['Cop Watching', 'Government Transparency', 'First Amendment Audits'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Christopher Lewis', 'ChristopherAudits', 'Vermont', 'Facebook', 'https://facebook.com/christopherlewis', ARRAY['Police Accountability', 'Cop Watching', 'Government Transparency'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Robert Morgan', 'RobertAudits', 'Hawaii', 'Facebook', 'https://facebook.com/robertmorgan', ARRAY['Public Records', 'Police Accountability'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Sarah Green', NULL, 'Florida', 'TikTok', 'https://tiktok.com/sarahgreen', ARRAY['Cop Watching', 'Public Records'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Eric Taylor', NULL, 'Kentucky', 'TikTok', 'https://tiktok.com/erictaylor', ARRAY['Cop Watching'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Jessica Young', NULL, 'Delaware', 'Facebook', 'https://facebook.com/jessicayoung', ARRAY['Government Transparency', 'Police Accountability'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Charles Gonzalez', 'CharlesAudits', 'Florida', 'Twitter/X', 'https://twitter/x.com/charlesgonzalez', ARRAY['Cop Watching', 'Public Records'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Mary Turner', 'MaryAudits', 'Maine', 'Facebook', 'https://facebook.com/maryturner', ARRAY['Civil Rights Education'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Gregory Campbell', NULL, 'Indiana', 'TikTok', 'https://tiktok.com/gregorycampbell', ARRAY['First Amendment Audits'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Donald Davis', 'DonaldAudits', 'Kansas', 'Twitter/X', 'https://twitter/x.com/donalddavis', ARRAY['Government Transparency', 'Public Records', 'Police Accountability'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Jennifer Cook', 'JenniferAudits', 'North Dakota', 'Instagram', 'https://instagram.com/jennifercook', ARRAY['Civil Rights Education', 'Cop Watching', 'Police Accountability'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('George Harris', NULL, 'Nevada', 'Twitch', 'https://twitch.com/georgeharris', ARRAY['Civil Rights Education', 'Government Transparency', 'First Amendment Audits'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Douglas Martin', NULL, 'Pennsylvania', 'Facebook', 'https://facebook.com/douglasmartin', ARRAY['Civil Rights Education'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Eric Parker', 'EricAudits', 'Wyoming', 'Facebook', 'https://facebook.com/ericparker', ARRAY['Police Accountability', 'Civil Rights Education', 'Public Records'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Roger Mitchell', 'RogerAudits', 'Connecticut', 'Facebook', 'https://facebook.com/rogermitchell', ARRAY['Police Accountability', 'Government Transparency'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Andrew Lopez', 'AndrewAudits', 'Kansas', 'Twitch', 'https://twitch.com/andrewlopez', ARRAY['Civil Rights Education', 'Government Transparency'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Daniel Cook', 'DanielAudits', 'Missouri', 'Twitter/X', 'https://twitter/x.com/danielcook', ARRAY['Civil Rights Education', 'First Amendment Audits', 'Police Accountability'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Scott Collins', NULL, 'Florida', 'YouTube', 'https://youtube.com/scottcollins', ARRAY['Cop Watching', 'Government Transparency'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Robert Turner', NULL, 'Nebraska', 'Twitter/X', 'https://twitter/x.com/robertturner', ARRAY['Cop Watching', 'Public Records', 'Civil Rights Education'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Andrew Roberts', 'AndrewAudits', 'Nebraska', 'Instagram', 'https://instagram.com/andrewroberts', ARRAY['Police Accountability'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Anthony Smith', NULL, 'Delaware', 'Facebook', 'https://facebook.com/anthonysmith', ARRAY['First Amendment Audits', 'Civil Rights Education'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Linda Anderson', 'LindaAudits', 'Louisiana', 'YouTube', 'https://youtube.com/lindaanderson', ARRAY['Police Accountability'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('James Thompson', NULL, 'New Hampshire', 'TikTok', 'https://tiktok.com/jamesthompson', ARRAY['Public Records', 'Civil Rights Education'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Jennifer Bell', 'JenniferAudits', 'South Dakota', 'Twitter/X', 'https://twitter/x.com/jenniferbell', ARRAY['Civil Rights Education'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Andrew Carter', NULL, 'Massachusetts', 'Facebook', 'https://facebook.com/andrewcarter', ARRAY['Cop Watching', 'First Amendment Audits'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Jeffrey King', NULL, 'Ohio', 'Twitch', 'https://twitch.com/jeffreyking', ARRAY['Cop Watching'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('James Harris', 'JamesAudits', 'Idaho', 'TikTok', 'https://tiktok.com/jamesharris', ARRAY['Cop Watching', 'Police Accountability', 'Public Records'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('James Roberts', 'JamesAudits', 'Alabama', 'Facebook', 'https://facebook.com/jamesroberts', ARRAY['Cop Watching', 'Government Transparency', 'Police Accountability'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Douglas Collins', NULL, 'Virginia', 'Twitch', 'https://twitch.com/douglascollins', ARRAY['First Amendment Audits', 'Government Transparency', 'Cop Watching'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Raymond Bailey', 'RaymondAudits', 'Mississippi', 'Twitter/X', 'https://twitter/x.com/raymondbailey', ARRAY['Cop Watching'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('George Reed', NULL, 'Oklahoma', 'Twitter/X', 'https://twitter/x.com/georgereed', ARRAY['Government Transparency', 'Civil Rights Education', 'Police Accountability'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Thomas Smith', 'ThomasAudits', 'Mississippi', 'YouTube', 'https://youtube.com/thomassmith', ARRAY['Civil Rights Education', 'Cop Watching'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Patricia Reed', 'PatriciaAudits', 'New Jersey', 'Instagram', 'https://instagram.com/patriciareed', ARRAY['Police Accountability', 'First Amendment Audits', 'Government Transparency'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Kenneth Clark', 'KennethAudits', 'California', 'TikTok', 'https://tiktok.com/kennethclark', ARRAY['Government Transparency', 'Public Records', 'Police Accountability'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Frank Rodriguez', 'FrankAudits', 'South Dakota', 'Instagram', 'https://instagram.com/frankrodriguez', ARRAY['Government Transparency', 'Civil Rights Education'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Kenneth Bailey', NULL, 'Utah', 'Twitter/X', 'https://twitter/x.com/kennethbailey', ARRAY['Police Accountability'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Christopher Wilson', 'ChristopherAudits', 'Ohio', 'Twitter/X', 'https://twitter/x.com/christopherwilson', ARRAY['Public Records', 'Government Transparency'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Patrick Williams', NULL, 'Maine', 'Instagram', 'https://instagram.com/patrickwilliams', ARRAY['Government Transparency', 'First Amendment Audits'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Linda Wilson', NULL, 'North Dakota', 'Twitch', 'https://twitch.com/lindawilson', ARRAY['Public Records'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Thomas Turner', 'ThomasAudits', 'Texas', 'Facebook', 'https://facebook.com/thomasturner', ARRAY['Police Accountability', 'Civil Rights Education'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Henry Roberts', 'HenryAudits', 'Nebraska', 'Instagram', 'https://instagram.com/henryroberts', ARRAY['First Amendment Audits', 'Civil Rights Education'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Ryan Adams', NULL, 'Oklahoma', 'Facebook', 'https://facebook.com/ryanadams', ARRAY['Police Accountability', 'Public Records', 'First Amendment Audits'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Mark Wright', NULL, 'Texas', 'YouTube', 'https://youtube.com/markwright', ARRAY['Police Accountability', 'Cop Watching', 'First Amendment Audits'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Walter Roberts', 'WalterAudits', 'North Dakota', 'Twitch', 'https://twitch.com/walterroberts', ARRAY['Cop Watching', 'Civil Rights Education'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Frank Martin', 'FrankAudits', 'Montana', 'Facebook', 'https://facebook.com/frankmartin', ARRAY['Cop Watching', 'Police Accountability'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Henry Perez', NULL, 'New Hampshire', 'Instagram', 'https://instagram.com/henryperez', ARRAY['Civil Rights Education', 'Government Transparency', 'Public Records'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Brian Taylor', 'BrianAudits', 'Nebraska', 'Instagram', 'https://instagram.com/briantaylor', ARRAY['First Amendment Audits'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Jeffrey Hernandez', NULL, 'Iowa', 'Twitch', 'https://twitch.com/jeffreyhernandez', ARRAY['Cop Watching', 'Government Transparency'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Harold Collins', NULL, 'Texas', 'Twitter/X', 'https://twitter/x.com/haroldcollins', ARRAY['First Amendment Audits'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Jason Allen', NULL, 'Louisiana', 'TikTok', 'https://tiktok.com/jasonallen', ARRAY['First Amendment Audits'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Walter Carter', NULL, 'Maryland', 'Facebook', 'https://facebook.com/waltercarter', ARRAY['Cop Watching', 'Government Transparency', 'Public Records'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Gregory Thomas', 'GregoryAudits', 'Kentucky', 'Twitter/X', 'https://twitter/x.com/gregorythomas', ARRAY['Police Accountability', 'Government Transparency'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Andrew Hill', NULL, 'Nebraska', 'YouTube', 'https://youtube.com/andrewhill', ARRAY['Government Transparency'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Brian Rogers', NULL, 'Mississippi', 'TikTok', 'https://tiktok.com/brianrogers', ARRAY['Cop Watching'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Jose Thomas', 'JoseAudits', 'Texas', 'YouTube', 'https://youtube.com/josethomas', ARRAY['First Amendment Audits'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Jennifer Mitchell', 'JenniferAudits', 'New Hampshire', 'Instagram', 'https://instagram.com/jennifermitchell', ARRAY['Civil Rights Education', 'Police Accountability', 'First Amendment Audits'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Jerry Williams', NULL, 'Montana', 'Twitch', 'https://twitch.com/jerrywilliams', ARRAY['Cop Watching', 'Public Records'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Kenneth Hall', NULL, 'Vermont', 'Instagram', 'https://instagram.com/kennethhall', ARRAY['Cop Watching', 'First Amendment Audits', 'Public Records'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Patricia Clark', NULL, 'Oregon', 'Twitch', 'https://twitch.com/patriciaclark', ARRAY['Public Records'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Christopher Morgan', 'ChristopherAudits', 'Michigan', 'Twitch', 'https://twitch.com/christophermorgan', ARRAY['First Amendment Audits'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Matthew Anderson', 'MatthewAudits', 'South Dakota', 'Twitter/X', 'https://twitter/x.com/matthewanderson', ARRAY['Cop Watching'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Jose Moore', NULL, 'Alabama', 'YouTube', 'https://youtube.com/josemoore', ARRAY['Public Records'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Donald Campbell', 'DonaldAudits', 'Iowa', 'Twitch', 'https://twitch.com/donaldcampbell', ARRAY['Public Records', 'Government Transparency'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Jeffrey Hernandez', 'JeffreyAudits', 'Virginia', 'Facebook', 'https://facebook.com/jeffreyhernandez', ARRAY['Police Accountability', 'Cop Watching', 'First Amendment Audits'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Walter Morris', 'WalterAudits', 'Louisiana', 'TikTok', 'https://tiktok.com/waltermorris', ARRAY['Government Transparency', 'Cop Watching'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Ryan Campbell', 'RyanAudits', 'Alaska', 'Twitter/X', 'https://twitter/x.com/ryancampbell', ARRAY['Government Transparency', 'Civil Rights Education'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Donald Turner', 'DonaldAudits', 'Nebraska', 'Twitch', 'https://twitch.com/donaldturner', ARRAY['Police Accountability'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Henry Gonzalez', NULL, 'Wisconsin', 'Twitter/X', 'https://twitter/x.com/henrygonzalez', ARRAY['Civil Rights Education', 'Government Transparency', 'Police Accountability'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Sarah Sanchez', NULL, 'Vermont', 'Facebook', 'https://facebook.com/sarahsanchez', ARRAY['Government Transparency', 'Public Records'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Michael Green', NULL, 'New Mexico', 'Twitter/X', 'https://twitter/x.com/michaelgreen', ARRAY['Civil Rights Education', 'Government Transparency', 'Cop Watching'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Timothy Johnson', 'TimothyAudits', 'Kansas', 'Twitter/X', 'https://twitter/x.com/timothyjohnson', ARRAY['First Amendment Audits', 'Civil Rights Education', 'Public Records'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Richard Campbell', NULL, 'Idaho', 'TikTok', 'https://tiktok.com/richardcampbell', ARRAY['First Amendment Audits', 'Government Transparency'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Eric Parker', NULL, 'Ohio', 'YouTube', 'https://youtube.com/ericparker', ARRAY['Government Transparency', 'Police Accountability', 'Public Records'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Christopher Cook', 'ChristopherAudits', 'Washington', 'Facebook', 'https://facebook.com/christophercook', ARRAY['Civil Rights Education', 'Government Transparency', 'First Amendment Audits'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Jerry Allen', NULL, 'Wyoming', 'Instagram', 'https://instagram.com/jerryallen', ARRAY['Public Records'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Elizabeth Robinson', 'ElizabethAudits', 'Alaska', 'TikTok', 'https://tiktok.com/elizabethrobinson', ARRAY['Government Transparency', 'Public Records', 'Police Accountability'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Joshua Young', 'JoshuaAudits', 'Missouri', 'Facebook', 'https://facebook.com/joshuayoung', ARRAY['Civil Rights Education', 'Government Transparency', 'Public Records'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Peter Campbell', 'PeterAudits', 'South Carolina', 'Twitch', 'https://twitch.com/petercampbell', ARRAY['Police Accountability', 'Government Transparency', 'Public Records'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Matthew Wilson', NULL, 'Michigan', 'TikTok', 'https://tiktok.com/matthewwilson', ARRAY['Public Records'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Jeffrey Williams', 'JeffreyAudits', 'New Mexico', 'Twitch', 'https://twitch.com/jeffreywilliams', ARRAY['Civil Rights Education'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('David Cook', NULL, 'Missouri', 'Twitter/X', 'https://twitter/x.com/davidcook', ARRAY['Cop Watching', 'First Amendment Audits'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Brian Green', NULL, 'Pennsylvania', 'Twitter/X', 'https://twitter/x.com/briangreen', ARRAY['Police Accountability', 'Cop Watching'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Sarah Johnson', NULL, 'South Dakota', 'YouTube', 'https://youtube.com/sarahjohnson', ARRAY['Government Transparency', 'Civil Rights Education', 'Cop Watching'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Joseph Davis', NULL, 'Maryland', 'Instagram', 'https://instagram.com/josephdavis', ARRAY['Cop Watching'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('William Hernandez', 'WilliamAudits', 'Delaware', 'Instagram', 'https://instagram.com/williamhernandez', ARRAY['Cop Watching', 'First Amendment Audits', 'Police Accountability'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Ronald Rodriguez', NULL, 'Wyoming', 'Instagram', 'https://instagram.com/ronaldrodriguez', ARRAY['First Amendment Audits', 'Police Accountability', 'Civil Rights Education'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Christopher Bell', 'ChristopherAudits', 'West Virginia', 'YouTube', 'https://youtube.com/christopherbell', ARRAY['Government Transparency', 'First Amendment Audits', 'Public Records'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Matthew Johnson', NULL, 'Rhode Island', 'Twitch', 'https://twitch.com/matthewjohnson', ARRAY['First Amendment Audits', 'Public Records'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('George Lee', 'GeorgeAudits', 'Alaska', 'Twitch', 'https://twitch.com/georgelee', ARRAY['Police Accountability', 'Government Transparency'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Barbara Gonzalez', NULL, 'Idaho', 'Twitter/X', 'https://twitter/x.com/barbaragonzalez', ARRAY['Police Accountability', 'Civil Rights Education'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Frank Wilson', 'FrankAudits', 'Delaware', 'Facebook', 'https://facebook.com/frankwilson', ARRAY['Government Transparency', 'Public Records', 'Cop Watching'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Jerry Walker', 'JerryAudits', 'Minnesota', 'Twitch', 'https://twitch.com/jerrywalker', ARRAY['Public Records', 'Government Transparency'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Larry Williams', NULL, 'Wyoming', 'Instagram', 'https://instagram.com/larrywilliams', ARRAY['Civil Rights Education', 'Government Transparency'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Michael Scott', 'MichaelAudits', 'Iowa', 'Facebook', 'https://facebook.com/michaelscott', ARRAY['Public Records', 'Government Transparency'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Roger Reed', 'RogerAudits', 'Mississippi', 'Instagram', 'https://instagram.com/rogerreed', ARRAY['Government Transparency'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Karen Smith', NULL, 'Hawaii', 'TikTok', 'https://tiktok.com/karensmith', ARRAY['Civil Rights Education', 'Cop Watching', 'Public Records'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Daniel Adams', 'DanielAudits', 'New Jersey', 'Facebook', 'https://facebook.com/danieladams', ARRAY['Civil Rights Education', 'Public Records', 'First Amendment Audits'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('David Carter', NULL, 'California', 'Facebook', 'https://facebook.com/davidcarter', ARRAY['Civil Rights Education', 'First Amendment Audits'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Ryan Sanchez', 'RyanAudits', 'Nebraska', 'Twitter/X', 'https://twitter/x.com/ryansanchez', ARRAY['Police Accountability', 'Civil Rights Education'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Paul Reed', NULL, 'South Dakota', 'Twitter/X', 'https://twitter/x.com/paulreed', ARRAY['First Amendment Audits'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Kevin Johnson', NULL, 'Louisiana', 'Facebook', 'https://facebook.com/kevinjohnson', ARRAY['First Amendment Audits', 'Police Accountability', 'Cop Watching'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Roger Phillips', 'RogerAudits', 'Illinois', 'YouTube', 'https://youtube.com/rogerphillips', ARRAY['Government Transparency', 'First Amendment Audits'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Charles Robinson', 'CharlesAudits', 'Vermont', 'Twitter/X', 'https://twitter/x.com/charlesrobinson', ARRAY['Government Transparency', 'Police Accountability'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Douglas Smith', 'DouglasAudits', 'Nevada', 'Instagram', 'https://instagram.com/douglassmith', ARRAY['First Amendment Audits', 'Government Transparency'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Jerry Johnson', NULL, 'North Carolina', 'Twitter/X', 'https://twitter/x.com/jerryjohnson', ARRAY['Government Transparency', 'Civil Rights Education'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Joseph Scott', NULL, 'Wyoming', 'Instagram', 'https://instagram.com/josephscott', ARRAY['Government Transparency', 'Public Records'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Henry Phillips', 'HenryAudits', 'Iowa', 'Facebook', 'https://facebook.com/henryphillips', ARRAY['First Amendment Audits', 'Public Records', 'Police Accountability'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Peter Smith', NULL, 'Michigan', 'Instagram', 'https://instagram.com/petersmith', ARRAY['Cop Watching', 'Government Transparency', 'Civil Rights Education'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Roger Parker', 'RogerAudits', 'Montana', 'Instagram', 'https://instagram.com/rogerparker', ARRAY['Civil Rights Education', 'Cop Watching'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Douglas Mitchell', NULL, 'Maryland', 'TikTok', 'https://tiktok.com/douglasmitchell', ARRAY['Public Records', 'Police Accountability'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Jason Wilson', 'JasonAudits', 'Kentucky', 'Facebook', 'https://facebook.com/jasonwilson', ARRAY['Civil Rights Education', 'Police Accountability'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Susan Bell', NULL, 'Pennsylvania', 'TikTok', 'https://tiktok.com/susanbell', ARRAY['First Amendment Audits'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('James Garcia', 'JamesAudits', 'Kentucky', 'Twitch', 'https://twitch.com/jamesgarcia', ARRAY['First Amendment Audits', 'Cop Watching'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Dennis Collins', NULL, 'West Virginia', 'YouTube', 'https://youtube.com/denniscollins', ARRAY['Police Accountability', 'Civil Rights Education', 'First Amendment Audits'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Carl Green', 'CarlAudits', 'Kansas', 'Twitter/X', 'https://twitter/x.com/carlgreen', ARRAY['Civil Rights Education', 'First Amendment Audits', 'Government Transparency'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Robert Roberts', NULL, 'Alabama', 'Twitch', 'https://twitch.com/robertroberts', ARRAY['First Amendment Audits'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Karen Murphy', NULL, 'Mississippi', 'Instagram', 'https://instagram.com/karenmurphy', ARRAY['Cop Watching'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Michael Johnson', 'MichaelAudits', 'Wisconsin', 'YouTube', 'https://youtube.com/michaeljohnson', ARRAY['Cop Watching', 'First Amendment Audits', 'Civil Rights Education'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Eric Morgan', NULL, 'Alaska', 'Facebook', 'https://facebook.com/ericmorgan', ARRAY['Police Accountability'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Paul Martinez', 'PaulAudits', 'New York', 'Twitter/X', 'https://twitter/x.com/paulmartinez', ARRAY['First Amendment Audits'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('George Taylor', 'GeorgeAudits', 'Maine', 'Twitch', 'https://twitch.com/georgetaylor', ARRAY['Civil Rights Education', 'Government Transparency', 'Public Records'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Donald Harris', 'DonaldAudits', 'Nevada', 'Facebook', 'https://facebook.com/donaldharris', ARRAY['Cop Watching', 'Government Transparency'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Jennifer Baker', 'JenniferAudits', 'Indiana', 'Facebook', 'https://facebook.com/jenniferbaker', ARRAY['Civil Rights Education', 'First Amendment Audits'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Walter Allen', 'WalterAudits', 'Connecticut', 'Twitter/X', 'https://twitter/x.com/walterallen', ARRAY['Government Transparency', 'Civil Rights Education', 'First Amendment Audits'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Jose Smith', 'JoseAudits', 'Pennsylvania', 'Facebook', 'https://facebook.com/josesmith', ARRAY['Cop Watching'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Susan Roberts', NULL, 'North Dakota', 'Twitter/X', 'https://twitter/x.com/susanroberts', ARRAY['Civil Rights Education', 'Government Transparency'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Ryan Sanchez', 'RyanAudits', 'Indiana', 'Twitter/X', 'https://twitter/x.com/ryansanchez', ARRAY['First Amendment Audits', 'Police Accountability'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Kenneth Wilson', 'KennethAudits', 'Virginia', 'Instagram', 'https://instagram.com/kennethwilson', ARRAY['Cop Watching', 'Public Records'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Scott Hernandez', 'ScottAudits', 'Wisconsin', 'YouTube', 'https://youtube.com/scotthernandez', ARRAY['Public Records', 'Cop Watching', 'Civil Rights Education'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Scott Morgan', NULL, 'Alaska', 'Instagram', 'https://instagram.com/scottmorgan', ARRAY['Civil Rights Education', 'Police Accountability', 'Government Transparency'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Douglas Williams', 'DouglasAudits', 'Pennsylvania', 'Twitter/X', 'https://twitter/x.com/douglaswilliams', ARRAY['Civil Rights Education', 'Police Accountability', 'Government Transparency'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Henry Green', 'HenryAudits', 'New Jersey', 'Twitch', 'https://twitch.com/henrygreen', ARRAY['Police Accountability'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Stephen Clark', NULL, 'Washington', 'Instagram', 'https://instagram.com/stephenclark', ARRAY['Cop Watching', 'First Amendment Audits', 'Government Transparency'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Richard Morgan', NULL, 'Kentucky', 'Twitch', 'https://twitch.com/richardmorgan', ARRAY['Civil Rights Education', 'First Amendment Audits', 'Public Records'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Ryan Williams', NULL, 'Illinois', 'TikTok', 'https://tiktok.com/ryanwilliams', ARRAY['Public Records', 'Cop Watching', 'Government Transparency'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Carl Jackson', NULL, 'North Carolina', 'Twitter/X', 'https://twitter/x.com/carljackson', ARRAY['Civil Rights Education', 'Cop Watching', 'First Amendment Audits'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Andrew White', NULL, 'Washington', 'Twitch', 'https://twitch.com/andrewwhite', ARRAY['Public Records'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Kenneth Robinson', 'KennethAudits', 'New York', 'TikTok', 'https://tiktok.com/kennethrobinson', ARRAY['Public Records'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Jason Williams', NULL, 'Arkansas', 'Facebook', 'https://facebook.com/jasonwilliams', ARRAY['Cop Watching', 'Government Transparency', 'Civil Rights Education'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Arthur Reed', NULL, 'Wisconsin', 'YouTube', 'https://youtube.com/arthurreed', ARRAY['First Amendment Audits'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Timothy Scott', NULL, 'Oklahoma', 'Facebook', 'https://facebook.com/timothyscott', ARRAY['Public Records'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Arthur Bailey', 'ArthurAudits', 'Missouri', 'Facebook', 'https://facebook.com/arthurbailey', ARRAY['Civil Rights Education', 'Cop Watching', 'Government Transparency'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('James Morris', 'JamesAudits', 'Montana', 'Twitter/X', 'https://twitter/x.com/jamesmorris', ARRAY['Cop Watching'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('David Lopez', 'DavidAudits', 'Tennessee', 'Facebook', 'https://facebook.com/davidlopez', ARRAY['Public Records', 'Cop Watching', 'Police Accountability'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Carl Lee', NULL, 'Florida', 'YouTube', 'https://youtube.com/carllee', ARRAY['Public Records'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Douglas Green', 'DouglasAudits', 'Florida', 'Twitch', 'https://twitch.com/douglasgreen', ARRAY['Government Transparency', 'Cop Watching', 'Public Records'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('James Bell', NULL, 'Alaska', 'TikTok', 'https://tiktok.com/jamesbell', ARRAY['First Amendment Audits'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Ronald Jackson', 'RonaldAudits', 'South Carolina', 'Facebook', 'https://facebook.com/ronaldjackson', ARRAY['Police Accountability'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Jose Stewart', NULL, 'Montana', 'TikTok', 'https://tiktok.com/josestewart', ARRAY['Police Accountability'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Charles Jackson', NULL, 'Louisiana', 'YouTube', 'https://youtube.com/charlesjackson', ARRAY['Government Transparency', 'Public Records'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Joseph Turner', 'JosephAudits', 'Alaska', 'YouTube', 'https://youtube.com/josephturner', ARRAY['Civil Rights Education', 'First Amendment Audits', 'Government Transparency'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Carl Nelson', NULL, 'Connecticut', 'Instagram', 'https://instagram.com/carlnelson', ARRAY['Police Accountability', 'Government Transparency'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Donald Carter', NULL, 'Vermont', 'Instagram', 'https://instagram.com/donaldcarter', ARRAY['First Amendment Audits', 'Cop Watching', 'Civil Rights Education'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Arthur Young', NULL, 'Delaware', 'Twitter/X', 'https://twitter/x.com/arthuryoung', ARRAY['Government Transparency', 'Police Accountability', 'First Amendment Audits'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Robert Garcia', 'RobertAudits', 'Massachusetts', 'Instagram', 'https://instagram.com/robertgarcia', ARRAY['Public Records'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Peter Robinson', 'PeterAudits', 'Louisiana', 'Twitter/X', 'https://twitter/x.com/peterrobinson', ARRAY['Police Accountability', 'Cop Watching'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Patrick Gonzalez', 'PatrickAudits', 'Vermont', 'YouTube', 'https://youtube.com/patrickgonzalez', ARRAY['Government Transparency', 'Police Accountability'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Sarah Rogers', 'SarahAudits', 'New Mexico', 'YouTube', 'https://youtube.com/sarahrogers', ARRAY['Police Accountability', 'First Amendment Audits'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Kenneth Jones', NULL, 'North Carolina', 'Twitch', 'https://twitch.com/kennethjones', ARRAY['Public Records', 'Cop Watching', 'First Amendment Audits'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Kevin Bailey', NULL, 'Hawaii', 'Twitch', 'https://twitch.com/kevinbailey', ARRAY['Police Accountability', 'Civil Rights Education'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Peter Mitchell', NULL, 'Idaho', 'Facebook', 'https://facebook.com/petermitchell', ARRAY['Government Transparency'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('John Lewis', NULL, 'Oklahoma', 'Twitch', 'https://twitch.com/johnlewis', ARRAY['Police Accountability', 'Public Records', 'First Amendment Audits'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Timothy Cook', 'TimothyAudits', 'Alaska', 'YouTube', 'https://youtube.com/timothycook', ARRAY['First Amendment Audits', 'Civil Rights Education'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Jeffrey Moore', NULL, 'Nebraska', 'Twitter/X', 'https://twitter/x.com/jeffreymoore', ARRAY['Government Transparency'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Dennis Davis', NULL, 'Iowa', 'Instagram', 'https://instagram.com/dennisdavis', ARRAY['Cop Watching', 'Public Records'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Frank Allen', NULL, 'Wyoming', 'Instagram', 'https://instagram.com/frankallen', ARRAY['Government Transparency', 'First Amendment Audits', 'Public Records'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Jason Lee', NULL, 'Kansas', 'TikTok', 'https://tiktok.com/jasonlee', ARRAY['Cop Watching', 'Government Transparency', 'Civil Rights Education'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Douglas Thomas', NULL, 'Ohio', 'Twitch', 'https://twitch.com/douglasthomas', ARRAY['Public Records', 'Civil Rights Education', 'First Amendment Audits'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Charles Mitchell', NULL, 'Montana', 'YouTube', 'https://youtube.com/charlesmitchell', ARRAY['Government Transparency'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Elizabeth Perez', 'ElizabethAudits', 'North Dakota', 'Twitter/X', 'https://twitter/x.com/elizabethperez', ARRAY['Police Accountability', 'Civil Rights Education', 'First Amendment Audits'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Daniel Roberts', NULL, 'Maine', 'TikTok', 'https://tiktok.com/danielroberts', ARRAY['Public Records', 'Government Transparency'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Ronald Young', 'RonaldAudits', 'Hawaii', 'TikTok', 'https://tiktok.com/ronaldyoung', ARRAY['First Amendment Audits'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Henry Turner', 'HenryAudits', 'Minnesota', 'Twitch', 'https://twitch.com/henryturner', ARRAY['Civil Rights Education', 'Public Records', 'Cop Watching'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Gary Martinez', 'GaryAudits', 'Connecticut', 'Facebook', 'https://facebook.com/garymartinez', ARRAY['Cop Watching'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Brian Allen', 'BrianAudits', 'Nebraska', 'Twitch', 'https://twitch.com/brianallen', ARRAY['Cop Watching', 'Government Transparency', 'Public Records'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Richard Anderson', 'RichardAudits', 'Indiana', 'Twitter/X', 'https://twitter/x.com/richardanderson', ARRAY['Civil Rights Education'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Gary Jackson', NULL, 'New York', 'Twitter/X', 'https://twitter/x.com/garyjackson', ARRAY['First Amendment Audits'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Anthony Wilson', NULL, 'Louisiana', 'Twitch', 'https://twitch.com/anthonywilson', ARRAY['Public Records'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Jeffrey Morris', NULL, 'Illinois', 'YouTube', 'https://youtube.com/jeffreymorris', ARRAY['Government Transparency', 'First Amendment Audits', 'Cop Watching'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('William Bailey', NULL, 'Idaho', 'Instagram', 'https://instagram.com/williambailey', ARRAY['Cop Watching', 'Government Transparency'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Michael Jones', 'MichaelAudits', 'Iowa', 'TikTok', 'https://tiktok.com/michaeljones', ARRAY['First Amendment Audits', 'Government Transparency'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Richard Clark', 'RichardAudits', 'Arizona', 'Twitch', 'https://twitch.com/richardclark', ARRAY['Cop Watching', 'Civil Rights Education'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Sarah Thompson', 'SarahAudits', 'Massachusetts', 'TikTok', 'https://tiktok.com/sarahthompson', ARRAY['Public Records'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Jeffrey Williams', 'JeffreyAudits', 'Nebraska', 'Facebook', 'https://facebook.com/jeffreywilliams', ARRAY['Public Records'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Raymond Parker', NULL, 'Arkansas', 'TikTok', 'https://tiktok.com/raymondparker', ARRAY['Police Accountability', 'Public Records', 'Government Transparency'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Andrew Thomas', NULL, 'Kansas', 'Facebook', 'https://facebook.com/andrewthomas', ARRAY['First Amendment Audits'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Dennis Murphy', 'DennisAudits', 'North Carolina', 'YouTube', 'https://youtube.com/dennismurphy', ARRAY['Police Accountability', 'Civil Rights Education'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Daniel Collins', NULL, 'Missouri', 'Twitter/X', 'https://twitter/x.com/danielcollins', ARRAY['Civil Rights Education'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Robert Roberts', NULL, 'Arizona', 'YouTube', 'https://youtube.com/robertroberts', ARRAY['Government Transparency'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Stephen King', 'StephenAudits', 'Montana', 'Instagram', 'https://instagram.com/stephenking', ARRAY['First Amendment Audits', 'Public Records'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('John Stewart', NULL, 'Georgia', 'Facebook', 'https://facebook.com/johnstewart', ARRAY['Public Records', 'Government Transparency'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Edward Green', 'EdwardAudits', 'Vermont', 'Instagram', 'https://instagram.com/edwardgreen', ARRAY['Cop Watching', 'Civil Rights Education'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Jeffrey Baker', 'JeffreyAudits', 'Vermont', 'YouTube', 'https://youtube.com/jeffreybaker', ARRAY['Public Records', 'First Amendment Audits'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Andrew Rodriguez', 'AndrewAudits', 'Kansas', 'YouTube', 'https://youtube.com/andrewrodriguez', ARRAY['Cop Watching', 'Public Records'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Henry Young', 'HenryAudits', 'Indiana', 'Instagram', 'https://instagram.com/henryyoung', ARRAY['Government Transparency', 'Civil Rights Education'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Eric Clark', 'EricAudits', 'Louisiana', 'Twitter/X', 'https://twitter/x.com/ericclark', ARRAY['Cop Watching'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Richard Rodriguez', 'RichardAudits', 'California', 'YouTube', 'https://youtube.com/richardrodriguez', ARRAY['Public Records', 'First Amendment Audits', 'Government Transparency'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Larry Morris', 'LarryAudits', 'Idaho', 'Twitter/X', 'https://twitter/x.com/larrymorris', ARRAY['Police Accountability', 'Government Transparency'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Joseph Garcia', NULL, 'West Virginia', 'YouTube', 'https://youtube.com/josephgarcia', ARRAY['Cop Watching'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Mark Phillips', 'MarkAudits', 'Alabama', 'YouTube', 'https://youtube.com/markphillips', ARRAY['Cop Watching'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Michael Jones', NULL, 'Kansas', 'YouTube', 'https://youtube.com/michaeljones', ARRAY['Civil Rights Education', 'Cop Watching', 'Police Accountability'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Mary Lee', 'MaryAudits', 'Nevada', 'Facebook', 'https://facebook.com/marylee', ARRAY['Police Accountability', 'Public Records', 'Government Transparency'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Thomas Hernandez', 'ThomasAudits', 'Utah', 'Twitch', 'https://twitch.com/thomashernandez', ARRAY['Government Transparency', 'Civil Rights Education'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('William Stewart', NULL, 'North Dakota', 'Facebook', 'https://facebook.com/williamstewart', ARRAY['Civil Rights Education', 'First Amendment Audits', 'Cop Watching'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Stephen Adams', NULL, 'Massachusetts', 'YouTube', 'https://youtube.com/stephenadams', ARRAY['Cop Watching', 'Police Accountability'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('George Jones', NULL, 'Nevada', 'Twitter/X', 'https://twitter/x.com/georgejones', ARRAY['Civil Rights Education', 'Public Records'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Steven Parker', NULL, 'Ohio', 'Twitch', 'https://twitch.com/stevenparker', ARRAY['Police Accountability', 'Cop Watching'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Anthony Williams', NULL, 'Alaska', 'Facebook', 'https://facebook.com/anthonywilliams', ARRAY['Civil Rights Education', 'Government Transparency', 'Cop Watching'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Timothy Adams', 'TimothyAudits', 'New York', 'TikTok', 'https://tiktok.com/timothyadams', ARRAY['Police Accountability'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('James Harris', 'JamesAudits', 'Missouri', 'Twitch', 'https://twitch.com/jamesharris', ARRAY['Public Records', 'First Amendment Audits', 'Government Transparency'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Jason Cook', 'JasonAudits', 'Montana', 'Facebook', 'https://facebook.com/jasoncook', ARRAY['Public Records', 'First Amendment Audits', 'Police Accountability'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Edward Johnson', 'EdwardAudits', 'Tennessee', 'Facebook', 'https://facebook.com/edwardjohnson', ARRAY['Government Transparency', 'Police Accountability'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Carl Murphy', 'CarlAudits', 'Maryland', 'Twitter/X', 'https://twitter/x.com/carlmurphy', ARRAY['Cop Watching', 'Civil Rights Education', 'Police Accountability'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('John Lee', 'JohnAudits', 'Montana', 'YouTube', 'https://youtube.com/johnlee', ARRAY['Police Accountability', 'Public Records', 'Civil Rights Education'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Susan Walker', NULL, 'Alabama', 'YouTube', 'https://youtube.com/susanwalker', ARRAY['Public Records'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Thomas Reed', NULL, 'Kentucky', 'TikTok', 'https://tiktok.com/thomasreed', ARRAY['Civil Rights Education', 'Police Accountability', 'First Amendment Audits'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Patricia Hall', 'PatriciaAudits', 'Kentucky', 'YouTube', 'https://youtube.com/patriciahall', ARRAY['First Amendment Audits', 'Cop Watching'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Kevin Jackson', 'KevinAudits', 'Delaware', 'Twitch', 'https://twitch.com/kevinjackson', ARRAY['Public Records'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Charles Murphy', 'CharlesAudits', 'Montana', 'Facebook', 'https://facebook.com/charlesmurphy', ARRAY['Cop Watching', 'Civil Rights Education', 'First Amendment Audits'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('William Thomas', 'WilliamAudits', 'Massachusetts', 'YouTube', 'https://youtube.com/williamthomas', ARRAY['First Amendment Audits', 'Cop Watching', 'Civil Rights Education'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Ryan Morris', 'RyanAudits', 'Wisconsin', 'YouTube', 'https://youtube.com/ryanmorris', ARRAY['First Amendment Audits', 'Cop Watching'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Anthony Johnson', 'AnthonyAudits', 'Ohio', 'Facebook', 'https://facebook.com/anthonyjohnson', ARRAY['Public Records'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Donald Allen', 'DonaldAudits', 'Nevada', 'TikTok', 'https://tiktok.com/donaldallen', ARRAY['Government Transparency'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Sarah Carter', 'SarahAudits', 'Alabama', 'Instagram', 'https://instagram.com/sarahcarter', ARRAY['Cop Watching', 'First Amendment Audits', 'Police Accountability'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Harold Moore', NULL, 'Kansas', 'YouTube', 'https://youtube.com/haroldmoore', ARRAY['Police Accountability'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Patricia Morris', 'PatriciaAudits', 'New Jersey', 'YouTube', 'https://youtube.com/patriciamorris', ARRAY['Police Accountability', 'Public Records', 'Cop Watching'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Arthur Hernandez', 'ArthurAudits', 'Kansas', 'Twitch', 'https://twitch.com/arthurhernandez', ARRAY['Civil Rights Education', 'Government Transparency', 'Public Records'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('George Collins', 'GeorgeAudits', 'South Carolina', 'TikTok', 'https://tiktok.com/georgecollins', ARRAY['Government Transparency', 'Police Accountability'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Larry Young', 'LarryAudits', 'Florida', 'Facebook', 'https://facebook.com/larryyoung', ARRAY['Public Records', 'Police Accountability', 'First Amendment Audits'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Jason Martinez', NULL, 'South Dakota', 'Twitch', 'https://twitch.com/jasonmartinez', ARRAY['First Amendment Audits', 'Government Transparency', 'Public Records'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Brian Collins', 'BrianAudits', 'New Mexico', 'Facebook', 'https://facebook.com/briancollins', ARRAY['Civil Rights Education'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Peter Walker', 'PeterAudits', 'North Dakota', 'Facebook', 'https://facebook.com/peterwalker', ARRAY['First Amendment Audits', 'Government Transparency', 'Cop Watching'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Sarah Lopez', 'SarahAudits', 'Idaho', 'Twitch', 'https://twitch.com/sarahlopez', ARRAY['Police Accountability', 'Government Transparency', 'First Amendment Audits'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Barbara White', NULL, 'Washington', 'TikTok', 'https://tiktok.com/barbarawhite', ARRAY['First Amendment Audits'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Edward King', 'EdwardAudits', 'South Carolina', 'YouTube', 'https://youtube.com/edwardking', ARRAY['Public Records', 'Government Transparency', 'Cop Watching'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Scott Morgan', NULL, 'North Dakota', 'Facebook', 'https://facebook.com/scottmorgan', ARRAY['Cop Watching', 'Public Records'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Jerry Rogers', NULL, 'West Virginia', 'TikTok', 'https://tiktok.com/jerryrogers', ARRAY['Cop Watching', 'Public Records', 'Government Transparency'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Jessica Martinez', NULL, 'California', 'Twitch', 'https://twitch.com/jessicamartinez', ARRAY['Cop Watching', 'Public Records', 'Police Accountability'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Frank Nelson', 'FrankAudits', 'New Hampshire', 'TikTok', 'https://tiktok.com/franknelson', ARRAY['Public Records', 'Cop Watching'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Richard Anderson', 'RichardAudits', 'Connecticut', 'Instagram', 'https://instagram.com/richardanderson', ARRAY['Public Records', 'Police Accountability'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Jose Lopez', NULL, 'New Mexico', 'Facebook', 'https://facebook.com/joselopez', ARRAY['First Amendment Audits', 'Civil Rights Education', 'Cop Watching'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Barbara Stewart', 'BarbaraAudits', 'California', 'Twitter/X', 'https://twitter/x.com/barbarastewart', ARRAY['Government Transparency', 'Cop Watching'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Ronald Martinez', 'RonaldAudits', 'Nevada', 'Facebook', 'https://facebook.com/ronaldmartinez', ARRAY['First Amendment Audits'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Kevin Hall', 'KevinAudits', 'California', 'Twitch', 'https://twitch.com/kevinhall', ARRAY['Public Records'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Paul Roberts', NULL, 'Florida', 'Facebook', 'https://facebook.com/paulroberts', ARRAY['First Amendment Audits', 'Civil Rights Education', 'Government Transparency'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Elizabeth Roberts', NULL, 'New York', 'Twitch', 'https://twitch.com/elizabethroberts', ARRAY['Cop Watching', 'Public Records', 'Civil Rights Education'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Andrew Sanchez', NULL, 'Illinois', 'TikTok', 'https://tiktok.com/andrewsanchez', ARRAY['First Amendment Audits', 'Civil Rights Education'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Arthur Anderson', 'ArthurAudits', 'Wisconsin', 'YouTube', 'https://youtube.com/arthuranderson', ARRAY['Public Records', 'First Amendment Audits', 'Government Transparency'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Christopher Robinson', NULL, 'New Mexico', 'Facebook', 'https://facebook.com/christopherrobinson', ARRAY['Public Records', 'First Amendment Audits'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Henry Martin', 'HenryAudits', 'Tennessee', 'YouTube', 'https://youtube.com/henrymartin', ARRAY['Civil Rights Education', 'Cop Watching'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Richard Hill', 'RichardAudits', 'Connecticut', 'Instagram', 'https://instagram.com/richardhill', ARRAY['Police Accountability', 'Public Records', 'Civil Rights Education'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Roger Evans', 'RogerAudits', 'Alabama', 'YouTube', 'https://youtube.com/rogerevans', ARRAY['Civil Rights Education', 'Public Records'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Walter Turner', NULL, 'Maryland', 'YouTube', 'https://youtube.com/walterturner', ARRAY['Cop Watching', 'Police Accountability'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Linda Rogers', 'LindaAudits', 'Delaware', 'YouTube', 'https://youtube.com/lindarogers', ARRAY['Government Transparency', 'Police Accountability'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Richard Phillips', 'RichardAudits', 'Oregon', 'Instagram', 'https://instagram.com/richardphillips', ARRAY['First Amendment Audits', 'Police Accountability', 'Cop Watching'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Robert Miller', NULL, 'California', 'Instagram', 'https://instagram.com/robertmiller', ARRAY['Civil Rights Education', 'Police Accountability', 'Government Transparency'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Thomas Smith', NULL, 'North Dakota', 'Facebook', 'https://facebook.com/thomassmith', ARRAY['Police Accountability', 'Public Records'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Carl Lewis', 'CarlAudits', 'Arizona', 'Instagram', 'https://instagram.com/carllewis', ARRAY['Police Accountability', 'Government Transparency'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Stephen Turner', NULL, 'Connecticut', 'YouTube', 'https://youtube.com/stephenturner', ARRAY['Public Records', 'Civil Rights Education'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Daniel Hill', 'DanielAudits', 'Arizona', 'Twitter/X', 'https://twitter/x.com/danielhill', ARRAY['Civil Rights Education'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Patricia Cook', NULL, 'Montana', 'Facebook', 'https://facebook.com/patriciacook', ARRAY['Police Accountability', 'Public Records'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Steven Scott', 'StevenAudits', 'Mississippi', 'TikTok', 'https://tiktok.com/stevenscott', ARRAY['Public Records'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Dennis Hall', NULL, 'Kansas', 'TikTok', 'https://tiktok.com/dennishall', ARRAY['First Amendment Audits'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Henry Campbell', 'HenryAudits', 'Vermont', 'YouTube', 'https://youtube.com/henrycampbell', ARRAY['Government Transparency'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Mary Harris', 'MaryAudits', 'Louisiana', 'Twitch', 'https://twitch.com/maryharris', ARRAY['Police Accountability', 'First Amendment Audits'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Ryan Mitchell', 'RyanAudits', 'Tennessee', 'Instagram', 'https://instagram.com/ryanmitchell', ARRAY['Civil Rights Education', 'Public Records'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Stephen Williams', 'StephenAudits', 'Kentucky', 'Instagram', 'https://instagram.com/stephenwilliams', ARRAY['Public Records'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('David Lopez', 'DavidAudits', 'New Mexico', 'Twitter/X', 'https://twitter/x.com/davidlopez', ARRAY['First Amendment Audits'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Frank Gonzalez', 'FrankAudits', 'Minnesota', 'TikTok', 'https://tiktok.com/frankgonzalez', ARRAY['Government Transparency', 'Police Accountability', 'Civil Rights Education'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Jerry Wilson', 'JerryAudits', 'Oregon', 'Instagram', 'https://instagram.com/jerrywilson', ARRAY['Civil Rights Education', 'First Amendment Audits'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('James Allen', 'JamesAudits', 'Texas', 'TikTok', 'https://tiktok.com/jamesallen', ARRAY['Government Transparency'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Barbara Allen', 'BarbaraAudits', 'Maine', 'Twitter/X', 'https://twitter/x.com/barbaraallen', ARRAY['Police Accountability', 'Public Records'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Michael Martin', 'MichaelAudits', 'West Virginia', 'Twitter/X', 'https://twitter/x.com/michaelmartin', ARRAY['Civil Rights Education', 'Government Transparency', 'Public Records'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Barbara Nelson', 'BarbaraAudits', 'New York', 'Instagram', 'https://instagram.com/barbaranelson', ARRAY['Police Accountability', 'Government Transparency', 'Civil Rights Education'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Karen Roberts', NULL, 'Pennsylvania', 'Instagram', 'https://instagram.com/karenroberts', ARRAY['Police Accountability', 'Civil Rights Education'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Matthew Evans', NULL, 'North Carolina', 'Twitter/X', 'https://twitter/x.com/matthewevans', ARRAY['Public Records', 'Cop Watching'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Michael Mitchell', NULL, 'New Jersey', 'Instagram', 'https://instagram.com/michaelmitchell', ARRAY['Public Records', 'Civil Rights Education', 'First Amendment Audits'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Gregory King', NULL, 'Alabama', 'Twitter/X', 'https://twitter/x.com/gregoryking', ARRAY['Public Records', 'Police Accountability'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Karen Edwards', 'KarenAudits', 'Minnesota', 'Twitch', 'https://twitch.com/karenedwards', ARRAY['Civil Rights Education'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Gary Johnson', NULL, 'Iowa', 'Twitter/X', 'https://twitter/x.com/garyjohnson', ARRAY['Public Records'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Kevin Sanchez', NULL, 'New Hampshire', 'Facebook', 'https://facebook.com/kevinsanchez', ARRAY['Cop Watching', 'Government Transparency', 'First Amendment Audits'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Christopher Campbell', NULL, 'North Carolina', 'YouTube', 'https://youtube.com/christophercampbell', ARRAY['First Amendment Audits', 'Police Accountability', 'Government Transparency'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Walter Rogers', 'WalterAudits', 'New York', 'Twitter/X', 'https://twitter/x.com/walterrogers', ARRAY['Government Transparency', 'Cop Watching'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Harold Collins', 'HaroldAudits', 'Oregon', 'Facebook', 'https://facebook.com/haroldcollins', ARRAY['First Amendment Audits'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Stephen King', NULL, 'Virginia', 'YouTube', 'https://youtube.com/stephenking', ARRAY['First Amendment Audits', 'Government Transparency', 'Cop Watching'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Elizabeth Cook', NULL, 'Vermont', 'Facebook', 'https://facebook.com/elizabethcook', ARRAY['First Amendment Audits', 'Police Accountability', 'Civil Rights Education'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Roger Rodriguez', NULL, 'North Carolina', 'Facebook', 'https://facebook.com/rogerrodriguez', ARRAY['Police Accountability', 'Public Records', 'Civil Rights Education'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Brian Baker', 'BrianAudits', 'Louisiana', 'Twitter/X', 'https://twitter/x.com/brianbaker', ARRAY['First Amendment Audits', 'Civil Rights Education'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Jessica Edwards', NULL, 'Montana', 'Facebook', 'https://facebook.com/jessicaedwards', ARRAY['Public Records', 'Civil Rights Education'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Brian Stewart', NULL, 'South Dakota', 'Twitch', 'https://twitch.com/brianstewart', ARRAY['Cop Watching', 'First Amendment Audits', 'Public Records'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Patrick Johnson', NULL, 'Florida', 'Twitter/X', 'https://twitter/x.com/patrickjohnson', ARRAY['First Amendment Audits', 'Public Records', 'Cop Watching'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Jessica Thompson', NULL, 'West Virginia', 'YouTube', 'https://youtube.com/jessicathompson', ARRAY['Civil Rights Education', 'Government Transparency', 'First Amendment Audits'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Henry Reed', NULL, 'Arkansas', 'Instagram', 'https://instagram.com/henryreed', ARRAY['Cop Watching'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Karen White', 'KarenAudits', 'Idaho', 'Twitter/X', 'https://twitter/x.com/karenwhite', ARRAY['Public Records'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('David Evans', NULL, 'Utah', 'Twitch', 'https://twitch.com/davidevans', ARRAY['Civil Rights Education', 'First Amendment Audits'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Susan Williams', 'SusanAudits', 'Mississippi', 'Instagram', 'https://instagram.com/susanwilliams', ARRAY['Public Records', 'Civil Rights Education', 'Cop Watching'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Robert Taylor', NULL, 'New Mexico', 'Facebook', 'https://facebook.com/roberttaylor', ARRAY['Government Transparency', 'Police Accountability', 'Civil Rights Education'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Patricia Martin', 'PatriciaAudits', 'Maryland', 'Facebook', 'https://facebook.com/patriciamartin', ARRAY['Police Accountability', 'First Amendment Audits', 'Civil Rights Education'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Patricia Davis', NULL, 'New Jersey', 'Twitter/X', 'https://twitter/x.com/patriciadavis', ARRAY['Police Accountability', 'Government Transparency', 'Public Records'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Richard Edwards', 'RichardAudits', 'Idaho', 'Instagram', 'https://instagram.com/richardedwards', ARRAY['Civil Rights Education', 'First Amendment Audits'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Andrew Hall', 'AndrewAudits', 'Tennessee', 'Facebook', 'https://facebook.com/andrewhall', ARRAY['Public Records', 'First Amendment Audits', 'Civil Rights Education'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Walter Edwards', 'WalterAudits', 'South Dakota', 'Twitch', 'https://twitch.com/walteredwards', ARRAY['Public Records'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Joshua Garcia', NULL, 'California', 'Instagram', 'https://instagram.com/joshuagarcia', ARRAY['Cop Watching', 'First Amendment Audits'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Susan Scott', NULL, 'South Carolina', 'TikTok', 'https://tiktok.com/susanscott', ARRAY['Police Accountability', 'First Amendment Audits'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Thomas Lopez', 'ThomasAudits', 'Texas', 'Instagram', 'https://instagram.com/thomaslopez', ARRAY['Cop Watching'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Linda Collins', NULL, 'Georgia', 'Twitch', 'https://twitch.com/lindacollins', ARRAY['First Amendment Audits', 'Civil Rights Education', 'Police Accountability'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Edward Rodriguez', NULL, 'Illinois', 'Twitch', 'https://twitch.com/edwardrodriguez', ARRAY['Civil Rights Education'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Andrew Thomas', NULL, 'Washington', 'Twitter/X', 'https://twitter/x.com/andrewthomas', ARRAY['Public Records', 'First Amendment Audits'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Sarah Edwards', NULL, 'Colorado', 'TikTok', 'https://tiktok.com/sarahedwards', ARRAY['Government Transparency'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Jose Gonzalez', NULL, 'Virginia', 'Facebook', 'https://facebook.com/josegonzalez', ARRAY['Government Transparency', 'First Amendment Audits'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Carl Johnson', NULL, 'Connecticut', 'TikTok', 'https://tiktok.com/carljohnson', ARRAY['Public Records'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Jennifer Bell', NULL, 'New Mexico', 'Twitter/X', 'https://twitter/x.com/jenniferbell', ARRAY['Civil Rights Education'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Karen Allen', 'KarenAudits', 'New Mexico', 'YouTube', 'https://youtube.com/karenallen', ARRAY['Civil Rights Education', 'First Amendment Audits', 'Public Records'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Ronald Morgan', NULL, 'Maryland', 'Facebook', 'https://facebook.com/ronaldmorgan', ARRAY['Police Accountability', 'Cop Watching'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Stephen Evans', NULL, 'Iowa', 'Instagram', 'https://instagram.com/stephenevans', ARRAY['Police Accountability', 'Civil Rights Education'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Jeffrey Bailey', 'JeffreyAudits', 'Vermont', 'Twitter/X', 'https://twitter/x.com/jeffreybailey', ARRAY['Cop Watching', 'Public Records'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Barbara Robinson', 'BarbaraAudits', 'New Jersey', 'TikTok', 'https://tiktok.com/barbararobinson', ARRAY['First Amendment Audits', 'Public Records', 'Police Accountability'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Henry Jones', 'HenryAudits', 'Mississippi', 'Twitter/X', 'https://twitter/x.com/henryjones', ARRAY['First Amendment Audits'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Susan Martinez', NULL, 'Pennsylvania', 'YouTube', 'https://youtube.com/susanmartinez', ARRAY['Police Accountability', 'Government Transparency', 'Cop Watching'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Roger Garcia', 'RogerAudits', 'Texas', 'Instagram', 'https://instagram.com/rogergarcia', ARRAY['First Amendment Audits', 'Government Transparency', 'Police Accountability'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Ronald Miller', 'RonaldAudits', 'Minnesota', 'Twitter/X', 'https://twitter/x.com/ronaldmiller', ARRAY['Government Transparency', 'Civil Rights Education'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Paul Miller', 'PaulAudits', 'Ohio', 'Twitch', 'https://twitch.com/paulmiller', ARRAY['Police Accountability', 'Civil Rights Education', 'Public Records'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Jeffrey Young', 'JeffreyAudits', 'Montana', 'Twitch', 'https://twitch.com/jeffreyyoung', ARRAY['Cop Watching'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Harold Collins', NULL, 'Mississippi', 'Facebook', 'https://facebook.com/haroldcollins', ARRAY['Government Transparency', 'Cop Watching'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Matthew King', NULL, 'Utah', 'Facebook', 'https://facebook.com/matthewking', ARRAY['Cop Watching', 'Government Transparency', 'Public Records'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Ryan Hill', 'RyanAudits', 'Delaware', 'Facebook', 'https://facebook.com/ryanhill', ARRAY['Public Records', 'Government Transparency'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Peter King', 'PeterAudits', 'Delaware', 'Twitch', 'https://twitch.com/peterking', ARRAY['Police Accountability', 'Public Records', 'Civil Rights Education'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('James Smith', 'JamesAudits', 'Iowa', 'YouTube', 'https://youtube.com/jamessmith', ARRAY['First Amendment Audits'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Brian Edwards', NULL, 'Utah', 'YouTube', 'https://youtube.com/brianedwards', ARRAY['Cop Watching'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Gary Anderson', 'GaryAudits', 'Utah', 'Instagram', 'https://instagram.com/garyanderson', ARRAY['Police Accountability'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Brian Allen', 'BrianAudits', 'Tennessee', 'TikTok', 'https://tiktok.com/brianallen', ARRAY['Public Records'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('John Lee', 'JohnAudits', 'Louisiana', 'Twitter/X', 'https://twitter/x.com/johnlee', ARRAY['Civil Rights Education', 'Police Accountability', 'Public Records'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Eric Edwards', 'EricAudits', 'Montana', 'Facebook', 'https://facebook.com/ericedwards', ARRAY['First Amendment Audits', 'Public Records'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Scott Lee', NULL, 'Nevada', 'Twitter/X', 'https://twitter/x.com/scottlee', ARRAY['Police Accountability', 'Public Records', 'First Amendment Audits'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Jason Edwards', 'JasonAudits', 'New Hampshire', 'Twitch', 'https://twitch.com/jasonedwards', ARRAY['Public Records'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Jerry Lewis', 'JerryAudits', 'Ohio', 'TikTok', 'https://tiktok.com/jerrylewis', ARRAY['First Amendment Audits'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Eric Morgan', 'EricAudits', 'Hawaii', 'Twitch', 'https://twitch.com/ericmorgan', ARRAY['Cop Watching'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Mark Nelson', NULL, 'Idaho', 'YouTube', 'https://youtube.com/marknelson', ARRAY['Civil Rights Education', 'Cop Watching', 'Government Transparency'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Patrick Hill', NULL, 'West Virginia', 'Instagram', 'https://instagram.com/patrickhill', ARRAY['Cop Watching', 'Civil Rights Education'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Stephen Mitchell', 'StephenAudits', 'Texas', 'Twitch', 'https://twitch.com/stephenmitchell', ARRAY['Police Accountability', 'Cop Watching', 'Public Records'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Kenneth Martin', NULL, 'Delaware', 'Twitch', 'https://twitch.com/kennethmartin', ARRAY['First Amendment Audits', 'Cop Watching'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Carl Brown', 'CarlAudits', 'Delaware', 'YouTube', 'https://youtube.com/carlbrown', ARRAY['Civil Rights Education', 'Cop Watching'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Charles Hill', NULL, 'New Jersey', 'Twitter/X', 'https://twitter/x.com/charleshill', ARRAY['Civil Rights Education'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Dennis Bailey', NULL, 'North Carolina', 'Instagram', 'https://instagram.com/dennisbailey', ARRAY['Public Records'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Sarah Miller', 'SarahAudits', 'Hawaii', 'YouTube', 'https://youtube.com/sarahmiller', ARRAY['Public Records'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Gary Green', NULL, 'Hawaii', 'TikTok', 'https://tiktok.com/garygreen', ARRAY['Police Accountability', 'Cop Watching'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Raymond Hernandez', 'RaymondAudits', 'North Dakota', 'Facebook', 'https://facebook.com/raymondhernandez', ARRAY['Government Transparency'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Patricia Bailey', 'PatriciaAudits', 'Arizona', 'Twitch', 'https://twitch.com/patriciabailey', ARRAY['Cop Watching', 'Public Records', 'Police Accountability'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Harold Moore', 'HaroldAudits', 'Michigan', 'Facebook', 'https://facebook.com/haroldmoore', ARRAY['Civil Rights Education'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Henry Thompson', 'HenryAudits', 'Connecticut', 'Twitter/X', 'https://twitter/x.com/henrythompson', ARRAY['Public Records', 'Cop Watching'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Timothy Collins', NULL, 'Utah', 'YouTube', 'https://youtube.com/timothycollins', ARRAY['Cop Watching', 'First Amendment Audits'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('John Edwards', NULL, 'Louisiana', 'TikTok', 'https://tiktok.com/johnedwards', ARRAY['Government Transparency', 'Police Accountability', 'Civil Rights Education'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Raymond Robinson', 'RaymondAudits', 'Wyoming', 'TikTok', 'https://tiktok.com/raymondrobinson', ARRAY['Police Accountability', 'Civil Rights Education'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Steven Thompson', NULL, 'Mississippi', 'Twitch', 'https://twitch.com/steventhompson', ARRAY['Civil Rights Education', 'Police Accountability'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Mark Lewis', 'MarkAudits', 'Utah', 'Facebook', 'https://facebook.com/marklewis', ARRAY['Police Accountability', 'First Amendment Audits', 'Public Records'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Frank Scott', 'FrankAudits', 'Alabama', 'Instagram', 'https://instagram.com/frankscott', ARRAY['Police Accountability'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Elizabeth Adams', 'ElizabethAudits', 'Tennessee', 'Twitch', 'https://twitch.com/elizabethadams', ARRAY['Government Transparency'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Walter Hernandez', 'WalterAudits', 'North Carolina', 'Instagram', 'https://instagram.com/walterhernandez', ARRAY['Police Accountability'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Andrew Lopez', 'AndrewAudits', 'Indiana', 'YouTube', 'https://youtube.com/andrewlopez', ARRAY['Civil Rights Education', 'Police Accountability', 'Public Records'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Susan Roberts', NULL, 'Illinois', 'YouTube', 'https://youtube.com/susanroberts', ARRAY['Civil Rights Education', 'Public Records'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Linda Johnson', 'LindaAudits', 'Rhode Island', 'Twitter/X', 'https://twitter/x.com/lindajohnson', ARRAY['Cop Watching', 'Government Transparency'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Arthur Turner', NULL, 'Georgia', 'YouTube', 'https://youtube.com/arthurturner', ARRAY['Police Accountability', 'Civil Rights Education'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Joseph Allen', NULL, 'Minnesota', 'Facebook', 'https://facebook.com/josephallen', ARRAY['Government Transparency', 'Police Accountability', 'Public Records'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('John Allen', NULL, 'Rhode Island', 'Twitter/X', 'https://twitter/x.com/johnallen', ARRAY['Public Records', 'Police Accountability', 'Government Transparency'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Scott Edwards', NULL, 'Louisiana', 'YouTube', 'https://youtube.com/scottedwards', ARRAY['Public Records', 'First Amendment Audits'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Scott Johnson', NULL, 'Idaho', 'Instagram', 'https://instagram.com/scottjohnson', ARRAY['Public Records', 'Police Accountability'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Elizabeth Robinson', NULL, 'Massachusetts', 'Instagram', 'https://instagram.com/elizabethrobinson', ARRAY['First Amendment Audits', 'Cop Watching'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Michael Reed', 'MichaelAudits', 'Massachusetts', 'TikTok', 'https://tiktok.com/michaelreed', ARRAY['Cop Watching', 'Police Accountability'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Jeffrey Morgan', 'JeffreyAudits', 'Montana', 'Twitch', 'https://twitch.com/jeffreymorgan', ARRAY['Police Accountability', 'Cop Watching'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Brian Martin', 'BrianAudits', 'South Carolina', 'YouTube', 'https://youtube.com/brianmartin', ARRAY['First Amendment Audits', 'Government Transparency'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('David Bell', NULL, 'Alaska', 'Facebook', 'https://facebook.com/davidbell', ARRAY['First Amendment Audits'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('John Parker', 'JohnAudits', 'Nevada', 'YouTube', 'https://youtube.com/johnparker', ARRAY['Police Accountability', 'Government Transparency'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Christopher Gonzalez', NULL, 'Connecticut', 'Twitch', 'https://twitch.com/christophergonzalez', ARRAY['Government Transparency'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Joshua Jackson', NULL, 'South Carolina', 'Facebook', 'https://facebook.com/joshuajackson', ARRAY['Police Accountability', 'Cop Watching', 'First Amendment Audits'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Jennifer Lewis', NULL, 'Ohio', 'Facebook', 'https://facebook.com/jenniferlewis', ARRAY['Government Transparency', 'Police Accountability', 'Civil Rights Education'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Charles Gonzalez', 'CharlesAudits', 'Missouri', 'Instagram', 'https://instagram.com/charlesgonzalez', ARRAY['Civil Rights Education', 'Police Accountability', 'First Amendment Audits'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Charles Sanchez', NULL, 'Hawaii', 'YouTube', 'https://youtube.com/charlessanchez', ARRAY['Government Transparency', 'Civil Rights Education', 'Police Accountability'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Arthur Johnson', 'ArthurAudits', 'Wyoming', 'TikTok', 'https://tiktok.com/arthurjohnson', ARRAY['Civil Rights Education'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Joshua Parker', 'JoshuaAudits', 'Georgia', 'TikTok', 'https://tiktok.com/joshuaparker', ARRAY['Government Transparency', 'First Amendment Audits'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Mark Williams', 'MarkAudits', 'Colorado', 'Twitter/X', 'https://twitter/x.com/markwilliams', ARRAY['Public Records'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('James Jones', NULL, 'Hawaii', 'TikTok', 'https://tiktok.com/jamesjones', ARRAY['Government Transparency', 'Cop Watching'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Mary Edwards', 'MaryAudits', 'Arkansas', 'Twitter/X', 'https://twitter/x.com/maryedwards', ARRAY['Police Accountability', 'Public Records'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('William Young', NULL, 'Texas', 'TikTok', 'https://tiktok.com/williamyoung', ARRAY['Civil Rights Education', 'Government Transparency'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Daniel Anderson', 'DanielAudits', 'Delaware', 'YouTube', 'https://youtube.com/danielanderson', ARRAY['Public Records', 'First Amendment Audits', 'Cop Watching'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Walter Davis', NULL, 'Florida', 'Instagram', 'https://instagram.com/walterdavis', ARRAY['Police Accountability'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Jerry Bell', NULL, 'Delaware', 'Facebook', 'https://facebook.com/jerrybell', ARRAY['Civil Rights Education'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Raymond Moore', 'RaymondAudits', 'Illinois', 'YouTube', 'https://youtube.com/raymondmoore', ARRAY['First Amendment Audits', 'Police Accountability'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Michael King', NULL, 'Arizona', 'YouTube', 'https://youtube.com/michaelking', ARRAY['Civil Rights Education', 'Cop Watching', 'Government Transparency'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Karen Carter', 'KarenAudits', 'Washington', 'Facebook', 'https://facebook.com/karencarter', ARRAY['Government Transparency', 'Civil Rights Education', 'Cop Watching'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Brian Young', 'BrianAudits', 'Indiana', 'Instagram', 'https://instagram.com/brianyoung', ARRAY['Public Records', 'Police Accountability', 'Cop Watching'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Karen Hall', 'KarenAudits', 'Maryland', 'TikTok', 'https://tiktok.com/karenhall', ARRAY['Civil Rights Education', 'First Amendment Audits', 'Police Accountability'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Jason Thompson', 'JasonAudits', 'Nebraska', 'YouTube', 'https://youtube.com/jasonthompson', ARRAY['Civil Rights Education', 'Public Records'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Raymond Baker', 'RaymondAudits', 'Utah', 'TikTok', 'https://tiktok.com/raymondbaker', ARRAY['Government Transparency'], true)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Larry Perez', NULL, 'Iowa', 'Facebook', 'https://facebook.com/larryperez', ARRAY['Public Records'], true)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Jason Scott', NULL, 'Vermont', 'TikTok', 'https://tiktok.com/jasonscott', ARRAY['Police Accountability', 'Government Transparency', 'Public Records'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Douglas Turner', 'DouglasAudits', 'Iowa', 'Facebook', 'https://facebook.com/douglasturner', ARRAY['Civil Rights Education'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('William Taylor', NULL, 'Virginia', 'TikTok', 'https://tiktok.com/williamtaylor', ARRAY['Government Transparency', 'Civil Rights Education'], false)
+        ON CONFLICT DO NOTHING;
         
 
         INSERT INTO public.activists (name, alias, home_state, primary_platform, channel_url, focus_areas, verified)
-        VALUES ('Gary Rodriguez', NULL, 'West Virginia', 'Twitter/X', 'https://twitter/x.com/garyrodriguez', ARRAY['Police Accountability', 'Cop Watching'], false)
-        ON CONFLICT DO NOTHING; 
+        VALUES ('Thomas Edwards', 'ThomasAudits', 'New Hampshire', 'TikTok', 'https://tiktok.com/thomasedwards', ARRAY['Police Accountability'], false)
+        ON CONFLICT DO NOTHING;
         
 
 -- 3. VIOLATIONS AND SOCIAL
@@ -2526,403 +2526,403 @@
     
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Denied right to record in public', 'Was told I couldn''t film from a public sidewalk. Officer threatened arrest.', 'Oklahoma', 'Norman', '2024-11-13', 34.81430782933466, -113.95885825314693, 'verified', v_user_id);
+            VALUES ('Denied FOIA request unlawfully', 'City clerk claimed public budget documents were ''private'' and refused access.', 'Hawaii', 'Hilo', '2021-10-19', 42.573171389068804, -77.55809758764323, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Harassment of homeless individual', 'Officer destroyed personal property of a homeless person during a sweep.', 'Texas', 'Dallas', '2022-11-20', 34.747905821849876, -90.98821196279152, 'verified', v_user_id);
+            VALUES ('Unlawful detention at traffic stop', 'Searched my trunk without consent or probable cause.', 'Vermont', 'Rutland', '2021-12-11', 39.15599955680423, -106.64251445595885, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Retaliation for filing complaint', 'Received a citation for ''loitering'' immediately after filing a misconduct complaint.', 'Alabama', 'Birmingham', '2022-09-26', 25.495150381114946, -75.05883724609933, 'verified', v_user_id);
+            VALUES ('Unconstitutional checkpoint', 'Officer destroyed personal property of a homeless person during a sweep.', 'Minnesota', 'Rochester', '2023-09-10', 36.56725650679332, -87.11153196743518, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Unconstitutional checkpoint', 'Officer used a taser on a compliant subject who was already handcuffed.', 'Utah', 'West Valley City', '2021-09-10', 39.56034963748751, -120.6982001424578, 'verified', v_user_id);
+            VALUES ('Intimidation for filming', 'Followed me for blocks after I filmed them leaving the station.', 'Hawaii', 'Honolulu', '2023-08-10', 42.45260592771091, -72.92351708584988, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Unlawful detention at traffic stop', 'Officer used a taser on a compliant subject who was already handcuffed.', 'New Hampshire', 'Manchester', '2020-04-04', 40.61687608345521, -77.96055336908213, 'verified', v_user_id);
+            VALUES ('Retaliation for filing complaint', 'Searched my trunk without consent or probable cause.', 'South Dakota', 'Rapid City', '2024-03-13', 47.150195133259736, -115.84125462036744, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Unconstitutional checkpoint', 'Officer used a taser on a compliant subject who was already handcuffed.', 'Georgia', 'Macon', '2024-08-22', 25.720266122614657, -83.80878628171081, 'verified', v_user_id);
+            VALUES ('Denied FOIA request unlawfully', 'Officer escalated a routine stop and detained me without articulating a crime.', 'Nebraska', 'Bellevue', '2021-02-11', 29.91993624138042, -98.58076301356934, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Refusal to identify', 'Received a citation for ''loitering'' immediately after filing a misconduct complaint.', 'South Carolina', 'Charleston', '2021-10-24', 46.76675263637753, -88.5811593275173, 'verified', v_user_id);
+            VALUES ('Retaliation for filing complaint', 'Officer destroyed personal property of a homeless person during a sweep.', 'Oregon', 'Portland', '2020-09-08', 29.026907124565668, -95.74956234778736, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Refusal to identify', 'Refused to provide name and badge number when asked multiple times.', 'Colorado', 'Fort Collins', '2023-01-23', 26.391110427894965, -98.03702891278502, 'verified', v_user_id);
+            VALUES ('Unlawful detention at traffic stop', 'Was told I couldn''t film from a public sidewalk. Officer threatened arrest.', 'Arkansas', 'Fayetteville', '2024-12-03', 29.850852673399366, -84.67057989642629, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Denied FOIA request unlawfully', 'Refused to provide name and badge number when asked multiple times.', 'North Carolina', 'Greensboro', '2024-09-16', 41.53658363582659, -90.21805469864579, 'verified', v_user_id);
+            VALUES ('Intimidation for filming', 'Received a citation for ''loitering'' immediately after filing a misconduct complaint.', 'New York', 'Yonkers', '2024-06-16', 27.3745491189164, -98.10107126729172, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Retaliation for filing complaint', 'Was told I couldn''t film from a public sidewalk. Officer threatened arrest.', 'Illinois', 'Naperville', '2025-06-09', 34.14775726539195, -71.79562989773227, 'verified', v_user_id);
+            VALUES ('Denied FOIA request unlawfully', 'Officer escalated a routine stop and detained me without articulating a crime.', 'Nevada', 'Las Vegas', '2021-03-24', 36.49656972249984, -114.43031394624009, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Unlawful detention at traffic stop', 'Followed me for blocks after I filmed them leaving the station.', 'Florida', 'St. Petersburg', '2020-12-22', 35.119517626951634, -86.78513685424915, 'verified', v_user_id);
+            VALUES ('Illegal search of vehicle', 'Followed me for blocks after I filmed them leaving the station.', 'North Carolina', 'Greensboro', '2022-07-28', 39.11982834798939, -88.68594250082421, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Illegal search of vehicle', 'Received a citation for ''loitering'' immediately after filing a misconduct complaint.', 'Colorado', 'Denver', '2021-08-28', 39.85555226749888, -101.77741347715288, 'verified', v_user_id);
+            VALUES ('Unconstitutional checkpoint', 'Was told I couldn''t film from a public sidewalk. Officer threatened arrest.', 'Virginia', 'Chesapeake', '2020-04-19', 34.71810214995453, -110.39166314033507, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Refusal to identify', 'Officer escalated a routine stop and detained me without articulating a crime.', 'North Dakota', 'Bismarck', '2024-10-21', 34.04140174313761, -101.10697522502406, 'verified', v_user_id);
+            VALUES ('Denied right to record in public', 'Followed me for blocks after I filmed them leaving the station.', 'Arkansas', 'Fayetteville', '2025-10-22', 33.629378208083104, -116.10881739533818, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Excessive force during arrest', 'Refused to provide name and badge number when asked multiple times.', 'North Carolina', 'Charlotte', '2024-01-18', 45.65846202477543, -121.45003053385213, 'verified', v_user_id);
+            VALUES ('Illegal search of vehicle', 'City clerk claimed public budget documents were ''private'' and refused access.', 'Kansas', 'Wichita', '2024-12-18', 39.647469775200406, -79.17538909142417, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Refusal to identify', 'Officer escalated a routine stop and detained me without articulating a crime.', 'Michigan', 'Detroit', '2023-10-16', 44.77024444480976, -98.76769688150264, 'verified', v_user_id);
+            VALUES ('Unlawful detention at traffic stop', 'Stopped at a checkpoint that didn''t follow standardized procedures.', 'Texas', 'San Antonio', '2022-11-11', 35.285968763379245, -84.79155943379395, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Intimidation for filming', 'Refused to provide name and badge number when asked multiple times.', 'Arkansas', 'Fayetteville', '2022-08-05', 28.5184240378428, -102.70343438028202, 'verified', v_user_id);
+            VALUES ('Illegal search of vehicle', 'Searched my trunk without consent or probable cause.', 'Maryland', 'Baltimore', '2022-07-10', 37.41560425700169, -104.48704323558486, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Denied right to record in public', 'Refused to provide name and badge number when asked multiple times.', 'Hawaii', 'Kailua', '2023-08-01', 47.072772795491865, -82.67128572986385, 'verified', v_user_id);
+            VALUES ('Illegal search of vehicle', 'Officer escalated a routine stop and detained me without articulating a crime.', 'North Carolina', 'Charlotte', '2020-11-30', 44.866419810811635, -124.22473368319031, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Denied right to record in public', 'Received a citation for ''loitering'' immediately after filing a misconduct complaint.', 'Wisconsin', 'Madison', '2023-03-28', 32.75772229339755, -121.29072984078354, 'verified', v_user_id);
+            VALUES ('Excessive force during arrest', 'Officer used a taser on a compliant subject who was already handcuffed.', 'Delaware', 'Wilmington', '2023-06-24', 25.702701907449, -121.05341285826442, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Intimidation for filming', 'Refused to provide name and badge number when asked multiple times.', 'Utah', 'West Valley City', '2022-03-02', 47.27656822669115, -78.83029768176274, 'verified', v_user_id);
+            VALUES ('Excessive force during arrest', 'Stopped at a checkpoint that didn''t follow standardized procedures.', 'New Jersey', 'Paterson', '2022-01-21', 30.809657301499293, -118.35500398112308, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Refusal to identify', 'City clerk claimed public budget documents were ''private'' and refused access.', 'Florida', 'St. Petersburg', '2021-05-09', 27.135951312500517, -118.72549214985374, 'verified', v_user_id);
+            VALUES ('Intimidation for filming', 'Officer escalated a routine stop and detained me without articulating a crime.', 'Delaware', 'Dover', '2023-01-13', 36.3784632262862, -118.90353769251497, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Denied right to record in public', 'Officer destroyed personal property of a homeless person during a sweep.', 'California', 'Fresno', '2022-07-06', 31.75726873543524, -75.91961189722252, 'verified', v_user_id);
+            VALUES ('Unconstitutional checkpoint', 'Stopped at a checkpoint that didn''t follow standardized procedures.', 'Texas', 'Austin', '2022-11-28', 45.70663731736067, -102.57591396122105, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Unlawful detention at traffic stop', 'Officer escalated a routine stop and detained me without articulating a crime.', 'Oklahoma', 'Norman', '2020-09-29', 31.915112540759573, -86.71584129008264, 'verified', v_user_id);
+            VALUES ('Unconstitutional checkpoint', 'Refused to provide name and badge number when asked multiple times.', 'Idaho', 'Boise', '2025-02-11', 46.1155866219644, -77.77007347585877, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Excessive force during arrest', 'Officer destroyed personal property of a homeless person during a sweep.', 'Nebraska', 'Bellevue', '2025-08-28', 42.14520564554597, -104.43326887238752, 'verified', v_user_id);
+            VALUES ('Unlawful detention at traffic stop', 'Searched my trunk without consent or probable cause.', 'Arizona', 'Phoenix', '2025-06-26', 32.82593761282084, -78.8828662565696, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Denied FOIA request unlawfully', 'Officer destroyed personal property of a homeless person during a sweep.', 'Nevada', 'Las Vegas', '2021-04-14', 31.94277835346853, -98.17476620686767, 'verified', v_user_id);
+            VALUES ('Denied FOIA request unlawfully', 'Followed me for blocks after I filmed them leaving the station.', 'New Jersey', 'Newark', '2020-05-14', 45.072386636099246, -100.31888526376733, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Excessive force during arrest', 'Received a citation for ''loitering'' immediately after filing a misconduct complaint.', 'Wyoming', 'Cheyenne', '2025-01-24', 42.16432539880641, -119.77170959941745, 'verified', v_user_id);
+            VALUES ('Unconstitutional checkpoint', 'Followed me for blocks after I filmed them leaving the station.', 'Texas', 'Austin', '2025-11-06', 36.221617633017665, -114.58581473304508, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Denied right to record in public', 'Officer destroyed personal property of a homeless person during a sweep.', 'Tennessee', 'Knoxville', '2023-01-21', 41.097849940831075, -111.39835381162202, 'verified', v_user_id);
+            VALUES ('Refusal to identify', 'City clerk claimed public budget documents were ''private'' and refused access.', 'Pennsylvania', 'Pittsburgh', '2025-05-18', 45.16721566138517, -112.12809930775927, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Unlawful detention at traffic stop', 'Officer escalated a routine stop and detained me without articulating a crime.', 'Nevada', 'Las Vegas', '2025-02-15', 46.826009238423865, -111.31829138485004, 'verified', v_user_id);
+            VALUES ('Illegal search of vehicle', 'Officer used a taser on a compliant subject who was already handcuffed.', 'Florida', 'Jacksonville', '2025-10-26', 46.19125616744444, -75.31903735939906, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Illegal search of vehicle', 'Refused to provide name and badge number when asked multiple times.', 'Texas', 'Houston', '2022-10-23', 26.344799401009848, -101.00463893826705, 'verified', v_user_id);
+            VALUES ('Retaliation for filing complaint', 'Followed me for blocks after I filmed them leaving the station.', 'Idaho', 'Boise', '2023-12-28', 46.375681241946914, -114.55095544691763, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Intimidation for filming', 'Refused to provide name and badge number when asked multiple times.', 'Delaware', 'Newark', '2024-11-17', 31.347874672292868, -98.64186851598888, 'verified', v_user_id);
+            VALUES ('Denied right to record in public', 'Searched my trunk without consent or probable cause.', 'Arizona', 'Chandler', '2022-04-26', 44.021437957124846, -100.13575566885116, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Excessive force during arrest', 'Officer destroyed personal property of a homeless person during a sweep.', 'Oklahoma', 'Tulsa', '2020-12-25', 34.011847065317845, -114.00910855688127, 'verified', v_user_id);
+            VALUES ('Retaliation for filing complaint', 'Received a citation for ''loitering'' immediately after filing a misconduct complaint.', 'Arizona', 'Mesa', '2023-01-30', 45.80339663850677, -95.78609597569493, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Unlawful detention at traffic stop', 'Received a citation for ''loitering'' immediately after filing a misconduct complaint.', 'Nevada', 'Reno', '2020-12-21', 32.183865375258414, -101.53759421036257, 'verified', v_user_id);
+            VALUES ('Harassment of homeless individual', 'City clerk claimed public budget documents were ''private'' and refused access.', 'Idaho', 'Boise', '2021-02-12', 30.24181372503071, -105.19580377358963, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Unconstitutional checkpoint', 'Followed me for blocks after I filmed them leaving the station.', 'Vermont', 'Burlington', '2020-07-21', 44.62417330395864, -116.2114964534982, 'verified', v_user_id);
+            VALUES ('Unlawful detention at traffic stop', 'Followed me for blocks after I filmed them leaving the station.', 'South Dakota', 'Sioux Falls', '2024-11-14', 25.971869988646965, -96.32183282767787, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Harassment of homeless individual', 'Stopped at a checkpoint that didn''t follow standardized procedures.', 'Mississippi', 'Southaven', '2022-12-16', 30.006134790761397, -110.25625716523203, 'verified', v_user_id);
+            VALUES ('Unconstitutional checkpoint', 'Was told I couldn''t film from a public sidewalk. Officer threatened arrest.', 'Idaho', 'Nampa', '2024-11-28', 32.56921420610538, -117.46781013755148, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Retaliation for filing complaint', 'Refused to provide name and badge number when asked multiple times.', 'Texas', 'Dallas', '2025-07-12', 29.099283180904425, -119.02216719116396, 'verified', v_user_id);
+            VALUES ('Refusal to identify', 'Officer destroyed personal property of a homeless person during a sweep.', 'Mississippi', 'Jackson', '2025-08-13', 38.3460730640074, -91.0299750378619, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Denied right to record in public', 'Was told I couldn''t film from a public sidewalk. Officer threatened arrest.', 'Arkansas', 'Little Rock', '2023-12-24', 38.36583488757372, -81.16186568409245, 'verified', v_user_id);
+            VALUES ('Denied FOIA request unlawfully', 'Followed me for blocks after I filmed them leaving the station.', 'Massachusetts', 'Boston', '2023-06-25', 47.102002547123945, -112.52203298369305, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Unconstitutional checkpoint', 'Searched my trunk without consent or probable cause.', 'Colorado', 'Fort Collins', '2025-04-23', 29.65570686269826, -92.83995059264632, 'verified', v_user_id);
+            VALUES ('Denied right to record in public', 'Searched my trunk without consent or probable cause.', 'South Carolina', 'North Charleston', '2022-04-23', 44.70838800118064, -121.2864180708533, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Harassment of homeless individual', 'City clerk claimed public budget documents were ''private'' and refused access.', 'Alabama', 'Birmingham', '2020-11-24', 41.15053833531552, -112.67807698924295, 'verified', v_user_id);
+            VALUES ('Harassment of homeless individual', 'Stopped at a checkpoint that didn''t follow standardized procedures.', 'Alabama', 'Mobile', '2024-07-07', 36.92918326130494, -116.1711180200457, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Denied FOIA request unlawfully', 'Officer destroyed personal property of a homeless person during a sweep.', 'Mississippi', 'Jackson', '2023-02-28', 46.381141552827685, -106.17226049217518, 'verified', v_user_id);
+            VALUES ('Denied FOIA request unlawfully', 'Officer destroyed personal property of a homeless person during a sweep.', 'Mississippi', 'Jackson', '2021-09-15', 34.15520524483647, -85.86987529466995, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Unlawful detention at traffic stop', 'Stopped at a checkpoint that didn''t follow standardized procedures.', 'Wyoming', 'Laramie', '2023-04-18', 33.411675364245944, -79.43010543237074, 'verified', v_user_id);
+            VALUES ('Excessive force during arrest', 'Searched my trunk without consent or probable cause.', 'Michigan', 'Warren', '2023-07-06', 26.693826776640865, -108.98697898074693, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Illegal search of vehicle', 'Received a citation for ''loitering'' immediately after filing a misconduct complaint.', 'Oklahoma', 'Oklahoma City', '2021-05-13', 47.92034615503245, -106.48829340946457, 'verified', v_user_id);
+            VALUES ('Excessive force during arrest', 'Was told I couldn''t film from a public sidewalk. Officer threatened arrest.', 'Missouri', 'Kansas City', '2023-10-02', 47.16174075911137, -119.8877259496152, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Refusal to identify', 'Stopped at a checkpoint that didn''t follow standardized procedures.', 'West Virginia', 'Charleston', '2020-09-26', 29.49616645627133, -112.90731111789746, 'verified', v_user_id);
+            VALUES ('Unlawful detention at traffic stop', 'Searched my trunk without consent or probable cause.', 'Alaska', 'Anchorage', '2021-07-03', 47.499187052819345, -94.00960365172799, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Unlawful detention at traffic stop', 'Followed me for blocks after I filmed them leaving the station.', 'Wyoming', 'Cheyenne', '2023-08-17', 37.68264848687913, -104.34761673065393, 'verified', v_user_id);
+            VALUES ('Denied FOIA request unlawfully', 'Stopped at a checkpoint that didn''t follow standardized procedures.', 'Mississippi', 'Southaven', '2023-12-21', 31.107756959205073, -74.77374204466972, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Intimidation for filming', 'Searched my trunk without consent or probable cause.', 'Wisconsin', 'Madison', '2021-11-29', 29.563096529664673, -109.46554507687799, 'verified', v_user_id);
+            VALUES ('Retaliation for filing complaint', 'Was told I couldn''t film from a public sidewalk. Officer threatened arrest.', 'Montana', 'Missoula', '2024-10-16', 47.01651077604056, -101.85340933482469, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Unlawful detention at traffic stop', 'Followed me for blocks after I filmed them leaving the station.', 'Missouri', 'Springfield', '2024-05-26', 37.42283217470896, -111.4946395273601, 'verified', v_user_id);
+            VALUES ('Intimidation for filming', 'City clerk claimed public budget documents were ''private'' and refused access.', 'Indiana', 'Evansville', '2020-02-16', 44.121324797494196, -79.28434277502186, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Retaliation for filing complaint', 'Stopped at a checkpoint that didn''t follow standardized procedures.', 'Texas', 'San Antonio', '2023-08-31', 31.35167039682951, -82.8740630941204, 'verified', v_user_id);
+            VALUES ('Refusal to identify', 'Officer used a taser on a compliant subject who was already handcuffed.', 'Utah', 'Salt Lake City', '2025-06-02', 28.301846742393675, -72.00644367504306, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Denied FOIA request unlawfully', 'Followed me for blocks after I filmed them leaving the station.', 'Idaho', 'Nampa', '2025-07-29', 37.62699669790386, -81.49692972975862, 'verified', v_user_id);
+            VALUES ('Unlawful detention at traffic stop', 'Was told I couldn''t film from a public sidewalk. Officer threatened arrest.', 'New Hampshire', 'Concord', '2022-05-25', 32.03196738465332, -114.5450708956322, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Intimidation for filming', 'Officer escalated a routine stop and detained me without articulating a crime.', 'Utah', 'Provo', '2022-07-27', 25.65487841992357, -87.73859120750893, 'verified', v_user_id);
+            VALUES ('Unlawful detention at traffic stop', 'Refused to provide name and badge number when asked multiple times.', 'Florida', 'Jacksonville', '2022-01-06', 36.623112081381315, -99.83687702803957, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Denied FOIA request unlawfully', 'Officer escalated a routine stop and detained me without articulating a crime.', 'Kentucky', 'Lexington', '2020-08-23', 45.31068112134885, -88.74156404181943, 'verified', v_user_id);
+            VALUES ('Unconstitutional checkpoint', 'Officer destroyed personal property of a homeless person during a sweep.', 'New Hampshire', 'Manchester', '2021-02-24', 34.95394729490954, -106.86053637100459, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Denied right to record in public', 'Searched my trunk without consent or probable cause.', 'Arkansas', 'Fayetteville', '2021-05-08', 28.308388503263938, -99.16047099355566, 'verified', v_user_id);
+            VALUES ('Retaliation for filing complaint', 'City clerk claimed public budget documents were ''private'' and refused access.', 'Wyoming', 'Laramie', '2023-07-11', 45.690547361234294, -78.04070641419003, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Harassment of homeless individual', 'City clerk claimed public budget documents were ''private'' and refused access.', 'California', 'Long Beach', '2021-07-09', 42.34471593197885, -119.43816562496185, 'verified', v_user_id);
+            VALUES ('Denied FOIA request unlawfully', 'Refused to provide name and badge number when asked multiple times.', 'Kansas', 'Wichita', '2024-11-14', 45.72042997501301, -119.02430733955669, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Illegal search of vehicle', 'Followed me for blocks after I filmed them leaving the station.', 'Louisiana', 'Baton Rouge', '2023-12-05', 30.91977165453657, -70.18481695497236, 'verified', v_user_id);
+            VALUES ('Retaliation for filing complaint', 'Officer used a taser on a compliant subject who was already handcuffed.', 'South Carolina', 'North Charleston', '2023-10-27', 34.26893935691977, -119.9030619996358, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Refusal to identify', 'Refused to provide name and badge number when asked multiple times.', 'Georgia', 'Atlanta', '2025-02-19', 33.84977295362026, -77.06328782319582, 'verified', v_user_id);
+            VALUES ('Retaliation for filing complaint', 'Officer used a taser on a compliant subject who was already handcuffed.', 'Georgia', 'Atlanta', '2024-11-15', 39.111218192260594, -110.3425118039488, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Unlawful detention at traffic stop', 'Stopped at a checkpoint that didn''t follow standardized procedures.', 'Pennsylvania', 'Allentown', '2022-11-22', 38.302703625162735, -70.24284975101668, 'verified', v_user_id);
+            VALUES ('Retaliation for filing complaint', 'Stopped at a checkpoint that didn''t follow standardized procedures.', 'Indiana', 'Indianapolis', '2021-10-16', 27.787251651533673, -85.85380475924546, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Intimidation for filming', 'Officer escalated a routine stop and detained me without articulating a crime.', 'Colorado', 'Denver', '2025-09-01', 28.174964223990163, -112.60641445449559, 'verified', v_user_id);
+            VALUES ('Unlawful detention at traffic stop', 'Followed me for blocks after I filmed them leaving the station.', 'Mississippi', 'Southaven', '2025-02-20', 44.52557461466843, -91.61490026197757, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Refusal to identify', 'Received a citation for ''loitering'' immediately after filing a misconduct complaint.', 'Alaska', 'Anchorage', '2021-05-15', 44.08207499425733, -122.85539065631771, 'verified', v_user_id);
+            VALUES ('Unconstitutional checkpoint', 'Received a citation for ''loitering'' immediately after filing a misconduct complaint.', 'Missouri', 'Kansas City', '2023-08-17', 44.997949744067455, -99.24924430896468, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Denied FOIA request unlawfully', 'Officer destroyed personal property of a homeless person during a sweep.', 'New Jersey', 'Paterson', '2022-06-22', 37.87867471730744, -122.98315358599405, 'verified', v_user_id);
+            VALUES ('Refusal to identify', 'Searched my trunk without consent or probable cause.', 'Montana', 'Missoula', '2023-07-23', 45.004230054473524, -94.72600779002416, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Denied right to record in public', 'Refused to provide name and badge number when asked multiple times.', 'New Hampshire', 'Manchester', '2021-07-23', 28.492115016389963, -106.15293421303006, 'verified', v_user_id);
+            VALUES ('Harassment of homeless individual', 'City clerk claimed public budget documents were ''private'' and refused access.', 'Minnesota', 'Minneapolis', '2020-11-10', 40.08216390319636, -83.30254339698925, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Unconstitutional checkpoint', 'Stopped at a checkpoint that didn''t follow standardized procedures.', 'Alaska', 'Juneau', '2024-05-05', 44.48127054291514, -92.83948522805753, 'verified', v_user_id);
+            VALUES ('Denied FOIA request unlawfully', 'Refused to provide name and badge number when asked multiple times.', 'Nebraska', 'Bellevue', '2025-12-02', 25.105512543788215, -84.87509041622636, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Denied right to record in public', 'Officer destroyed personal property of a homeless person during a sweep.', 'South Dakota', 'Rapid City', '2021-01-08', 42.41526773151793, -83.99515440093067, 'verified', v_user_id);
+            VALUES ('Denied right to record in public', 'Officer used a taser on a compliant subject who was already handcuffed.', 'New York', 'New York City', '2020-01-20', 30.869865247529468, -88.17885767402218, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Illegal search of vehicle', 'Officer escalated a routine stop and detained me without articulating a crime.', 'Georgia', 'Atlanta', '2020-02-19', 30.894682674386324, -112.42258317129088, 'verified', v_user_id);
+            VALUES ('Denied right to record in public', 'Refused to provide name and badge number when asked multiple times.', 'Ohio', 'Toledo', '2023-12-03', 47.481229611471925, -80.4929043799923, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Excessive force during arrest', 'Officer destroyed personal property of a homeless person during a sweep.', 'Maine', 'Portland', '2024-02-10', 37.94041746728419, -100.52916622602555, 'verified', v_user_id);
+            VALUES ('Excessive force during arrest', 'Refused to provide name and badge number when asked multiple times.', 'South Carolina', 'North Charleston', '2020-02-18', 31.04311310853533, -123.06744215982683, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Harassment of homeless individual', 'Refused to provide name and badge number when asked multiple times.', 'Arizona', 'Tucson', '2025-12-25', 29.558301604445674, -79.1653777010916, 'verified', v_user_id);
+            VALUES ('Refusal to identify', 'Officer escalated a routine stop and detained me without articulating a crime.', 'Rhode Island', 'Providence', '2023-04-25', 25.560369653165086, -92.17734732262974, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Illegal search of vehicle', 'Stopped at a checkpoint that didn''t follow standardized procedures.', 'Georgia', 'Augusta', '2024-02-23', 38.807049485267356, -76.40419589688872, 'verified', v_user_id);
+            VALUES ('Denied FOIA request unlawfully', 'Received a citation for ''loitering'' immediately after filing a misconduct complaint.', 'New York', 'Buffalo', '2025-03-15', 37.336687962983966, -92.2228324829887, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Excessive force during arrest', 'Was told I couldn''t film from a public sidewalk. Officer threatened arrest.', 'Arkansas', 'Fayetteville', '2021-08-22', 38.507145970893575, -99.78347136060249, 'verified', v_user_id);
+            VALUES ('Excessive force during arrest', 'Received a citation for ''loitering'' immediately after filing a misconduct complaint.', 'Michigan', 'Grand Rapids', '2021-08-15', 25.093087479981772, -110.41622316491645, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Harassment of homeless individual', 'Followed me for blocks after I filmed them leaving the station.', 'Indiana', 'Fort Wayne', '2023-05-04', 32.23433662076313, -105.61595949562009, 'verified', v_user_id);
+            VALUES ('Intimidation for filming', 'Was told I couldn''t film from a public sidewalk. Officer threatened arrest.', 'Washington', 'Spokane', '2021-02-02', 45.616466978079195, -84.2465291324902, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Illegal search of vehicle', 'Received a citation for ''loitering'' immediately after filing a misconduct complaint.', 'Colorado', 'Fort Collins', '2023-03-23', 31.80357706938868, -77.17794792230472, 'verified', v_user_id);
+            VALUES ('Unconstitutional checkpoint', 'Searched my trunk without consent or probable cause.', 'Michigan', 'Grand Rapids', '2020-10-12', 39.71476652778081, -102.36245543515301, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Unconstitutional checkpoint', 'Refused to provide name and badge number when asked multiple times.', 'New Jersey', 'Newark', '2023-04-20', 42.95792840381726, -80.34555280847526, 'verified', v_user_id);
+            VALUES ('Harassment of homeless individual', 'Was told I couldn''t film from a public sidewalk. Officer threatened arrest.', 'New York', 'Buffalo', '2023-10-14', 33.98647039669416, -76.52369670425256, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Illegal search of vehicle', 'Officer escalated a routine stop and detained me without articulating a crime.', 'Florida', 'Tampa', '2021-10-21', 47.37626337042186, -79.68085720886006, 'verified', v_user_id);
+            VALUES ('Illegal search of vehicle', 'Stopped at a checkpoint that didn''t follow standardized procedures.', 'Connecticut', 'Hartford', '2025-11-09', 33.17509164403199, -100.8764645429803, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Excessive force during arrest', 'Searched my trunk without consent or probable cause.', 'Arkansas', 'Fayetteville', '2021-08-26', 35.91452861295295, -99.34551736256964, 'verified', v_user_id);
+            VALUES ('Intimidation for filming', 'Stopped at a checkpoint that didn''t follow standardized procedures.', 'New Mexico', 'Albuquerque', '2020-05-20', 29.728945288104928, -109.80643347025452, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Harassment of homeless individual', 'Officer escalated a routine stop and detained me without articulating a crime.', 'Texas', 'Houston', '2023-07-05', 34.0686446415193, -95.14850754546578, 'verified', v_user_id);
+            VALUES ('Excessive force during arrest', 'Officer destroyed personal property of a homeless person during a sweep.', 'Iowa', 'Cedar Rapids', '2023-12-23', 40.14262542309241, -103.82869782888298, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Unlawful detention at traffic stop', 'Searched my trunk without consent or probable cause.', 'Maine', 'Lewiston', '2024-07-09', 31.19912921583676, -97.05289931755026, 'verified', v_user_id);
+            VALUES ('Retaliation for filing complaint', 'Officer destroyed personal property of a homeless person during a sweep.', 'Nebraska', 'Bellevue', '2024-10-10', 25.62216404692778, -70.78560881316385, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Denied right to record in public', 'Officer used a taser on a compliant subject who was already handcuffed.', 'Alabama', 'Huntsville', '2023-04-07', 38.137003833846485, -122.92583305650498, 'verified', v_user_id);
+            VALUES ('Intimidation for filming', 'Searched my trunk without consent or probable cause.', 'Wyoming', 'Casper', '2024-06-09', 42.05092929106583, -98.99596466539809, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Intimidation for filming', 'Officer used a taser on a compliant subject who was already handcuffed.', 'Michigan', 'Grand Rapids', '2021-01-25', 32.605738185102524, -109.06111837198766, 'verified', v_user_id);
+            VALUES ('Excessive force during arrest', 'Received a citation for ''loitering'' immediately after filing a misconduct complaint.', 'West Virginia', 'Morgantown', '2020-01-07', 28.765469403241905, -82.23405176932664, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Retaliation for filing complaint', 'Was told I couldn''t film from a public sidewalk. Officer threatened arrest.', 'New Hampshire', 'Concord', '2021-11-21', 33.86219731933392, -112.20401321665946, 'verified', v_user_id);
+            VALUES ('Denied FOIA request unlawfully', 'Searched my trunk without consent or probable cause.', 'California', 'Fresno', '2020-09-22', 37.46061886821761, -94.20677084950768, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Illegal search of vehicle', 'Refused to provide name and badge number when asked multiple times.', 'Connecticut', 'Bridgeport', '2022-06-30', 41.22257332614941, -87.11470801508491, 'verified', v_user_id);
+            VALUES ('Intimidation for filming', 'Officer escalated a routine stop and detained me without articulating a crime.', 'Kentucky', 'Louisville', '2020-08-20', 45.97189172608495, -119.04049406488171, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Intimidation for filming', 'Received a citation for ''loitering'' immediately after filing a misconduct complaint.', 'Iowa', 'Cedar Rapids', '2023-01-10', 46.4262034821389, -72.65741657030173, 'verified', v_user_id);
+            VALUES ('Retaliation for filing complaint', 'Refused to provide name and badge number when asked multiple times.', 'Maine', 'Bangor', '2022-05-24', 41.51206679185694, -122.65246126350738, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Harassment of homeless individual', 'Was told I couldn''t film from a public sidewalk. Officer threatened arrest.', 'Indiana', 'Fort Wayne', '2025-09-13', 35.49468810824915, -94.36357823369417, 'verified', v_user_id);
+            VALUES ('Retaliation for filing complaint', 'Officer destroyed personal property of a homeless person during a sweep.', 'New Hampshire', 'Concord', '2025-05-27', 40.30094959161154, -111.47795239739916, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Unconstitutional checkpoint', 'Received a citation for ''loitering'' immediately after filing a misconduct complaint.', 'Montana', 'Great Falls', '2023-02-18', 45.57577718865902, -91.83664379731749, 'verified', v_user_id);
+            VALUES ('Denied FOIA request unlawfully', 'Searched my trunk without consent or probable cause.', 'Arizona', 'Tucson', '2025-10-08', 26.270106583698414, -97.39738064287071, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Intimidation for filming', 'Officer used a taser on a compliant subject who was already handcuffed.', 'Virginia', 'Virginia Beach', '2020-04-03', 28.682987160170693, -85.1294032755358, 'verified', v_user_id);
+            VALUES ('Denied right to record in public', 'Stopped at a checkpoint that didn''t follow standardized procedures.', 'Kentucky', 'Lexington', '2020-06-04', 43.61206861178714, -74.22366735870469, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Unlawful detention at traffic stop', 'Was told I couldn''t film from a public sidewalk. Officer threatened arrest.', 'Minnesota', 'Rochester', '2020-07-13', 42.562447321725934, -120.12282299150691, 'verified', v_user_id);
+            VALUES ('Harassment of homeless individual', 'Received a citation for ''loitering'' immediately after filing a misconduct complaint.', 'South Dakota', 'Sioux Falls', '2025-09-15', 28.095907381562068, -86.27926713828074, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Illegal search of vehicle', 'Officer destroyed personal property of a homeless person during a sweep.', 'Utah', 'Provo', '2024-02-22', 26.385407821446414, -83.52055330292734, 'verified', v_user_id);
+            VALUES ('Illegal search of vehicle', 'Stopped at a checkpoint that didn''t follow standardized procedures.', 'Maryland', 'Rockville', '2025-09-30', 25.778400342177523, -120.13988429781826, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Harassment of homeless individual', 'Searched my trunk without consent or probable cause.', 'South Carolina', 'Charleston', '2024-11-16', 45.74514578324481, -101.14292991276545, 'verified', v_user_id);
+            VALUES ('Unconstitutional checkpoint', 'Followed me for blocks after I filmed them leaving the station.', 'Florida', 'Orlando', '2023-03-09', 26.430330249631897, -80.37999355319634, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Denied right to record in public', 'Searched my trunk without consent or probable cause.', 'West Virginia', 'Charleston', '2022-07-18', 31.255380072562634, -80.63055402086889, 'verified', v_user_id);
+            VALUES ('Denied FOIA request unlawfully', 'Officer used a taser on a compliant subject who was already handcuffed.', 'Alaska', 'Anchorage', '2020-06-23', 42.00010394572359, -119.36096381886101, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Harassment of homeless individual', 'City clerk claimed public budget documents were ''private'' and refused access.', 'Connecticut', 'New Haven', '2022-10-12', 37.62679662611095, -98.53900363794172, 'verified', v_user_id);
+            VALUES ('Denied FOIA request unlawfully', 'Searched my trunk without consent or probable cause.', 'Arizona', 'Phoenix', '2020-04-07', 43.783676608406, -72.51618712546104, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Harassment of homeless individual', 'Was told I couldn''t film from a public sidewalk. Officer threatened arrest.', 'Minnesota', 'Minneapolis', '2022-08-11', 27.501231433715713, -89.09152956100337, 'verified', v_user_id);
+            VALUES ('Illegal search of vehicle', 'Officer destroyed personal property of a homeless person during a sweep.', 'Arizona', 'Tucson', '2020-01-21', 34.60271334228682, -79.00060837296436, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Unconstitutional checkpoint', 'Refused to provide name and badge number when asked multiple times.', 'Iowa', 'Davenport', '2024-05-15', 37.809675530558465, -77.18306512416126, 'verified', v_user_id);
+            VALUES ('Unlawful detention at traffic stop', 'Was told I couldn''t film from a public sidewalk. Officer threatened arrest.', 'Iowa', 'Des Moines', '2022-06-21', 25.17643745161306, -111.14180597914833, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Illegal search of vehicle', 'Refused to provide name and badge number when asked multiple times.', 'Tennessee', 'Knoxville', '2022-10-02', 37.92482328424819, -123.1600438935844, 'verified', v_user_id);
+            VALUES ('Denied FOIA request unlawfully', 'Received a citation for ''loitering'' immediately after filing a misconduct complaint.', 'Hawaii', 'Honolulu', '2025-06-30', 27.03833747947492, -74.38706025144832, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Harassment of homeless individual', 'Searched my trunk without consent or probable cause.', 'North Carolina', 'Raleigh', '2020-04-28', 31.94515749936273, -119.65256397921571, 'verified', v_user_id);
+            VALUES ('Denied FOIA request unlawfully', 'Refused to provide name and badge number when asked multiple times.', 'Missouri', 'Springfield', '2020-05-11', 32.738809287505916, -119.671887847454, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Illegal search of vehicle', 'Searched my trunk without consent or probable cause.', 'Nebraska', 'Omaha', '2023-01-14', 27.230469010894062, -82.67889162684087, 'verified', v_user_id);
+            VALUES ('Unlawful detention at traffic stop', 'Was told I couldn''t film from a public sidewalk. Officer threatened arrest.', 'Hawaii', 'Kailua', '2021-09-18', 27.012341341808092, -96.99659095546096, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Illegal search of vehicle', 'Officer escalated a routine stop and detained me without articulating a crime.', 'Indiana', 'Indianapolis', '2022-06-06', 33.70250682329117, -70.36822451505077, 'verified', v_user_id);
+            VALUES ('Illegal search of vehicle', 'Searched my trunk without consent or probable cause.', 'Maryland', 'Frederick', '2024-07-09', 41.81686118525084, -92.81180516024787, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Denied right to record in public', 'Stopped at a checkpoint that didn''t follow standardized procedures.', 'North Dakota', 'Grand Forks', '2023-11-02', 35.462839896911035, -105.68369132283222, 'verified', v_user_id);
+            VALUES ('Unlawful detention at traffic stop', 'Officer escalated a routine stop and detained me without articulating a crime.', 'Idaho', 'Boise', '2021-03-05', 38.11569488235076, -100.61503467883023, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Unconstitutional checkpoint', 'Received a citation for ''loitering'' immediately after filing a misconduct complaint.', 'New Jersey', 'Newark', '2020-05-23', 31.166614143090992, -97.26139916350536, 'verified', v_user_id);
+            VALUES ('Excessive force during arrest', 'Officer destroyed personal property of a homeless person during a sweep.', 'Colorado', 'Aurora', '2025-05-23', 28.752547547367268, -100.53395237769664, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Denied right to record in public', 'Officer used a taser on a compliant subject who was already handcuffed.', 'Idaho', 'Meridian', '2022-07-09', 35.18988635925619, -123.18258563234808, 'verified', v_user_id);
+            VALUES ('Denied right to record in public', 'Was told I couldn''t film from a public sidewalk. Officer threatened arrest.', 'Arizona', 'Chandler', '2021-05-17', 28.761158112622137, -112.22651541608968, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Denied FOIA request unlawfully', 'Officer destroyed personal property of a homeless person during a sweep.', 'Maryland', 'Baltimore', '2021-02-05', 25.015422064668222, -93.73206399704219, 'verified', v_user_id);
+            VALUES ('Refusal to identify', 'Stopped at a checkpoint that didn''t follow standardized procedures.', 'New Mexico', 'Las Cruces', '2025-12-13', 28.409624364670037, -98.57810866601105, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Harassment of homeless individual', 'Followed me for blocks after I filmed them leaving the station.', 'Massachusetts', 'Worcester', '2024-07-21', 26.743313957307056, -104.13674250663718, 'verified', v_user_id);
+            VALUES ('Denied FOIA request unlawfully', 'Followed me for blocks after I filmed them leaving the station.', 'New Hampshire', 'Nashua', '2023-11-19', 36.097744261476464, -105.3544525584724, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Intimidation for filming', 'Officer used a taser on a compliant subject who was already handcuffed.', 'Massachusetts', 'Springfield', '2020-08-06', 46.42323927985435, -117.83903833393546, 'verified', v_user_id);
+            VALUES ('Denied right to record in public', 'Searched my trunk without consent or probable cause.', 'Washington', 'Tacoma', '2020-03-28', 35.256186041736136, -93.56951358395943, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Denied FOIA request unlawfully', 'Stopped at a checkpoint that didn''t follow standardized procedures.', 'Mississippi', 'Jackson', '2021-02-22', 32.677791917818276, -85.10038819116245, 'verified', v_user_id);
+            VALUES ('Denied FOIA request unlawfully', 'Refused to provide name and badge number when asked multiple times.', 'Washington', 'Tacoma', '2024-11-14', 43.878266198135336, -100.63473684756727, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Refusal to identify', 'Officer used a taser on a compliant subject who was already handcuffed.', 'Missouri', 'Springfield', '2020-09-04', 38.20731101357501, -119.87942739293527, 'verified', v_user_id);
+            VALUES ('Illegal search of vehicle', 'Officer used a taser on a compliant subject who was already handcuffed.', 'New Hampshire', 'Concord', '2020-07-02', 37.91611003724709, -82.85249388086888, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Illegal search of vehicle', 'Followed me for blocks after I filmed them leaving the station.', 'Idaho', 'Nampa', '2022-10-24', 25.38914397389429, -94.40585042160068, 'verified', v_user_id);
+            VALUES ('Illegal search of vehicle', 'Stopped at a checkpoint that didn''t follow standardized procedures.', 'Iowa', 'Davenport', '2023-02-09', 33.64053149723444, -85.7362225063164, 'verified', v_user_id);
         
 
             INSERT INTO public.violations (title, description, location_state, location_city, incident_date, latitude, longitude, status, user_id)
-            VALUES ('Denied right to record in public', 'Officer used a taser on a compliant subject who was already handcuffed.', 'Maine', 'Bangor', '2024-10-28', 28.110356116586715, -102.88502364643121, 'verified', v_user_id);
+            VALUES ('Excessive force during arrest', 'Stopped at a checkpoint that didn''t follow standardized procedures.', 'Kansas', 'Wichita', '2024-06-09', 34.41317405963447, -112.06340365430347, 'verified', v_user_id);
         
 
         END IF;
@@ -2932,27 +2932,11 @@
     
 
             INSERT INTO public.posts (user_id, content, type, visibility)
-            VALUES (v_user_id, 'Stay safe out there everyone. Use the buddy system when filming.', 'text', 'public');
+            VALUES (v_user_id, 'Has anyone successfully sued for a FOIA violation in Florida? Looking for advice.', 'text', 'public');
         
 
             INSERT INTO public.posts (user_id, content, type, visibility)
-            VALUES (v_user_id, 'Just finished a public records audit at City Hall. They were surprisingly helpful today!', 'text', 'public');
-        
-
-            INSERT INTO public.posts (user_id, content, type, visibility)
-            VALUES (v_user_id, 'Know your rights: You do not have to answer questions if you are not detained.', 'text', 'public');
-        
-
-            INSERT INTO public.posts (user_id, content, type, visibility)
-            VALUES (v_user_id, 'Stay safe out there everyone. Use the buddy system when filming.', 'text', 'public');
-        
-
-            INSERT INTO public.posts (user_id, content, type, visibility)
-            VALUES (v_user_id, 'Looking for other activists in the Chicago area to organize a cop watch event.', 'text', 'public');
-        
-
-            INSERT INTO public.posts (user_id, content, type, visibility)
-            VALUES (v_user_id, 'Huge victory today! The charges against the protesters were dropped.', 'text', 'public');
+            VALUES (v_user_id, 'Reminder: Always film the police. It''s your First Amendment right.', 'text', 'public');
         
 
             INSERT INTO public.posts (user_id, content, type, visibility)
@@ -2960,15 +2944,7 @@
         
 
             INSERT INTO public.posts (user_id, content, type, visibility)
-            VALUES (v_user_id, 'Has anyone successfully sued for a FOIA violation in Florida? Looking for advice.', 'text', 'public');
-        
-
-            INSERT INTO public.posts (user_id, content, type, visibility)
-            VALUES (v_user_id, 'Just finished a public records audit at City Hall. They were surprisingly helpful today!', 'text', 'public');
-        
-
-            INSERT INTO public.posts (user_id, content, type, visibility)
-            VALUES (v_user_id, 'Has anyone successfully sued for a FOIA violation in Florida? Looking for advice.', 'text', 'public');
+            VALUES (v_user_id, 'Huge victory today! The charges against the protesters were dropped.', 'text', 'public');
         
 
             INSERT INTO public.posts (user_id, content, type, visibility)
@@ -2976,11 +2952,11 @@
         
 
             INSERT INTO public.posts (user_id, content, type, visibility)
-            VALUES (v_user_id, 'Know your rights: You do not have to answer questions if you are not detained.', 'text', 'public');
+            VALUES (v_user_id, 'New video is up! Documenting the lack of transparency at the local precinct.', 'text', 'public');
         
 
             INSERT INTO public.posts (user_id, content, type, visibility)
-            VALUES (v_user_id, 'Reminder: Always film the police. It''s your First Amendment right.', 'text', 'public');
+            VALUES (v_user_id, 'Looking for other activists in the Chicago area to organize a cop watch event.', 'text', 'public');
         
 
             INSERT INTO public.posts (user_id, content, type, visibility)
@@ -2992,7 +2968,135 @@
         
 
             INSERT INTO public.posts (user_id, content, type, visibility)
+            VALUES (v_user_id, 'Stay safe out there everyone. Use the buddy system when filming.', 'text', 'public');
+        
+
+            INSERT INTO public.posts (user_id, content, type, visibility)
+            VALUES (v_user_id, 'Just finished a public records audit at City Hall. They were surprisingly helpful today!', 'text', 'public');
+        
+
+            INSERT INTO public.posts (user_id, content, type, visibility)
+            VALUES (v_user_id, 'Just finished a public records audit at City Hall. They were surprisingly helpful today!', 'text', 'public');
+        
+
+            INSERT INTO public.posts (user_id, content, type, visibility)
+            VALUES (v_user_id, 'Reminder: Always film the police. It''s your First Amendment right.', 'text', 'public');
+        
+
+            INSERT INTO public.posts (user_id, content, type, visibility)
+            VALUES (v_user_id, 'Know your rights: You do not have to answer questions if you are not detained.', 'text', 'public');
+        
+
+            INSERT INTO public.posts (user_id, content, type, visibility)
+            VALUES (v_user_id, 'Just finished a public records audit at City Hall. They were surprisingly helpful today!', 'text', 'public');
+        
+
+            INSERT INTO public.posts (user_id, content, type, visibility)
+            VALUES (v_user_id, 'Does anyone have a good contact for a civil rights lawyer in Texas? Need help with a false arrest case.', 'text', 'public');
+        
+
+            INSERT INTO public.posts (user_id, content, type, visibility)
+            VALUES (v_user_id, 'Can''t believe the city council voted to increase the surveillance budget again.', 'text', 'public');
+        
+
+            INSERT INTO public.posts (user_id, content, type, visibility)
+            VALUES (v_user_id, 'Know your rights: You do not have to answer questions if you are not detained.', 'text', 'public');
+        
+
+            INSERT INTO public.posts (user_id, content, type, visibility)
+            VALUES (v_user_id, 'Huge victory today! The charges against the protesters were dropped.', 'text', 'public');
+        
+
+            INSERT INTO public.posts (user_id, content, type, visibility)
+            VALUES (v_user_id, 'Can''t believe the city council voted to increase the surveillance budget again.', 'text', 'public');
+        
+
+            INSERT INTO public.posts (user_id, content, type, visibility)
+            VALUES (v_user_id, 'Huge victory today! The charges against the protesters were dropped.', 'text', 'public');
+        
+
+            INSERT INTO public.posts (user_id, content, type, visibility)
             VALUES (v_user_id, 'New video is up! Documenting the lack of transparency at the local precinct.', 'text', 'public');
+        
+
+            INSERT INTO public.posts (user_id, content, type, visibility)
+            VALUES (v_user_id, 'Just finished a public records audit at City Hall. They were surprisingly helpful today!', 'text', 'public');
+        
+
+            INSERT INTO public.posts (user_id, content, type, visibility)
+            VALUES (v_user_id, 'Can''t believe the city council voted to increase the surveillance budget again.', 'text', 'public');
+        
+
+            INSERT INTO public.posts (user_id, content, type, visibility)
+            VALUES (v_user_id, 'Has anyone successfully sued for a FOIA violation in Florida? Looking for advice.', 'text', 'public');
+        
+
+            INSERT INTO public.posts (user_id, content, type, visibility)
+            VALUES (v_user_id, 'Know your rights: You do not have to answer questions if you are not detained.', 'text', 'public');
+        
+
+            INSERT INTO public.posts (user_id, content, type, visibility)
+            VALUES (v_user_id, 'Huge victory today! The charges against the protesters were dropped.', 'text', 'public');
+        
+
+            INSERT INTO public.posts (user_id, content, type, visibility)
+            VALUES (v_user_id, 'Has anyone successfully sued for a FOIA violation in Florida? Looking for advice.', 'text', 'public');
+        
+
+            INSERT INTO public.posts (user_id, content, type, visibility)
+            VALUES (v_user_id, 'Reminder: Always film the police. It''s your First Amendment right.', 'text', 'public');
+        
+
+            INSERT INTO public.posts (user_id, content, type, visibility)
+            VALUES (v_user_id, 'Huge victory today! The charges against the protesters were dropped.', 'text', 'public');
+        
+
+            INSERT INTO public.posts (user_id, content, type, visibility)
+            VALUES (v_user_id, 'New video is up! Documenting the lack of transparency at the local precinct.', 'text', 'public');
+        
+
+            INSERT INTO public.posts (user_id, content, type, visibility)
+            VALUES (v_user_id, 'Reminder: Always film the police. It''s your First Amendment right.', 'text', 'public');
+        
+
+            INSERT INTO public.posts (user_id, content, type, visibility)
+            VALUES (v_user_id, 'Just finished a public records audit at City Hall. They were surprisingly helpful today!', 'text', 'public');
+        
+
+            INSERT INTO public.posts (user_id, content, type, visibility)
+            VALUES (v_user_id, 'Looking for other activists in the Chicago area to organize a cop watch event.', 'text', 'public');
+        
+
+            INSERT INTO public.posts (user_id, content, type, visibility)
+            VALUES (v_user_id, 'Can''t believe the city council voted to increase the surveillance budget again.', 'text', 'public');
+        
+
+            INSERT INTO public.posts (user_id, content, type, visibility)
+            VALUES (v_user_id, 'Reminder: Always film the police. It''s your First Amendment right.', 'text', 'public');
+        
+
+            INSERT INTO public.posts (user_id, content, type, visibility)
+            VALUES (v_user_id, 'Looking for other activists in the Chicago area to organize a cop watch event.', 'text', 'public');
+        
+
+            INSERT INTO public.posts (user_id, content, type, visibility)
+            VALUES (v_user_id, 'Huge victory today! The charges against the protesters were dropped.', 'text', 'public');
+        
+
+            INSERT INTO public.posts (user_id, content, type, visibility)
+            VALUES (v_user_id, 'Has anyone successfully sued for a FOIA violation in Florida? Looking for advice.', 'text', 'public');
+        
+
+            INSERT INTO public.posts (user_id, content, type, visibility)
+            VALUES (v_user_id, 'Just finished a public records audit at City Hall. They were surprisingly helpful today!', 'text', 'public');
+        
+
+            INSERT INTO public.posts (user_id, content, type, visibility)
+            VALUES (v_user_id, 'Reminder: Always film the police. It''s your First Amendment right.', 'text', 'public');
+        
+
+            INSERT INTO public.posts (user_id, content, type, visibility)
+            VALUES (v_user_id, 'Know your rights: You do not have to answer questions if you are not detained.', 'text', 'public');
         
 
             INSERT INTO public.posts (user_id, content, type, visibility)
@@ -3004,71 +3108,15 @@
         
 
             INSERT INTO public.posts (user_id, content, type, visibility)
-            VALUES (v_user_id, 'Does anyone have a good contact for a civil rights lawyer in Texas? Need help with a false arrest case.', 'text', 'public');
-        
-
-            INSERT INTO public.posts (user_id, content, type, visibility)
-            VALUES (v_user_id, 'Reminder: Always film the police. It''s your First Amendment right.', 'text', 'public');
-        
-
-            INSERT INTO public.posts (user_id, content, type, visibility)
-            VALUES (v_user_id, 'Does anyone have a good contact for a civil rights lawyer in Texas? Need help with a false arrest case.', 'text', 'public');
-        
-
-            INSERT INTO public.posts (user_id, content, type, visibility)
-            VALUES (v_user_id, 'Know your rights: You do not have to answer questions if you are not detained.', 'text', 'public');
-        
-
-            INSERT INTO public.posts (user_id, content, type, visibility)
-            VALUES (v_user_id, 'Just finished a public records audit at City Hall. They were surprisingly helpful today!', 'text', 'public');
-        
-
-            INSERT INTO public.posts (user_id, content, type, visibility)
-            VALUES (v_user_id, 'Huge victory today! The charges against the protesters were dropped.', 'text', 'public');
-        
-
-            INSERT INTO public.posts (user_id, content, type, visibility)
-            VALUES (v_user_id, 'Looking for other activists in the Chicago area to organize a cop watch event.', 'text', 'public');
-        
-
-            INSERT INTO public.posts (user_id, content, type, visibility)
-            VALUES (v_user_id, 'Reminder: Always film the police. It''s your First Amendment right.', 'text', 'public');
-        
-
-            INSERT INTO public.posts (user_id, content, type, visibility)
-            VALUES (v_user_id, 'Reminder: Always film the police. It''s your First Amendment right.', 'text', 'public');
-        
-
-            INSERT INTO public.posts (user_id, content, type, visibility)
-            VALUES (v_user_id, 'Know your rights: You do not have to answer questions if you are not detained.', 'text', 'public');
-        
-
-            INSERT INTO public.posts (user_id, content, type, visibility)
-            VALUES (v_user_id, 'Know your rights: You do not have to answer questions if you are not detained.', 'text', 'public');
-        
-
-            INSERT INTO public.posts (user_id, content, type, visibility)
-            VALUES (v_user_id, 'New video is up! Documenting the lack of transparency at the local precinct.', 'text', 'public');
-        
-
-            INSERT INTO public.posts (user_id, content, type, visibility)
-            VALUES (v_user_id, 'Know your rights: You do not have to answer questions if you are not detained.', 'text', 'public');
-        
-
-            INSERT INTO public.posts (user_id, content, type, visibility)
-            VALUES (v_user_id, 'Just finished a public records audit at City Hall. They were surprisingly helpful today!', 'text', 'public');
-        
-
-            INSERT INTO public.posts (user_id, content, type, visibility)
-            VALUES (v_user_id, 'Know your rights: You do not have to answer questions if you are not detained.', 'text', 'public');
-        
-
-            INSERT INTO public.posts (user_id, content, type, visibility)
             VALUES (v_user_id, 'Has anyone successfully sued for a FOIA violation in Florida? Looking for advice.', 'text', 'public');
         
 
             INSERT INTO public.posts (user_id, content, type, visibility)
-            VALUES (v_user_id, 'Does anyone have a good contact for a civil rights lawyer in Texas? Need help with a false arrest case.', 'text', 'public');
+            VALUES (v_user_id, 'Know your rights: You do not have to answer questions if you are not detained.', 'text', 'public');
+        
+
+            INSERT INTO public.posts (user_id, content, type, visibility)
+            VALUES (v_user_id, 'Reminder: Always film the police. It''s your First Amendment right.', 'text', 'public');
         
 
             INSERT INTO public.posts (user_id, content, type, visibility)
@@ -3080,55 +3128,7 @@
         
 
             INSERT INTO public.posts (user_id, content, type, visibility)
-            VALUES (v_user_id, 'Just finished a public records audit at City Hall. They were surprisingly helpful today!', 'text', 'public');
-        
-
-            INSERT INTO public.posts (user_id, content, type, visibility)
-            VALUES (v_user_id, 'Has anyone successfully sued for a FOIA violation in Florida? Looking for advice.', 'text', 'public');
-        
-
-            INSERT INTO public.posts (user_id, content, type, visibility)
-            VALUES (v_user_id, 'New video is up! Documenting the lack of transparency at the local precinct.', 'text', 'public');
-        
-
-            INSERT INTO public.posts (user_id, content, type, visibility)
-            VALUES (v_user_id, 'Can''t believe the city council voted to increase the surveillance budget again.', 'text', 'public');
-        
-
-            INSERT INTO public.posts (user_id, content, type, visibility)
-            VALUES (v_user_id, 'Has anyone successfully sued for a FOIA violation in Florida? Looking for advice.', 'text', 'public');
-        
-
-            INSERT INTO public.posts (user_id, content, type, visibility)
-            VALUES (v_user_id, 'Know your rights: You do not have to answer questions if you are not detained.', 'text', 'public');
-        
-
-            INSERT INTO public.posts (user_id, content, type, visibility)
-            VALUES (v_user_id, 'Does anyone have a good contact for a civil rights lawyer in Texas? Need help with a false arrest case.', 'text', 'public');
-        
-
-            INSERT INTO public.posts (user_id, content, type, visibility)
-            VALUES (v_user_id, 'Does anyone have a good contact for a civil rights lawyer in Texas? Need help with a false arrest case.', 'text', 'public');
-        
-
-            INSERT INTO public.posts (user_id, content, type, visibility)
-            VALUES (v_user_id, 'Can''t believe the city council voted to increase the surveillance budget again.', 'text', 'public');
-        
-
-            INSERT INTO public.posts (user_id, content, type, visibility)
-            VALUES (v_user_id, 'Does anyone have a good contact for a civil rights lawyer in Texas? Need help with a false arrest case.', 'text', 'public');
-        
-
-            INSERT INTO public.posts (user_id, content, type, visibility)
-            VALUES (v_user_id, 'Does anyone have a good contact for a civil rights lawyer in Texas? Need help with a false arrest case.', 'text', 'public');
-        
-
-            INSERT INTO public.posts (user_id, content, type, visibility)
-            VALUES (v_user_id, 'Just finished a public records audit at City Hall. They were surprisingly helpful today!', 'text', 'public');
-        
-
-            INSERT INTO public.posts (user_id, content, type, visibility)
-            VALUES (v_user_id, 'Just finished a public records audit at City Hall. They were surprisingly helpful today!', 'text', 'public');
+            VALUES (v_user_id, 'Looking for other activists in the Chicago area to organize a cop watch event.', 'text', 'public');
         
 
         END IF;

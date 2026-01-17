@@ -6,8 +6,13 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { Heart, MessageCircle, Upload, X, FileText, Music, Image as ImageIcon } from "lucide-react";
+import { 
+  Heart, MessageCircle, Upload, X, FileText, Music, 
+  Image as ImageIcon, TrendingUp, Hash, Send, Flame,
+  Share2, Bookmark
+} from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import type { ChangeEvent } from "react";
 
@@ -42,7 +47,33 @@ interface PostWithDetails extends Post {
   profile: UserProfile | null;
   likes: Like[];
   comments: Comment[];
+  hashtags: string[];
 }
+
+// Extract hashtags from content
+const extractHashtags = (content: string): string[] => {
+  const matches = content.match(/#[\w]+/g);
+  return matches ? [...new Set(matches.map(tag => tag.toLowerCase()))] : [];
+};
+
+// Highlight hashtags in content
+const renderContentWithHashtags = (content: string, onHashtagClick: (tag: string) => void) => {
+  const parts = content.split(/(#[\w]+)/g);
+  return parts.map((part, index) => {
+    if (part.startsWith('#')) {
+      return (
+        <button
+          key={index}
+          onClick={() => onHashtagClick(part.toLowerCase())}
+          className="text-primary hover:underline font-medium"
+        >
+          {part}
+        </button>
+      );
+    }
+    return part;
+  });
+};
 
 export function SocialFeed() {
   const [posts, setPosts] = useState<PostWithDetails[]>([]);
@@ -50,14 +81,17 @@ export function SocialFeed() {
   const [uploading, setUploading] = useState(false);
   const [mediaFiles, setMediaFiles] = useState<File[]>([]);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState("latest");
+  const [selectedHashtag, setSelectedHashtag] = useState<string | null>(null);
+  const [newComment, setNewComment] = useState<Record<string, string>>({});
+  const [expandedComments, setExpandedComments] = useState<Set<string>>(new Set());
 
   const fetchPosts = useCallback(async () => {
-    // Fetch posts
     const { data: postsData, error: postsError } = await supabase
       .from("posts")
       .select("*")
       .order("created_at", { ascending: false })
-      .limit(50);
+      .limit(100);
 
     if (postsError) {
       toast.error("Failed to load posts");
@@ -72,11 +106,9 @@ export function SocialFeed() {
       return;
     }
 
-    // Get unique user IDs
     const userIds = [...new Set(typedPosts.map((p) => p.user_id))];
     const postIds = typedPosts.map((p) => p.id);
 
-    // Fetch profiles
     const { data: profilesData } = await supabase
       .from("user_profiles")
       .select("id, display_name, avatar_url")
@@ -84,7 +116,6 @@ export function SocialFeed() {
 
     const profileMap = new Map((profilesData ?? []).map((p) => [p.id, p as UserProfile]));
 
-    // Fetch likes
     const { data: likesData } = await supabase
       .from("likes")
       .select("id, user_id, post_id")
@@ -97,13 +128,11 @@ export function SocialFeed() {
       likesMap.set(like.post_id, existing);
     });
 
-    // Fetch comments
     const { data: commentsData } = await supabase
       .from("comments")
       .select("id, content, user_id, post_id")
       .in("post_id", postIds);
 
-    // Get comment user profiles
     const commentUserIds = [...new Set((commentsData ?? []).map((c) => c.user_id))];
     const { data: commentProfilesData } = await supabase
       .from("user_profiles")
@@ -124,12 +153,12 @@ export function SocialFeed() {
       commentsMap.set(comment.post_id, existing);
     });
 
-    // Combine all data
     const postsWithDetails: PostWithDetails[] = typedPosts.map((post) => ({
       ...post,
       profile: profileMap.get(post.user_id) ?? null,
       likes: likesMap.get(post.id) ?? [],
       comments: commentsMap.get(post.id) ?? [],
+      hashtags: extractHashtags(post.content),
     }));
 
     setPosts(postsWithDetails);
@@ -138,7 +167,6 @@ export function SocialFeed() {
   const handleFileSelect = (event: ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files ?? []);
     if (files.length === 0) return;
-
     setMediaFiles((current) => [...current, ...files]);
   };
 
@@ -160,9 +188,7 @@ export function SocialFeed() {
           .from("posts")
           .upload(filePath, file, { cacheControl: "3600", upsert: false });
 
-        if (uploadError) {
-          throw uploadError;
-        }
+        if (uploadError) throw uploadError;
 
         const { data: publicUrlData } = supabase.storage.from("posts").getPublicUrl(filePath);
         mediaUrls.push(publicUrlData.publicUrl);
@@ -194,13 +220,11 @@ export function SocialFeed() {
         user_id: currentUserId,
       });
 
-      if (error) {
-        throw error;
-      }
+      if (error) throw error;
 
       setNewPost("");
       setMediaFiles([]);
-      toast.success("Post created");
+      toast.success("Post shared with the community!");
       await fetchPosts();
     } catch (error) {
       const message = error instanceof Error ? error.message : "Unable to create post";
@@ -241,6 +265,43 @@ export function SocialFeed() {
     [currentUserId, fetchPosts, posts]
   );
 
+  const addComment = useCallback(async (postId: string) => {
+    if (!currentUserId) {
+      toast.error("Sign in to comment");
+      return;
+    }
+
+    const content = newComment[postId]?.trim();
+    if (!content) return;
+
+    const { error } = await supabase.from("comments").insert({
+      post_id: postId,
+      user_id: currentUserId,
+      content,
+    });
+
+    if (error) {
+      toast.error("Failed to add comment");
+      return;
+    }
+
+    setNewComment(prev => ({ ...prev, [postId]: "" }));
+    await fetchPosts();
+    toast.success("Comment added!");
+  }, [currentUserId, newComment, fetchPosts]);
+
+  const toggleComments = (postId: string) => {
+    setExpandedComments(prev => {
+      const next = new Set(prev);
+      if (next.has(postId)) {
+        next.delete(postId);
+      } else {
+        next.add(postId);
+      }
+      return next;
+    });
+  };
+
   useEffect(() => {
     let isMounted = true;
 
@@ -248,15 +309,8 @@ export function SocialFeed() {
       .getUser()
       .then(({ data, error }) => {
         if (!isMounted) return;
-        if (error) {
-          toast.error("Unable to determine user session");
-          return;
-        }
+        if (error) return;
         setCurrentUserId(data.user?.id ?? null);
-      })
-      .catch((error) => {
-        if (!isMounted) return;
-        toast.error(error instanceof Error ? error.message : "Unable to determine user session");
       });
 
     return () => {
@@ -285,7 +339,50 @@ export function SocialFeed() {
     };
   }, [fetchPosts]);
 
-  const currentUserHasPosts = useMemo(() => Boolean(posts.find((post) => post.user_id === currentUserId)), [currentUserId, posts]);
+  // Trending hashtags calculation
+  const trendingHashtags = useMemo(() => {
+    const tagCounts = new Map<string, number>();
+    const now = Date.now();
+    const oneDayAgo = now - 24 * 60 * 60 * 1000;
+
+    posts.forEach(post => {
+      const postTime = new Date(post.created_at).getTime();
+      if (postTime > oneDayAgo) {
+        post.hashtags.forEach(tag => {
+          tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1);
+        });
+      }
+    });
+
+    return Array.from(tagCounts.entries())
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 10)
+      .map(([tag, count]) => ({ tag, count }));
+  }, [posts]);
+
+  // Trending posts (most likes in last 24 hours)
+  const trendingPosts = useMemo(() => {
+    const now = Date.now();
+    const oneDayAgo = now - 24 * 60 * 60 * 1000;
+    
+    return posts
+      .filter(post => new Date(post.created_at).getTime() > oneDayAgo)
+      .sort((a, b) => b.likes.length - a.likes.length)
+      .slice(0, 20);
+  }, [posts]);
+
+  // Filtered posts
+  const displayedPosts = useMemo(() => {
+    let filtered = activeTab === "trending" ? trendingPosts : posts;
+    
+    if (selectedHashtag) {
+      filtered = filtered.filter(post => 
+        post.hashtags.includes(selectedHashtag.toLowerCase())
+      );
+    }
+    
+    return filtered;
+  }, [posts, trendingPosts, activeTab, selectedHashtag]);
 
   const getMediaIcon = (type: string) => {
     if (type.startsWith("image/")) return <ImageIcon className="h-4 w-4" />;
@@ -296,14 +393,23 @@ export function SocialFeed() {
 
   const renderMedia = (url: string, type: string) => {
     if (type.startsWith("image/")) {
-      return <img src={url} alt="Post media" className="max-h-96 w-full rounded-lg object-cover" />;
+      return (
+        <img 
+          src={url} 
+          alt="Post media" 
+          className="max-h-96 w-full rounded-lg object-cover cursor-pointer hover:opacity-90 transition-opacity" 
+        />
+      );
+    }
+    if (type.startsWith("video/")) {
+      return <video src={url} controls className="w-full rounded-lg max-h-96" />;
     }
     if (type.startsWith("audio/")) {
       return <audio src={url} controls className="w-full" />;
     }
     if (type === "application/pdf") {
       return (
-        <a href={url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-primary hover:underline">
+        <a href={url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-primary hover:underline p-4 bg-muted rounded-lg">
           <FileText className="h-5 w-5" />
           View PDF document
         </a>
@@ -316,130 +422,353 @@ export function SocialFeed() {
     );
   };
 
+  const handleHashtagClick = (tag: string) => {
+    setSelectedHashtag(tag === selectedHashtag ? null : tag);
+  };
+
   return (
-    <div className="mx-auto max-w-2xl space-y-6">
+    <div className="space-y-6">
+      {/* Trending Hashtags */}
+      {trendingHashtags.length > 0 && (
+        <Card className="bg-gradient-to-r from-primary/5 to-accent/5">
+          <CardHeader className="pb-3">
+            <div className="flex items-center gap-2">
+              <TrendingUp className="h-5 w-5 text-primary" />
+              <h3 className="font-semibold">Trending Topics</h3>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-wrap gap-2">
+              {trendingHashtags.map(({ tag, count }) => (
+                <Button
+                  key={tag}
+                  variant={selectedHashtag === tag ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => handleHashtagClick(tag)}
+                  className="gap-1"
+                >
+                  <Hash className="h-3 w-3" />
+                  {tag.slice(1)}
+                  <Badge variant="secondary" className="ml-1 text-xs">
+                    {count}
+                  </Badge>
+                </Button>
+              ))}
+            </div>
+            {selectedHashtag && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setSelectedHashtag(null)}
+                className="mt-3 text-muted-foreground"
+              >
+                <X className="h-3 w-3 mr-1" />
+                Clear filter
+              </Button>
+            )}
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Post Composer */}
       {currentUserId && (
-        <Card>
-          <CardHeader>
-            <h3 className="font-semibold">Share an update</h3>
+        <Card className="border-2 border-primary/20">
+          <CardHeader className="pb-2">
+            <h3 className="font-semibold">Share an Update</h3>
+            <p className="text-sm text-muted-foreground">
+              Use #hashtags to join conversations • Share evidence, updates, or collaborate
+            </p>
           </CardHeader>
           <CardContent className="space-y-4">
             <Textarea
-              placeholder="What's on your mind? Share updates, evidence, or collaborate..."
+              placeholder="What's happening? Use #hashtags to categorize your post..."
               value={newPost}
               onChange={(event) => setNewPost(event.target.value)}
-              className="min-h-24"
+              className="min-h-24 resize-none"
             />
 
             {mediaFiles.length > 0 && (
               <div className="flex flex-wrap gap-2">
                 {mediaFiles.map((file, index) => (
-                  <Badge key={`${file.name}-${index}`} variant="secondary" className="gap-2">
+                  <Badge key={`${file.name}-${index}`} variant="secondary" className="gap-2 py-1.5">
                     {getMediaIcon(file.type)}
-                    {file.name.slice(0, 20)}
-                    <X className="h-3 w-3 cursor-pointer" onClick={() => removeFile(index)} />
+                    <span className="max-w-32 truncate">{file.name}</span>
+                    <X className="h-3 w-3 cursor-pointer hover:text-destructive" onClick={() => removeFile(index)} />
                   </Badge>
                 ))}
               </div>
             )}
 
-            <div className="flex gap-2">
-              <Input
-                type="file"
-                id="media-upload"
-                className="hidden"
-                onChange={handleFileSelect}
-                multiple
-                accept="image/*,audio/*,application/pdf"
-              />
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => document.getElementById("media-upload")?.click()}
+            <div className="flex items-center justify-between">
+              <div className="flex gap-2">
+                <Input
+                  type="file"
+                  id="media-upload"
+                  className="hidden"
+                  onChange={handleFileSelect}
+                  multiple
+                  accept="image/*,video/*,audio/*,application/pdf"
+                />
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => document.getElementById("media-upload")?.click()}
+                >
+                  <Upload className="mr-2 h-4 w-4" />
+                  Media
+                </Button>
+              </div>
+              <Button 
+                onClick={() => void createPost()} 
+                disabled={uploading || (!newPost.trim() && mediaFiles.length === 0)}
+                className="gap-2"
               >
-                <Upload className="mr-2 h-4 w-4" />
-                Attach media
-              </Button>
-              <Button onClick={() => void createPost()} disabled={uploading || (!newPost.trim() && mediaFiles.length === 0)}>
-                {uploading ? "Posting..." : "Post"}
+                {uploading ? "Posting..." : (
+                  <>
+                    <Send className="h-4 w-4" />
+                    Post
+                  </>
+                )}
               </Button>
             </div>
           </CardContent>
         </Card>
       )}
 
-      {!currentUserId && !currentUserHasPosts && (
-        <Card>
+      {!currentUserId && (
+        <Card className="bg-muted/50">
           <CardContent className="py-6 text-center text-sm text-muted-foreground">
             Sign in to share updates and join the conversation.
           </CardContent>
         </Card>
       )}
 
-      {posts.map((post) => (
-        <Card key={post.id}>
-          <CardHeader>
-            <div className="flex items-start gap-3">
-              <Avatar>
-                <AvatarImage src={post.profile?.avatar_url ?? ""} />
-                <AvatarFallback>{post.profile?.display_name?.[0] ?? "U"}</AvatarFallback>
-              </Avatar>
-              <div className="flex-1">
-                <div className="flex items-center gap-2">
-                  <span className="font-semibold">{post.profile?.display_name ?? "Anonymous"}</span>
-                </div>
-                <p className="text-xs text-muted-foreground">
-                  {formatDistanceToNow(new Date(post.created_at), { addSuffix: true })}
-                </p>
-              </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                className={`flex items-center gap-2 ${post.likes.some((like) => like.user_id === currentUserId) ? "text-primary" : ""}`}
-                onClick={() => void toggleLike(post.id)}
-              >
-                <Heart className={`h-4 w-4 ${post.likes.some((like) => like.user_id === currentUserId) ? "fill-current" : ""}`} />
-                {post.likes.length}
-              </Button>
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <p className="whitespace-pre-line text-sm leading-relaxed">{post.content}</p>
+      {/* Feed Tabs */}
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <TabsList className="w-full grid grid-cols-2">
+          <TabsTrigger value="latest" className="gap-2">
+            <MessageCircle className="h-4 w-4" />
+            Latest
+          </TabsTrigger>
+          <TabsTrigger value="trending" className="gap-2">
+            <Flame className="h-4 w-4" />
+            Trending
+          </TabsTrigger>
+        </TabsList>
 
-            {post.media_urls && post.media_types && (
-              <div className="space-y-3">
-                {post.media_urls.map((url, index) => (
-                  <div key={url} className="overflow-hidden rounded-lg border">
-                    {renderMedia(url, post.media_types?.[index] ?? "")}
-                  </div>
-                ))}
-              </div>
-            )}
+        <TabsContent value="latest" className="mt-4 space-y-4">
+          {displayedPosts.length === 0 ? (
+            <Card>
+              <CardContent className="py-12 text-center text-muted-foreground">
+                {selectedHashtag ? (
+                  <p>No posts found with {selectedHashtag}</p>
+                ) : (
+                  <p>No posts yet. Be the first to share!</p>
+                )}
+              </CardContent>
+            </Card>
+          ) : (
+            displayedPosts.map((post) => (
+              <PostCard
+                key={post.id}
+                post={post}
+                currentUserId={currentUserId}
+                onLike={toggleLike}
+                onHashtagClick={handleHashtagClick}
+                renderMedia={renderMedia}
+                newComment={newComment[post.id] ?? ""}
+                onCommentChange={(value) => setNewComment(prev => ({ ...prev, [post.id]: value }))}
+                onAddComment={() => addComment(post.id)}
+                isExpanded={expandedComments.has(post.id)}
+                onToggleComments={() => toggleComments(post.id)}
+              />
+            ))
+          )}
+        </TabsContent>
 
-            <div className="flex items-center gap-3 text-sm text-muted-foreground">
-              <div className="flex items-center gap-1">
-                <Heart className="h-4 w-4" />
-                {post.likes.length}
-              </div>
-              <div className="flex items-center gap-1">
-                <MessageCircle className="h-4 w-4" />
-                {post.comments.length}
-              </div>
-            </div>
-
-            {post.comments.length > 0 && (
-              <div className="space-y-3 rounded-lg bg-muted/50 p-3 text-sm">
-                {post.comments.map((comment) => (
-                  <div key={comment.id}>
-                    <p className="font-medium">{comment.profile?.display_name ?? "Community member"}</p>
-                    <p>{comment.content}</p>
-                  </div>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      ))}
+        <TabsContent value="trending" className="mt-4 space-y-4">
+          {displayedPosts.length === 0 ? (
+            <Card>
+              <CardContent className="py-12 text-center text-muted-foreground">
+                <Flame className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                <p>No trending posts in the last 24 hours</p>
+              </CardContent>
+            </Card>
+          ) : (
+            displayedPosts.map((post, index) => (
+              <PostCard
+                key={post.id}
+                post={post}
+                currentUserId={currentUserId}
+                onLike={toggleLike}
+                onHashtagClick={handleHashtagClick}
+                renderMedia={renderMedia}
+                newComment={newComment[post.id] ?? ""}
+                onCommentChange={(value) => setNewComment(prev => ({ ...prev, [post.id]: value }))}
+                onAddComment={() => addComment(post.id)}
+                isExpanded={expandedComments.has(post.id)}
+                onToggleComments={() => toggleComments(post.id)}
+                trendingRank={index + 1}
+              />
+            ))
+          )}
+        </TabsContent>
+      </Tabs>
     </div>
+  );
+}
+
+interface PostCardProps {
+  post: PostWithDetails;
+  currentUserId: string | null;
+  onLike: (postId: string) => void;
+  onHashtagClick: (tag: string) => void;
+  renderMedia: (url: string, type: string) => React.ReactNode;
+  newComment: string;
+  onCommentChange: (value: string) => void;
+  onAddComment: () => void;
+  isExpanded: boolean;
+  onToggleComments: () => void;
+  trendingRank?: number;
+}
+
+function PostCard({
+  post,
+  currentUserId,
+  onLike,
+  onHashtagClick,
+  renderMedia,
+  newComment,
+  onCommentChange,
+  onAddComment,
+  isExpanded,
+  onToggleComments,
+  trendingRank,
+}: PostCardProps) {
+  const isLiked = post.likes.some((like) => like.user_id === currentUserId);
+
+  return (
+    <Card className="overflow-hidden transition-shadow hover:shadow-md">
+      <CardHeader className="pb-3">
+        <div className="flex items-start gap-3">
+          {trendingRank && (
+            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-br from-orange-500 to-red-500 text-white text-sm font-bold">
+              {trendingRank}
+            </div>
+          )}
+          <Avatar className="ring-2 ring-primary/10">
+            <AvatarImage src={post.profile?.avatar_url ?? ""} />
+            <AvatarFallback className="bg-primary/10 text-primary">
+              {post.profile?.display_name?.[0]?.toUpperCase() ?? "U"}
+            </AvatarFallback>
+          </Avatar>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="font-semibold truncate">{post.profile?.display_name ?? "Anonymous"}</span>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {formatDistanceToNow(new Date(post.created_at), { addSuffix: true })}
+            </p>
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <p className="whitespace-pre-line text-sm leading-relaxed">
+          {renderContentWithHashtags(post.content, onHashtagClick)}
+        </p>
+
+        {post.hashtags.length > 0 && (
+          <div className="flex flex-wrap gap-1">
+            {post.hashtags.map(tag => (
+              <Badge
+                key={tag}
+                variant="secondary"
+                className="cursor-pointer hover:bg-primary/20 text-xs"
+                onClick={() => onHashtagClick(tag)}
+              >
+                {tag}
+              </Badge>
+            ))}
+          </div>
+        )}
+
+        {post.media_urls && post.media_types && (
+          <div className={`grid gap-2 ${post.media_urls.length > 1 ? 'grid-cols-2' : 'grid-cols-1'}`}>
+            {post.media_urls.map((url, index) => (
+              <div key={url} className="overflow-hidden rounded-lg border">
+                {renderMedia(url, post.media_types?.[index] ?? "")}
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Action buttons */}
+        <div className="flex items-center gap-1 pt-2 border-t">
+          <Button
+            variant="ghost"
+            size="sm"
+            className={`flex-1 gap-2 ${isLiked ? "text-red-500" : ""}`}
+            onClick={() => onLike(post.id)}
+          >
+            <Heart className={`h-4 w-4 ${isLiked ? "fill-current" : ""}`} />
+            {post.likes.length > 0 && post.likes.length}
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="flex-1 gap-2"
+            onClick={onToggleComments}
+          >
+            <MessageCircle className="h-4 w-4" />
+            {post.comments.length > 0 && post.comments.length}
+          </Button>
+          <Button variant="ghost" size="sm" className="flex-1 gap-2">
+            <Share2 className="h-4 w-4" />
+          </Button>
+          <Button variant="ghost" size="sm" className="flex-1 gap-2">
+            <Bookmark className="h-4 w-4" />
+          </Button>
+        </div>
+
+        {/* Comments section */}
+        {isExpanded && (
+          <div className="space-y-3 pt-3 border-t">
+            {post.comments.length > 0 && (
+              <div className="space-y-2">
+                {post.comments.map((comment) => (
+                  <div key={comment.id} className="flex gap-2 text-sm">
+                    <Avatar className="h-6 w-6">
+                      <AvatarImage src={comment.profile?.avatar_url ?? ""} />
+                      <AvatarFallback className="text-xs">
+                        {comment.profile?.display_name?.[0] ?? "U"}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1 bg-muted rounded-lg px-3 py-2">
+                      <p className="font-medium text-xs">{comment.profile?.display_name ?? "Anonymous"}</p>
+                      <p className="text-sm">{comment.content}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {currentUserId && (
+              <div className="flex gap-2">
+                <Input
+                  placeholder="Write a comment..."
+                  value={newComment}
+                  onChange={(e) => onCommentChange(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && onAddComment()}
+                  className="text-sm"
+                />
+                <Button size="sm" onClick={onAddComment} disabled={!newComment.trim()}>
+                  <Send className="h-4 w-4" />
+                </Button>
+              </div>
+            )}
+          </div>
+        )}
+      </CardContent>
+    </Card>
   );
 }

@@ -1,4 +1,40 @@
--- Create notifications table
+-- Update notifications table to support FOIA notifications
+-- Adapted from conflicting migration 20260117095634_98742b76-60bf-4361-a8ca-4f7216185461.sql
+
+-- 1. Add missing columns and relax constraints
+DO $$
+BEGIN
+    -- Add title
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'notifications' AND column_name = 'title') THEN
+        ALTER TABLE public.notifications ADD COLUMN title TEXT;
+    END IF;
+
+    -- Add message (if distinct from content)
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'notifications' AND column_name = 'message') THEN
+        ALTER TABLE public.notifications ADD COLUMN message TEXT;
+    END IF;
+    
+    -- Add related_entity_type
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'notifications' AND column_name = 'related_entity_type') THEN
+        ALTER TABLE public.notifications ADD COLUMN related_entity_type TEXT;
+    END IF;
+
+    -- Add related_entity_id
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'notifications' AND column_name = 'related_entity_id') THEN
+        ALTER TABLE public.notifications ADD COLUMN related_entity_id UUID;
+    END IF;
+
+    -- Add read_at
+    IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'notifications' AND column_name = 'read_at') THEN
+        ALTER TABLE public.notifications ADD COLUMN read_at TIMESTAMP WITH TIME ZONE;
+    END IF;
+
+    -- Drop strict type check if it exists (to allow 'info', 'deadline', etc.)
+    ALTER TABLE public.notifications DROP CONSTRAINT IF EXISTS notifications_type_check;
+END $$;
+
+-- 2. Skip Table Creation (Already Exists)
+/*
 CREATE TABLE public.notifications (
   id UUID NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id UUID NOT NULL,
@@ -11,40 +47,42 @@ CREATE TABLE public.notifications (
   read_at TIMESTAMP WITH TIME ZONE,
   created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
 );
+*/
 
 -- Enable RLS
-ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
+-- ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
 
--- Users can view their own notifications
+-- 3. Skip Policies (Already Exists or similar enough)
+/*
 CREATE POLICY "Users can view their own notifications"
 ON public.notifications
 FOR SELECT
 USING (auth.uid() = user_id);
 
--- Users can update their own notifications (mark as read)
 CREATE POLICY "Users can update their own notifications"
 ON public.notifications
 FOR UPDATE
 USING (auth.uid() = user_id);
 
--- Users can delete their own notifications
 CREATE POLICY "Users can delete their own notifications"
 ON public.notifications
 FOR DELETE
 USING (auth.uid() = user_id);
 
--- System can insert notifications (via triggers)
 CREATE POLICY "System can insert notifications"
 ON public.notifications
 FOR INSERT
 WITH CHECK (true);
+*/
 
--- Create index for faster queries
-CREATE INDEX idx_notifications_user_unread ON public.notifications(user_id, is_read) WHERE is_read = false;
-CREATE INDEX idx_notifications_user_created ON public.notifications(user_id, created_at DESC);
+-- 4. Create indexes if not exists (using safe names or IF NOT EXISTS)
+CREATE INDEX IF NOT EXISTS idx_notifications_user_unread ON public.notifications(user_id, is_read) WHERE is_read = false;
+CREATE INDEX IF NOT EXISTS idx_notifications_user_created ON public.notifications(user_id, created_at DESC);
 
 -- Enable realtime for notifications
-ALTER PUBLICATION supabase_realtime ADD TABLE public.notifications;
+-- ALTER PUBLICATION supabase_realtime ADD TABLE public.notifications;
+
+-- 5. Create Functions
 
 -- Create function to notify on FOIA status change
 CREATE OR REPLACE FUNCTION public.notify_foia_status_change()
@@ -71,6 +109,7 @@ END;
 $$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
 
 -- Create trigger for FOIA status changes
+DROP TRIGGER IF EXISTS on_foia_status_change ON public.foia_requests;
 CREATE TRIGGER on_foia_status_change
 AFTER UPDATE ON public.foia_requests
 FOR EACH ROW

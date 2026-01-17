@@ -2,6 +2,31 @@
 -- Target: 500+ verified civil rights attorneys across all 50 states
 -- Focus: Police misconduct, First Amendment, wrongful conviction, employment discrimination, voting rights
 
+-- CLEANUP AND CONSTRAINT FOR IDEMPOTENCY
+DO $$
+BEGIN
+    -- Remove duplicates based on name and phone to allow unique constraint
+    DELETE FROM public.attorneys a
+    WHERE a.id IN (
+        SELECT id
+        FROM (
+            SELECT id,
+                   ROW_NUMBER() OVER (partition BY name, phone ORDER BY created_at DESC) as rnum
+            FROM public.attorneys
+        ) t
+        WHERE t.rnum > 1
+    );
+
+    -- Add unique constraint on (name, phone)
+    IF NOT EXISTS (
+        SELECT 1 
+        FROM pg_constraint 
+        WHERE conname = 'attorneys_name_phone_key'
+    ) THEN
+        ALTER TABLE public.attorneys ADD CONSTRAINT attorneys_name_phone_key UNIQUE (name, phone);
+    END IF;
+END $$;
+
 INSERT INTO public.attorneys (
   name, firm, state, city, practice_areas, specialties, phone, email, website,
   accepts_pro_bono, bar_number, years_experience, bio

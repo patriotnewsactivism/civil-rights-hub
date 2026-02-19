@@ -115,10 +115,14 @@ export type Database = {
           city: string | null
           created_at: string | null
           email: string | null
-          firm_name: string | null
+          firm: string | null
           id: string
+          languages: string[] | null
           name: string
           phone: string | null
+          practice_areas: string[] | null
+          rating: number | null
+          review_count: number | null
           specialties: string[] | null
           state: string
           updated_at: string | null
@@ -132,10 +136,14 @@ export type Database = {
           city?: string | null
           created_at?: string | null
           email?: string | null
-          firm_name?: string | null
+          firm?: string | null
           id?: string
+          languages?: string[] | null
           name: string
           phone?: string | null
+          practice_areas?: string[] | null
+          rating?: number | null
+          review_count?: number | null
           specialties?: string[] | null
           state: string
           updated_at?: string | null
@@ -149,10 +157,14 @@ export type Database = {
           city?: string | null
           created_at?: string | null
           email?: string | null
-          firm_name?: string | null
+          firm?: string | null
           id?: string
+          languages?: string[] | null
           name?: string
           phone?: string | null
+          practice_areas?: string[] | null
+          rating?: number | null
+          review_count?: number | null
           specialties?: string[] | null
           state?: string
           updated_at?: string | null
@@ -313,6 +325,56 @@ export type Database = {
         }
         Relationships: []
       }
+      emergency_contacts: {
+        Row: {
+          id: string
+          user_id: string
+          name: string
+          phone: string
+          email: string | null
+          relationship: string | null
+          notes: string | null
+          is_primary: boolean | null
+          priority_order: number | null
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          name: string
+          phone: string
+          email?: string | null
+          relationship?: string | null
+          notes?: string | null
+          is_primary?: boolean | null
+          priority_order?: number | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          name?: string
+          phone?: string
+          email?: string | null
+          relationship?: string | null
+          notes?: string | null
+          is_primary?: boolean | null
+          priority_order?: number | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "emergency_contacts_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       event_rsvps: {
         Row: {
           created_at: string | null
@@ -350,54 +412,131 @@ export type Database = {
       }
       foia_agencies: {
         Row: {
+          id: string
+          name: string
+          acronym: string | null
           agency_type: string
+          state: string | null
+          county: string | null
           city: string | null
-          created_at: string | null
-          foia_address: string | null
+          mailing_address: string | null
+          street_address: string | null
+          city_address: string | null
+          state_address: string | null
+          zip_code: string | null
           foia_email: string | null
           foia_phone: string | null
-          foia_url: string | null
-          id: string
-          is_active: boolean | null
-          name: string
+          foia_fax: string | null
+          foia_online_portal_url: string | null
+          foia_contact_name: string | null
+          foia_office_name: string | null
+          standard_response_days: number | null
+          expedited_response_days: number | null
+          appeal_response_days: number | null
+          has_fees: boolean | null
+          fee_structure: string | null
+          fee_waiver_available: boolean | null
+          accepts_email: boolean | null
+          accepts_online: boolean | null
+          accepts_mail: boolean | null
+          accepts_fax: boolean | null
+          accepts_in_person: boolean | null
+          website_url: string | null
+          foia_guide_url: string | null
           notes: string | null
-          response_days: number | null
-          state: string | null
+          parent_agency_id: string | null
+          is_active: boolean | null
+          verified_date: string | null
+          created_at: string | null
           updated_at: string | null
         }
         Insert: {
+          id?: string
+          name: string
+          acronym?: string | null
           agency_type: string
+          state?: string | null
+          county?: string | null
           city?: string | null
-          created_at?: string | null
-          foia_address?: string | null
+          mailing_address?: string | null
+          street_address?: string | null
+          city_address?: string | null
+          state_address?: string | null
+          zip_code?: string | null
           foia_email?: string | null
           foia_phone?: string | null
-          foia_url?: string | null
-          id?: string
-          is_active?: boolean | null
-          name: string
+          foia_fax?: string | null
+          foia_online_portal_url?: string | null
+          foia_contact_name?: string | null
+          foia_office_name?: string | null
+          standard_response_days?: number | null
+          expedited_response_days?: number | null
+          appeal_response_days?: number | null
+          has_fees?: boolean | null
+          fee_structure?: string | null
+          fee_waiver_available?: boolean | null
+          accepts_email?: boolean | null
+          accepts_online?: boolean | null
+          accepts_mail?: boolean | null
+          accepts_fax?: boolean | null
+          accepts_in_person?: boolean | null
+          website_url?: string | null
+          foia_guide_url?: string | null
           notes?: string | null
-          response_days?: number | null
-          state?: string | null
+          parent_agency_id?: string | null
+          is_active?: boolean | null
+          verified_date?: string | null
+          created_at?: string | null
           updated_at?: string | null
         }
         Update: {
+          id?: string
+          name?: string
+          acronym?: string | null
           agency_type?: string
+          state?: string | null
+          county?: string | null
           city?: string | null
-          created_at?: string | null
-          foia_address?: string | null
+          mailing_address?: string | null
+          street_address?: string | null
+          city_address?: string | null
+          state_address?: string | null
+          zip_code?: string | null
           foia_email?: string | null
           foia_phone?: string | null
-          foia_url?: string | null
-          id?: string
-          is_active?: boolean | null
-          name?: string
+          foia_fax?: string | null
+          foia_online_portal_url?: string | null
+          foia_contact_name?: string | null
+          foia_office_name?: string | null
+          standard_response_days?: number | null
+          expedited_response_days?: number | null
+          appeal_response_days?: number | null
+          has_fees?: boolean | null
+          fee_structure?: string | null
+          fee_waiver_available?: boolean | null
+          accepts_email?: boolean | null
+          accepts_online?: boolean | null
+          accepts_mail?: boolean | null
+          accepts_fax?: boolean | null
+          accepts_in_person?: boolean | null
+          website_url?: string | null
+          foia_guide_url?: string | null
           notes?: string | null
-          response_days?: number | null
-          state?: string | null
+          parent_agency_id?: string | null
+          is_active?: boolean | null
+          verified_date?: string | null
+          created_at?: string | null
           updated_at?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "foia_agencies_parent_agency_id_fkey"
+            columns: ["parent_agency_id"]
+            isOneToOne: false
+            referencedRelation: "foia_agencies"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       foia_request_updates: {
         Row: {
@@ -445,60 +584,109 @@ export type Database = {
       }
       foia_requests: {
         Row: {
-          agency_name: string
-          created_at: string | null
-          details: string
           id: string
-          request_type: string
-          requester_address: string | null
-          requester_email: string
-          requester_name: string
-          response_due_date: string | null
-          response_text: string | null
-          state: string
+          user_id: string | null
+          template_id: string | null
+          agency_id: string | null
+          agency_name: string
+          agency_type: string | null
+          state: string | null
+          request_subject: string
+          request_body: string
           status: string | null
-          subject: string
-          submitted_at: string | null
+          submitted_date: string | null
+          response_deadline: string | null
+          acknowledgment_received_date: string | null
+          response_received_date: string | null
+          tracking_number: string | null
+          confirmation_email: string | null
+          contact_name: string | null
+          contact_phone: string | null
+          contact_email: string | null
+          follow_up_count: number | null
+          appeal_filed: boolean | null
+          appeal_date: string | null
+          notes: string | null
+          created_at: string | null
           updated_at: string | null
-          user_id: string
         }
         Insert: {
-          agency_name: string
-          created_at?: string | null
-          details: string
           id?: string
-          request_type: string
-          requester_address?: string | null
-          requester_email: string
-          requester_name: string
-          response_due_date?: string | null
-          response_text?: string | null
-          state: string
+          user_id?: string | null
+          template_id?: string | null
+          agency_id?: string | null
+          agency_name: string
+          agency_type?: string | null
+          state?: string | null
+          request_subject: string
+          request_body: string
           status?: string | null
-          subject: string
-          submitted_at?: string | null
+          submitted_date?: string | null
+          response_deadline?: string | null
+          acknowledgment_received_date?: string | null
+          response_received_date?: string | null
+          tracking_number?: string | null
+          confirmation_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          contact_email?: string | null
+          follow_up_count?: number | null
+          appeal_filed?: boolean | null
+          appeal_date?: string | null
+          notes?: string | null
+          created_at?: string | null
           updated_at?: string | null
-          user_id: string
         }
         Update: {
-          agency_name?: string
-          created_at?: string | null
-          details?: string
           id?: string
-          request_type?: string
-          requester_address?: string | null
-          requester_email?: string
-          requester_name?: string
-          response_due_date?: string | null
-          response_text?: string | null
-          state?: string
+          user_id?: string | null
+          template_id?: string | null
+          agency_id?: string | null
+          agency_name?: string
+          agency_type?: string | null
+          state?: string | null
+          request_subject?: string
+          request_body?: string
           status?: string | null
-          subject?: string
-          submitted_at?: string | null
+          submitted_date?: string | null
+          response_deadline?: string | null
+          acknowledgment_received_date?: string | null
+          response_received_date?: string | null
+          tracking_number?: string | null
+          confirmation_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          contact_email?: string | null
+          follow_up_count?: number | null
+          appeal_filed?: boolean | null
+          appeal_date?: string | null
+          notes?: string | null
+          created_at?: string | null
           updated_at?: string | null
-          user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "foia_requests_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "foia_requests_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "foia_templates"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "foia_requests_agency_id_fkey"
+            columns: ["agency_id"]
+            isOneToOne: false
+            referencedRelation: "foia_agencies"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       foia_templates: {
         Row: {
@@ -791,6 +979,117 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      post_bookmarks: {
+        Row: {
+          id: string
+          user_id: string
+          post_id: string
+          created_at: string | null
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          post_id: string
+          created_at?: string | null
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          post_id?: string
+          created_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_bookmarks_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "post_bookmarks_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      post_shares: {
+        Row: {
+          id: string
+          user_id: string
+          post_id: string
+          share_comment: string | null
+          created_at: string | null
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          post_id: string
+          share_comment?: string | null
+          created_at?: string | null
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          post_id?: string
+          share_comment?: string | null
+          created_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_shares_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "post_shares_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      user_connections: {
+        Row: {
+          id: string
+          follower_id: string
+          following_id: string
+          created_at: string | null
+        }
+        Insert: {
+          id?: string
+          follower_id: string
+          following_id: string
+          created_at?: string | null
+        }
+        Update: {
+          id?: string
+          follower_id?: string
+          following_id?: string
+          created_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_connections_follower_id_fkey"
+            columns: ["follower_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_connections_following_id_fkey"
+            columns: ["following_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       posts: {
         Row: {

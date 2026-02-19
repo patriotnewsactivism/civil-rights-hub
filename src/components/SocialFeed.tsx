@@ -7,11 +7,19 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { 
   Heart, MessageCircle, Upload, X, FileText, Music, 
   Image as ImageIcon, TrendingUp, Hash, Send, Flame,
-  Share2, Bookmark
+  Share2, Bookmark, Copy, Check, Link2
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import type { ChangeEvent } from "react";
@@ -48,6 +56,8 @@ interface PostWithDetails extends Post {
   likes: Like[];
   comments: Comment[];
   hashtags: string[];
+  isBookmarked?: boolean;
+  shareCount?: number;
 }
 
 // Extract hashtags from content
@@ -85,6 +95,11 @@ export function SocialFeed() {
   const [selectedHashtag, setSelectedHashtag] = useState<string | null>(null);
   const [newComment, setNewComment] = useState<Record<string, string>>({});
   const [expandedComments, setExpandedComments] = useState<Set<string>>(new Set());
+  const [bookmarks, setBookmarks] = useState<Set<string>>(new Set());
+  const [shareDialogOpen, setShareDialogOpen] = useState(false);
+  const [sharePostId, setSharePostId] = useState<string | null>(null);
+  const [shareComment, setShareComment] = useState("");
+  const [copiedLink, setCopiedLink] = useState(false);
 
   const fetchPosts = useCallback(async () => {
     const { data: postsData, error: postsError } = await supabase
@@ -153,16 +168,38 @@ export function SocialFeed() {
       commentsMap.set(comment.post_id, existing);
     });
 
+    let bookmarkedPostIds = new Set<string>();
+    if (currentUserId) {
+      const { data: bookmarksData } = await supabase
+        .from("post_bookmarks")
+        .select("post_id")
+        .eq("user_id", currentUserId);
+      bookmarkedPostIds = new Set((bookmarksData ?? []).map((b) => b.post_id));
+      setBookmarks(bookmarkedPostIds);
+    }
+
+    const { data: sharesData } = await supabase
+      .from("post_shares")
+      .select("post_id")
+      .in("post_id", postIds);
+
+    const sharesMap = new Map<string, number>();
+    (sharesData ?? []).forEach((share) => {
+      sharesMap.set(share.post_id, (sharesMap.get(share.post_id) ?? 0) + 1);
+    });
+
     const postsWithDetails: PostWithDetails[] = typedPosts.map((post) => ({
       ...post,
       profile: profileMap.get(post.user_id) ?? null,
       likes: likesMap.get(post.id) ?? [],
       comments: commentsMap.get(post.id) ?? [],
       hashtags: extractHashtags(post.content),
+      isBookmarked: bookmarkedPostIds.has(post.id),
+      shareCount: sharesMap.get(post.id) ?? 0,
     }));
 
     setPosts(postsWithDetails);
-  }, []);
+  }, [currentUserId]);
 
   const handleFileSelect = (event: ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files ?? []);
@@ -300,6 +337,85 @@ export function SocialFeed() {
       }
       return next;
     });
+  };
+
+  const toggleBookmark = useCallback(async (postId: string) => {
+    if (!currentUserId) {
+      toast.error("Sign in to bookmark posts");
+      return;
+    }
+
+    const isBookmarked = bookmarks.has(postId);
+
+    if (isBookmarked) {
+      const { error } = await supabase
+        .from("post_bookmarks")
+        .delete()
+        .eq("user_id", currentUserId)
+        .eq("post_id", postId);
+
+      if (error) {
+        toast.error("Failed to remove bookmark");
+        return;
+      }
+
+      setBookmarks(prev => {
+        const next = new Set(prev);
+        next.delete(postId);
+        return next;
+      });
+      toast.success("Bookmark removed");
+    } else {
+      const { error } = await supabase
+        .from("post_bookmarks")
+        .insert({ user_id: currentUserId, post_id: postId });
+
+      if (error) {
+        toast.error("Failed to bookmark post");
+        return;
+      }
+
+      setBookmarks(prev => new Set([...prev, postId]));
+      toast.success("Post bookmarked");
+    }
+  }, [currentUserId, bookmarks]);
+
+  const openShareDialog = (postId: string) => {
+    setSharePostId(postId);
+    setShareComment("");
+    setShareDialogOpen(true);
+  };
+
+  const sharePost = async () => {
+    if (!currentUserId || !sharePostId) {
+      toast.error("Sign in to share posts");
+      return;
+    }
+
+    const { error } = await supabase
+      .from("post_shares")
+      .insert({
+        user_id: currentUserId,
+        post_id: sharePostId,
+        share_comment: shareComment || null,
+      });
+
+    if (error) {
+      toast.error("Failed to share post");
+      return;
+    }
+
+    toast.success("Post shared!");
+    setShareDialogOpen(false);
+    await fetchPosts();
+  };
+
+  const copyPostLink = async (postId: string) => {
+    const url = `${window.location.origin}/social?post=${postId}`;
+    await navigator.clipboard.writeText(url);
+    setCopiedLink(true);
+    setTimeout(() => setCopiedLink(false), 2000);
+    toast.success("Link copied to clipboard");
   };
 
   useEffect(() => {

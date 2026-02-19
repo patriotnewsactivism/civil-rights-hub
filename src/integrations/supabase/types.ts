@@ -117,17 +117,29 @@ export type Database = {
           email: string | null
           firm: string | null
           id: string
-          languages: string[] | null
           name: string
           phone: string | null
-          practice_areas: string[] | null
-          rating: number | null
-          review_count: number | null
           specialties: string[] | null
           state: string
           updated_at: string | null
           website: string | null
           years_experience: number | null
+          practice_areas: string[] | null
+          rating: number | null
+          review_count: number | null
+          languages: string[] | null
+          is_verified: boolean | null
+          verified_date: string | null
+          bar_association_status: string | null
+          bar_status_date: string | null
+          case_success_rate: number | null
+          total_cases_handled: number | null
+          client_reviews: Json | null
+          average_rating: number | null
+          total_reviews: number | null
+          years_with_organization: number | null
+          notable_cases: string[] | null
+          professional_bio: string | null
         }
         Insert: {
           accepts_pro_bono?: boolean | null
@@ -138,17 +150,29 @@ export type Database = {
           email?: string | null
           firm?: string | null
           id?: string
-          languages?: string[] | null
           name: string
           phone?: string | null
-          practice_areas?: string[] | null
-          rating?: number | null
-          review_count?: number | null
           specialties?: string[] | null
           state: string
           updated_at?: string | null
           website?: string | null
           years_experience?: number | null
+          practice_areas?: string[] | null
+          rating?: number | null
+          review_count?: number | null
+          languages?: string[] | null
+          is_verified?: boolean | null
+          verified_date?: string | null
+          bar_association_status?: string | null
+          bar_status_date?: string | null
+          case_success_rate?: number | null
+          total_cases_handled?: number | null
+          client_reviews?: Json | null
+          average_rating?: number | null
+          total_reviews?: number | null
+          years_with_organization?: number | null
+          notable_cases?: string[] | null
+          professional_bio?: string | null
         }
         Update: {
           accepts_pro_bono?: boolean | null
@@ -159,17 +183,29 @@ export type Database = {
           email?: string | null
           firm?: string | null
           id?: string
-          languages?: string[] | null
           name?: string
           phone?: string | null
-          practice_areas?: string[] | null
-          rating?: number | null
-          review_count?: number | null
           specialties?: string[] | null
           state?: string
           updated_at?: string | null
           website?: string | null
           years_experience?: number | null
+          practice_areas?: string[] | null
+          rating?: number | null
+          review_count?: number | null
+          languages?: string[] | null
+          is_verified?: boolean | null
+          verified_date?: string | null
+          bar_association_status?: string | null
+          bar_status_date?: string | null
+          case_success_rate?: number | null
+          total_cases_handled?: number | null
+          client_reviews?: Json | null
+          average_rating?: number | null
+          total_reviews?: number | null
+          years_with_organization?: number | null
+          notable_cases?: string[] | null
+          professional_bio?: string | null
         }
         Relationships: []
       }

@@ -699,7 +699,6 @@ export function SocialFeed() {
                 onToggleComments={() => toggleComments(post.id)}
                 onToggleBookmark={toggleBookmark}
                 onOpenShareDialog={openShareDialog}
-                onCopyLink={copyPostLink}
                 isBookmarked={bookmarks.has(post.id)}
               />
             ))
@@ -730,7 +729,6 @@ export function SocialFeed() {
                 onToggleComments={() => toggleComments(post.id)}
                 onToggleBookmark={toggleBookmark}
                 onOpenShareDialog={openShareDialog}
-                onCopyLink={copyPostLink}
                 isBookmarked={bookmarks.has(post.id)}
                 trendingRank={index + 1}
               />
@@ -738,6 +736,49 @@ export function SocialFeed() {
           )}
         </TabsContent>
       </Tabs>
+
+      {/* Share Dialog */}
+      <Dialog open={shareDialogOpen} onOpenChange={setShareDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Share Post</DialogTitle>
+            <DialogDescription>
+              Share this post with your followers or copy the link.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <Textarea
+              placeholder="Add a comment (optional)..."
+              value={shareComment}
+              onChange={(e) => setShareComment(e.target.value)}
+              className="min-h-20"
+            />
+          </div>
+          <DialogFooter className="flex-col gap-2 sm:flex-row">
+            <Button
+              variant="outline"
+              className="w-full sm:w-auto"
+              onClick={() => sharePostId && copyPostLink(sharePostId)}
+            >
+              {copiedLink ? (
+                <>
+                  <Check className="h-4 w-4 mr-2" />
+                  Copied!
+                </>
+              ) : (
+                <>
+                  <Link2 className="h-4 w-4 mr-2" />
+                  Copy Link
+                </>
+              )}
+            </Button>
+            <Button className="w-full sm:w-auto" onClick={sharePost}>
+              <Share2 className="h-4 w-4 mr-2" />
+              Share to Feed
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
@@ -755,7 +796,6 @@ interface PostCardProps {
   onToggleComments: () => void;
   onToggleBookmark: (postId: string) => void;
   onOpenShareDialog: (postId: string) => void;
-  onCopyLink: (postId: string) => void;
   isBookmarked: boolean;
   trendingRank?: number;
 }
@@ -773,7 +813,6 @@ function PostCard({
   onToggleComments,
   onToggleBookmark,
   onOpenShareDialog,
-  onCopyLink,
   isBookmarked,
   trendingRank,
 }: PostCardProps) {
@@ -854,11 +893,22 @@ function PostCard({
             <MessageCircle className="h-4 w-4" />
             {post.comments.length > 0 && post.comments.length}
           </Button>
-          <Button variant="ghost" size="sm" className="flex-1 gap-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="flex-1 gap-2"
+            onClick={() => onOpenShareDialog(post.id)}
+          >
             <Share2 className="h-4 w-4" />
+            {post.shareCount && post.shareCount > 0 && post.shareCount}
           </Button>
-          <Button variant="ghost" size="sm" className="flex-1 gap-2">
-            <Bookmark className="h-4 w-4" />
+          <Button
+            variant="ghost"
+            size="sm"
+            className={`flex-1 gap-2 ${isBookmarked ? "text-primary" : ""}`}
+            onClick={() => onToggleBookmark(post.id)}
+          >
+            <Bookmark className={`h-4 w-4 ${isBookmarked ? "fill-current" : ""}`} />
           </Button>
         </div>
 

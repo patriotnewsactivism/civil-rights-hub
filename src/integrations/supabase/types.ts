@@ -1414,6 +1414,123 @@ export type Database = {
         }
         Relationships: []
       }
+      city_permit_info: {
+        Row: {
+          id: string
+          city: string
+          state: string
+          state_code: string
+          permit_office_name: string | null
+          permit_office_address: string | null
+          permit_office_phone: string | null
+          permit_office_email: string | null
+          permit_office_website: string | null
+          permit_required: boolean | null
+          permit_fee_min: number | null
+          permit_fee_max: number | null
+          permit_fee_notes: string | null
+          permit_timeline_days: number | null
+          permit_deadline_days: number | null
+          designated_protest_areas: string[] | null
+          restricted_areas: string[] | null
+          amplification_allowed: boolean | null
+          amplification_permit_required: boolean | null
+          signage_restrictions: string | null
+          appeal_process: string | null
+          appeal_contact: string | null
+          appeal_timeline_days: number | null
+          local_aclu_chapter: string | null
+          local_aclu_phone: string | null
+          local_aclu_website: string | null
+          legal_observer_program: string | null
+          legal_observer_contact: string | null
+          bail_fund_name: string | null
+          bail_fund_phone: string | null
+          bail_fund_website: string | null
+          kyr_hotline: string | null
+          notes: string | null
+          last_verified: string | null
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          city: string
+          state: string
+          state_code: string
+          permit_office_name?: string | null
+          permit_office_address?: string | null
+          permit_office_phone?: string | null
+          permit_office_email?: string | null
+          permit_office_website?: string | null
+          permit_required?: boolean | null
+          permit_fee_min?: number | null
+          permit_fee_max?: number | null
+          permit_fee_notes?: string | null
+          permit_timeline_days?: number | null
+          permit_deadline_days?: number | null
+          designated_protest_areas?: string[] | null
+          restricted_areas?: string[] | null
+          amplification_allowed?: boolean | null
+          amplification_permit_required?: boolean | null
+          signage_restrictions?: string | null
+          appeal_process?: string | null
+          appeal_contact?: string | null
+          appeal_timeline_days?: number | null
+          local_aclu_chapter?: string | null
+          local_aclu_phone?: string | null
+          local_aclu_website?: string | null
+          legal_observer_program?: string | null
+          legal_observer_contact?: string | null
+          bail_fund_name?: string | null
+          bail_fund_phone?: string | null
+          bail_fund_website?: string | null
+          kyr_hotline?: string | null
+          notes?: string | null
+          last_verified?: string | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          city?: string
+          state?: string
+          state_code?: string
+          permit_office_name?: string | null
+          permit_office_address?: string | null
+          permit_office_phone?: string | null
+          permit_office_email?: string | null
+          permit_office_website?: string | null
+          permit_required?: boolean | null
+          permit_fee_min?: number | null
+          permit_fee_max?: number | null
+          permit_fee_notes?: string | null
+          permit_timeline_days?: number | null
+          permit_deadline_days?: number | null
+          designated_protest_areas?: string[] | null
+          restricted_areas?: string[] | null
+          amplification_allowed?: boolean | null
+          amplification_permit_required?: boolean | null
+          signage_restrictions?: string | null
+          appeal_process?: string | null
+          appeal_contact?: string | null
+          appeal_timeline_days?: number | null
+          local_aclu_chapter?: string | null
+          local_aclu_phone?: string | null
+          local_aclu_website?: string | null
+          legal_observer_program?: string | null
+          legal_observer_contact?: string | null
+          bail_fund_name?: string | null
+          bail_fund_phone?: string | null
+          bail_fund_website?: string | null
+          kyr_hotline?: string | null
+          notes?: string | null
+          last_verified?: string | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       thread_bookmarks: {
         Row: {
           created_at: string | null

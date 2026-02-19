@@ -2,33 +2,15 @@ import { Suspense, lazy } from "react";
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { KnowYourRights } from "@/components/KnowYourRights";
-import { IncidentGuide } from "@/components/IncidentGuide";
-import { ViolationReport } from "@/components/ViolationReport";
 import { Footer } from "@/components/Footer";
 import { SEO } from "@/components/SEO";
 import { ATTORNEY_DIRECTORY } from "@/lib/seoData";
 import { StatePreferenceBanner } from "@/components/StatePreferenceBanner";
-import { SectionEntryGrid } from "@/components/SectionEntryGrid";
+import { QuickAccessHub } from "@/components/QuickAccessHub";
 
-const FeaturedNews = lazy(() =>
-  import("@/components/FeaturedNews").then((module) => ({ default: module.FeaturedNews }))
-);
 const ResourceCommandCenter = lazy(() =>
   import("@/components/ResourceCommandCenter").then((module) => ({
     default: module.ResourceCommandCenter
-  }))
-);
-const SocialSpotlight = lazy(() =>
-  import("@/components/SocialSpotlight").then((module) => ({ default: module.SocialSpotlight }))
-);
-const MonetizationShowcase = lazy(() =>
-  import("@/components/MonetizationShowcase").then((module) => ({
-    default: module.MonetizationShowcase
-  }))
-);
-const AttorneySeoContent = lazy(() =>
-  import("@/components/AttorneySeoContent").then((module) => ({
-    default: module.AttorneySeoContent
   }))
 );
 
@@ -105,49 +87,15 @@ const Index = () => {
       />
       <Header />
       <Hero />
-      <div className="container mx-auto px-4">
-        <div className="mt-8 space-y-6">
-          <StatePreferenceBanner />
-          <SectionEntryGrid />
-        </div>
+      <div className="container mx-auto px-4 py-6">
+        <StatePreferenceBanner />
+        <QuickAccessHub />
       </div>
+      <KnowYourRights />
       <Suspense
-        fallback={
-          <div className="py-16 text-center text-muted-foreground">Loading News Desk…</div>
-        }
-      >
-        <FeaturedNews />
-      </Suspense>
-      <Suspense
-        fallback={
-          <div className="py-16 text-center text-muted-foreground">Loading Resource Command…</div>
-        }
+        fallback={<div className="py-8 text-center text-muted-foreground text-sm">Loading resources...</div>}
       >
         <ResourceCommandCenter />
-      </Suspense>
-      <KnowYourRights />
-      <ViolationReport />
-      <IncidentGuide />
-      <Suspense
-        fallback={
-          <div className="py-16 text-center text-muted-foreground">Loading Social Desk…</div>
-        }
-      >
-        <SocialSpotlight />
-      </Suspense>
-      <Suspense
-        fallback={
-          <div className="py-16 text-center text-muted-foreground">Loading Partner Boosts…</div>
-        }
-      >
-        <MonetizationShowcase />
-      </Suspense>
-      <Suspense
-        fallback={
-          <div className="py-16 text-center text-muted-foreground">Loading Attorney Directory…</div>
-        }
-      >
-        <AttorneySeoContent />
       </Suspense>
       <Footer />
     </div>

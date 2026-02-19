@@ -697,6 +697,10 @@ export function SocialFeed() {
                 onAddComment={() => addComment(post.id)}
                 isExpanded={expandedComments.has(post.id)}
                 onToggleComments={() => toggleComments(post.id)}
+                onToggleBookmark={toggleBookmark}
+                onOpenShareDialog={openShareDialog}
+                onCopyLink={copyPostLink}
+                isBookmarked={bookmarks.has(post.id)}
               />
             ))
           )}
@@ -724,6 +728,10 @@ export function SocialFeed() {
                 onAddComment={() => addComment(post.id)}
                 isExpanded={expandedComments.has(post.id)}
                 onToggleComments={() => toggleComments(post.id)}
+                onToggleBookmark={toggleBookmark}
+                onOpenShareDialog={openShareDialog}
+                onCopyLink={copyPostLink}
+                isBookmarked={bookmarks.has(post.id)}
                 trendingRank={index + 1}
               />
             ))
@@ -745,6 +753,10 @@ interface PostCardProps {
   onAddComment: () => void;
   isExpanded: boolean;
   onToggleComments: () => void;
+  onToggleBookmark: (postId: string) => void;
+  onOpenShareDialog: (postId: string) => void;
+  onCopyLink: (postId: string) => void;
+  isBookmarked: boolean;
   trendingRank?: number;
 }
 
@@ -759,6 +771,10 @@ function PostCard({
   onAddComment,
   isExpanded,
   onToggleComments,
+  onToggleBookmark,
+  onOpenShareDialog,
+  onCopyLink,
+  isBookmarked,
   trendingRank,
 }: PostCardProps) {
   const isLiked = post.likes.some((like) => like.user_id === currentUserId);

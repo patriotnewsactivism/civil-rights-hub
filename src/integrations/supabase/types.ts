@@ -1339,6 +1339,81 @@ export type Database = {
         }
         Relationships: []
       }
+      state_laws: {
+        Row: {
+          id: string
+          state: string
+          state_code: string
+          recording_consent_type: string
+          recording_law_details: string
+          recording_law_citation: string | null
+          can_record_police: boolean | null
+          police_recording_details: string | null
+          police_recording_restrictions: string | null
+          has_shield_law: boolean | null
+          shield_law_details: string | null
+          journalist_protections: string | null
+          assembly_rights_details: string | null
+          protest_permit_required: boolean | null
+          activist_protections: string | null
+          state_aclu_url: string | null
+          state_legal_aid_url: string | null
+          state_resources: Json | null
+          marijuana_status: string | null
+          marijuana_last_updated: string | null
+          created_at: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          id?: string
+          state: string
+          state_code: string
+          recording_consent_type: string
+          recording_law_details: string
+          recording_law_citation?: string | null
+          can_record_police?: boolean | null
+          police_recording_details?: string | null
+          police_recording_restrictions?: string | null
+          has_shield_law?: boolean | null
+          shield_law_details?: string | null
+          journalist_protections?: string | null
+          assembly_rights_details?: string | null
+          protest_permit_required?: boolean | null
+          activist_protections?: string | null
+          state_aclu_url?: string | null
+          state_legal_aid_url?: string | null
+          state_resources?: Json | null
+          marijuana_status?: string | null
+          marijuana_last_updated?: string | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          id?: string
+          state?: string
+          state_code?: string
+          recording_consent_type?: string
+          recording_law_details?: string
+          recording_law_citation?: string | null
+          can_record_police?: boolean | null
+          police_recording_details?: string | null
+          police_recording_restrictions?: string | null
+          has_shield_law?: boolean | null
+          shield_law_details?: string | null
+          journalist_protections?: string | null
+          assembly_rights_details?: string | null
+          protest_permit_required?: boolean | null
+          activist_protections?: string | null
+          state_aclu_url?: string | null
+          state_legal_aid_url?: string | null
+          state_resources?: Json | null
+          marijuana_status?: string | null
+          marijuana_last_updated?: string | null
+          created_at?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       thread_bookmarks: {
         Row: {
           created_at: string | null

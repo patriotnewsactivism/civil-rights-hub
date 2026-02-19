@@ -1,23 +1,147 @@
 # Repository Guidelines
 
-## Project Structure & Module Organization
-Core client code lives in `src/`, where `components/` hosts shadcn UI building blocks, `pages/` defines React Router views, `hooks/` wraps shared logic, `lib/` holds utilities, and `integrations/` encapsulates external services. Static assets stay in `public/`, while build outputs land in `dist/`. Supabase edge functions (`supabase/functions/case-search` and `supabase/functions/legal-assistant`) mirror the client naming rules; configure them through `supabase/config.toml` and keep per-function secrets in their own `.env`. Keep Vite, Tailwind, and TypeScript settings in the root config files so other agents can trace behaviour quickly.
-
 ## Build, Test, and Development Commands
-- `npm install` (or `bun install`) syncs dependencies; commit neither lockfile unless you intentionally switch package managers.
-- `npm run dev` launches Vite with hot reload on http://localhost:5173.
-- `npm run build` creates an optimized client bundle in `dist/`; `npm run build:dev` is handy for debugging builds with dev-mode env vars.
-- `npm run preview` serves the last build, which is ideal for acceptance demos.
-- `npm run lint` runs the flat ESLint config across TS, JSX, and Supabase functions.
+
+- `npm install` or `bun install` - install dependencies (don't commit lockfile unless switching package managers)
+- `npm run dev` - starts Vite dev server on http://localhost:8080
+- `npm run build` - production build to `dist/`
+- `npm run build:dev` - development mode build with dev-mode env vars
+- `npm run lint` - runs ESLint flat config across TS/TSX files
+- `npm run preview` - serves the last build for acceptance demos
+- `npm run test` - runs all Vitest tests in watch mode
+- `npm run test -- path/to/file.test.ts` - runs a single test file
+- `npm run test -- --run` - runs tests once without watch mode
+
+## Project Structure
+
+```
+src/                          # Core client code
+  components/                 # React components
+    ui/                       # shadcn UI building blocks
+    __tests__/                # Co-located test files
+    foia/                     # FOIA-related components
+  pages/                      # React Router route views
+  hooks/                      # Custom React hooks for shared logic
+  lib/                        # Utility functions (cn, seoData, etc.)
+  integrations/               # External service clients
+    supabase/                 # Supabase client and types
+  types/                      # TypeScript type definitions
+  data/                       # Static JSON data files
+public/                       # Static assets
+dist/                         # Build output (gitignored)
+supabase/                     # Supabase configuration
+  functions/                  # Edge functions (Deno runtime)
+    case-search/              # Legal case search function
+    legal-assistant/          # AI legal assistant function
+    check-foia-deadlines/     # FOIA deadline checker
+  migrations/                 # SQL migration files
+  config.toml                 # Supabase CLI configuration
+```
 
 ## Coding Style & Naming Conventions
-Use TypeScript everywhere, 2-space indentation, and prefer small, pure React function components. Files that export components follow `PascalCase.tsx`; hooks remain `useSomething.ts`. Import shared modules through the `@/` alias defined in `tsconfig`. Favor Tailwind utility classes plus `clsx`/`class-variance-authority` helpers rather than ad-hoc CSS. Keep data fetching inside `src/hooks` with React Query caches so suspense boundaries remain predictable.
+
+- TypeScript everywhere with 2-space indentation
+- Prefer small, pure React function components
+- File naming: `PascalCase.tsx` for components, `useSomething.ts` for hooks
+- Import shared modules via `@/` alias (e.g., `import { cn } from "@/lib/utils"`)
+- Use Tailwind utility classes with `clsx`/`class-variance-authority` helpers
+- Use the `cn()` function from `@/lib/utils` for conditional class merging
+- Keep data fetching inside `src/hooks/` with React Query (`@tanstack/react-query`)
+- Use shadcn/ui components from `@/components/ui/` for consistent UI
+
+## Import Order
+
+1. React/React-related imports (react, react-dom, react-router-dom)
+2. Third-party libraries (@tanstack/react-query, lucide-react, etc.)
+3. Internal aliases (`@/components/`, `@/hooks/`, `@/lib/`, `@/types/`)
+4. Relative imports (./, ../)
+5. Type imports (use `import type` for type-only imports)
+
+Example:
+```typescript
+import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { useGeolocation } from "@/hooks/useGeolocation";
+import type { ScannerLinkRecord } from "@/types/scanner";
+```
+
+## TypeScript Guidelines
+
+- Use explicit return types for exported functions
+- Prefer interfaces for object types that might be extended
+- Use `type` for unions, intersections, and mapped types
+- Avoid `any`; use `unknown` when type is truly unknown
+- Type file location: co-locate with code or in `src/types/`
+- Use Zod schemas for runtime validation (`zod` package available)
+
+## Error Handling
+
+- Use `ErrorBoundary` component from `@/components/ErrorBoundary` for React error boundaries
+- Log errors with `console.error()` for debugging
+- Provide user-friendly error messages in UI
+- Graceful degradation for missing environment variables (see Supabase client pattern)
+- Async operations should return `{ data, error }` pattern matching Supabase conventions
+- Check for `error` property before using `data` in async operations
 
 ## Testing Guidelines
-Automated tests are not wired up yet; when adding coverage, bootstrap Vitest + Testing Library and colocate specs as `Component.test.tsx` or `hook.test.ts`. Stub Supabase calls and React Query clients to keep tests deterministic. Until the suite exists, attach manual verification notes or short screen recordings in the PR, and ensure `npm run lint && npm run build` succeeds before requesting review.
 
-## Commit & Pull Request Guidelines
-Write imperative, descriptive commit subjects similar to `Approve Lovable tool use`, and include tags like `[skip lovable]` only when necessary to bypass the Lovable pipeline. Each PR should link the relevant Linear/GitHub issue, describe the UX impact, list tested commands, and attach screenshots for UI adjustments or Supabase migration diffs. Request review only after rebasing on `main` and confirming no generated files were edited by hand.
+- Test files named `Component.test.tsx` or `hook.test.ts`
+- Co-locate tests with code OR use `__tests__` folders
+- Use Vitest with Testing Library (`@testing-library/react`, `@testing-library/jest-dom`)
+- Mock external dependencies (Supabase, geolocation, etc.) using `vi.mock()`
+- Use `afterEach` for cleanup: `cleanup()`, `vi.clearAllMocks()`
+- Run `npm run lint && npm run build` before PR review
 
-## Security & Configuration Tips
-Never commit `.env` contents; rely on `.env.local` for developer secrets and document required keys (e.g., Supabase URL, anon key) in the PR description. Regenerate Supabase access tokens through the dashboard and store them in the Lovable secrets manager before deploying. When editing edge functions, validate policies against your Supabase project using `supabase start` locally so production data stays untouched.
+Example mock pattern:
+```typescript
+vi.mock("@/integrations/supabase/client", () => ({
+  supabase: {
+    from: () => ({
+      select: () => builder,
+      eq: () => builder,
+      order: () => builder,
+      then: promise.then.bind(promise),
+    }),
+  },
+}));
+```
+
+## Supabase Edge Functions
+
+- Located in `supabase/functions/`
+- Use Deno runtime with ES modules
+- Import from `https://deno.land/std@0.168.0/http/server.ts`
+- Include CORS headers in all responses
+- Store secrets in environment variables, access via `Deno.env.get("SECRET_NAME")`
+- Use `supabase start` locally to validate against local instance
+- Return errors as `{ error: string }` JSON with appropriate status codes
+
+## Commit & PR Guidelines
+
+- Write imperative, descriptive commit subjects (e.g., "Add FOIA deadline tracking")
+- Link relevant Linear/GitHub issues in PRs
+- Describe UX impact and list tested commands
+- Attach screenshots for UI changes
+- Rebase on `main` before requesting review
+- Ensure `npm run lint && npm run build` passes before requesting review
+
+## Security
+
+- Never commit `.env` files or secrets
+- Use `.env.local` for local development secrets
+- Required env vars: `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`
+- Regenerate Supabase tokens through the Supabase dashboard
+- Store edge function secrets per-function in their own `.env` files
+
+## Key Dependencies
+
+- `@tanstack/react-query` - Server state management
+- `@supabase/supabase-js` - Backend and auth
+- `react-router-dom` - Client-side routing
+- `lucide-react` - Icon library
+- `class-variance-authority` + `clsx` + `tailwind-merge` - Styling utilities
+- `zod` - Schema validation
+- `date-fns` - Date manipulation
+- `recharts` - Charts and data visualization

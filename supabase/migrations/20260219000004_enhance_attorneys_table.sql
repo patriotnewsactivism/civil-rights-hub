@@ -69,11 +69,11 @@ VALUES
 ('ACLU of West Virginia', 'ACLU of West Virginia', 'WV', 'Charleston', 'contact@acluwv.org', '(304) 555-2727', 'https://acluwv.org', ARRAY['Civil Rights', 'Labor Rights', 'Environmental Justice'], ARRAY['Workers Rights', 'Environmental Racism', 'Healthcare', 'LGBTQ Rights'], true, 'WV789012', 12, 'West Virginia civil liberties defense', 4.4, 29, ARRAY['English'], true, '2024-03-05', 'Active', 74.2, 75, 4.4, 29, 'Active on labor rights, environmental justice, and healthcare access in West Virginia.'),
 ('ACLU of Mississippi', 'ACLU of Mississippi', 'MS', 'Jackson', 'contact@aclu-ms.org', '(601) 555-2828', 'https://aclu-ms.org', ARRAY['Civil Rights', 'Voting Rights', 'Criminal Justice'], ARRAY['Voter Suppression', 'Police Reform', 'Educational Equity', 'Reproductive Rights'], true, 'MS890123', 22, 'Mississippi civil liberties defense', 4.6, 56, ARRAY['English'], true, '2024-01-15', 'Active', 80.5, 180, 4.6, 56, 'Deep legacy in civil rights movement. Active on voting rights, criminal justice reform, and educational equity.')
 
-ON CONFLICT (name, state) DO UPDATE SET
+ON CONFLICT (name, phone) DO UPDATE SET
   firm = EXCLUDED.firm,
   city = EXCLUDED.city,
   email = EXCLUDED.email,
-  phone = EXCLUDED.phone,
+  state = EXCLUDED.state,
   website = EXCLUDED.website,
   specialties = EXCLUDED.specialties,
   practice_areas = EXCLUDED.practice_areas,

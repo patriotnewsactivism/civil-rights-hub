@@ -57,7 +57,7 @@ UPDATE public.state_laws SET
   wiretap_exceptions = 'Two-party consent required. All parties must consent to recording.',
   anti_slapp_law = 'Yes - Strong',
   anti_slapp_citation = 'Cal. Code Civ. Proc. § 425.16',
-  anti_slapp_protections = 'Nation\'s strongest anti-SLAPP law. Mandatory attorney fees for successful motions.',
+  anti_slapp_protections = 'Nation''s strongest anti-SLAPP law. Mandatory attorney fees for successful motions.',
   shield_law_citation = 'Cal. Evid. Code § 1070',
   shield_law_type = 'Absolute',
   shield_law_qualifications = 'Strong shield law protecting confidential sources and unpublished information',

@@ -139,7 +139,7 @@ UPDATE public.state_laws SET
   anti_slapp_protections = 'Citizen Participation Act protects petition and speech rights',
   shield_law_citation = '735 Ill. Comp. Stat. 5/8-901 et seq.',
   shield_law_type = 'Qualified',
-  shield_law_qualifications = 'Reporter\'s privilege protects confidential sources',
+  shield_law_qualifications = 'Reporter''s privilege protects confidential sources',
   body_camera_policy = 'Law Enforcement Body-Worn Camera Act',
   body_camera_activation = 'Required for law enforcement encounters',
   body_camera_public_access = 'FOIA request; redactions allowed',

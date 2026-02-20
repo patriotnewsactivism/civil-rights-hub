@@ -1,6 +1,64 @@
--- Add parent_comment_id to comments table for threaded comments
-ALTER TABLE comments
-ADD COLUMN IF NOT EXISTS parent_comment_id uuid REFERENCES comments(id) ON DELETE CASCADE;
+-- Create comments table for social feed posts
+CREATE TABLE IF NOT EXISTS comments (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  post_id uuid NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
+  user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  content text NOT NULL,
+  parent_comment_id uuid REFERENCES comments(id) ON DELETE CASCADE,
+  likes_count integer DEFAULT 0,
+  created_at timestamptz DEFAULT now(),
+  updated_at timestamptz DEFAULT now()
+);
+
+-- Create index for comments
+CREATE INDEX IF NOT EXISTS idx_comments_post ON comments(post_id);
+CREATE INDEX IF NOT EXISTS idx_comments_user ON comments(user_id);
+
+-- Enable RLS on comments
+ALTER TABLE comments ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Anyone can view comments"
+  ON comments FOR SELECT
+  USING (true);
+
+CREATE POLICY "Authenticated users can create comments"
+  ON comments FOR INSERT
+  WITH CHECK (auth.uid() = user_id);
+
+CREATE POLICY "Users can update own comments"
+  ON comments FOR UPDATE
+  USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can delete own comments"
+  ON comments FOR DELETE
+  USING (auth.uid() = user_id);
+
+-- Trigger to update comments_count on posts
+CREATE OR REPLACE FUNCTION increment_post_comments_count()
+RETURNS TRIGGER AS $$
+BEGIN
+  UPDATE posts SET comments_count = comments_count + 1 WHERE id = NEW.post_id;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_increment_comments_count
+  AFTER INSERT ON comments
+  FOR EACH ROW
+  EXECUTE FUNCTION increment_post_comments_count();
+
+CREATE OR REPLACE FUNCTION decrement_post_comments_count()
+RETURNS TRIGGER AS $$
+BEGIN
+  UPDATE posts SET comments_count = GREATEST(comments_count - 1, 0) WHERE id = OLD.post_id;
+  RETURN OLD;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_decrement_comments_count
+  AFTER DELETE ON comments
+  FOR EACH ROW
+  EXECUTE FUNCTION decrement_post_comments_count();
 
 -- Create post_reactions table
 CREATE TABLE IF NOT EXISTS post_reactions (
@@ -120,10 +178,12 @@ CREATE POLICY "Authenticated users can insert post links"
   ON post_links FOR INSERT
   WITH CHECK (auth.uid() IS NOT NULL);
 
+-- Create index for comments
+CREATE INDEX IF NOT EXISTS idx_comments_parent ON comments(parent_comment_id);
+
 -- Create indexes for performance
 CREATE INDEX IF NOT EXISTS idx_post_reactions_post ON post_reactions(post_id);
 CREATE INDEX IF NOT EXISTS idx_post_reactions_user ON post_reactions(user_id);
-CREATE INDEX IF NOT EXISTS idx_comments_parent ON comments(parent_comment_id);
 CREATE INDEX IF NOT EXISTS idx_mentions_user ON mentions(mentioned_user_id);
 CREATE INDEX IF NOT EXISTS idx_mentions_post ON mentions(post_id);
 CREATE INDEX IF NOT EXISTS idx_mentions_comment ON mentions(comment_id);

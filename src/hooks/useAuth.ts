@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { buildSignupMetadata } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 import type { User } from "@supabase/supabase-js";
 
@@ -31,14 +32,18 @@ export const useAuth = () => {
     return { data, error };
   };
 
-  const signUp = async (email: string, password: string) => {
+  const signUp = async (email: string, password: string, displayName?: string) => {
+    const metadata = buildSignupMetadata(email, displayName);
+
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        emailRedirectTo: `${window.location.origin}/`
-      }
+        emailRedirectTo: `${window.location.origin}/`,
+        data: metadata,
+      },
     });
+
     return { data, error };
   };
 

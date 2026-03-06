@@ -43,7 +43,7 @@ export default function Auth() {
     e.preventDefault();
     setLoading(true);
     
-    const { error } = await signUp(email, password);
+    const { error } = await signUp(email, password, displayName);
     
     if (error) {
       toast.error(error.message);

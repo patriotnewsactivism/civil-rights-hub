@@ -1,4 +1,4 @@
-import { Suspense, lazy, useMemo, useState } from "react";
+import { Suspense, lazy, useEffect, useMemo, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -41,6 +41,7 @@ import { Resources } from "@/components/Resources";
 import { toast } from "sonner";
 import { useJurisdiction } from "@/hooks/useJurisdiction";
 import { DEFAULT_JURISDICTION } from "@/data/usStates";
+import { getResourceIdFromHash } from "@/components/resourceHash";
 
 const AttorneySeoContent = lazy(() =>
   import("@/components/AttorneySeoContent").then((module) => ({
@@ -239,6 +240,23 @@ export const ResourceCommandCenter = () => {
     () => resourceDefinitions.find((resource) => resource.id === selectedId) ?? null,
     [resourceDefinitions, selectedId]
   );
+
+  useEffect(() => {
+    const openResourceFromHash = () => {
+      const resourceId = getResourceIdFromHash(window.location.hash);
+      if (resourceId) {
+        setSelectedId(resourceId);
+        setIsSheetOpen(true);
+      }
+    };
+
+    openResourceFromHash();
+    window.addEventListener("hashchange", openResourceFromHash);
+
+    return () => {
+      window.removeEventListener("hashchange", openResourceFromHash);
+    };
+  }, []);
 
   const openResource = (id: string) => {
     setSelectedId(id);

@@ -4,7 +4,8 @@
 
 @layer base {
   :root {
-    --background: 0 0% 98%;
+    /* Deep Midnight Theme - Light Mode (Clean, High Trust) */
+    --background: 220 33% 98%;
     --foreground: 222 47% 11%;
 
     --card: 0 0% 100%;
@@ -13,17 +14,17 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
 
-    --primary: 222 47% 11%;
+    --primary: 221 83% 53%; /* Vivid Blue */
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 222 47% 20%;
+    --primary-glow: 221 83% 53%;
 
-    --secondary: 210 17% 98%;
+    --secondary: 210 40% 96%;
     --secondary-foreground: 222 47% 11%;
 
     --muted: 210 40% 96%;
     --muted-foreground: 215 16% 47%;
 
-    --accent: 221 83% 53%;
+    --accent: 262 83% 58%; /* Purple */
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
@@ -33,49 +34,45 @@
     --input: 214 32% 91%;
     --ring: 221 83% 53%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
 
-    --gradient-hero: none;
-    --gradient-accent: linear-gradient(135deg, hsl(221 83% 53%) 0%, hsl(230 80% 45%) 100%);
-    --shadow-soft: 0 1px 3px 0 rgb(0 0 0 / 0.1);
-    --shadow-strong: 0 4px 12px -2px rgb(0 0 0 / 0.1);
-    --transition-smooth: all 0.2s ease;
+    --gradient-hero: linear-gradient(135deg, hsl(221 83% 53%) 0%, hsl(262 83% 58%) 100%);
+    --gradient-subtle: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
   }
 
   .dark {
+    /* Deep Midnight Theme - Dark Mode (Cyberpunk / Modern Justice) */
     --background: 224 71% 4%;
-    --foreground: 213 31% 91%;
+    --foreground: 210 40% 98%;
 
-    --card: 224 71% 6%;
-    --card-foreground: 213 31% 91%;
+    --card: 222 47% 11%;
+    --card-foreground: 210 40% 98%;
 
-    --popover: 224 71% 6%;
-    --popover-foreground: 213 31% 91%;
+    --popover: 222 47% 11%;
+    --popover-foreground: 210 40% 98%;
 
-    --primary: 213 31% 91%;
-    --primary-foreground: 224 71% 4%;
-    --primary-glow: 213 31% 95%;
+    --primary: 217 91% 60%; /* Lighter Blue for Dark Mode */
+    --primary-foreground: 222 47% 11%;
+    --primary-glow: 217 91% 60%;
 
-    --secondary: 222 47% 11%;
-    --secondary-foreground: 213 31% 91%;
+    --secondary: 217 33% 17%;
+    --secondary-foreground: 210 40% 98%;
 
-    --muted: 222 47% 11%;
+    --muted: 217 33% 17%;
     --muted-foreground: 215 20% 65%;
 
-    --accent: 221 83% 53%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 263 70% 50%; /* Deep Purple */
+    --accent-foreground: 210 40% 98%;
 
-    --destructive: 0 63% 31%;
-    --destructive-foreground: 213 31% 91%;
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 210 40% 98%;
 
-    --border: 222 47% 15%;
-    --input: 222 47% 15%;
-    --ring: 221 83% 53%;
+    --border: 217 33% 20%;
+    --input: 217 33% 20%;
+    --ring: 217 91% 60%;
 
-    --gradient-hero: none;
-    --gradient-accent: linear-gradient(135deg, hsl(221 83% 53%) 0%, hsl(230 80% 45%) 100%);
-    --shadow-soft: 0 1px 3px 0 rgb(0 0 0 / 0.3);
-    --shadow-strong: 0 4px 12px -2px rgb(0 0 0 / 0.4);
+    --gradient-hero: linear-gradient(135deg, hsl(224 71% 4%) 0%, hsl(222 47% 11%) 100%);
+    --gradient-subtle: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.5) 100%);
   }
 }
 
@@ -83,13 +80,20 @@
   * {
     @apply border-border;
   }
-
   body {
-    @apply bg-background text-foreground font-sans;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    @apply bg-background text-foreground antialiased selection:bg-primary/20 selection:text-primary;
+    font-feature-settings: "ss01", "ss02", "cv01", "cv02";
   }
-  
-  html {
-    scroll-behavior: smooth;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  .glass-panel {
+    @apply bg-background/60 backdrop-blur-xl border border-white/10 shadow-xl;
+  }
+  .glass-card {
+    @apply bg-card/50 backdrop-blur-md border border-white/5 shadow-lg hover:bg-card/60 transition-colors;
   }
 }

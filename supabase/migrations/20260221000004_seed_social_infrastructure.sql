@@ -76,16 +76,39 @@ ALTER TABLE public.reputation_events
   ));
 
 -- =====================================================
--- SEED GROUPS
+-- SEED GROUPS AND EVENTS
 -- =====================================================
 
-INSERT INTO public.groups (id, name, slug, description, type, settings, member_count, is_active) VALUES
-  (gen_random_uuid(), 'Civil Rights Discussion', 'civil-rights-discussion', 'A community for discussing civil rights issues, news, and developments across the United States. Share articles, ask questions, and engage with fellow advocates.', 'public', '{"allow_posts": true, "require_approval": false, "topics": ["civil-rights", "news", "discussion"]}', 0, true),
-  (gen_random_uuid(), 'FOIA Tips & Strategies', 'foia-tips-strategies', 'Learn and share best practices for filing Freedom of Information Act requests. Get help with your requests, share success stories, and discover new strategies.', 'public', '{"allow_posts": true, "require_approval": false, "topics": ["foia", "transparency", "public-records"]}', 0, true),
-  (gen_random_uuid(), 'Know Your Rights', 'know-your-rights', 'Educational community focused on understanding your constitutional rights. Learn about interactions with law enforcement, protest rights, and legal protections.', 'public', '{"allow_posts": true, "require_approval": false, "topics": ["know-your-rights", "education", "legal"]}', 0, true),
-  (gen_random_uuid(), 'Cop Watch Organizers', 'cop-watch-organizers', 'Connect with other police accountability activists. Coordinate monitoring efforts, share resources, and organize community oversight initiatives.', 'public', '{"allow_posts": true, "require_approval": false, "topics": ["police-accountability", "activism", "community-oversight"]}', 0, true),
-  (gen_random_uuid(), 'Legal Observers', 'legal-observers', 'A group for trained legal observers and those interested in becoming one. Coordinate observation efforts at protests and document potential rights violations.', 'public', '{"allow_posts": true, "require_approval": false, "topics": ["legal-observers", "protest-support", "documentation"]}', 0, true)
-ON CONFLICT (slug) DO NOTHING;
+DO $$
+DECLARE
+  v_admin_id UUID;
+BEGIN
+  -- Try to get the first available user
+  SELECT id INTO v_admin_id FROM auth.users LIMIT 1;
+  
+  -- If we have a user, proceed with seeding groups and events
+  IF v_admin_id IS NOT NULL THEN
+    
+    -- Seed Groups
+    INSERT INTO public.groups (id, name, slug, description, type, created_by, settings, member_count, is_active) VALUES
+      (gen_random_uuid(), 'Civil Rights Discussion', 'civil-rights-discussion', 'A community for discussing civil rights issues, news, and developments across the United States. Share articles, ask questions, and engage with fellow advocates.', 'public', v_admin_id, '{"allow_posts": true, "require_approval": false, "topics": ["civil-rights", "news", "discussion"]}', 1, true),
+      (gen_random_uuid(), 'FOIA Tips & Strategies', 'foia-tips-strategies', 'Learn and share best practices for filing Freedom of Information Act requests. Get help with your requests, share success stories, and discover new strategies.', 'public', v_admin_id, '{"allow_posts": true, "require_approval": false, "topics": ["foia", "transparency", "public-records"]}', 1, true),
+      (gen_random_uuid(), 'Know Your Rights', 'know-your-rights', 'Educational community focused on understanding your constitutional rights. Learn about interactions with law enforcement, protest rights, and legal protections.', 'public', v_admin_id, '{"allow_posts": true, "require_approval": false, "topics": ["know-your-rights", "education", "legal"]}', 1, true),
+      (gen_random_uuid(), 'Cop Watch Organizers', 'cop-watch-organizers', 'Connect with other police accountability activists. Coordinate monitoring efforts, share resources, and organize community oversight initiatives.', 'public', v_admin_id, '{"allow_posts": true, "require_approval": false, "topics": ["police-accountability", "activism", "community-oversight"]}', 1, true),
+      (gen_random_uuid(), 'Legal Observers', 'legal-observers', 'A group for trained legal observers and those interested in becoming one. Coordinate observation efforts at protests and document potential rights violations.', 'public', v_admin_id, '{"allow_posts": true, "require_approval": false, "topics": ["legal-observers", "protest-support", "documentation"]}', 1, true)
+    ON CONFLICT (slug) DO NOTHING;
+
+    -- Seed Community Events
+    INSERT INTO public.community_events (id, title, description, event_type, start_date, end_date, location_name, address, city, state, is_public, is_cancelled, rsvp_count, organizer_id) VALUES
+      (gen_random_uuid(), 'Virtual Know Your Rights Workshop', 'Join us for an interactive online workshop covering your constitutional rights during police encounters, at protests, and in everyday situations.', 'workshop', '2026-03-15 18:00:00+00', '2026-03-15 20:00:00+00', 'Virtual (Zoom)', 'Online', 'Nationwide', 'USA', true, false, 0, v_admin_id),
+      (gen_random_uuid(), 'FOIA Filing Webinar', 'Learn how to effectively file Freedom of Information Act requests. Perfect for beginners and experienced requesters alike.', 'webinar', '2026-03-08 14:00:00+00', '2026-03-08 16:00:00+00', 'Virtual (YouTube Live)', 'Online', 'Nationwide', 'USA', true, false, 0, v_admin_id),
+      (gen_random_uuid(), 'Community Meetup: Chicago', 'Meet fellow civil rights advocates in the Chicago area.', 'meeting', '2026-03-22 11:00:00+00', '2026-03-22 14:00:00+00', 'Chicago Community Center', '123 Main St', 'Chicago', 'IL', true, false, 0, v_admin_id),
+      (gen_random_uuid(), 'Legal Observer Training', 'Become a trained legal observer! This in-person training will prepare you to document police activity at protests.', 'training', '2026-04-05 09:00:00+00', '2026-04-05 17:00:00+00', 'Civil Rights Center', '456 Oak Ave', 'New York', 'NY', true, false, 0, v_admin_id),
+      (gen_random_uuid(), 'Cop Watch Coordination Meeting', 'Monthly meeting for Cop Watch organizers to coordinate monitoring schedules.', 'meeting', '2026-02-28 19:00:00+00', '2026-02-28 21:00:00+00', 'Virtual (Discord)', 'Online', 'Nationwide', 'USA', true, false, 0, v_admin_id)
+    ON CONFLICT DO NOTHING;
+
+  END IF;
+END $$;
 
 -- =====================================================
 -- SEED POPULAR TAGS
@@ -103,18 +126,6 @@ INSERT INTO public.popular_tags (tag, use_count, last_used) VALUES
 ON CONFLICT (tag) DO UPDATE SET
   use_count = GREATEST(popular_tags.use_count, EXCLUDED.use_count),
   last_used = NOW();
-
--- =====================================================
--- SEED COMMUNITY EVENTS
--- =====================================================
-
-INSERT INTO public.community_events (id, title, description, event_type, start_date, end_date, location, is_public, is_cancelled, rsvp_count) VALUES
-  (gen_random_uuid(), 'Virtual Know Your Rights Workshop', 'Join us for an interactive online workshop covering your constitutional rights during police encounters, at protests, and in everyday situations. Learn from experienced civil rights attorneys and activists.', 'workshop', '2026-03-15 18:00:00+00', '2026-03-15 20:00:00+00', 'Virtual (Zoom link sent upon RSVP)', true, false, 0),
-  (gen_random_uuid(), 'FOIA Filing Webinar', 'Learn how to effectively file Freedom of Information Act requests. This webinar covers the basics of FOIA, tips for writing effective requests, and how to appeal denials. Perfect for beginners and experienced requesters alike.', 'webinar', '2026-03-08 14:00:00+00', '2026-03-08 16:00:00+00', 'Virtual (YouTube Live)', true, false, 0),
-  (gen_random_uuid(), 'Community Meetup: Chicago', 'Meet fellow civil rights advocates in the Chicago area. Network, share experiences, and learn about local opportunities to get involved in police accountability and transparency efforts.', 'meeting', '2026-03-22 11:00:00+00', '2026-03-22 14:00:00+00', 'Chicago Community Center - 123 Main St, Chicago, IL', true, false, 0),
-  (gen_random_uuid(), 'Legal Observer Training', 'Become a trained legal observer! This in-person training will prepare you to document police activity at protests and protect demonstrators'' constitutional rights.', 'training', '2026-04-05 09:00:00+00', '2026-04-05 17:00:00+00', 'Civil Rights Center - 456 Oak Ave, New York, NY', true, false, 0),
-  (gen_random_uuid(), 'Cop Watch Coordination Meeting', 'Monthly meeting for Cop Watch organizers to coordinate monitoring schedules, share resources, and discuss community oversight strategies.', 'meeting', '2026-02-28 19:00:00+00', '2026-02-28 21:00:00+00', 'Virtual (Discord)', true, false, 0)
-ON CONFLICT DO NOTHING;
 
 -- =====================================================
 -- CREATE INDEX FOR REPUTATION EVENT TYPES

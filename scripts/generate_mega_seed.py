@@ -271,7 +271,7 @@ def generate_users_and_activity(user_count=50, violation_count=100):
     for _ in range(50): # 50 social posts
         content = random.choice(SOCIAL_POST_CONTENTS)
         sql.append(f"""
-            INSERT INTO public.posts (user_id, content, type, visibility)
+            INSERT INTO public.posts (user_id, content, post_type, visibility)
             VALUES (v_user_id, {escape_sql(content)}, 'text', 'public');
         """)
         

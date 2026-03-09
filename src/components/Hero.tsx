@@ -1,94 +1,84 @@
 import { Button } from "@/components/ui/button";
-import { Shield, Scale, Users, ArrowRight, Search, FileText, Radio, Scale as LegalIcon } from "lucide-react";
+import { Shield, ArrowRight, FileText, Radio, Scale as LegalIcon, Search, AlertCircle, BookOpen, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export const Hero = () => {
   return (
-    <header className="border-b border-border/50">
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-3">
-            <img src="/wtpn-logo.png" alt="WTPN Logo" className="h-10 w-auto" />
-            <div className="flex flex-col">
-              <span className="text-xl font-bold text-foreground">Civil Rights Hub</span>
-              <span className="text-xs text-muted-foreground">by We The People News</span>
-            </div>
-          </div>
-          <nav className="hidden md:flex items-center gap-6 text-sm">
-            <Link to="/rights" className="text-muted-foreground hover:text-foreground transition-colors">Rights</Link>
-            <Link to="/tools" className="text-muted-foreground hover:text-foreground transition-colors">Tools</Link>
-            <Link to="/learn" className="text-muted-foreground hover:text-foreground transition-colors">Learn</Link>
-            <Link to="/help" className="text-muted-foreground hover:text-foreground transition-colors">Get Help</Link>
-          </nav>
-        </div>
+    <section className="relative overflow-hidden bg-background pt-16 md:pt-20 lg:pt-24 pb-16">
+      {/* Background Gradients */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-primary/20 rounded-full blur-[100px] -z-10 opacity-50" />
+      <div className="absolute bottom-0 right-0 w-[800px] h-[600px] bg-accent/10 rounded-full blur-[120px] -z-10 opacity-30" />
 
-        <div className="max-w-3xl">
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">
+      <div className="container mx-auto px-4">
+        <div className="flex flex-col items-center text-center max-w-4xl mx-auto space-y-8">
+          
+          <div className="inline-flex items-center rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-sm text-primary backdrop-blur-sm">
+            <span className="flex h-2 w-2 rounded-full bg-primary mr-2 animate-pulse"></span>
+            Nationwide Civil Rights Network Active
+          </div>
+
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-balance">
             Know Your Rights.<br />
-            <span className="text-muted-foreground">Protect Your Freedom.</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">
+              Protect Your Freedom.
+            </span>
           </h1>
-          <p className="text-lg text-muted-foreground mb-6 max-w-2xl">
-            Comprehensive civil rights resources, state-specific laws, and legal support—all in one place.
+          
+          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl text-balance leading-relaxed">
+            The ultimate resource for activists, journalists, and citizens. Access state-specific laws, find verified attorneys, and document violations securely.
           </p>
-          <div className="flex flex-wrap gap-3">
-            <Button asChild size="lg" className="gap-2">
-              <Link to="/rights">
-                <Shield className="h-4 w-4" />
-                Know Your Rights
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-            </Button>
-            <Button asChild variant="outline" size="lg" className="gap-2">
-              <Link to="/help">
-                Find Legal Help
-              </Link>
-            </Button>
-          </div>
-        </div>
-      </div>
 
-      <div className="border-t border-border/50 bg-muted/30">
-        <div className="container mx-auto px-4 py-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <Link to="/tools#foia" className="flex items-center gap-3 p-3 rounded-lg hover:bg-background transition-colors">
-              <div className="p-2 rounded-lg bg-background">
-                <FileText className="h-5 w-5 text-foreground" />
+          <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
+            <Button asChild size="lg" className="h-12 px-8 text-base shadow-lg shadow-primary/20 w-full sm:w-auto">
+              <Link to="/rights">
+                <Shield className="mr-2 h-5 w-5" />
+                Start Here
+              </Link>
+            </Button>
+            <Button asChild variant="outline" size="lg" className="h-12 px-8 text-base w-full sm:w-auto backdrop-blur-sm bg-background/50">
+              <Link to="/community">
+                <Users className="mr-2 h-5 w-5" />
+                Join Community
+              </Link>
+            </Button>
+          </div>
+
+          {/* Feature Grid */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full mt-12 pt-8 border-t border-border/50">
+            <Link to="/tools" className="group p-4 rounded-xl bg-card border hover:border-primary/50 transition-all hover:shadow-md text-left">
+              <div className="mb-3 inline-flex p-2.5 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                <FileText className="h-5 w-5" />
               </div>
-              <div>
-                <p className="text-sm font-medium">FOIA Builder</p>
-                <p className="text-xs text-muted-foreground">Draft requests</p>
-              </div>
+              <h3 className="font-semibold mb-1">FOIA Builder</h3>
+              <p className="text-xs text-muted-foreground">Draft & track public records requests.</p>
             </Link>
-            <Link to="/tools#scanner" className="flex items-center gap-3 p-3 rounded-lg hover:bg-background transition-colors">
-              <div className="p-2 rounded-lg bg-background">
-                <Radio className="h-5 w-5 text-foreground" />
+
+            <Link to="/tools#scanner" className="group p-4 rounded-xl bg-card border hover:border-primary/50 transition-all hover:shadow-md text-left">
+              <div className="mb-3 inline-flex p-2.5 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                <Radio className="h-5 w-5" />
               </div>
-              <div>
-                <p className="text-sm font-medium">Police Scanner</p>
-                <p className="text-xs text-muted-foreground">Live feeds</p>
-              </div>
+              <h3 className="font-semibold mb-1">Police Scanners</h3>
+              <p className="text-xs text-muted-foreground">Listen to live feeds in your area.</p>
             </Link>
-            <Link to="/help" className="flex items-center gap-3 p-3 rounded-lg hover:bg-background transition-colors">
-              <div className="p-2 rounded-lg bg-background">
-                <LegalIcon className="h-5 w-5 text-foreground" />
+
+            <Link to="/attorneys" className="group p-4 rounded-xl bg-card border hover:border-primary/50 transition-all hover:shadow-md text-left">
+              <div className="mb-3 inline-flex p-2.5 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                <LegalIcon className="h-5 w-5" />
               </div>
-              <div>
-                <p className="text-sm font-medium">Find Attorney</p>
-                <p className="text-xs text-muted-foreground">Legal support</p>
-              </div>
+              <h3 className="font-semibold mb-1">Find Attorney</h3>
+              <p className="text-xs text-muted-foreground">Verified civil rights legal counsel.</p>
             </Link>
-            <Link to="/learn" className="flex items-center gap-3 p-3 rounded-lg hover:bg-background transition-colors">
-              <div className="p-2 rounded-lg bg-background">
-                <Search className="h-5 w-5 text-foreground" />
+
+            <Link to="/learn" className="group p-4 rounded-xl bg-card border hover:border-primary/50 transition-all hover:shadow-md text-left">
+              <div className="mb-3 inline-flex p-2.5 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                <BookOpen className="h-5 w-5" />
               </div>
-              <div>
-                <p className="text-sm font-medium">State Laws</p>
-                <p className="text-xs text-muted-foreground">By jurisdiction</p>
-              </div>
+              <h3 className="font-semibold mb-1">State Laws</h3>
+              <p className="text-xs text-muted-foreground">Research laws by jurisdiction.</p>
             </Link>
           </div>
         </div>
       </div>
-    </header>
+    </section>
   );
 };

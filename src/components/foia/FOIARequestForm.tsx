@@ -333,7 +333,7 @@ export function FOIARequestForm({ onRequestCreated }: FOIARequestFormProps) {
     );
   }
 
-  const responseDays = selectedAgency?.standard_response_days ?? (agencyType === "Federal" ? 20 : null);
+  const responseDays = selectedAgency?.response_days ?? (agencyType === "Federal" ? 20 : null);
 
   return (
     <div className="space-y-6">

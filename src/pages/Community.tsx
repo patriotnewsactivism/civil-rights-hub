@@ -13,6 +13,7 @@ import NotificationsCenter from "@/components/NotificationsCenter";
 import UserNetwork from "@/components/UserNetwork";
 import { CommunityActionBar } from "@/components/community/CommunityActionBar";
 import { CommunitySidebar } from "@/components/community/CommunitySidebar";
+import { CommunityMobileNav } from "@/components/community/CommunityMobileNav";
 
 type CommunityTab = "feed" | "discuss" | "events" | "messages" | "notifications" | "network" | "profile";
 const COMMUNITY_TABS: CommunityTab[] = ["feed", "discuss", "events", "messages", "notifications", "network", "profile"];
@@ -65,7 +66,7 @@ export default function Community() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-20 lg:pb-0">
       <SEO
         title="Community - Civil Rights Hub | Social Network for Activists"
         description="Post updates, report violations, go live recording police encounters, and connect with activists and attorneys fighting for justice."
@@ -88,7 +89,7 @@ export default function Community() {
 
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={handleTabChange}>
-          <TabsList className="w-full justify-start overflow-x-auto flex-nowrap bg-transparent border-b border-border rounded-none h-auto p-0 gap-0">
+          <TabsList className="hidden lg:flex w-full justify-start overflow-x-auto flex-nowrap bg-transparent border-b border-border rounded-none h-auto p-0 gap-0">
             {[
               { value: "feed", icon: Newspaper, label: "Feed" },
               { value: "discuss", icon: MessageCircle, label: "Discuss" },
@@ -108,6 +109,8 @@ export default function Community() {
               </TabsTrigger>
             ))}
           </TabsList>
+
+          <CommunityMobileNav activeTab={activeTab} onTabChange={handleTabChange} />
 
           <div className="mt-6">
             {/* Feed Tab - Social media style with sidebar */}

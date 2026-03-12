@@ -324,7 +324,7 @@ export const ResourceLibrary = () => {
             <SelectValue placeholder="All formats" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">All formats</SelectItem>
+            <SelectItem value="__all__">All formats</SelectItem>
             {RESOURCE_TYPES.map((type) => (
               <SelectItem key={type} value={type}>
                 {type.toUpperCase()}

@@ -444,16 +444,16 @@ export function FOIARequestForm({ onRequestCreated }: FOIARequestFormProps) {
                 {selectedAgency.foia_phone && (
                   <p><span className="font-medium">Phone:</span> {selectedAgency.foia_phone}</p>
                 )}
-                {selectedAgency.foia_online_portal_url && (
+                {selectedAgency.foia_url && (
                   <p>
                     <span className="font-medium">Website:</span>{" "}
-                    <a href={selectedAgency.foia_online_portal_url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                    <a href={selectedAgency.foia_url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                       FOIA Portal
                     </a>
                   </p>
                 )}
-                {selectedAgency.standard_response_days && (
-                  <p><span className="font-medium">Response Time:</span> {selectedAgency.standard_response_days} business days</p>
+                {selectedAgency.response_days && (
+                  <p><span className="font-medium">Response Time:</span> {selectedAgency.response_days} business days</p>
                 )}
               </div>
             </div>

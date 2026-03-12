@@ -4,6 +4,7 @@ class MockIntersectionObserver implements IntersectionObserver {
   readonly root: Element | Document | null = null;
   readonly rootMargin = "";
   readonly thresholds: ReadonlyArray<number> = [];
+  readonly scrollMargin = "";
 
   constructor(private readonly callback: IntersectionObserverCallback) {}
 

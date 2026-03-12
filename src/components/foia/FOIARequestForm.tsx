@@ -24,9 +24,9 @@ interface FOIAAgency {
   city: string | null;
   foia_email: string | null;
   foia_phone: string | null;
-  foia_online_portal_url: string | null;
-  mailing_address: string | null;
-  standard_response_days: number | null;
+  foia_url: string | null;
+  foia_address: string | null;
+  response_days: number | null;
 }
 
 interface FOIATemplate {

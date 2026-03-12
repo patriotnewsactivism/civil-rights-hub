@@ -115,7 +115,7 @@ export type Database = {
           city: string | null
           created_at: string | null
           email: string | null
-          firm: string | null
+          firm_name: string | null
           id: string
           name: string
           phone: string | null
@@ -124,22 +124,6 @@ export type Database = {
           updated_at: string | null
           website: string | null
           years_experience: number | null
-          practice_areas: string[] | null
-          rating: number | null
-          review_count: number | null
-          languages: string[] | null
-          is_verified: boolean | null
-          verified_date: string | null
-          bar_association_status: string | null
-          bar_status_date: string | null
-          case_success_rate: number | null
-          total_cases_handled: number | null
-          client_reviews: Json | null
-          average_rating: number | null
-          total_reviews: number | null
-          years_with_organization: number | null
-          notable_cases: string[] | null
-          professional_bio: string | null
         }
         Insert: {
           accepts_pro_bono?: boolean | null
@@ -148,7 +132,7 @@ export type Database = {
           city?: string | null
           created_at?: string | null
           email?: string | null
-          firm?: string | null
+          firm_name?: string | null
           id?: string
           name: string
           phone?: string | null
@@ -157,22 +141,6 @@ export type Database = {
           updated_at?: string | null
           website?: string | null
           years_experience?: number | null
-          practice_areas?: string[] | null
-          rating?: number | null
-          review_count?: number | null
-          languages?: string[] | null
-          is_verified?: boolean | null
-          verified_date?: string | null
-          bar_association_status?: string | null
-          bar_status_date?: string | null
-          case_success_rate?: number | null
-          total_cases_handled?: number | null
-          client_reviews?: Json | null
-          average_rating?: number | null
-          total_reviews?: number | null
-          years_with_organization?: number | null
-          notable_cases?: string[] | null
-          professional_bio?: string | null
         }
         Update: {
           accepts_pro_bono?: boolean | null
@@ -181,7 +149,7 @@ export type Database = {
           city?: string | null
           created_at?: string | null
           email?: string | null
-          firm?: string | null
+          firm_name?: string | null
           id?: string
           name?: string
           phone?: string | null
@@ -190,22 +158,6 @@ export type Database = {
           updated_at?: string | null
           website?: string | null
           years_experience?: number | null
-          practice_areas?: string[] | null
-          rating?: number | null
-          review_count?: number | null
-          languages?: string[] | null
-          is_verified?: boolean | null
-          verified_date?: string | null
-          bar_association_status?: string | null
-          bar_status_date?: string | null
-          case_success_rate?: number | null
-          total_cases_handled?: number | null
-          client_reviews?: Json | null
-          average_rating?: number | null
-          total_reviews?: number | null
-          years_with_organization?: number | null
-          notable_cases?: string[] | null
-          professional_bio?: string | null
         }
         Relationships: []
       }
@@ -363,53 +315,42 @@ export type Database = {
       }
       emergency_contacts: {
         Row: {
-          id: string
-          user_id: string
-          name: string
-          phone: string
+          created_at: string
           email: string | null
-          relationship: string | null
+          id: string
+          is_primary: boolean
+          name: string
           notes: string | null
-          is_primary: boolean | null
+          phone: string
           priority_order: number | null
-          created_at: string | null
-          updated_at: string | null
+          relationship: string | null
+          user_id: string
         }
         Insert: {
-          id?: string
-          user_id: string
-          name: string
-          phone: string
+          created_at?: string
           email?: string | null
-          relationship?: string | null
+          id?: string
+          is_primary?: boolean
+          name: string
           notes?: string | null
-          is_primary?: boolean | null
+          phone: string
           priority_order?: number | null
-          created_at?: string | null
-          updated_at?: string | null
+          relationship?: string | null
+          user_id: string
         }
         Update: {
-          id?: string
-          user_id?: string
-          name?: string
-          phone?: string
+          created_at?: string
           email?: string | null
-          relationship?: string | null
+          id?: string
+          is_primary?: boolean
+          name?: string
           notes?: string | null
-          is_primary?: boolean | null
+          phone?: string
           priority_order?: number | null
-          created_at?: string | null
-          updated_at?: string | null
+          relationship?: string | null
+          user_id?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "emergency_contacts_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          }
-        ]
+        Relationships: []
       }
       event_rsvps: {
         Row: {
@@ -448,131 +389,54 @@ export type Database = {
       }
       foia_agencies: {
         Row: {
-          id: string
-          name: string
-          acronym: string | null
           agency_type: string
-          state: string | null
-          county: string | null
           city: string | null
-          mailing_address: string | null
-          street_address: string | null
-          city_address: string | null
-          state_address: string | null
-          zip_code: string | null
+          created_at: string | null
+          foia_address: string | null
           foia_email: string | null
           foia_phone: string | null
-          foia_fax: string | null
-          foia_online_portal_url: string | null
-          foia_contact_name: string | null
-          foia_office_name: string | null
-          standard_response_days: number | null
-          expedited_response_days: number | null
-          appeal_response_days: number | null
-          has_fees: boolean | null
-          fee_structure: string | null
-          fee_waiver_available: boolean | null
-          accepts_email: boolean | null
-          accepts_online: boolean | null
-          accepts_mail: boolean | null
-          accepts_fax: boolean | null
-          accepts_in_person: boolean | null
-          website_url: string | null
-          foia_guide_url: string | null
-          notes: string | null
-          parent_agency_id: string | null
+          foia_url: string | null
+          id: string
           is_active: boolean | null
-          verified_date: string | null
-          created_at: string | null
+          name: string
+          notes: string | null
+          response_days: number | null
+          state: string | null
           updated_at: string | null
         }
         Insert: {
-          id?: string
-          name: string
-          acronym?: string | null
           agency_type: string
-          state?: string | null
-          county?: string | null
           city?: string | null
-          mailing_address?: string | null
-          street_address?: string | null
-          city_address?: string | null
-          state_address?: string | null
-          zip_code?: string | null
+          created_at?: string | null
+          foia_address?: string | null
           foia_email?: string | null
           foia_phone?: string | null
-          foia_fax?: string | null
-          foia_online_portal_url?: string | null
-          foia_contact_name?: string | null
-          foia_office_name?: string | null
-          standard_response_days?: number | null
-          expedited_response_days?: number | null
-          appeal_response_days?: number | null
-          has_fees?: boolean | null
-          fee_structure?: string | null
-          fee_waiver_available?: boolean | null
-          accepts_email?: boolean | null
-          accepts_online?: boolean | null
-          accepts_mail?: boolean | null
-          accepts_fax?: boolean | null
-          accepts_in_person?: boolean | null
-          website_url?: string | null
-          foia_guide_url?: string | null
-          notes?: string | null
-          parent_agency_id?: string | null
+          foia_url?: string | null
+          id?: string
           is_active?: boolean | null
-          verified_date?: string | null
-          created_at?: string | null
+          name: string
+          notes?: string | null
+          response_days?: number | null
+          state?: string | null
           updated_at?: string | null
         }
         Update: {
-          id?: string
-          name?: string
-          acronym?: string | null
           agency_type?: string
-          state?: string | null
-          county?: string | null
           city?: string | null
-          mailing_address?: string | null
-          street_address?: string | null
-          city_address?: string | null
-          state_address?: string | null
-          zip_code?: string | null
+          created_at?: string | null
+          foia_address?: string | null
           foia_email?: string | null
           foia_phone?: string | null
-          foia_fax?: string | null
-          foia_online_portal_url?: string | null
-          foia_contact_name?: string | null
-          foia_office_name?: string | null
-          standard_response_days?: number | null
-          expedited_response_days?: number | null
-          appeal_response_days?: number | null
-          has_fees?: boolean | null
-          fee_structure?: string | null
-          fee_waiver_available?: boolean | null
-          accepts_email?: boolean | null
-          accepts_online?: boolean | null
-          accepts_mail?: boolean | null
-          accepts_fax?: boolean | null
-          accepts_in_person?: boolean | null
-          website_url?: string | null
-          foia_guide_url?: string | null
-          notes?: string | null
-          parent_agency_id?: string | null
+          foia_url?: string | null
+          id?: string
           is_active?: boolean | null
-          verified_date?: string | null
-          created_at?: string | null
+          name?: string
+          notes?: string | null
+          response_days?: number | null
+          state?: string | null
           updated_at?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "foia_agencies_parent_agency_id_fkey"
-            columns: ["parent_agency_id"]
-            isOneToOne: false
-            referencedRelation: "foia_agencies"
-            referencedColumns: ["id"]
-          }
-        ]
+        Relationships: []
       }
       foia_request_updates: {
         Row: {
@@ -620,109 +484,60 @@ export type Database = {
       }
       foia_requests: {
         Row: {
-          id: string
-          user_id: string | null
-          template_id: string | null
-          agency_id: string | null
           agency_name: string
-          agency_type: string | null
-          state: string | null
-          request_subject: string
-          request_body: string
-          status: string | null
-          submitted_date: string | null
-          response_deadline: string | null
-          acknowledgment_received_date: string | null
-          response_received_date: string | null
-          tracking_number: string | null
-          confirmation_email: string | null
-          contact_name: string | null
-          contact_phone: string | null
-          contact_email: string | null
-          follow_up_count: number | null
-          appeal_filed: boolean | null
-          appeal_date: string | null
-          notes: string | null
           created_at: string | null
+          details: string
+          id: string
+          request_type: string
+          requester_address: string | null
+          requester_email: string
+          requester_name: string
+          response_due_date: string | null
+          response_text: string | null
+          state: string
+          status: string | null
+          subject: string
+          submitted_at: string | null
           updated_at: string | null
+          user_id: string
         }
         Insert: {
-          id?: string
-          user_id?: string | null
-          template_id?: string | null
-          agency_id?: string | null
           agency_name: string
-          agency_type?: string | null
-          state?: string | null
-          request_subject: string
-          request_body: string
-          status?: string | null
-          submitted_date?: string | null
-          response_deadline?: string | null
-          acknowledgment_received_date?: string | null
-          response_received_date?: string | null
-          tracking_number?: string | null
-          confirmation_email?: string | null
-          contact_name?: string | null
-          contact_phone?: string | null
-          contact_email?: string | null
-          follow_up_count?: number | null
-          appeal_filed?: boolean | null
-          appeal_date?: string | null
-          notes?: string | null
           created_at?: string | null
+          details: string
+          id?: string
+          request_type: string
+          requester_address?: string | null
+          requester_email: string
+          requester_name: string
+          response_due_date?: string | null
+          response_text?: string | null
+          state: string
+          status?: string | null
+          subject: string
+          submitted_at?: string | null
           updated_at?: string | null
+          user_id: string
         }
         Update: {
-          id?: string
-          user_id?: string | null
-          template_id?: string | null
-          agency_id?: string | null
           agency_name?: string
-          agency_type?: string | null
-          state?: string | null
-          request_subject?: string
-          request_body?: string
-          status?: string | null
-          submitted_date?: string | null
-          response_deadline?: string | null
-          acknowledgment_received_date?: string | null
-          response_received_date?: string | null
-          tracking_number?: string | null
-          confirmation_email?: string | null
-          contact_name?: string | null
-          contact_phone?: string | null
-          contact_email?: string | null
-          follow_up_count?: number | null
-          appeal_filed?: boolean | null
-          appeal_date?: string | null
-          notes?: string | null
           created_at?: string | null
+          details?: string
+          id?: string
+          request_type?: string
+          requester_address?: string | null
+          requester_email?: string
+          requester_name?: string
+          response_due_date?: string | null
+          response_text?: string | null
+          state?: string
+          status?: string | null
+          subject?: string
+          submitted_at?: string | null
           updated_at?: string | null
+          user_id?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "foia_requests_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "foia_requests_template_id_fkey"
-            columns: ["template_id"]
-            isOneToOne: false
-            referencedRelation: "foia_templates"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "foia_requests_agency_id_fkey"
-            columns: ["agency_id"]
-            isOneToOne: false
-            referencedRelation: "foia_agencies"
-            referencedColumns: ["id"]
-          }
-        ]
+        Relationships: []
       }
       foia_templates: {
         Row: {
@@ -1018,113 +833,60 @@ export type Database = {
       }
       post_bookmarks: {
         Row: {
+          created_at: string
           id: string
-          user_id: string
           post_id: string
-          created_at: string | null
+          user_id: string
         }
         Insert: {
+          created_at?: string
           id?: string
-          user_id: string
           post_id: string
-          created_at?: string | null
+          user_id: string
         }
         Update: {
+          created_at?: string
           id?: string
-          user_id?: string
           post_id?: string
-          created_at?: string | null
+          user_id?: string
         }
         Relationships: [
-          {
-            foreignKeyName: "post_bookmarks_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
           {
             foreignKeyName: "post_bookmarks_post_id_fkey"
             columns: ["post_id"]
             isOneToOne: false
             referencedRelation: "posts"
             referencedColumns: ["id"]
-          }
+          },
         ]
       }
       post_shares: {
         Row: {
+          created_at: string
           id: string
-          user_id: string
           post_id: string
-          share_comment: string | null
-          created_at: string | null
+          user_id: string
         }
         Insert: {
+          created_at?: string
           id?: string
-          user_id: string
           post_id: string
-          share_comment?: string | null
-          created_at?: string | null
+          user_id: string
         }
         Update: {
+          created_at?: string
           id?: string
-          user_id?: string
           post_id?: string
-          share_comment?: string | null
-          created_at?: string | null
+          user_id?: string
         }
         Relationships: [
-          {
-            foreignKeyName: "post_shares_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
           {
             foreignKeyName: "post_shares_post_id_fkey"
             columns: ["post_id"]
             isOneToOne: false
             referencedRelation: "posts"
             referencedColumns: ["id"]
-          }
-        ]
-      }
-      user_connections: {
-        Row: {
-          id: string
-          follower_id: string
-          following_id: string
-          created_at: string | null
-        }
-        Insert: {
-          id?: string
-          follower_id: string
-          following_id: string
-          created_at?: string | null
-        }
-        Update: {
-          id?: string
-          follower_id?: string
-          following_id?: string
-          created_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "user_connections_follower_id_fkey"
-            columns: ["follower_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "user_connections_following_id_fkey"
-            columns: ["following_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          }
         ]
       }
       posts: {
@@ -1371,198 +1133,6 @@ export type Database = {
           story?: string
           submitter_id?: string | null
           title?: string
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
-      state_laws: {
-        Row: {
-          id: string
-          state: string
-          state_code: string
-          recording_consent_type: string
-          recording_law_details: string
-          recording_law_citation: string | null
-          can_record_police: boolean | null
-          police_recording_details: string | null
-          police_recording_restrictions: string | null
-          has_shield_law: boolean | null
-          shield_law_details: string | null
-          journalist_protections: string | null
-          assembly_rights_details: string | null
-          protest_permit_required: boolean | null
-          activist_protections: string | null
-          state_aclu_url: string | null
-          state_legal_aid_url: string | null
-          state_resources: Json | null
-          marijuana_status: string | null
-          marijuana_last_updated: string | null
-          created_at: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          id?: string
-          state: string
-          state_code: string
-          recording_consent_type: string
-          recording_law_details: string
-          recording_law_citation?: string | null
-          can_record_police?: boolean | null
-          police_recording_details?: string | null
-          police_recording_restrictions?: string | null
-          has_shield_law?: boolean | null
-          shield_law_details?: string | null
-          journalist_protections?: string | null
-          assembly_rights_details?: string | null
-          protest_permit_required?: boolean | null
-          activist_protections?: string | null
-          state_aclu_url?: string | null
-          state_legal_aid_url?: string | null
-          state_resources?: Json | null
-          marijuana_status?: string | null
-          marijuana_last_updated?: string | null
-          created_at?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          id?: string
-          state?: string
-          state_code?: string
-          recording_consent_type?: string
-          recording_law_details?: string
-          recording_law_citation?: string | null
-          can_record_police?: boolean | null
-          police_recording_details?: string | null
-          police_recording_restrictions?: string | null
-          has_shield_law?: boolean | null
-          shield_law_details?: string | null
-          journalist_protections?: string | null
-          assembly_rights_details?: string | null
-          protest_permit_required?: boolean | null
-          activist_protections?: string | null
-          state_aclu_url?: string | null
-          state_legal_aid_url?: string | null
-          state_resources?: Json | null
-          marijuana_status?: string | null
-          marijuana_last_updated?: string | null
-          created_at?: string | null
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
-      city_permit_info: {
-        Row: {
-          id: string
-          city: string
-          state: string
-          state_code: string
-          permit_office_name: string | null
-          permit_office_address: string | null
-          permit_office_phone: string | null
-          permit_office_email: string | null
-          permit_office_website: string | null
-          permit_required: boolean | null
-          permit_fee_min: number | null
-          permit_fee_max: number | null
-          permit_fee_notes: string | null
-          permit_timeline_days: number | null
-          permit_deadline_days: number | null
-          designated_protest_areas: string[] | null
-          restricted_areas: string[] | null
-          amplification_allowed: boolean | null
-          amplification_permit_required: boolean | null
-          signage_restrictions: string | null
-          appeal_process: string | null
-          appeal_contact: string | null
-          appeal_timeline_days: number | null
-          local_aclu_chapter: string | null
-          local_aclu_phone: string | null
-          local_aclu_website: string | null
-          legal_observer_program: string | null
-          legal_observer_contact: string | null
-          bail_fund_name: string | null
-          bail_fund_phone: string | null
-          bail_fund_website: string | null
-          kyr_hotline: string | null
-          notes: string | null
-          last_verified: string | null
-          created_at: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          id?: string
-          city: string
-          state: string
-          state_code: string
-          permit_office_name?: string | null
-          permit_office_address?: string | null
-          permit_office_phone?: string | null
-          permit_office_email?: string | null
-          permit_office_website?: string | null
-          permit_required?: boolean | null
-          permit_fee_min?: number | null
-          permit_fee_max?: number | null
-          permit_fee_notes?: string | null
-          permit_timeline_days?: number | null
-          permit_deadline_days?: number | null
-          designated_protest_areas?: string[] | null
-          restricted_areas?: string[] | null
-          amplification_allowed?: boolean | null
-          amplification_permit_required?: boolean | null
-          signage_restrictions?: string | null
-          appeal_process?: string | null
-          appeal_contact?: string | null
-          appeal_timeline_days?: number | null
-          local_aclu_chapter?: string | null
-          local_aclu_phone?: string | null
-          local_aclu_website?: string | null
-          legal_observer_program?: string | null
-          legal_observer_contact?: string | null
-          bail_fund_name?: string | null
-          bail_fund_phone?: string | null
-          bail_fund_website?: string | null
-          kyr_hotline?: string | null
-          notes?: string | null
-          last_verified?: string | null
-          created_at?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          id?: string
-          city?: string
-          state?: string
-          state_code?: string
-          permit_office_name?: string | null
-          permit_office_address?: string | null
-          permit_office_phone?: string | null
-          permit_office_email?: string | null
-          permit_office_website?: string | null
-          permit_required?: boolean | null
-          permit_fee_min?: number | null
-          permit_fee_max?: number | null
-          permit_fee_notes?: string | null
-          permit_timeline_days?: number | null
-          permit_deadline_days?: number | null
-          designated_protest_areas?: string[] | null
-          restricted_areas?: string[] | null
-          amplification_allowed?: boolean | null
-          amplification_permit_required?: boolean | null
-          signage_restrictions?: string | null
-          appeal_process?: string | null
-          appeal_contact?: string | null
-          appeal_timeline_days?: number | null
-          local_aclu_chapter?: string | null
-          local_aclu_phone?: string | null
-          local_aclu_website?: string | null
-          legal_observer_program?: string | null
-          legal_observer_contact?: string | null
-          bail_fund_name?: string | null
-          bail_fund_phone?: string | null
-          bail_fund_website?: string | null
-          kyr_hotline?: string | null
-          notes?: string | null
-          last_verified?: string | null
-          created_at?: string | null
           updated_at?: string | null
         }
         Relationships: []

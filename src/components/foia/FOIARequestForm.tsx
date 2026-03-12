@@ -24,9 +24,9 @@ interface FOIAAgency {
   city: string | null;
   foia_email: string | null;
   foia_phone: string | null;
-  foia_online_portal_url: string | null;
-  mailing_address: string | null;
-  standard_response_days: number | null;
+  foia_url: string | null;
+  foia_address: string | null;
+  response_days: number | null;
 }
 
 interface FOIATemplate {
@@ -145,7 +145,7 @@ export function FOIARequestForm({ onRequestCreated }: FOIARequestFormProps) {
 
   // Calculate deadline based on selected agency
   useEffect(() => {
-    const responseDays = selectedAgency?.standard_response_days ?? (agencyType === "Federal" ? 20 : null);
+    const responseDays = selectedAgency?.response_days ?? (agencyType === "Federal" ? 20 : null);
     
     if (responseDays && responseDays > 0) {
       const deadline = addBusinessDays(new Date(), responseDays);
@@ -184,8 +184,8 @@ export function FOIARequestForm({ onRequestCreated }: FOIARequestFormProps) {
     
     let letter = `${today}\n\n`;
     letter += `${agencyName || "[Agency Name]"}\n`;
-    if (selectedAgency?.mailing_address) {
-      letter += `${selectedAgency.mailing_address}\n`;
+    if (selectedAgency?.foia_address) {
+      letter += `${selectedAgency.foia_address}\n`;
     } else {
       letter += `[Agency Address]\n`;
     }
@@ -244,8 +244,12 @@ export function FOIARequestForm({ onRequestCreated }: FOIARequestFormProps) {
         user_id: user.id,
         agency_name: agencyName,
         state: selectedAgency?.state ?? (agencyType === "Federal" ? "Federal" : ""),
-        request_subject: subject,
-        request_body: requestBody,
+        subject,
+        details: requestBody,
+        request_type: agencyType,
+        requester_name: requesterName,
+        requester_email: requesterEmail,
+        requester_address: requesterAddress || null,
         status: "draft",
       });
 
@@ -283,11 +287,15 @@ export function FOIARequestForm({ onRequestCreated }: FOIARequestFormProps) {
         user_id: user.id,
         agency_name: agencyName,
         state: selectedAgency?.state ?? (agencyType === "Federal" ? "Federal" : ""),
-        request_subject: subject,
-        request_body: requestBody,
+        subject,
+        details: requestBody,
+        request_type: agencyType,
+        requester_name: requesterName,
+        requester_email: requesterEmail,
+        requester_address: requesterAddress || null,
         status: "submitted",
-        submitted_date: submittedAt,
-        response_deadline: deadline,
+        submitted_at: submittedAt,
+        response_due_date: deadline,
       });
 
       if (error) throw error;
@@ -325,7 +333,7 @@ export function FOIARequestForm({ onRequestCreated }: FOIARequestFormProps) {
     );
   }
 
-  const responseDays = selectedAgency?.standard_response_days ?? (agencyType === "Federal" ? 20 : null);
+  const responseDays = selectedAgency?.response_days ?? (agencyType === "Federal" ? 20 : null);
 
   return (
     <div className="space-y-6">
@@ -436,16 +444,16 @@ export function FOIARequestForm({ onRequestCreated }: FOIARequestFormProps) {
                 {selectedAgency.foia_phone && (
                   <p><span className="font-medium">Phone:</span> {selectedAgency.foia_phone}</p>
                 )}
-                {selectedAgency.foia_online_portal_url && (
+                {selectedAgency.foia_url && (
                   <p>
                     <span className="font-medium">Website:</span>{" "}
-                    <a href={selectedAgency.foia_online_portal_url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                    <a href={selectedAgency.foia_url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                       FOIA Portal
                     </a>
                   </p>
                 )}
-                {selectedAgency.standard_response_days && (
-                  <p><span className="font-medium">Response Time:</span> {selectedAgency.standard_response_days} business days</p>
+                {selectedAgency.response_days && (
+                  <p><span className="font-medium">Response Time:</span> {selectedAgency.response_days} business days</p>
                 )}
               </div>
             </div>

@@ -9,8 +9,8 @@ To deploy this application successfully, you **must** configure the following en
 ### Supabase Configuration
 
 ```
-VITE_SUPABASE_URL=https://tgkxehkgwxlqausmrqxh.supabase.co
-VITE_SUPABASE_PUBLISHABLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRna3hlaGtnd3hscWF1c21ycXhoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAzMTEzMzgsImV4cCI6MjA3NTg4NzMzOH0.fD2LGiD9OsNt5EWWm2v9ONWFIGvZNXft1Om_yLUhmSM
+VITE_SUPABASE_URL=https://vrdnrbjnitptxrexdlao.supabase.co
+VITE_SUPABASE_PUBLISHABLE_KEY=sb_publishable_eZY_OtCHVuJsJgpzNEjb0w_8umav4aS
 ```
 
 ## How to Configure Environment Variables in Vercel
@@ -20,7 +20,7 @@ VITE_SUPABASE_PUBLISHABLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzd
 3. Go to **Settings** → **Environment Variables**
 4. Add each variable:
    - Name: `VITE_SUPABASE_URL`
-   - Value: `https://tgkxehkgwxlqausmrqxh.supabase.co`
+   - Value: `https://vrdnrbjnitptxrexdlao.supabase.co`
    - Environments: Select all (Production, Preview, Development)
    - Click **Save**
 

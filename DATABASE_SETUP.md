@@ -4,15 +4,15 @@
 
 The application is configured to connect to Supabase with the following credentials (from `.env`):
 
-- **Project ID**: `tgkxehkgwxlqausmrqxh`
-- **URL**: `https://tgkxehkgwxlqausmrqxh.supabase.co`
+- **Project ID**: `vrdnrbjnitptxrexdlao`
+- **URL**: `https://vrdnrbjnitptxrexdlao.supabase.co`
 - **Anon Key**: Configured in `.env`
 
 ## Applying Database Migrations
 
 ### Option 1: Supabase Dashboard (Recommended)
 
-1. Go to [Supabase Dashboard](https://supabase.com/dashboard/project/tgkxehkgwxlqausmrqxh)
+1. Go to [Supabase Dashboard](https://supabase.com/dashboard/project/vrdnrbjnitptxrexdlao)
 2. Navigate to **SQL Editor**
 3. Run the migration files in order from `supabase/migrations/` directory
 4. The files are numbered and will execute in chronological order
@@ -24,7 +24,7 @@ The application is configured to connect to Supabase with the following credenti
 npm install -g supabase
 
 # Link to your project
-npx supabase link --project-ref tgkxehkgwxlqausmrqxh
+npx supabase link --project-ref vrdnrbjnitptxrexdlao
 
 # Push all migrations
 npx supabase db push
@@ -120,8 +120,8 @@ Some tables like `violations` and `violation_comments` are meant to be populated
 For Vercel deployment, ensure these environment variables are set:
 
 ```bash
-VITE_SUPABASE_URL=https://tgkxehkgwxlqausmrqxh.supabase.co
-VITE_SUPABASE_PUBLISHABLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRna3hlaGtnd3hscWF1c21ycXhoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAzMTEzMzgsImV4cCI6MjA3NTg4NzMzOH0.fD2LGiD9OsNt5EWWm2v9ONWFIGvZNXft1Om_yLUhmSM
+VITE_SUPABASE_URL=https://vrdnrbjnitptxrexdlao.supabase.co
+VITE_SUPABASE_PUBLISHABLE_KEY=sb_publishable_eZY_OtCHVuJsJgpzNEjb0w_8umav4aS
 ```
 
 These variables are already configured in the `.env` file for local development.

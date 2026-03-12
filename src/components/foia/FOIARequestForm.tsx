@@ -184,8 +184,8 @@ export function FOIARequestForm({ onRequestCreated }: FOIARequestFormProps) {
     
     let letter = `${today}\n\n`;
     letter += `${agencyName || "[Agency Name]"}\n`;
-    if (selectedAgency?.mailing_address) {
-      letter += `${selectedAgency.mailing_address}\n`;
+    if (selectedAgency?.foia_address) {
+      letter += `${selectedAgency.foia_address}\n`;
     } else {
       letter += `[Agency Address]\n`;
     }

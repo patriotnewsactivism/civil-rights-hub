@@ -256,7 +256,7 @@ export const SuccessStories = () => {
             <SelectValue placeholder="All states" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">All states</SelectItem>
+            <SelectItem value="__all__">All states</SelectItem>
             {states.map((state) => (
               <SelectItem key={state} value={state!}>
                 {state}

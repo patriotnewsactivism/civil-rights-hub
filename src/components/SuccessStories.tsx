@@ -100,8 +100,8 @@ export const SuccessStories = () => {
 
   useEffect(() => {
     const next = stories.filter((story) => {
-      const matchesState = stateFilter ? story.state === stateFilter : true;
-      const matchesOutcome = outcomeFilter ? story.outcome === outcomeFilter : true;
+      const matchesState = !stateFilter || stateFilter === "__all__" ? true : story.state === stateFilter;
+      const matchesOutcome = !outcomeFilter || outcomeFilter === "__all__" ? true : story.outcome === outcomeFilter;
       return matchesState && matchesOutcome;
     });
     setFiltered(next);
@@ -256,7 +256,7 @@ export const SuccessStories = () => {
             <SelectValue placeholder="All states" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">All states</SelectItem>
+            <SelectItem value="__all__">All states</SelectItem>
             {states.map((state) => (
               <SelectItem key={state} value={state!}>
                 {state}
@@ -269,7 +269,7 @@ export const SuccessStories = () => {
             <SelectValue placeholder="All outcomes" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">All outcomes</SelectItem>
+            <SelectItem value="__all__">All outcomes</SelectItem>
             {OUTCOMES.map((outcome) => (
               <SelectItem key={outcome} value={outcome}>
                 {outcome}

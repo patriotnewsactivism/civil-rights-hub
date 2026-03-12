@@ -131,8 +131,8 @@ export const ResourceLibrary = () => {
   useEffect(() => {
     const next = resources.filter((resource) => {
       const categories = resource.category ?? [];
-      const matchesCategory = categoryFilter ? categories.includes(categoryFilter) : true;
-      const matchesType = typeFilter ? resource.resource_type === typeFilter : true;
+      const matchesCategory = !categoryFilter || categoryFilter === "__all__" ? true : categories.includes(categoryFilter);
+      const matchesType = !typeFilter || typeFilter === "__all__" ? true : resource.resource_type === typeFilter;
       const matchesSearch = searchTerm
         ? resource.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
           (resource.description ?? "").toLowerCase().includes(searchTerm.toLowerCase())
@@ -311,7 +311,7 @@ export const ResourceLibrary = () => {
             <SelectValue placeholder="All categories" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">All categories</SelectItem>
+            <SelectItem value="__all__">All categories</SelectItem>
             {categories.map((category) => (
               <SelectItem key={category} value={category}>
                 {category}
@@ -324,7 +324,7 @@ export const ResourceLibrary = () => {
             <SelectValue placeholder="All formats" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">All formats</SelectItem>
+            <SelectItem value="__all__">All formats</SelectItem>
             {RESOURCE_TYPES.map((type) => (
               <SelectItem key={type} value={type}>
                 {type.toUpperCase()}

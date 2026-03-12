@@ -244,8 +244,12 @@ export function FOIARequestForm({ onRequestCreated }: FOIARequestFormProps) {
         user_id: user.id,
         agency_name: agencyName,
         state: selectedAgency?.state ?? (agencyType === "Federal" ? "Federal" : ""),
-        request_subject: subject,
-        request_body: requestBody,
+        subject,
+        details: requestBody,
+        request_type: agencyType,
+        requester_name: requesterName,
+        requester_email: requesterEmail,
+        requester_address: requesterAddress || null,
         status: "draft",
       });
 

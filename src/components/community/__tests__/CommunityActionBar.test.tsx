@@ -38,10 +38,10 @@ describe("CommunityActionBar", () => {
 
     const goLiveBtn = screen.getByText(/Go Live/i);
     fireEvent.click(goLiveBtn);
-    expect(screen.getByTestid("go-live-recorder")).toBeInTheDocument();
+    expect(screen.getByTestId("go-live-recorder")).toBeInTheDocument();
 
     fireEvent.click(goLiveBtn);
-    expect(screen.queryByTestid("go-live-recorder")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("go-live-recorder")).not.toBeInTheDocument();
   });
 
   it("toggles Violation Report when button is clicked", () => {
@@ -53,10 +53,10 @@ describe("CommunityActionBar", () => {
 
     const reportBtn = screen.getByText(/Report Violation/i);
     fireEvent.click(reportBtn);
-    expect(screen.getByTestid("quick-violation-report")).toBeInTheDocument();
+    expect(screen.getByTestId("quick-violation-report")).toBeInTheDocument();
 
     fireEvent.click(reportBtn);
-    expect(screen.queryByTestid("quick-violation-report")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("quick-violation-report")).not.toBeInTheDocument();
   });
 
   it("only shows one panel at a time", () => {
@@ -67,10 +67,10 @@ describe("CommunityActionBar", () => {
     );
 
     fireEvent.click(screen.getByText(/Go Live/i));
-    expect(screen.getByTestid("go-live-recorder")).toBeInTheDocument();
+    expect(screen.getByTestId("go-live-recorder")).toBeInTheDocument();
 
     fireEvent.click(screen.getByText(/Report Violation/i));
-    expect(screen.queryByTestid("go-live-recorder")).not.toBeInTheDocument();
-    expect(screen.getByTestid("quick-violation-report")).toBeInTheDocument();
+    expect(screen.queryByTestId("go-live-recorder")).not.toBeInTheDocument();
+    expect(screen.getByTestId("quick-violation-report")).toBeInTheDocument();
   });
 });

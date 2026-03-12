@@ -145,7 +145,7 @@ export function FOIARequestForm({ onRequestCreated }: FOIARequestFormProps) {
 
   // Calculate deadline based on selected agency
   useEffect(() => {
-    const responseDays = selectedAgency?.standard_response_days ?? (agencyType === "Federal" ? 20 : null);
+    const responseDays = selectedAgency?.response_days ?? (agencyType === "Federal" ? 20 : null);
     
     if (responseDays && responseDays > 0) {
       const deadline = addBusinessDays(new Date(), responseDays);

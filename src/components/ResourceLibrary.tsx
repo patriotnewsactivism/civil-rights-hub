@@ -311,7 +311,7 @@ export const ResourceLibrary = () => {
             <SelectValue placeholder="All categories" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">All categories</SelectItem>
+            <SelectItem value="__all__">All categories</SelectItem>
             {categories.map((category) => (
               <SelectItem key={category} value={category}>
                 {category}

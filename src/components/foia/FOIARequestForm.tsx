@@ -287,11 +287,15 @@ export function FOIARequestForm({ onRequestCreated }: FOIARequestFormProps) {
         user_id: user.id,
         agency_name: agencyName,
         state: selectedAgency?.state ?? (agencyType === "Federal" ? "Federal" : ""),
-        request_subject: subject,
-        request_body: requestBody,
+        subject,
+        details: requestBody,
+        request_type: agencyType,
+        requester_name: requesterName,
+        requester_email: requesterEmail,
+        requester_address: requesterAddress || null,
         status: "submitted",
-        submitted_date: submittedAt,
-        response_deadline: deadline,
+        submitted_at: submittedAt,
+        response_due_date: deadline,
       });
 
       if (error) throw error;

@@ -1,72 +1,10 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { toast } from "sonner";
-import { 
-  Heart, MessageCircle, Upload, X, FileText, Music, 
-  Image as ImageIcon, TrendingUp, Hash, Send, Flame,
-  Share2, Bookmark, Check, Link2, MoreHorizontal, Shield
-} from "lucide-react";
-import { formatDistanceToNow } from "date-fns";
-import type { ChangeEvent } from "react";
+import { useCallback, useEffect, useMemo, useState, useRef } from "react";
+import { UserMentions } from "./community/UserMentions";
 
-interface UserProfile {
-  id: string;
-  display_name: string | null;
-  avatar_url: string | null;
-}
+// ... (interfaces stay same)
 
-interface Post {
-  id: string;
-  content: string;
-  media_urls: string[] | null;
-  media_types: string[] | null;
-  created_at: string;
-  user_id: string;
-}
-
-interface Like {
-  id: string;
-  user_id: string;
-}
-
-interface Comment {
-  id: string;
-  content: string;
-  user_id: string;
-  profile?: UserProfile | null;
-}
-
-interface PostWithDetails extends Post {
-  profile: UserProfile | null;
-  likes: Like[];
-  comments: Comment[];
-  hashtags: string[];
-  isBookmarked?: boolean;
-  shareCount?: number;
-}
-
-const extractHashtags = (content: string): string[] => {
-  const matches = content.match(/#[\w]+/g);
-  return matches ? [...new Set(matches.map(tag => tag.toLowerCase()))] : [];
-};
-
-const renderContentWithHashtags = (content: string, onHashtagClick: (tag: string) => void) => {
-  const parts = content.split(/(#[\w]+)/g);
+const renderContentWithEntities = (content: string, onHashtagClick: (tag: string) => void) => {
+  const parts = content.split(/((?:#|@)[\w]+)/g);
   return parts.map((part, index) => {
     if (part.startsWith('#')) {
       return (
@@ -79,6 +17,13 @@ const renderContentWithHashtags = (content: string, onHashtagClick: (tag: string
         </button>
       );
     }
+    if (part.startsWith('@')) {
+      return (
+        <span key={index} className="text-primary/70 hover:text-primary transition-colors font-medium">
+          {part}
+        </span>
+      );
+    }
     return part;
   });
 };
@@ -86,6 +31,56 @@ const renderContentWithHashtags = (content: string, onHashtagClick: (tag: string
 export function SocialFeed() {
   const [posts, setPosts] = useState<PostWithDetails[]>([]);
   const [newPost, setNewPost] = useState("");
+  const [mentionQuery, setMentionQuery] = useState<string | null>(null);
+  const [mentionPos, setMentionPos] = useState({ top: 0, left: 0 });
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const handlePostChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const val = e.target.value;
+    setNewPost(val);
+
+    const cursorPosition = e.target.selectionStart;
+    const textBeforeCursor = val.slice(0, cursorPosition);
+    const words = textBeforeCursor.split(/\s/);
+    const lastWord = words[words.length - 1];
+
+    if (lastWord.startsWith("@")) {
+      setMentionQuery(lastWord.slice(1));
+      
+      if (textareaRef.current) {
+        // Simple positioning relative to the textarea
+        setMentionPos({ 
+          top: 160, // approximate position below the textarea top
+          left: 24
+        });
+      }
+    } else {
+      setMentionQuery(null);
+    }
+  };
+
+  const handleMentionSelect = (displayName: string) => {
+    if (!textareaRef.current) return;
+    
+    const cursorPosition = textareaRef.current.selectionStart;
+    const textBeforeCursor = newPost.slice(0, cursorPosition);
+    const textAfterCursor = newPost.slice(cursorPosition);
+    
+    const words = textBeforeCursor.split(/\s/);
+    words[words.length - 1] = `@${displayName}`;
+    
+    const newContent = words.join(" ") + " " + textAfterCursor;
+    setNewPost(newContent);
+    setMentionQuery(null);
+    
+    setTimeout(() => {
+      if (textareaRef.current) {
+        textareaRef.current.focus();
+        const newPos = words.join(" ").length + 1;
+        textareaRef.current.setSelectionRange(newPos, newPos);
+      }
+    }, 0);
+  };
   const [uploading, setUploading] = useState(false);
   const [mediaFiles, setMediaFiles] = useState<File[]>([]);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
@@ -423,13 +418,23 @@ export function SocialFeed() {
               </div>
               <Badge variant="outline" className="text-[10px] opacity-70">ENCRYPTED END-TO-END</Badge>
             </div>
-            <div className="p-6 space-y-4">
+            <div className="p-6 space-y-4 relative">
               <Textarea
+                ref={textareaRef}
                 placeholder="Document a violation, share a resource, or organize..."
                 value={newPost}
-                onChange={(e) => setNewPost(e.target.value)}
+                onChange={handlePostChange}
                 className="bg-transparent border-none focus-visible:ring-0 text-lg min-h-[120px] p-0 placeholder:text-muted-foreground/50"
               />
+              
+              {mentionQuery !== null && (
+                <UserMentions 
+                  query={mentionQuery} 
+                  onSelect={handleMentionSelect}
+                  className="absolute"
+                  style={{ top: mentionPos.top, left: mentionPos.left }}
+                />
+              )}
               
               {mediaFiles.length > 0 && (
                 <div className="flex flex-wrap gap-2">
@@ -519,7 +524,7 @@ function PostCard({ post, currentUserId, onLike, onHashtagClick, isBookmarked, o
       </CardHeader>
       <CardContent className="p-6 pt-0 space-y-4">
         <p className="text-sm md:text-base leading-relaxed text-foreground/90 whitespace-pre-wrap">
-          {renderContentWithHashtags(post.content, onHashtagClick)}
+          {renderContentWithEntities(post.content, onHashtagClick)}
         </p>
 
         {post.media_urls && (

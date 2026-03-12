@@ -131,8 +131,8 @@ export const ResourceLibrary = () => {
   useEffect(() => {
     const next = resources.filter((resource) => {
       const categories = resource.category ?? [];
-      const matchesCategory = categoryFilter ? categories.includes(categoryFilter) : true;
-      const matchesType = typeFilter ? resource.resource_type === typeFilter : true;
+      const matchesCategory = !categoryFilter || categoryFilter === "__all__" ? true : categories.includes(categoryFilter);
+      const matchesType = !typeFilter || typeFilter === "__all__" ? true : resource.resource_type === typeFilter;
       const matchesSearch = searchTerm
         ? resource.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
           (resource.description ?? "").toLowerCase().includes(searchTerm.toLowerCase())

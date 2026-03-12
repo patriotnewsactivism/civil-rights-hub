@@ -100,8 +100,8 @@ export const SuccessStories = () => {
 
   useEffect(() => {
     const next = stories.filter((story) => {
-      const matchesState = stateFilter ? story.state === stateFilter : true;
-      const matchesOutcome = outcomeFilter ? story.outcome === outcomeFilter : true;
+      const matchesState = !stateFilter || stateFilter === "__all__" ? true : story.state === stateFilter;
+      const matchesOutcome = !outcomeFilter || outcomeFilter === "__all__" ? true : story.outcome === outcomeFilter;
       return matchesState && matchesOutcome;
     });
     setFiltered(next);

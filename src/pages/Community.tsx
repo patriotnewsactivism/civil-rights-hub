@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { Link, Navigate, useSearchParams } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { SocialFeed } from "@/components/SocialFeed";
 import { UserProfile } from "@/components/UserProfile";
@@ -23,6 +24,19 @@ export default function Community() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [selectedHashtag, setSelectedHashtag] = useState<string | null>(null);
   const [trendingTags, setTrendingTags] = useState<{ tag: string; count: number }[]>([]);
+
+  useEffect(() => {
+    supabase
+      .from("popular_tags" as any)
+      .select("tag, use_count")
+      .order("use_count", { ascending: false })
+      .limit(10)
+      .then(({ data }) => {
+        if (data) {
+          setTrendingTags((data as any[]).map((row) => ({ tag: row.tag, count: row.use_count })));
+        }
+      });
+  }, []);
 
   const initialTab = useMemo(() => {
     const paramTab = searchParams.get("tab") as CommunityTab | null;

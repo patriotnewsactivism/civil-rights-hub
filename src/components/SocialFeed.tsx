@@ -1,7 +1,97 @@
-import { useCallback, useEffect, useMemo, useState, useRef } from "react";
+import { ChangeEvent, useCallback, useEffect, useMemo, useState, useRef } from "react";
+import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import {
+  Heart,
+  MessageCircle,
+  Share2,
+  Bookmark,
+  MoreHorizontal,
+  Hash,
+  Shield,
+  ImageIcon,
+  FileText,
+  X,
+  Send,
+  Link2,
+  Check,
+} from "lucide-react";
+import { formatDistanceToNow } from "date-fns";
 import { UserMentions } from "./community/UserMentions";
+import { PollCreator } from "./social/PollCreator";
+import { PollDisplay } from "./social/PollDisplay";
+import { ReactionPicker } from "./social/ReactionPicker";
+import { ThreadedComments } from "./social/ThreadedComments";
+import { BarChart2 } from "lucide-react";
 
-// ... (interfaces stay same)
+// ── Types ────────────────────────────────────────────────────────────────────
+
+interface Post {
+  id: string;
+  content: string;
+  user_id: string;
+  created_at: string;
+  media_urls: string[] | null;
+  media_types: string[] | null;
+  poll_data?: PollData | null;
+}
+
+interface UserProfile {
+  id: string;
+  display_name: string | null;
+  avatar_url: string | null;
+}
+
+interface Like {
+  id: string;
+  user_id: string;
+}
+
+interface Comment {
+  id: string;
+  content: string;
+  user_id: string;
+  parent_comment_id: string | null;
+  created_at: string;
+  profile: { display_name: string; avatar_url: string | null };
+}
+
+interface PollData {
+  id: string;
+  question: string;
+  options: { id: string; text: string; voteCount: number }[];
+  endsAt?: string;
+  allowMultiple: boolean;
+  totalVotes: number;
+}
+
+interface PostWithDetails extends Post {
+  profile: UserProfile | null;
+  likes: Like[];
+  comments: Comment[];
+  hashtags: string[];
+  isBookmarked: boolean;
+  shareCount: number;
+  userVotes?: string[];
+}
+
+function extractHashtags(content: string): string[] {
+  const matches = content.match(/#[\w]+/g);
+  return matches ? matches.map((tag) => tag.toLowerCase()) : [];
+}
 
 const renderContentWithEntities = (content: string, onHashtagClick: (tag: string) => void) => {
   const parts = content.split(/((?:#|@)[\w]+)/g);
@@ -93,11 +183,18 @@ export function SocialFeed() {
   const [sharePostId, setSharePostId] = useState<string | null>(null);
   const [shareComment, setShareComment] = useState("");
   const [copiedLink, setCopiedLink] = useState(false);
+  const [showPollCreator, setShowPollCreator] = useState(false);
+  const [pendingPoll, setPendingPoll] = useState<{
+    question: string;
+    options: string[];
+    endsAt?: Date;
+    allowMultiple: boolean;
+  } | null>(null);
 
   const fetchPosts = useCallback(async () => {
     const { data: postsData, error: postsError } = await supabase
       .from("posts")
-      .select("*")
+      .select("id, content, user_id, created_at, media_urls, media_types, poll_data")
       .order("created_at", { ascending: false })
       .limit(100);
 
@@ -138,8 +235,9 @@ export function SocialFeed() {
 
     const { data: commentsData } = await supabase
       .from("comments")
-      .select("id, content, user_id, post_id")
-      .in("post_id", postIds);
+      .select("id, content, user_id, post_id, parent_comment_id, created_at")
+      .in("post_id", postIds)
+      .order("created_at", { ascending: true });
 
     const commentUserIds = [...new Set((commentsData ?? []).map((c) => c.user_id))];
     const { data: commentProfilesData } = await supabase
@@ -152,11 +250,17 @@ export function SocialFeed() {
     const commentsMap = new Map<string, Comment[]>();
     (commentsData ?? []).forEach((comment) => {
       const existing = commentsMap.get(comment.post_id) ?? [];
+      const profile = commentProfileMap.get(comment.user_id);
       existing.push({
         id: comment.id,
         content: comment.content,
         user_id: comment.user_id,
-        profile: commentProfileMap.get(comment.user_id) ?? null,
+        parent_comment_id: (comment as any).parent_comment_id ?? null,
+        created_at: comment.created_at ?? new Date().toISOString(),
+        profile: {
+          display_name: profile?.display_name ?? "Anonymous",
+          avatar_url: profile?.avatar_url ?? null,
+        },
       });
       commentsMap.set(comment.post_id, existing);
     });
@@ -243,17 +347,35 @@ export function SocialFeed() {
     try {
       const { mediaUrls, mediaTypes } = await uploadMedia(mediaFiles, currentUserId);
 
+      const pollData = pendingPoll
+        ? {
+            id: crypto.randomUUID(),
+            question: pendingPoll.question,
+            options: pendingPoll.options.map((text) => ({
+              id: crypto.randomUUID(),
+              text,
+              voteCount: 0,
+            })),
+            endsAt: pendingPoll.endsAt?.toISOString(),
+            allowMultiple: pendingPoll.allowMultiple,
+            totalVotes: 0,
+          }
+        : null;
+
       const { error } = await supabase.from("posts").insert({
         content: newPost,
         media_urls: mediaUrls.length > 0 ? mediaUrls : null,
         media_types: mediaTypes.length > 0 ? mediaTypes : null,
         user_id: currentUserId,
+        ...(pollData ? { poll_data: pollData } : {}),
       });
 
       if (error) throw error;
 
       setNewPost("");
       setMediaFiles([]);
+      setPendingPoll(null);
+      setShowPollCreator(false);
       toast.success("Post broadcasted!");
       await fetchPosts();
     } catch (error) {
@@ -295,19 +417,20 @@ export function SocialFeed() {
     [currentUserId, fetchPosts, posts]
   );
 
-  const addComment = useCallback(async (postId: string) => {
+  const addComment = useCallback(async (postId: string, content?: string, parentId?: string) => {
     if (!currentUserId) {
       toast.error("Sign in to comment");
       return;
     }
 
-    const content = newComment[postId]?.trim();
-    if (!content) return;
+    const body = content ?? newComment[postId]?.trim();
+    if (!body) return;
 
     const { error } = await supabase.from("comments").insert({
       post_id: postId,
       user_id: currentUserId,
-      content,
+      content: body,
+      ...(parentId ? { parent_comment_id: parentId } : {}),
     });
 
     if (error) {
@@ -315,9 +438,34 @@ export function SocialFeed() {
       return;
     }
 
-    setNewComment(prev => ({ ...prev, [postId]: "" }));
+    if (!content) setNewComment(prev => ({ ...prev, [postId]: "" }));
     await fetchPosts();
   }, [currentUserId, newComment, fetchPosts]);
+
+  const handlePollVote = useCallback(async (postId: string, optionIds: string[]) => {
+    const post = posts.find((p) => p.id === postId);
+    if (!post?.poll_data) return;
+
+    // Update vote counts in poll_data JSONB and record user vote
+    const updatedOptions = post.poll_data.options.map((opt) => ({
+      ...opt,
+      voteCount: optionIds.includes(opt.id) ? opt.voteCount + 1 : opt.voteCount,
+    }));
+    const updatedPoll = {
+      ...post.poll_data,
+      options: updatedOptions,
+      totalVotes: post.poll_data.totalVotes + 1,
+    };
+
+    await supabase.from("posts").update({ poll_data: updatedPoll } as any).eq("id", postId);
+
+    // Record user votes in poll_votes table
+    await supabase.from("poll_votes" as any).upsert(
+      optionIds.map((optId) => ({ post_id: postId, user_id: currentUserId, option_id: optId }))
+    );
+
+    await fetchPosts();
+  }, [currentUserId, fetchPosts, posts]);
 
   const toggleComments = (postId: string) => {
     setExpandedComments(prev => {
@@ -453,6 +601,26 @@ export function SocialFeed() {
                 </div>
               )}
 
+              {/* Poll Creator */}
+              {showPollCreator && (
+                <div className="border border-primary/20 rounded-xl p-4 bg-primary/5">
+                  <PollCreator
+                    onPollCreate={(poll) => { setPendingPoll(poll); setShowPollCreator(false); }}
+                    onCancel={() => setShowPollCreator(false)}
+                  />
+                </div>
+              )}
+
+              {/* Pending poll preview */}
+              {pendingPoll && !showPollCreator && (
+                <div className="border border-primary/20 rounded-xl p-3 bg-primary/5 flex items-center justify-between">
+                  <span className="text-sm text-primary font-medium">📊 Poll: {pendingPoll.question}</span>
+                  <button onClick={() => setPendingPoll(null)} className="text-muted-foreground hover:text-destructive">
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+              )}
+
               <div className="flex items-center justify-between pt-4 border-t border-white/10">
                 <div className="flex gap-2">
                   <Button variant="ghost" size="sm" onClick={() => document.getElementById("media-upload")?.click()} className="text-muted-foreground hover:text-primary">
@@ -460,8 +628,17 @@ export function SocialFeed() {
                     Evidence
                   </Button>
                   <input type="file" id="media-upload" className="hidden" onChange={handleFileSelect} multiple accept="image/*,video/*,audio/*,application/pdf" />
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setShowPollCreator(!showPollCreator)}
+                    className={`text-muted-foreground hover:text-primary ${showPollCreator ? "text-primary" : ""}`}
+                  >
+                    <BarChart2 className="h-5 w-5 mr-2" />
+                    Poll
+                  </Button>
                 </div>
-                <Button onClick={createPost} disabled={uploading || (!newPost.trim() && mediaFiles.length === 0)} className="rounded-full px-8 shadow-lg shadow-primary/20">
+                <Button onClick={createPost} disabled={uploading || (!newPost.trim() && mediaFiles.length === 0 && !pendingPoll)} className="rounded-full px-8 shadow-lg shadow-primary/20">
                   {uploading ? "Uploading..." : "Broadcast"}
                 </Button>
               </div>
@@ -478,23 +655,78 @@ export function SocialFeed() {
             post={post}
             currentUserId={currentUserId}
             onLike={toggleLike}
+            onShare={(postId) => { setSharePostId(postId); setShareDialogOpen(true); }}
+            onPollVote={(optionIds) => handlePollVote(post.id, optionIds)}
             onHashtagClick={(tag) => setSelectedHashtag(tag)}
             isBookmarked={bookmarks.has(post.id)}
             onToggleBookmark={toggleBookmark}
-            onCommentChange={(val) => setNewComment(prev => ({ ...prev, [post.id]: val }))}
-            newComment={newComment[post.id] || ""}
-            onAddComment={() => addComment(post.id)}
+            onAddComment={(content, parentId) => addComment(post.id, content, parentId)}
             isExpanded={expandedComments.has(post.id)}
             onToggleComments={() => toggleComments(post.id)}
           />
         ))}
       </div>
+
+      {/* Share Dialog */}
+      <Dialog open={shareDialogOpen} onOpenChange={setShareDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Share this post</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <Textarea
+              placeholder="Add a comment to your share..."
+              value={shareComment}
+              onChange={(e) => setShareComment(e.target.value)}
+              className="min-h-[80px]"
+            />
+            <div className="flex items-center gap-2 p-3 rounded-md bg-muted/50 border">
+              <Link2 className="h-4 w-4 text-muted-foreground shrink-0" />
+              <span className="text-xs text-muted-foreground truncate">
+                {typeof window !== "undefined" ? `${window.location.origin}/community` : ""}
+              </span>
+              <Button
+                size="sm"
+                variant="ghost"
+                className="ml-auto shrink-0 h-7 px-2"
+                onClick={() => {
+                  navigator.clipboard.writeText(`${window.location.origin}/community`);
+                  setCopiedLink(true);
+                  setTimeout(() => setCopiedLink(false), 2000);
+                }}
+              >
+                {copiedLink ? <Check className="h-3 w-3 text-green-500" /> : <Link2 className="h-3 w-3" />}
+              </Button>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShareDialogOpen(false)}>Cancel</Button>
+            <Button
+              onClick={async () => {
+                if (!currentUserId || !sharePostId) { setShareDialogOpen(false); return; }
+                await supabase.from("post_shares").insert({ post_id: sharePostId, user_id: currentUserId });
+                toast.success("Post shared!");
+                setShareDialogOpen(false);
+                setShareComment("");
+                await fetchPosts();
+              }}
+            >
+              Share
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
 
-function PostCard({ post, currentUserId, onLike, onHashtagClick, isBookmarked, onToggleBookmark, newComment, onCommentChange, onAddComment, isExpanded, onToggleComments }: any) {
+function PostCard({ post, currentUserId, onLike, onShare, onPollVote, onHashtagClick, isBookmarked, onToggleBookmark, onAddComment, isExpanded, onToggleComments }: any) {
   const isLiked = post.likes.some((l: any) => l.user_id === currentUserId);
+  const likeReactions = post.likes.length > 0
+    ? [{ type: "like", count: post.likes.length, users: post.likes.map((l: any) => l.user_id) }]
+    : [];
+  const currentReaction = isLiked ? "like" : null;
+  const isPollExpired = post.poll_data?.endsAt ? new Date(post.poll_data.endsAt) < new Date() : false;
 
   return (
     <Card className="glass-card border-none overflow-hidden group">
@@ -523,11 +755,13 @@ function PostCard({ post, currentUserId, onLike, onHashtagClick, isBookmarked, o
         </div>
       </CardHeader>
       <CardContent className="p-6 pt-0 space-y-4">
-        <p className="text-sm md:text-base leading-relaxed text-foreground/90 whitespace-pre-wrap">
-          {renderContentWithEntities(post.content, onHashtagClick)}
-        </p>
+        {post.content && (
+          <p className="text-sm md:text-base leading-relaxed text-foreground/90 whitespace-pre-wrap">
+            {renderContentWithEntities(post.content, onHashtagClick)}
+          </p>
+        )}
 
-        {post.media_urls && (
+        {post.media_urls && post.media_urls.length > 0 && (
           <div className={`grid gap-2 overflow-hidden rounded-xl border border-white/5 ${post.media_urls.length > 1 ? 'grid-cols-2' : 'grid-cols-1'}`}>
             {post.media_urls.map((url: string, i: number) => (
               <img key={i} src={url} alt="Post intel" className="w-full h-auto object-cover max-h-[400px] hover:scale-[1.02] transition-transform cursor-zoom-in" />
@@ -535,18 +769,33 @@ function PostCard({ post, currentUserId, onLike, onHashtagClick, isBookmarked, o
           </div>
         )}
 
+        {/* Poll Display */}
+        {post.poll_data && (
+          <PollDisplay
+            poll={post.poll_data}
+            userVotes={post.userVotes ?? null}
+            onVote={(optionIds) => onPollVote(optionIds)}
+            isExpired={isPollExpired}
+          />
+        )}
+
         <div className="flex items-center justify-between pt-4 border-t border-white/5">
-          <div className="flex items-center gap-4">
-            <button onClick={() => onLike(post.id)} className={`flex items-center gap-1.5 text-sm font-medium transition-colors ${isLiked ? 'text-red-500' : 'text-muted-foreground hover:text-red-500'}`}>
-              <Heart className={`h-5 w-5 ${isLiked ? 'fill-current' : ''}`} />
-              {post.likes.length || 0}
-            </button>
+          <div className="flex items-center gap-3">
+            {/* Reaction Picker replaces simple heart */}
+            <ReactionPicker
+              postId={post.id}
+              currentReaction={currentReaction}
+              reactions={likeReactions}
+              onReact={() => onLike(post.id)}
+              onRemove={() => onLike(post.id)}
+            />
             <button onClick={onToggleComments} className="flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
               <MessageCircle className="h-5 w-5" />
               {post.comments.length || 0}
             </button>
-            <button className="flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-accent transition-colors">
+            <button onClick={() => onShare(post.id)} className="flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-accent transition-colors">
               <Share2 className="h-5 w-5" />
+              {post.shareCount > 0 && post.shareCount}
             </button>
           </div>
           <button onClick={() => onToggleBookmark(post.id)} className={`transition-colors ${isBookmarked ? 'text-primary' : 'text-muted-foreground hover:text-primary'}`}>
@@ -554,34 +803,15 @@ function PostCard({ post, currentUserId, onLike, onHashtagClick, isBookmarked, o
           </button>
         </div>
 
+        {/* Threaded Comments */}
         {isExpanded && (
-          <div className="pt-4 space-y-4 animate-in fade-in slide-in-from-top-2 duration-200">
-            {post.comments.map((c: any) => (
-              <div key={c.id} className="flex gap-3 text-sm">
-                <Avatar className="h-7 w-7">
-                  <AvatarImage src={c.profile?.avatar_url} />
-                  <AvatarFallback className="text-[10px]">{c.profile?.display_name?.[0]}</AvatarFallback>
-                </Avatar>
-                <div className="flex-1 bg-white/5 rounded-2xl px-4 py-2 border border-white/5">
-                  <div className="font-bold text-[11px] text-primary/80 mb-0.5">{c.profile?.display_name}</div>
-                  <p className="text-foreground/80 leading-snug">{c.content}</p>
-                </div>
-              </div>
-            ))}
-            {currentUserId && (
-              <div className="flex gap-2 items-center">
-                <Input 
-                  placeholder="Analyze report..." 
-                  value={newComment} 
-                  onChange={(e) => onCommentChange(e.target.value)} 
-                  onKeyDown={(e) => e.key === 'Enter' && onAddComment()}
-                  className="bg-white/5 border-white/10 rounded-full h-9 text-xs" 
-                />
-                <Button size="icon" onClick={onAddComment} disabled={!newComment.trim()} className="h-9 w-9 rounded-full bg-primary/20 hover:bg-primary text-primary hover:text-white border-none">
-                  <Send className="h-4 w-4" />
-                </Button>
-              </div>
-            )}
+          <div className="pt-2 animate-in fade-in slide-in-from-top-2 duration-200">
+            <ThreadedComments
+              postId={post.id}
+              comments={post.comments}
+              currentUserId={currentUserId}
+              onAddComment={(content, parentId) => onAddComment(content, parentId)}
+            />
           </div>
         )}
       </CardContent>

@@ -889,6 +889,62 @@ export type Database = {
           },
         ]
       }
+      poll_votes: {
+        Row: {
+          id: string
+          post_id: string
+          user_id: string
+          option_id: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          post_id: string
+          user_id: string
+          option_id: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          post_id?: string
+          user_id?: string
+          option_id?: string
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "poll_votes_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      popular_tags: {
+        Row: {
+          id: string
+          tag: string
+          use_count: number
+          last_used: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          tag: string
+          use_count?: number
+          last_used?: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          tag?: string
+          use_count?: number
+          last_used?: string
+          created_at?: string
+        }
+        Relationships: []
+      }
       posts: {
         Row: {
           content: string
@@ -896,6 +952,9 @@ export type Database = {
           id: string
           media_types: string[] | null
           media_urls: string[] | null
+          poll_data: Json | null
+          comments_count: number | null
+          likes_count: number | null
           updated_at: string | null
           user_id: string
         }
@@ -905,6 +964,9 @@ export type Database = {
           id?: string
           media_types?: string[] | null
           media_urls?: string[] | null
+          poll_data?: Json | null
+          comments_count?: number | null
+          likes_count?: number | null
           updated_at?: string | null
           user_id: string
         }
@@ -914,6 +976,9 @@ export type Database = {
           id?: string
           media_types?: string[] | null
           media_urls?: string[] | null
+          poll_data?: Json | null
+          comments_count?: number | null
+          likes_count?: number | null
           updated_at?: string | null
           user_id?: string
         }

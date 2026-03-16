@@ -166,21 +166,30 @@ export type Database = {
           content: string
           created_at: string | null
           id: string
+          likes_count: number | null
+          parent_comment_id: string | null
           post_id: string
+          updated_at: string | null
           user_id: string
         }
         Insert: {
           content: string
           created_at?: string | null
           id?: string
+          likes_count?: number | null
+          parent_comment_id?: string | null
           post_id: string
+          updated_at?: string | null
           user_id: string
         }
         Update: {
           content?: string
           created_at?: string | null
           id?: string
+          likes_count?: number | null
+          parent_comment_id?: string | null
           post_id?: string
+          updated_at?: string | null
           user_id?: string
         }
         Relationships: [

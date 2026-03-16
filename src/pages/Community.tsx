@@ -27,13 +27,13 @@ export default function Community() {
 
   useEffect(() => {
     supabase
-      .from("popular_tags" as any)
+      .from("popular_tags")
       .select("tag, use_count")
       .order("use_count", { ascending: false })
       .limit(10)
       .then(({ data }) => {
         if (data) {
-          setTrendingTags((data as any[]).map((row) => ({ tag: row.tag, count: row.use_count })));
+          setTrendingTags(data.map((row) => ({ tag: row.tag, count: row.use_count })));
         }
       });
   }, []);

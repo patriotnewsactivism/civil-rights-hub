@@ -15,7 +15,6 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import {
-  Heart,
   MessageCircle,
   Share2,
   Bookmark,
@@ -25,9 +24,9 @@ import {
   ImageIcon,
   FileText,
   X,
-  Send,
   Link2,
   Check,
+  BarChart2,
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { UserMentions } from "./community/UserMentions";
@@ -35,7 +34,6 @@ import { PollCreator } from "./social/PollCreator";
 import { PollDisplay } from "./social/PollDisplay";
 import { ReactionPicker } from "./social/ReactionPicker";
 import { ThreadedComments } from "./social/ThreadedComments";
-import { BarChart2 } from "lucide-react";
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -176,13 +174,12 @@ export function SocialFeed() {
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState("latest");
   const [selectedHashtag, setSelectedHashtag] = useState<string | null>(null);
-  const [newComment, setNewComment] = useState<Record<string, string>>({});
   const [expandedComments, setExpandedComments] = useState<Set<string>>(new Set());
   const [bookmarks, setBookmarks] = useState<Set<string>>(new Set());
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [sharePostId, setSharePostId] = useState<string | null>(null);
-  const [shareComment, setShareComment] = useState("");
   const [copiedLink, setCopiedLink] = useState(false);
+  const copiedLinkTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [showPollCreator, setShowPollCreator] = useState(false);
   const [pendingPoll, setPendingPoll] = useState<{
     question: string;
@@ -255,7 +252,7 @@ export function SocialFeed() {
         id: comment.id,
         content: comment.content,
         user_id: comment.user_id,
-        parent_comment_id: (comment as any).parent_comment_id ?? null,
+        parent_comment_id: comment.parent_comment_id ?? null,
         created_at: comment.created_at ?? new Date().toISOString(),
         profile: {
           display_name: profile?.display_name ?? "Anonymous",
@@ -417,19 +414,17 @@ export function SocialFeed() {
     [currentUserId, fetchPosts, posts]
   );
 
-  const addComment = useCallback(async (postId: string, content?: string, parentId?: string) => {
+  const addComment = useCallback(async (postId: string, content: string, parentId?: string) => {
     if (!currentUserId) {
       toast.error("Sign in to comment");
       return;
     }
-
-    const body = content ?? newComment[postId]?.trim();
-    if (!body) return;
+    if (!content.trim()) return;
 
     const { error } = await supabase.from("comments").insert({
       post_id: postId,
       user_id: currentUserId,
-      content: body,
+      content: content.trim(),
       ...(parentId ? { parent_comment_id: parentId } : {}),
     });
 
@@ -438,34 +433,41 @@ export function SocialFeed() {
       return;
     }
 
-    if (!content) setNewComment(prev => ({ ...prev, [postId]: "" }));
     await fetchPosts();
-  }, [currentUserId, newComment, fetchPosts]);
+  }, [currentUserId, fetchPosts]);
 
   const handlePollVote = useCallback(async (postId: string, optionIds: string[]) => {
-    const post = posts.find((p) => p.id === postId);
-    if (!post?.poll_data) return;
-
-    // Update vote counts in poll_data JSONB and record user vote
-    const updatedOptions = post.poll_data.options.map((opt) => ({
-      ...opt,
-      voteCount: optionIds.includes(opt.id) ? opt.voteCount + 1 : opt.voteCount,
+    // Optimistic update — apply immediately to local state, persist in background
+    setPosts((prev) => prev.map((p) => {
+      if (p.id !== postId || !p.poll_data) return p;
+      const updatedOptions = p.poll_data.options.map((opt) => ({
+        ...opt,
+        voteCount: optionIds.includes(opt.id) ? opt.voteCount + 1 : opt.voteCount,
+      }));
+      return {
+        ...p,
+        poll_data: { ...p.poll_data, options: updatedOptions, totalVotes: p.poll_data.totalVotes + 1 },
+        userVotes: optionIds,
+      };
     }));
-    const updatedPoll = {
-      ...post.poll_data,
-      options: updatedOptions,
-      totalVotes: post.poll_data.totalVotes + 1,
-    };
 
-    await supabase.from("posts").update({ poll_data: updatedPoll } as any).eq("id", postId);
+    // Persist to DB (fire and forget — optimistic update already applied)
+    await supabase.from("posts").update({
+      poll_data: (() => {
+        const p = posts.find((x) => x.id === postId);
+        if (!p?.poll_data) return null;
+        const updatedOptions = p.poll_data.options.map((opt) => ({
+          ...opt,
+          voteCount: optionIds.includes(opt.id) ? opt.voteCount + 1 : opt.voteCount,
+        }));
+        return { ...p.poll_data, options: updatedOptions, totalVotes: p.poll_data.totalVotes + 1 };
+      })() as any,
+    }).eq("id", postId);
 
-    // Record user votes in poll_votes table
-    await supabase.from("poll_votes" as any).upsert(
-      optionIds.map((optId) => ({ post_id: postId, user_id: currentUserId, option_id: optId }))
+    await supabase.from("poll_votes").upsert(
+      optionIds.map((optId) => ({ post_id: postId, user_id: currentUserId!, option_id: optId }))
     );
-
-    await fetchPosts();
-  }, [currentUserId, fetchPosts, posts]);
+  }, [currentUserId, posts, setPosts]);
 
   const toggleComments = (postId: string) => {
     setExpandedComments(prev => {
@@ -668,36 +670,32 @@ export function SocialFeed() {
       </div>
 
       {/* Share Dialog */}
-      <Dialog open={shareDialogOpen} onOpenChange={setShareDialogOpen}>
+      <Dialog open={shareDialogOpen} onOpenChange={(open) => {
+        if (!open && copiedLinkTimerRef.current) clearTimeout(copiedLinkTimerRef.current);
+        setShareDialogOpen(open);
+      }}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Share this post</DialogTitle>
           </DialogHeader>
-          <div className="space-y-4">
-            <Textarea
-              placeholder="Add a comment to your share..."
-              value={shareComment}
-              onChange={(e) => setShareComment(e.target.value)}
-              className="min-h-[80px]"
-            />
-            <div className="flex items-center gap-2 p-3 rounded-md bg-muted/50 border">
-              <Link2 className="h-4 w-4 text-muted-foreground shrink-0" />
-              <span className="text-xs text-muted-foreground truncate">
-                {typeof window !== "undefined" ? `${window.location.origin}/community` : ""}
-              </span>
-              <Button
-                size="sm"
-                variant="ghost"
-                className="ml-auto shrink-0 h-7 px-2"
-                onClick={() => {
-                  navigator.clipboard.writeText(`${window.location.origin}/community`);
-                  setCopiedLink(true);
-                  setTimeout(() => setCopiedLink(false), 2000);
-                }}
-              >
-                {copiedLink ? <Check className="h-3 w-3 text-green-500" /> : <Link2 className="h-3 w-3" />}
-              </Button>
-            </div>
+          <div className="flex items-center gap-2 p-3 rounded-md bg-muted/50 border">
+            <Link2 className="h-4 w-4 text-muted-foreground shrink-0" />
+            <span className="text-xs text-muted-foreground truncate">
+              {window.location.origin}/community
+            </span>
+            <Button
+              size="sm"
+              variant="ghost"
+              className="ml-auto shrink-0 h-7 px-2"
+              onClick={() => {
+                navigator.clipboard.writeText(`${window.location.origin}/community`);
+                setCopiedLink(true);
+                if (copiedLinkTimerRef.current) clearTimeout(copiedLinkTimerRef.current);
+                copiedLinkTimerRef.current = setTimeout(() => setCopiedLink(false), 2000);
+              }}
+            >
+              {copiedLink ? <Check className="h-3 w-3 text-green-500" /> : <Link2 className="h-3 w-3" />}
+            </Button>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setShareDialogOpen(false)}>Cancel</Button>
@@ -707,7 +705,6 @@ export function SocialFeed() {
                 await supabase.from("post_shares").insert({ post_id: sharePostId, user_id: currentUserId });
                 toast.success("Post shared!");
                 setShareDialogOpen(false);
-                setShareComment("");
                 await fetchPosts();
               }}
             >
@@ -721,12 +718,21 @@ export function SocialFeed() {
 }
 
 function PostCard({ post, currentUserId, onLike, onShare, onPollVote, onHashtagClick, isBookmarked, onToggleBookmark, onAddComment, isExpanded, onToggleComments }: any) {
-  const isLiked = post.likes.some((l: any) => l.user_id === currentUserId);
-  const likeReactions = post.likes.length > 0
-    ? [{ type: "like", count: post.likes.length, users: post.likes.map((l: any) => l.user_id) }]
-    : [];
+  const isLiked = useMemo(
+    () => post.likes.some((l: any) => l.user_id === currentUserId),
+    [post.likes, currentUserId]
+  );
+  const likeReactions = useMemo(
+    () => post.likes.length > 0
+      ? [{ type: "like", count: post.likes.length, users: post.likes.map((l: any) => l.user_id) }]
+      : [],
+    [post.likes]
+  );
   const currentReaction = isLiked ? "like" : null;
-  const isPollExpired = post.poll_data?.endsAt ? new Date(post.poll_data.endsAt) < new Date() : false;
+  const isPollExpired = useMemo(
+    () => post.poll_data?.endsAt ? new Date(post.poll_data.endsAt) < new Date() : false,
+    [post.poll_data?.endsAt]
+  );
 
   return (
     <Card className="glass-card border-none overflow-hidden group">

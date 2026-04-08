@@ -1,8 +1,8 @@
 {
   "rewrites": [
     {
-      "source": "/(.*)",
-      "destination": "https://civil-rights-hub-1bb821bb.viktor.space/$1"
+      "source": "/:path*",
+      "destination": "https://civil-rights-hub-1bb821bb.viktor.space/:path*"
     }
   ]
 }

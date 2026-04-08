@@ -78,33 +78,15 @@
     "years_experience": null,
     "bio": "Defends civil liberties in Texas with focus on border rights, criminal justice reform, and voting access."
   },
-  {
-    "id": "benjamin-campagna-texas",
-    "name": "Benjamin Campagna",
-    "firm_name": "Campagna Law Firm",
-    "state": "Texas",
-    "city": "Houston",
-    "email": "contact@campagnalaw.com",
-    "phone": "713-489-1954",
-    "website": "https://www.campagnalaw.com",
-    "specialties": [
-      "Police Misconduct",
-      "Constitutional Rights",
-      "Criminal Defense"
-    ],
-    "accepts_pro_bono": true,
-    "bar_number": null,
-    "years_experience": 15,
-    "bio": "Civil rights and criminal defense attorney representing Texans in police misconduct, protest defense, and constitutional litigation."
-  },
+
   {
     "id": "courtney-vincent-texas",
     "name": "Courtney Vincent",
     "firm_name": "Vincent Law PLLC",
     "state": "Texas",
-    "city": "Dallas",
+    "city": "Houston",
     "email": "info@vincentlawpllc.com",
-    "phone": "214-761-6610",
+    "phone": "713-223-9300",
     "website": "https://www.vincentlawpllc.com",
     "specialties": [
       "Employment Discrimination",
@@ -138,21 +120,22 @@
   {
     "id": "cj-grisham-texas",
     "name": "CJ Grisham",
-    "firm_name": "Open Carry Texas Legal Support",
+    "firm_name": "CJ Grisham, Esq.",
     "state": "Texas",
     "city": "Temple",
     "email": "cj@opencarrytexas.org",
     "phone": "254-784-9900",
-    "website": "https://www.opencarrytexas.org",
+    "website": "https://www.cjgrisham.com",
     "specialties": [
-      "First Amendment",
+      "Civil Rights",
       "Second Amendment",
-      "Protest Defense"
+      "Fourth Amendment",
+      "Government Accountability"
     ],
-    "accepts_pro_bono": true,
+    "accepts_pro_bono": false,
     "bar_number": null,
     "years_experience": null,
-    "bio": "Civil rights advocate supporting Texans facing protest-related charges and constitutional rights disputes."
+    "bio": "Former Army Counterintelligence Special Agent turned civil rights attorney. Focuses on Second and Fourth Amendment rights, government accountability, and advocacy for those whose rights were violated."
   },
   {
     "id": "lone-star-legal-aid",

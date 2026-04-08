@@ -52,7 +52,7 @@ export function LawyerFinder() {
     try {
       const { data, error } = await supabase
         .from("attorneys")
-        .select("id, name, firm_name, state, city, email, phone, website, specialties, accepts_pro_bono, bar_number, years_experience, bio")
+        .select("id, name, firm_name:firm, state, city, email, phone, website, specialties, accepts_pro_bono, bar_number, years_experience, bio")
         .order("name");
 
       if (error) throw error;

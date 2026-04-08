@@ -255,7 +255,7 @@ export function SocialFeed() {
         id: comment.id,
         content: comment.content,
         user_id: comment.user_id,
-        parent_comment_id: (comment as any).parent_comment_id ?? null,
+        parent_comment_id: comment.parent_comment_id ?? null,
         created_at: comment.created_at ?? new Date().toISOString(),
         profile: {
           display_name: profile?.display_name ?? "Anonymous",
@@ -285,6 +285,22 @@ export function SocialFeed() {
       sharesMap.set(share.post_id, (sharesMap.get(share.post_id) ?? 0) + 1);
     });
 
+    // Load user's poll votes
+    let userVotesMap = new Map<string, string[]>();
+    if (currentUserId) {
+      const { data: pollVotesData } = await supabase
+        .from("poll_votes")
+        .select("post_id, option_id")
+        .eq("user_id", currentUserId)
+        .in("post_id", postIds);
+
+      (pollVotesData ?? []).forEach((vote) => {
+        const existing = userVotesMap.get(vote.post_id) ?? [];
+        existing.push(vote.option_id);
+        userVotesMap.set(vote.post_id, existing);
+      });
+    }
+
     const postsWithDetails: PostWithDetails[] = typedPosts.map((post) => ({
       ...post,
       profile: profileMap.get(post.user_id) ?? null,
@@ -293,6 +309,7 @@ export function SocialFeed() {
       hashtags: extractHashtags(post.content),
       isBookmarked: bookmarkedPostIds.has(post.id),
       shareCount: sharesMap.get(post.id) ?? 0,
+      userVotes: userVotesMap.get(post.id),
     }));
 
     setPosts(postsWithDetails);
@@ -443,6 +460,10 @@ export function SocialFeed() {
   }, [currentUserId, newComment, fetchPosts]);
 
   const handlePollVote = useCallback(async (postId: string, optionIds: string[]) => {
+    if (!currentUserId) {
+      toast.error("Sign in to vote");
+      return;
+    }
     const post = posts.find((p) => p.id === postId);
     if (!post?.poll_data) return;
 
@@ -460,7 +481,7 @@ export function SocialFeed() {
     await supabase.from("posts").update({ poll_data: updatedPoll } as any).eq("id", postId);
 
     // Record user votes in poll_votes table
-    await supabase.from("poll_votes" as any).upsert(
+    await supabase.from("poll_votes").upsert(
       optionIds.map((optId) => ({ post_id: postId, user_id: currentUserId, option_id: optId }))
     );
 
@@ -649,6 +670,19 @@ export function SocialFeed() {
 
       {/* Feed */}
       <div className="space-y-6">
+        {displayedPosts.length === 0 && (
+          <Card className="border-dashed">
+            <CardContent className="flex flex-col items-center justify-center py-16 text-center">
+              <Shield className="h-12 w-12 text-muted-foreground/30 mb-4" />
+              <h3 className="text-lg font-semibold mb-2">No posts yet</h3>
+              <p className="text-sm text-muted-foreground max-w-md">
+                {currentUserId
+                  ? "Be the first to broadcast an update. Document violations, share resources, or organize with the community."
+                  : "Sign in to see community posts and share updates with the movement."}
+              </p>
+            </CardContent>
+          </Card>
+        )}
         {displayedPosts.map((post) => (
           <PostCard
             key={post.id}

@@ -15,6 +15,8 @@ import UserNetwork from "@/components/UserNetwork";
 import { CommunityActionBar } from "@/components/community/CommunityActionBar";
 import { CommunitySidebar } from "@/components/community/CommunitySidebar";
 import { CommunityMobileNav } from "@/components/community/CommunityMobileNav";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
 
 type CommunityTab = "feed" | "discuss" | "events" | "messages" | "notifications" | "network" | "profile";
 const COMMUNITY_TABS: CommunityTab[] = ["feed", "discuss", "events", "messages", "notifications", "network", "profile"];
@@ -27,13 +29,13 @@ export default function Community() {
 
   useEffect(() => {
     supabase
-      .from("popular_tags" as any)
+      .from("popular_tags")
       .select("tag, use_count")
       .order("use_count", { ascending: false })
       .limit(10)
       .then(({ data }) => {
         if (data) {
-          setTrendingTags((data as any[]).map((row) => ({ tag: row.tag, count: row.use_count })));
+          setTrendingTags(data.map((row) => ({ tag: row.tag, count: row.use_count })));
         }
       });
   }, []);
@@ -81,6 +83,7 @@ export default function Community() {
 
   return (
     <div className="min-h-screen bg-background pb-20 lg:pb-0">
+      <Header />
       <SEO
         title="Community - Civil Rights Hub | Social Network for Activists"
         description="Post updates, report violations, go live recording police encounters, and connect with activists and attorneys fighting for justice."

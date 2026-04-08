@@ -14,9 +14,10 @@ interface UserMentionsProps {
   query: string;
   onSelect: (displayName: string) => void;
   className?: string;
+  style?: React.CSSProperties;
 }
 
-export function UserMentions({ query, onSelect, className }: UserMentionsProps) {
+export function UserMentions({ query, onSelect, className, style }: UserMentionsProps) {
   const [suggestions, setSuggestions] = useState<UserProfile[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -77,7 +78,7 @@ export function UserMentions({ query, onSelect, className }: UserMentionsProps) 
     <div className={cn(
       "absolute z-50 w-64 bg-background border border-border rounded-lg shadow-xl overflow-hidden animate-in fade-in zoom-in-95 duration-100",
       className
-    )}>
+    )} style={style}>
       <div className="p-2 border-b border-border bg-muted/30">
         <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
           Mention User

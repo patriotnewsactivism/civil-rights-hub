@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Analytics } from "@vercel/analytics/react";
 import { HelmetProvider } from "react-helmet-async";
 import Index from "./pages/Index";
@@ -43,6 +43,10 @@ const App = () => (
               <Route path="/activists" element={<Activists />} />
               <Route path="/attorneys" element={<Attorneys />} />
               <Route path="/resources" element={<ResourceLibrary />} />
+              {/* Convenience routes that redirect to Community tabs */}
+              <Route path="/notifications" element={<Navigate to="/community?tab=notifications" replace />} />
+              <Route path="/messages" element={<Navigate to="/community?tab=messages" replace />} />
+              <Route path="/network" element={<Navigate to="/community?tab=network" replace />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

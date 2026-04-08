@@ -166,7 +166,7 @@ export function FOIARequestForm({ onRequestCreated }: FOIARequestFormProps) {
       // Increment usage count
       await supabase
         .from("foia_templates")
-        .update({ usage_count: (template as any).usage_count + 1 })
+        .update({ usage_count: (template.usage_count ?? 0) + 1 })
         .eq("id", templateId);
     }
   };

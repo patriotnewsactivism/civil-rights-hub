@@ -2,6 +2,7 @@ import { Suspense, lazy } from "react";
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { KnowYourRights } from "@/components/KnowYourRights";
+import { CommunityCarousel } from "@/components/CommunityCarousel";
 import { Footer } from "@/components/Footer";
 import { SEO } from "@/components/SEO";
 import { ATTORNEY_DIRECTORY } from "@/lib/seoData";
@@ -92,6 +93,7 @@ const Index = () => {
         <QuickAccessHub />
       </div>
       <KnowYourRights />
+      <CommunityCarousel />
       <Suspense
         fallback={<div className="py-8 text-center text-muted-foreground text-sm">Loading resources...</div>}
       >

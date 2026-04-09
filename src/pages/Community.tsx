@@ -26,6 +26,8 @@ export default function Community() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [selectedHashtag, setSelectedHashtag] = useState<string | null>(null);
   const [trendingTags, setTrendingTags] = useState<{ tag: string; count: number }[]>([]);
+  const [unreadNotifications, setUnreadNotifications] = useState(0);
+  const [currentUserRole, setCurrentUserRole] = useState<string | null>(null);
 
   useEffect(() => {
     supabase
@@ -53,9 +55,26 @@ export default function Community() {
     }
   }, [activeTab, searchParams]);
 
+  useEffect(() => {
+    if (!user?.id) return;
+    supabase
+      .from("notifications")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", user.id)
+      .eq("is_read", false)
+      .then(({ count }) => setUnreadNotifications(count ?? 0));
+    supabase
+      .from("user_profiles")
+      .select("role")
+      .eq("user_id", user.id)
+      .single()
+      .then(({ data }) => setCurrentUserRole(data?.role ?? null));
+  }, [user?.id]);
+
   const handleTabChange = (value: string) => {
     if (!COMMUNITY_TABS.includes(value as CommunityTab)) return;
     setActiveTab(value as CommunityTab);
+    if (value === "notifications") setUnreadNotifications(0);
     const params = new URLSearchParams(searchParams);
     params.set("tab", value);
     setSearchParams(params, { replace: true });
@@ -97,11 +116,25 @@ export default function Community() {
 
       <div className="container mx-auto px-4 py-6">
         {/* Header */}
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold">Community</h1>
-          <p className="text-muted-foreground text-sm mt-1">
-            Post, report, go live, and connect with the movement
-          </p>
+        <div className="mb-6 flex items-start justify-between">
+          <div>
+            <h1 className="text-3xl font-bold">Community</h1>
+            <p className="text-muted-foreground text-sm mt-1">
+              Post, report, go live, and connect with the movement
+            </p>
+          </div>
+          <button
+            onClick={() => handleTabChange("notifications")}
+            className="relative p-2 rounded-full hover:bg-muted transition-colors mt-1"
+            aria-label="Notifications"
+          >
+            <Bell className="h-6 w-6 text-muted-foreground" />
+            {unreadNotifications > 0 && (
+              <span className="absolute -top-0.5 -right-0.5 bg-destructive text-white text-[10px] font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1">
+                {unreadNotifications > 99 ? "99+" : unreadNotifications}
+              </span>
+            )}
+          </button>
         </div>
 
         {/* Tabs */}
@@ -145,6 +178,7 @@ export default function Community() {
                       trendingTags={trendingTags}
                       onTagClick={setSelectedHashtag}
                       selectedTag={selectedHashtag}
+                      currentUserRole={currentUserRole}
                     />
                   </div>
                 </aside>

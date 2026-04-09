@@ -50,9 +50,11 @@ interface Post {
 }
 
 interface UserProfile {
-  id: string;
+  user_id: string;
   display_name: string | null;
   avatar_url: string | null;
+  role: string | null;
+  is_verified: boolean | null;
 }
 
 interface Like {
@@ -174,7 +176,8 @@ export function SocialFeed() {
   const [uploading, setUploading] = useState(false);
   const [mediaFiles, setMediaFiles] = useState<File[]>([]);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState("latest");
+  const [activeTab, setActiveTab] = useState<"foryou" | "following" | "popular">("foryou");
+  const [followingUserIds, setFollowingUserIds] = useState<Set<string>>(new Set());
   const [selectedHashtag, setSelectedHashtag] = useState<string | null>(null);
   const [newComment, setNewComment] = useState<Record<string, string>>({});
   const [expandedComments, setExpandedComments] = useState<Set<string>>(new Set());
@@ -216,10 +219,10 @@ export function SocialFeed() {
 
     const { data: profilesData } = await supabase
       .from("user_profiles")
-      .select("id, display_name, avatar_url")
-      .in("id", userIds);
+      .select("user_id, display_name, avatar_url, role, is_verified")
+      .in("user_id", userIds);
 
-    const profileMap = new Map((profilesData ?? []).map((p) => [p.id, p as UserProfile]));
+    const profileMap = new Map((profilesData ?? []).map((p) => [p.user_id, p as UserProfile]));
 
     const { data: likesData } = await supabase
       .from("likes")
@@ -242,10 +245,10 @@ export function SocialFeed() {
     const commentUserIds = [...new Set((commentsData ?? []).map((c) => c.user_id))];
     const { data: commentProfilesData } = await supabase
       .from("user_profiles")
-      .select("id, display_name, avatar_url")
-      .in("id", commentUserIds);
+      .select("user_id, display_name, avatar_url")
+      .in("user_id", commentUserIds);
 
-    const commentProfileMap = new Map((commentProfilesData ?? []).map((p) => [p.id, p as UserProfile]));
+    const commentProfileMap = new Map((commentProfilesData ?? []).map((p) => [p.user_id, p as UserProfile]));
 
     const commentsMap = new Map<string, Comment[]>();
     (commentsData ?? []).forEach((comment) => {
@@ -523,7 +526,17 @@ export function SocialFeed() {
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
-      setCurrentUserId(data.user?.id ?? null);
+      const uid = data.user?.id ?? null;
+      setCurrentUserId(uid);
+      if (uid) {
+        supabase
+          .from("user_follows")
+          .select("following_id")
+          .eq("follower_id", uid)
+          .then(({ data: followData }) => {
+            setFollowingUserIds(new Set((followData ?? []).map((f) => f.following_id)));
+          });
+      }
     });
   }, []);
 
@@ -543,11 +556,16 @@ export function SocialFeed() {
 
   const displayedPosts = useMemo(() => {
     let filtered = posts;
+    if (activeTab === "following") {
+      filtered = filtered.filter(post => followingUserIds.has(post.user_id));
+    } else if (activeTab === "popular") {
+      filtered = [...filtered].sort((a, b) => (b.likes.length + b.comments.length) - (a.likes.length + a.comments.length));
+    }
     if (selectedHashtag) {
       filtered = filtered.filter(post => post.hashtags.includes(selectedHashtag.toLowerCase()));
     }
     return filtered;
-  }, [posts, selectedHashtag]);
+  }, [posts, selectedHashtag, activeTab, followingUserIds]);
 
   return (
     <div className="max-w-3xl mx-auto space-y-8">
@@ -574,6 +592,27 @@ export function SocialFeed() {
             </Badge>
           ))}
         </div>
+      </div>
+
+      {/* Feed Tabs */}
+      <div className="flex border-b border-border">
+        {([
+          { key: "foryou", label: "For You" },
+          { key: "following", label: "Following" },
+          { key: "popular", label: "Popular" },
+        ] as const).map(({ key, label }) => (
+          <button
+            key={key}
+            onClick={() => setActiveTab(key)}
+            className={`px-5 py-2.5 text-sm font-semibold border-b-2 transition-colors ${
+              activeTab === key
+                ? "border-primary text-primary"
+                : "border-transparent text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            {label}
+          </button>
+        ))}
       </div>
 
       {/* Post Composer */}
@@ -717,14 +756,19 @@ export function SocialFeed() {
             <div className="flex items-center gap-2 p-3 rounded-md bg-muted/50 border">
               <Link2 className="h-4 w-4 text-muted-foreground shrink-0" />
               <span className="text-xs text-muted-foreground truncate">
-                {typeof window !== "undefined" ? `${window.location.origin}/community` : ""}
+                {typeof window !== "undefined" ? `${window.location.origin}/community?post=${sharePostId}` : ""}
               </span>
               <Button
                 size="sm"
                 variant="ghost"
                 className="ml-auto shrink-0 h-7 px-2"
                 onClick={() => {
-                  navigator.clipboard.writeText(`${window.location.origin}/community`);
+                  const url = `${window.location.origin}/community?post=${sharePostId}`;
+                  if (navigator.share) {
+                    navigator.share({ title: "Civil Rights Hub", url }).catch(() => navigator.clipboard.writeText(url));
+                  } else {
+                    navigator.clipboard.writeText(url);
+                  }
                   setCopiedLink(true);
                   setTimeout(() => setCopiedLink(false), 2000);
                 }}
@@ -754,6 +798,14 @@ export function SocialFeed() {
   );
 }
 
+const ROLE_BADGE: Record<string, { label: string; className: string }> = {
+  journalist: { label: "Journalist", className: "bg-blue-500/20 text-blue-400 hover:bg-blue-500/30" },
+  attorney: { label: "Attorney", className: "bg-purple-500/20 text-purple-400 hover:bg-purple-500/30" },
+  activist: { label: "Activist", className: "bg-orange-500/20 text-orange-400 hover:bg-orange-500/30" },
+  moderator: { label: "Moderator", className: "bg-green-500/20 text-green-400 hover:bg-green-500/30" },
+  admin: { label: "Admin", className: "bg-red-500/20 text-red-400 hover:bg-red-500/30" },
+};
+
 function PostCard({ post, currentUserId, onLike, onShare, onPollVote, onHashtagClick, isBookmarked, onToggleBookmark, onAddComment, isExpanded, onToggleComments }: any) {
   const isLiked = post.likes.some((l: any) => l.user_id === currentUserId);
   const likeReactions = post.likes.length > 0
@@ -761,6 +813,7 @@ function PostCard({ post, currentUserId, onLike, onShare, onPollVote, onHashtagC
     : [];
   const currentReaction = isLiked ? "like" : null;
   const isPollExpired = post.poll_data?.endsAt ? new Date(post.poll_data.endsAt) < new Date() : false;
+  const roleBadge = post.profile?.role && post.profile.role !== "user" ? ROLE_BADGE[post.profile.role] : null;
 
   return (
     <Card className="glass-card border-none overflow-hidden group">
@@ -772,14 +825,19 @@ function PostCard({ post, currentUserId, onLike, onShare, onPollVote, onHashtagC
               <AvatarFallback className="bg-primary/10 text-primary font-bold">{post.profile?.display_name?.[0] || '?'}</AvatarFallback>
             </Avatar>
             <div>
-              <div className="font-bold flex items-center gap-2">
-                {post.profile?.display_name || "Anonymous Correspondent"}
-                <Badge className="bg-primary/20 text-primary text-[10px] hover:bg-primary/30">VERIFIED</Badge>
+              <div className="font-bold flex items-center gap-2 flex-wrap">
+                {post.profile?.display_name || "Community Member"}
+                {post.profile?.is_verified && (
+                  <Badge className="bg-primary/20 text-primary text-[10px] hover:bg-primary/30">✓ Verified</Badge>
+                )}
+                {roleBadge && (
+                  <Badge className={`text-[10px] ${roleBadge.className}`}>{roleBadge.label}</Badge>
+                )}
               </div>
               <div className="text-xs text-muted-foreground flex items-center gap-2">
                 {formatDistanceToNow(new Date(post.created_at), { addSuffix: true })}
                 <span className="h-1 w-1 rounded-full bg-muted-foreground/30"></span>
-                Public Intel
+                Public
               </div>
             </div>
           </div>

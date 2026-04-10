@@ -1,34 +1,41 @@
 -- Seed popular_tags with civil rights movement hashtags
--- and add user_verification table if not already present
+-- Extend user_verification table with columns needed for the verification request UI
 
 -- =====================================================
--- 1. USER VERIFICATION TABLE
+-- 1. EXTEND EXISTING user_verification TABLE
+-- The table was created in 20260220000002 with a different schema.
+-- We add the columns our verification UI needs via safe ALTER TABLE.
 -- =====================================================
 
-CREATE TABLE IF NOT EXISTS public.user_verification (
-  id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id         UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  role            TEXT NOT NULL,
-  organization    TEXT NOT NULL,
-  credential_detail TEXT,
-  status          TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected')),
-  reviewed_by     UUID REFERENCES auth.users(id),
-  reviewed_at     TIMESTAMP WITH TIME ZONE,
-  created_at      TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-  updated_at      TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
+ALTER TABLE public.user_verification
+  ADD COLUMN IF NOT EXISTS role TEXT,
+  ADD COLUMN IF NOT EXISTS organization TEXT,
+  ADD COLUMN IF NOT EXISTS credential_detail TEXT,
+  ADD COLUMN IF NOT EXISTS status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'rejected'));
 
-ALTER TABLE public.user_verification ENABLE ROW LEVEL SECURITY;
+-- Add RLS policies if they don't already exist (idempotent via DO block)
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE tablename = 'user_verification' AND policyname = 'Users can view their own verification requests'
+  ) THEN
+    EXECUTE 'CREATE POLICY "Users can view their own verification requests"
+      ON public.user_verification FOR SELECT
+      USING (auth.uid() = user_id)';
+  END IF;
 
-CREATE POLICY "Users can view their own verification requests"
-  ON public.user_verification FOR SELECT
-  USING (auth.uid() = user_id);
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE tablename = 'user_verification' AND policyname = 'Authenticated users can submit verification requests'
+  ) THEN
+    EXECUTE 'CREATE POLICY "Authenticated users can submit verification requests"
+      ON public.user_verification FOR INSERT TO authenticated
+      WITH CHECK (auth.uid() = user_id)';
+  END IF;
+END
+$$;
 
-CREATE POLICY "Authenticated users can submit verification requests"
-  ON public.user_verification FOR INSERT TO authenticated
-  WITH CHECK (auth.uid() = user_id);
-
-CREATE INDEX IF NOT EXISTS idx_user_verification_user ON public.user_verification(user_id);
 CREATE INDEX IF NOT EXISTS idx_user_verification_status ON public.user_verification(status);
 
 -- =====================================================
@@ -62,10 +69,10 @@ INSERT INTO public.popular_tags (tag, use_count, last_used) VALUES
   ('#disability-rights', 174, NOW() - INTERVAL '23 hours'),
   ('#housing-rights', 162, NOW() - INTERVAL '1 day'),
   ('#workers-rights', 151, NOW() - INTERVAL '25 hours'),
-  ('#acab', 143, NOW() - INTERVAL '26 hours'),
-  ('#defund-police', 134, NOW() - INTERVAL '27 hours'),
-  ('#prison-reform', 125, NOW() - INTERVAL '28 hours'),
-  ('#community-organizing', 116, NOW() - INTERVAL '29 hours')
+  ('#community-organizing', 116, NOW() - INTERVAL '26 hours'),
+  ('#prison-reform', 125, NOW() - INTERVAL '27 hours'),
+  ('#stop-and-frisk', 98, NOW() - INTERVAL '28 hours'),
+  ('#know-your-rights-traffic-stop', 87, NOW() - INTERVAL '29 hours')
 ON CONFLICT (tag) DO UPDATE
-  SET use_count = EXCLUDED.use_count,
+  SET use_count = GREATEST(popular_tags.use_count, EXCLUDED.use_count),
       last_used = EXCLUDED.last_used;

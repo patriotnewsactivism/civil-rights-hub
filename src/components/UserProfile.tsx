@@ -105,14 +105,16 @@ export function UserProfile() {
     // Check if verification request pending
     const { data: verData } = await supabase
       .from("user_verification")
-      .select("id, status")
+      .select("id, status, is_active, role")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false })
       .limit(1)
       .maybeSingle();
 
     if (verData) {
-      setVerificationStatus((prev) => ({ ...prev, pending: verData.status === "pending" }));
+      const isApproved = verData.is_active === true;
+      const isPending = !isApproved && (verData.status === "pending" || verData.status == null);
+      setVerificationStatus({ pending: isPending, verified: isApproved });
     }
   }, [user?.id]);
 
@@ -164,12 +166,16 @@ export function UserProfile() {
       return;
     }
     setSubmittingVerify(true);
+    // Use the existing user_verification schema; our migration adds role/organization/credential_detail/status columns
     const { error } = await supabase.from("user_verification").insert({
       user_id: user?.id,
+      verification_type: verifyRole,
+      badge_type: "verified",
       role: verifyRole,
       organization: verifyOrg,
       credential_detail: verifyDetail,
       status: "pending",
+      is_active: false,
     });
     setSubmittingVerify(false);
     if (error) {

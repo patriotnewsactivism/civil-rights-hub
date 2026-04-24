@@ -90,6 +90,20 @@ interface PostWithDetails extends Post {
   userVotes?: string[];
 }
 
+interface PostCardProps {
+  post: PostWithDetails;
+  currentUserId: string | null;
+  onLike: (postId: string) => Promise<void>;
+  onShare: (postId: string) => void;
+  onPollVote: (optionIds: string[]) => void;
+  onHashtagClick: (tag: string) => void;
+  isBookmarked: boolean;
+  onToggleBookmark: (postId: string) => Promise<void>;
+  onAddComment: (content?: string, parentId?: string) => Promise<void>;
+  isExpanded: boolean;
+  onToggleComments: () => void;
+}
+
 function extractHashtags(content: string): string[] {
   const matches = content.match(/#[\w]+/g);
   return matches ? matches.map((tag) => tag.toLowerCase()) : [];
@@ -289,7 +303,7 @@ export function SocialFeed() {
     });
 
     // Load user's poll votes
-    let userVotesMap = new Map<string, string[]>();
+    const userVotesMap = new Map<string, string[]>();
     if (currentUserId) {
       const { data: pollVotesData } = await supabase
         .from("poll_votes")
@@ -404,7 +418,7 @@ export function SocialFeed() {
     } finally {
       setUploading(false);
     }
-  }, [currentUserId, fetchPosts, mediaFiles, newPost, uploadMedia]);
+  }, [currentUserId, fetchPosts, mediaFiles, newPost, pendingPoll, uploadMedia]);
 
   const toggleLike = useCallback(
     async (postId: string) => {
@@ -481,7 +495,10 @@ export function SocialFeed() {
       totalVotes: post.poll_data.totalVotes + 1,
     };
 
-    await supabase.from("posts").update({ poll_data: updatedPoll } as any).eq("id", postId);
+    await supabase
+      .from("posts")
+      .update({ poll_data: updatedPoll } as unknown as Record<string, unknown>)
+      .eq("id", postId);
 
     // Record user votes in poll_votes table
     await supabase.from("poll_votes").upsert(
@@ -806,10 +823,10 @@ const ROLE_BADGE: Record<string, { label: string; className: string }> = {
   admin: { label: "Admin", className: "bg-red-500/20 text-red-400 hover:bg-red-500/30" },
 };
 
-function PostCard({ post, currentUserId, onLike, onShare, onPollVote, onHashtagClick, isBookmarked, onToggleBookmark, onAddComment, isExpanded, onToggleComments }: any) {
-  const isLiked = post.likes.some((l: any) => l.user_id === currentUserId);
+function PostCard({ post, currentUserId, onLike, onShare, onPollVote, onHashtagClick, isBookmarked, onToggleBookmark, onAddComment, isExpanded, onToggleComments }: PostCardProps) {
+  const isLiked = post.likes.some((l) => l.user_id === currentUserId);
   const likeReactions = post.likes.length > 0
-    ? [{ type: "like", count: post.likes.length, users: post.likes.map((l: any) => l.user_id) }]
+    ? [{ type: "like", count: post.likes.length, users: post.likes.map((l) => l.user_id) }]
     : [];
   const currentReaction = isLiked ? "like" : null;
   const isPollExpired = post.poll_data?.endsAt ? new Date(post.poll_data.endsAt) < new Date() : false;

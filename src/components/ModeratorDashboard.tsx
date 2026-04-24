@@ -82,7 +82,7 @@ export function ModeratorDashboard() {
         ),
       ];
 
-      let userProfiles: Record<string, { display_name: string | null; email: string | null }> = {};
+      const userProfiles: Record<string, { display_name: string | null; email: string | null }> = {};
       if (reportUserIds.length > 0) {
         const { data: profilesData } = await supabase
           .from("profiles")

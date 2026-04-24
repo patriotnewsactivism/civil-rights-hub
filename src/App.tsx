@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Analytics } from "@vercel/analytics/react";
 import { HelmetProvider } from "react-helmet-async";
+import { lazy, Suspense } from "react";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
@@ -19,6 +20,8 @@ import Learn from "./pages/Learn";
 import Newsroom from "./pages/Newsroom";
 import GetHelp from "./pages/GetHelp";
 import { JurisdictionProvider } from "./hooks/useJurisdiction";
+
+const CityPage = lazy(() => import("./pages/CityPage"));
 
 const queryClient = new QueryClient();
 
@@ -43,6 +46,15 @@ const App = () => (
               <Route path="/activists" element={<Activists />} />
               <Route path="/attorneys" element={<Attorneys />} />
               <Route path="/resources" element={<ResourceLibrary />} />
+              {/* City pages – /city/los-angeles, /city/chicago, etc. */}
+              <Route
+                path="/city/:slug"
+                element={
+                  <Suspense fallback={<div className="min-h-screen flex items-center justify-center text-muted-foreground text-sm">Loading city hub…</div>}>
+                    <CityPage />
+                  </Suspense>
+                }
+              />
               {/* Convenience routes that redirect to Community tabs */}
               <Route path="/notifications" element={<Navigate to="/community?tab=notifications" replace />} />
               <Route path="/messages" element={<Navigate to="/community?tab=messages" replace />} />

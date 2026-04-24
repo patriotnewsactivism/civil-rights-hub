@@ -8,6 +8,8 @@ import { SEO } from "@/components/SEO";
 import { ATTORNEY_DIRECTORY } from "@/lib/seoData";
 import { StatePreferenceBanner } from "@/components/StatePreferenceBanner";
 import { QuickAccessHub } from "@/components/QuickAccessHub";
+import { TodayNearYou } from "@/components/TodayNearYou";
+import { DigestSubscribeBanner } from "@/components/DigestSubscribeBanner";
 
 const ResourceCommandCenter = lazy(() =>
   import("@/components/ResourceCommandCenter").then((module) => ({

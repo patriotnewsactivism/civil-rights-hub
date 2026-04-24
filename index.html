@@ -2,10 +2,122 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5" />
+
+    <!-- Primary Meta -->
+    <title>Civil Rights Hub | Report Violations · Find Attorneys · Know Your Rights</title>
+    <meta name="description" content="Civil Rights Hub is the nation's most comprehensive civil rights platform. Report violations, find civil rights attorneys, track FOIA requests, access Know Your Rights guides, monitor police scanners, and connect with your community." />
+    <meta name="keywords" content="civil rights, civil rights attorney, report police misconduct, know your rights, FOIA request, police scanner, civil rights violations, 1st amendment, 4th amendment, racial discrimination, police brutality, civil liberties, legal help, civil rights lawyer" />
+    <meta name="author" content="Civil Rights Hub" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <link rel="canonical" href="https://civilrightshub.org/" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://civilrightshub.org/" />
+    <meta property="og:site_name" content="Civil Rights Hub" />
+    <meta property="og:title" content="Civil Rights Hub | Report Violations · Find Attorneys · Know Your Rights" />
+    <meta property="og:description" content="The nation's most comprehensive civil rights platform. Report violations, find attorneys, track FOIAs, access KYR guides, and connect with your community." />
+    <meta property="og:image" content="https://civilrightshub.org/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Civil Rights Hub - Know Your Rights, Report Violations, Find Attorneys" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@CivilRightsHub" />
+    <meta name="twitter:title" content="Civil Rights Hub | Know Your Rights. Report Violations. Find Help." />
+    <meta name="twitter:description" content="The nation's most comprehensive civil rights platform — violation reporting, attorney directory, FOIA tracker, KYR guides, and community." />
+    <meta name="twitter:image" content="https://civilrightshub.org/og-image.png" />
+    <meta name="twitter:image:alt" content="Civil Rights Hub" />
+
+    <!-- Favicon & Icons -->
     <link rel="icon" type="image/png" href="/favicon.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
-    <title>Civil Rights Hub</title>
-    <meta name="description" content="Civil Rights Hub - Resources, attorneys, activists, laws, scanners, FOIA tracking, and community for civil rights defense" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <!-- PWA / Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#1a1f2e" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Civil Rights Hub" />
+
+    <!-- Geo targeting -->
+    <meta name="geo.region" content="US" />
+    <meta name="geo.placename" content="United States" />
+
+    <!-- Structured Data: Organization -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Civil Rights Hub",
+      "url": "https://civilrightshub.org",
+      "logo": "https://civilrightshub.org/favicon.png",
+      "description": "The nation's most comprehensive civil rights platform — violation reporting, attorney directory, FOIA tracker, Know Your Rights guides, police scanner feeds, and community.",
+      "sameAs": [
+        "https://twitter.com/CivilRightsHub"
+      ],
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer support",
+        "url": "https://civilrightshub.org/help"
+      }
+    }
+    </script>
+
+    <!-- Structured Data: WebSite with SearchAction -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Civil Rights Hub",
+      "url": "https://civilrightshub.org",
+      "description": "Report civil rights violations, find attorneys, track FOIA requests, access Know Your Rights guides.",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://civilrightshub.org/attorneys?q={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+
+    <!-- Structured Data: WebApplication -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Civil Rights Hub",
+      "url": "https://civilrightshub.org",
+      "applicationCategory": "LegalApplication",
+      "operatingSystem": "Any",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "featureList": [
+        "Civil rights violation reporting",
+        "FOIA request tracking and builder",
+        "Civil rights attorney directory",
+        "Know Your Rights PDF guides",
+        "Police scanner feeds",
+        "Go Live incident recorder",
+        "Panic button emergency tool",
+        "Community feed and activism network"
+      ]
+    }
+    </script>
+
+    <!-- Performance hints -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="https://supabase.co" />
   </head>
   <body>
     <div id="root"></div>

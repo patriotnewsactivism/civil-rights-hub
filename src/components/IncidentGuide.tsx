@@ -33,7 +33,7 @@ const guideSteps = [
   {
     title: "Your Rights While Recording",
     icon: Scale,
-    color: "text-purple-500",
+    color: "text-teal-500",
     steps: [
       "Officers cannot order you to stop recording in public",
       "You don't need to show ID unless you're being detained",

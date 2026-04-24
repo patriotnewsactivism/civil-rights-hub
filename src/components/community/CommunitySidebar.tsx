@@ -24,7 +24,7 @@ interface SuggestedUser {
 
 const ROLE_COLORS: Record<string, string> = {
   journalist: "bg-blue-500/20 text-blue-400",
-  attorney: "bg-purple-500/20 text-purple-400",
+  attorney: "bg-teal-500/20 text-teal-300",
   activist: "bg-orange-500/20 text-orange-400",
 };
 

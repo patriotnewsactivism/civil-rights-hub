@@ -29,7 +29,7 @@ const ROLE_STYLES: Record<string, { bg: string; text: string; label: string }> =
   moderator:  { bg: "bg-amber-500/20",   text: "text-amber-400",   label: "Moderator" },
   journalist: { bg: "bg-sky-500/20",     text: "text-sky-400",     label: "Journalist" },
   activist:   { bg: "bg-emerald-500/20", text: "text-emerald-400", label: "Activist" },
-  attorney:   { bg: "bg-purple-500/20",  text: "text-purple-400",  label: "Attorney" },
+  attorney:   { bg: "bg-teal-500/20",  text: "text-teal-300",  label: "Attorney" },
   member:     { bg: "bg-slate-500/20",   text: "text-slate-400",   label: "Member" },
 };
 

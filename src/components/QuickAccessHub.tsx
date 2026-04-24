@@ -54,8 +54,8 @@ const QUICK_ACCESS = [
     description: "Investigations and document drops",
     icon: Newspaper,
     href: "/newsroom",
-    color: "text-purple-600",
-    bg: "bg-purple-50",
+    color: "text-teal-600",
+    bg: "bg-teal-50",
   },
   {
     title: "Get Help",

@@ -10,16 +10,27 @@ import { StatePreferenceBanner } from "@/components/StatePreferenceBanner";
 import { QuickAccessHub } from "@/components/QuickAccessHub";
 import { TodayNearYou } from "@/components/TodayNearYou";
 import { DigestSubscribeBanner } from "@/components/DigestSubscribeBanner";
+import { EmergencyFAB } from "@/components/EmergencyActionSheet";
 
 const ResourceCommandCenter = lazy(() =>
   import("@/components/ResourceCommandCenter").then((module) => ({
-    default: module.ResourceCommandCenter
+    default: module.ResourceCommandCenter,
   }))
+);
+
+const OfficerAccountability = lazy(() =>
+  import("@/components/OfficerAccountability").then((module) => ({
+    default: module.OfficerAccountability,
+  }))
+);
+
+const CivicScore = lazy(() =>
+  import("@/components/CivicScore").then((module) => ({ default: module.CivicScore }))
 );
 
 const attorneyNames = ATTORNEY_DIRECTORY.map((entry) => entry.name);
 const organizationNames = ATTORNEY_DIRECTORY.map((entry) => entry.organization).filter(
-  (organization): organization is string => Boolean(organization)
+  (o): o is string => Boolean(o)
 );
 
 const seoKeywords = [
@@ -30,13 +41,17 @@ const seoKeywords = [
   "attorney directory for protest defense",
   "media freedom legal help",
   "FOIA litigation lawyers",
+  "report police misconduct",
+  "know your rights",
+  "civil rights violations",
+  "police accountability",
   ...attorneyNames,
-  ...organizationNames
+  ...organizationNames,
 ].join(", ");
 
-const seoTitle = "Civil Rights Hub | Nationwide Civil Rights Attorneys by We The People News";
+const seoTitle = "Civil Rights Hub | Know Your Rights · Report Violations · Find Attorneys";
 const seoDescription =
-  "Access every civil rights attorney, legal collective, and We The People News investigation in one searchable hub with pro bono, protest defense, FOIA, and police accountability resources.";
+  "Civil Rights Hub is the nation's most comprehensive civil rights platform. Report violations, find pro bono attorneys, track FOIA requests, access Know Your Rights guides, and connect with your community.";
 
 const legalServicesStructuredData = {
   "@context": "https://schema.org",
@@ -47,32 +62,20 @@ const legalServicesStructuredData = {
       name: entry.name,
       description: entry.description,
       areaServed: entry.state,
-      keywords: keywords.join(", ")
+      keywords: keywords.join(", "),
     };
-
-    if (entry.website) {
-      service.url = entry.website;
-      service.sameAs = entry.website;
-    }
-
-    if (entry.phone) {
-      service.telephone = entry.phone;
-    }
-
-    if (entry.email) {
-      service.email = entry.email;
-    }
-
+    if (entry.website) { service.url = entry.website; service.sameAs = entry.website; }
+    if (entry.phone) service.telephone = entry.phone;
+    if (entry.email) service.email = entry.email;
     if (entry.organization) {
       service.parentOrganization = {
         "@type": "Organization",
         name: entry.organization,
-        ...(entry.website ? { url: entry.website } : {})
+        ...(entry.website ? { url: entry.website } : {}),
       };
     }
-
     return service;
-  })
+  }),
 };
 
 const Index = () => {
@@ -94,16 +97,27 @@ const Index = () => {
       <DigestSubscribeBanner />
       <div className="container mx-auto px-4 py-6">
         <StatePreferenceBanner />
-        <QuickAccessHub />
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6 mt-4">
+          <div>
+            <QuickAccessHub />
+          </div>
+          <div className="space-y-4">
+            <Suspense fallback={null}>
+              <CivicScore />
+            </Suspense>
+          </div>
+        </div>
       </div>
       <KnowYourRights />
+      <Suspense fallback={<div className="py-8 text-center text-muted-foreground text-sm">Loading accountability data…</div>}>
+        <OfficerAccountability />
+      </Suspense>
       <CommunityCarousel />
-      <Suspense
-        fallback={<div className="py-8 text-center text-muted-foreground text-sm">Loading resources...</div>}
-      >
+      <Suspense fallback={<div className="py-8 text-center text-muted-foreground text-sm">Loading resources…</div>}>
         <ResourceCommandCenter />
       </Suspense>
       <Footer />
+      <EmergencyFAB />
     </div>
   );
 };

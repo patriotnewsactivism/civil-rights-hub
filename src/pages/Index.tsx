@@ -90,6 +90,8 @@ const Index = () => {
       />
       <Header />
       <Hero />
+      <TodayNearYou />
+      <DigestSubscribeBanner />
       <div className="container mx-auto px-4 py-6">
         <StatePreferenceBanner />
         <QuickAccessHub />

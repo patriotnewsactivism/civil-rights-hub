@@ -8,6 +8,8 @@ import { SEO } from "@/components/SEO";
 import { ATTORNEY_DIRECTORY } from "@/lib/seoData";
 import { StatePreferenceBanner } from "@/components/StatePreferenceBanner";
 import { QuickAccessHub } from "@/components/QuickAccessHub";
+import { TodayNearYou } from "@/components/TodayNearYou";
+import { DigestSubscribeBanner } from "@/components/DigestSubscribeBanner";
 
 const ResourceCommandCenter = lazy(() =>
   import("@/components/ResourceCommandCenter").then((module) => ({
@@ -88,6 +90,8 @@ const Index = () => {
       />
       <Header />
       <Hero />
+      <TodayNearYou />
+      <DigestSubscribeBanner />
       <div className="container mx-auto px-4 py-6">
         <StatePreferenceBanner />
         <QuickAccessHub />

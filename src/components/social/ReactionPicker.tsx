@@ -50,7 +50,7 @@ const REACTION_CONFIGS: ReactionConfig[] = [
   { type: "sad", emoji: "😢", label: "Sad", icon: Frown, color: "text-blue-400" },
   { type: "angry", emoji: "😠", label: "Angry", icon: Angry, color: "text-orange-500" },
   { type: "fire", emoji: "🔥", label: "Fire", icon: Flame, color: "text-orange-600" },
-  { type: "celebrate", emoji: "🎉", label: "Celebrate", icon: PartyPopper, color: "text-purple-500" },
+  { type: "celebrate", emoji: "🎉", label: "Celebrate", icon: PartyPopper, color: "text-teal-500" },
 ];
 
 function getReactionConfig(type: string): ReactionConfig | undefined {

@@ -115,7 +115,7 @@ export default function UserNetwork() {
   const getRoleBadge = (role: Database["public"]["Enums"]["app_role"] | null) => {
     const roleMap: Record<string, { color: string; label: string; icon: string }> = {
       admin: { color: "bg-red-100 text-red-800 border-red-200", label: "Admin", icon: "👑" },
-      moderator: { color: "bg-purple-100 text-purple-800 border-purple-200", label: "Moderator", icon: "🛡️" },
+      moderator: { color: "bg-teal-100 text-teal-800 border-teal-200", label: "Moderator", icon: "🛡️" },
       attorney: { color: "bg-blue-100 text-blue-800 border-blue-200", label: "Civil Rights Attorney", icon: "⚖️" },
       journalist: { color: "bg-green-100 text-green-800 border-green-200", label: "Journalist", icon: "📰" },
       activist: { color: "bg-orange-100 text-orange-800 border-orange-200", label: "Activist", icon: "✊" },
@@ -205,7 +205,7 @@ export default function UserNetwork() {
               <div key={user.id} className="space-y-4 rounded-2xl border bg-card p-6 shadow-md">
                 <div className="flex items-start justify-between">
                   <div className="flex items-center space-x-3">
-                    <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-purple-500 text-2xl font-bold text-white">
+                    <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 text-2xl font-bold text-white">
                       {user.avatar_url ? (
                         <img src={user.avatar_url} alt={user.display_name || "Profile"} className="h-16 w-16 rounded-full object-cover" />
                       ) : (

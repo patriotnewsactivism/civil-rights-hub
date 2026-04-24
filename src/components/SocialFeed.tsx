@@ -800,7 +800,7 @@ export function SocialFeed() {
 
 const ROLE_BADGE: Record<string, { label: string; className: string }> = {
   journalist: { label: "Journalist", className: "bg-blue-500/20 text-blue-400 hover:bg-blue-500/30" },
-  attorney: { label: "Attorney", className: "bg-purple-500/20 text-purple-400 hover:bg-purple-500/30" },
+  attorney: { label: "Attorney", className: "bg-teal-500/20 text-teal-300 hover:bg-teal-500/30" },
   activist: { label: "Activist", className: "bg-orange-500/20 text-orange-400 hover:bg-orange-500/30" },
   moderator: { label: "Moderator", className: "bg-green-500/20 text-green-400 hover:bg-green-500/30" },
   admin: { label: "Admin", className: "bg-red-500/20 text-red-400 hover:bg-red-500/30" },

@@ -302,20 +302,25 @@ export function SocialFeed() {
       sharesMap.set(share.post_id, (sharesMap.get(share.post_id) ?? 0) + 1);
     });
 
-    // Load user's poll votes
+    // Load user's poll votes (graceful – table may not exist yet)
     const userVotesMap = new Map<string, string[]>();
     if (currentUserId) {
-      const { data: pollVotesData } = await supabase
-        .from("poll_votes")
-        .select("post_id, option_id")
-        .eq("user_id", currentUserId)
-        .in("post_id", postIds);
-
-      (pollVotesData ?? []).forEach((vote) => {
-        const existing = userVotesMap.get(vote.post_id) ?? [];
-        existing.push(vote.option_id);
-        userVotesMap.set(vote.post_id, existing);
-      });
+      try {
+        const { data: pollVotesData, error: pvErr } = await supabase
+          .from("poll_votes")
+          .select("post_id, option_id")
+          .eq("user_id", currentUserId)
+          .in("post_id", postIds);
+        if (!pvErr) {
+          (pollVotesData ?? []).forEach((vote) => {
+            const existing = userVotesMap.get(vote.post_id) ?? [];
+            existing.push(vote.option_id);
+            userVotesMap.set(vote.post_id, existing);
+          });
+        }
+      } catch {
+        // poll_votes table not yet migrated
+      }
     }
 
     const postsWithDetails: PostWithDetails[] = typedPosts.map((post) => ({
@@ -500,10 +505,12 @@ export function SocialFeed() {
       .update({ poll_data: updatedPoll } as unknown as Record<string, unknown>)
       .eq("id", postId);
 
-    // Record user votes in poll_votes table
-    await supabase.from("poll_votes").upsert(
-      optionIds.map((optId) => ({ post_id: postId, user_id: currentUserId, option_id: optId }))
-    );
+    // Record user votes in poll_votes table (graceful)
+    try {
+      await supabase.from("poll_votes").upsert(
+        optionIds.map((optId) => ({ post_id: postId, user_id: currentUserId, option_id: optId }))
+      );
+    } catch { /* poll_votes table not yet migrated */ }
 
     await fetchPosts();
   }, [currentUserId, fetchPosts, posts]);
@@ -547,7 +554,7 @@ export function SocialFeed() {
       setCurrentUserId(uid);
       if (uid) {
         supabase
-          .from("user_follows")
+          .from("follows")
           .select("following_id")
           .eq("follower_id", uid)
           .then(({ data: followData }) => {

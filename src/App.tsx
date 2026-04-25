@@ -2,10 +2,10 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { Analytics } from "@vercel/analytics/react";
 import { HelmetProvider } from "react-helmet-async";
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
@@ -25,6 +25,18 @@ const CityPage = lazy(() => import("./pages/CityPage"));
 
 const queryClient = new QueryClient();
 
+// ── Always scroll to the top when navigating to a new route ──────────────────
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    // Only scroll to top if there is no hash — hash links should still work
+    if (!window.location.hash) {
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+    }
+  }, [pathname]);
+  return null;
+}
+
 const App = () => (
   <HelmetProvider>
     <QueryClientProvider client={queryClient}>
@@ -33,6 +45,7 @@ const App = () => (
           <Toaster />
           <Sonner />
           <BrowserRouter>
+            <ScrollToTop />
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/rights" element={<Rights />} />

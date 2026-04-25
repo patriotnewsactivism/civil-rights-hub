@@ -68,7 +68,7 @@ export function UserProfile() {
     if (!user?.id) return;
 
     const { data, error } = await supabase
-      .from("profiles")
+      .from("user_profiles")
       .select("*")
       .eq("id", user.id)
       .single();
@@ -124,7 +124,7 @@ export function UserProfile() {
 
   const updateProfile = async () => {
     const { error } = await supabase
-      .from("profiles")
+      .from("user_profiles")
       .update({ display_name: displayName, bio, location })
       .eq("id", user?.id);
 
@@ -202,7 +202,7 @@ export function UserProfile() {
     const { data: { publicUrl } } = supabase.storage.from("avatars").getPublicUrl(fileName);
 
     const { error: updateError } = await supabase
-      .from("profiles")
+      .from("user_profiles")
       .update({ avatar_url: publicUrl })
       .eq("id", user?.id);
 

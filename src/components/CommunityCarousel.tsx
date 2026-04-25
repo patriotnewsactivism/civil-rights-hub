@@ -90,7 +90,7 @@ export const CommunityCarousel = () => {
     let cancelled = false;
     (async () => {
       const { data, error } = await supabase
-        .from("profiles")
+        .from("user_profiles")
         .select("id, display_name, avatar_url, location, role")
         .order("created_at", { ascending: false });
 

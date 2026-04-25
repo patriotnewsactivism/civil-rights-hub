@@ -58,7 +58,7 @@ export default function UserNetwork() {
     setLoading(true);
     try {
       let query = supabase
-        .from("profiles")
+        .from("user_profiles")
         .select("*")
         .neq("id", currentUser.id)
         .order("created_at", { ascending: false })

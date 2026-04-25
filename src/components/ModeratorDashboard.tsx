@@ -85,7 +85,7 @@ export function ModeratorDashboard() {
       const userProfiles: Record<string, { display_name: string | null; email: string | null }> = {};
       if (reportUserIds.length > 0) {
         const { data: profilesData } = await supabase
-          .from("profiles")
+          .from("user_profiles")
           .select("id, display_name, email")
           .in("id", reportUserIds);
 

@@ -87,7 +87,7 @@ export const SocialSpotlight = () => {
       // Fetch profiles for these users
       const userIds = postsData.map((p) => p.user_id);
       const { data: profilesData } = await supabase
-        .from("profiles")
+        .from("user_profiles")
         .select("id, display_name, avatar_url, role")
         .in("id", userIds);
 

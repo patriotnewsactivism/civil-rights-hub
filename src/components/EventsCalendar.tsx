@@ -55,7 +55,7 @@ const EVENT_TYPE_LABELS: Record<string, string> = {
 };
 
 const EVENT_TYPE_FILTERS = [
-  { label: "All types", value: "" },
+  { label: "All types", value: "all" },
   ...Object.entries(EVENT_TYPE_LABELS).map(([value, label]) => ({ label, value })),
 ];
 
@@ -80,7 +80,7 @@ export const EventsCalendar = () => {
   const [filteredEvents, setFilteredEvents] = useState<CommunityEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState<ViewMode>("list");
-  const [selectedType, setSelectedType] = useState<string>("");
+  const [selectedType, setSelectedType] = useState<string>("all");
   const [stateFilter, setStateFilter] = useState<string>("");
   const [rsvps, setRsvps] = useState<Map<string, EventRsvp>>(new Map());
   const [rsvpCounts, setRsvpCounts] = useState<Map<string, number>>(new Map());
@@ -164,7 +164,7 @@ export const EventsCalendar = () => {
 
   useEffect(() => {
     const next = events.filter((event) => {
-      const matchesType = selectedType ? event.event_type === selectedType : true;
+      const matchesType = !selectedType || selectedType === "all" ? true : event.event_type === selectedType;
       const matchesState = stateFilter ? event.state === stateFilter : true;
       return matchesType && matchesState;
     });

@@ -1,0 +1,3 @@
+[submodule "civil-rights-network"]
+	path = civil-rights-network
+	url = https://github.com/patriotnewsactivism/civil-rights-network.git

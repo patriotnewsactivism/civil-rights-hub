@@ -211,7 +211,7 @@ export function SocialFeed() {
   const fetchPosts = useCallback(async () => {
     const { data: postsData, error: postsError } = await supabase
       .from("posts")
-      .select("id, content, user_id, created_at, media_urls, media_types, poll_data")
+      .select("id, content, user_id, created_at, media_urls, media_types")
       .order("created_at", { ascending: false })
       .limit(100);
 

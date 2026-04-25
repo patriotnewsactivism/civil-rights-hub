@@ -62,6 +62,18 @@ interface Like {
   user_id: string;
 }
 
+interface ReactionRecord {
+  id: string;
+  user_id: string;
+  reaction_type: string;
+}
+
+interface ReactionSummary {
+  type: string;
+  count: number;
+  users: string[];
+}
+
 interface Comment {
   id: string;
   content: string;
@@ -83,6 +95,9 @@ interface PollData {
 interface PostWithDetails extends Post {
   profile: UserProfile | null;
   likes: Like[];
+  reactions: ReactionRecord[];
+  reactionSummary: ReactionSummary[];
+  currentUserReaction: string | null;
   comments: Comment[];
   hashtags: string[];
   isBookmarked: boolean;
@@ -93,7 +108,8 @@ interface PostWithDetails extends Post {
 interface PostCardProps {
   post: PostWithDetails;
   currentUserId: string | null;
-  onLike: (postId: string) => Promise<void>;
+  onReact: (postId: string, reactionType: string) => Promise<void>;
+  onRemoveReaction: (postId: string) => Promise<void>;
   onShare: (postId: string) => void;
   onPollVote: (optionIds: string[]) => void;
   onHashtagClick: (tag: string) => void;
@@ -250,6 +266,22 @@ export function SocialFeed() {
       likesMap.set(like.post_id, existing);
     });
 
+    // Fetch full reactions from post_reactions table
+    const reactionsMap = new Map<string, ReactionRecord[]>();
+    try {
+      const { data: reactionsData } = await supabase
+        .from("post_reactions")
+        .select("id, user_id, post_id, reaction_type")
+        .in("post_id", postIds);
+      (reactionsData ?? []).forEach((r: { id: string; user_id: string; post_id: string; reaction_type: string }) => {
+        const existing = reactionsMap.get(r.post_id) ?? [];
+        existing.push({ id: r.id, user_id: r.user_id, reaction_type: r.reaction_type });
+        reactionsMap.set(r.post_id, existing);
+      });
+    } catch {
+      // post_reactions table not yet migrated — fall back to likes only
+    }
+
     const { data: commentsData } = await supabase
       .from("comments")
       .select("id, content, user_id, post_id, parent_comment_id, created_at")
@@ -323,16 +355,38 @@ export function SocialFeed() {
       }
     }
 
-    const postsWithDetails: PostWithDetails[] = typedPosts.map((post) => ({
-      ...post,
-      profile: profileMap.get(post.user_id) ?? null,
-      likes: likesMap.get(post.id) ?? [],
-      comments: commentsMap.get(post.id) ?? [],
-      hashtags: extractHashtags(post.content),
-      isBookmarked: bookmarkedPostIds.has(post.id),
-      shareCount: sharesMap.get(post.id) ?? 0,
-      userVotes: userVotesMap.get(post.id),
-    }));
+    const postsWithDetails: PostWithDetails[] = typedPosts.map((post) => {
+      const postReactions = reactionsMap.get(post.id) ?? [];
+      // Build reaction summary grouped by type
+      const reactionsByType = new Map<string, { count: number; users: string[] }>();
+      postReactions.forEach((r) => {
+        const existing = reactionsByType.get(r.reaction_type) ?? { count: 0, users: [] };
+        existing.count++;
+        existing.users.push(r.user_id);
+        reactionsByType.set(r.reaction_type, existing);
+      });
+      const reactionSummary: ReactionSummary[] = Array.from(reactionsByType.entries()).map(
+        ([type, data]) => ({ type, count: data.count, users: data.users })
+      );
+      // Find current user's reaction
+      const currentUserReaction = currentUserId
+        ? (postReactions.find((r) => r.user_id === currentUserId)?.reaction_type ?? null)
+        : null;
+
+      return {
+        ...post,
+        profile: profileMap.get(post.user_id) ?? null,
+        likes: likesMap.get(post.id) ?? [],
+        reactions: postReactions,
+        reactionSummary,
+        currentUserReaction,
+        comments: commentsMap.get(post.id) ?? [],
+        hashtags: extractHashtags(post.content),
+        isBookmarked: bookmarkedPostIds.has(post.id),
+        shareCount: sharesMap.get(post.id) ?? 0,
+        userVotes: userVotesMap.get(post.id),
+      };
+    });
 
     setPosts(postsWithDetails);
   }, [currentUserId]);
@@ -425,8 +479,8 @@ export function SocialFeed() {
     }
   }, [currentUserId, fetchPosts, mediaFiles, newPost, pendingPoll, uploadMedia]);
 
-  const toggleLike = useCallback(
-    async (postId: string) => {
+  const toggleReaction = useCallback(
+    async (postId: string, reactionType: string) => {
       if (!currentUserId) {
         toast.error("Sign in to react");
         return;
@@ -435,22 +489,52 @@ export function SocialFeed() {
       const targetPost = posts.find((post) => post.id === postId);
       if (!targetPost) return;
 
-      const existingLike = targetPost.likes.find((like) => like.user_id === currentUserId);
-
-      if (existingLike) {
-        const { error } = await supabase.from("likes").delete().eq("id", existingLike.id);
-        if (error) {
-          toast.error("Failed to remove like");
-          return;
-        }
-      } else {
-        const { error } = await supabase.from("likes").insert({ post_id: postId, user_id: currentUserId });
-        if (error) {
-          toast.error("Failed to add like");
-          return;
-        }
+      // Remove existing reaction if any (swap or toggle)
+      const existingReaction = targetPost.reactions.find((r) => r.user_id === currentUserId);
+      if (existingReaction) {
+        await supabase.from("post_reactions").delete().eq("id", existingReaction.id);
+        // Also remove from legacy likes table for consistency
+        await supabase.from("likes").delete().eq("post_id", postId).eq("user_id", currentUserId);
       }
 
+      // If clicking the same reaction, it's a toggle-off — don't insert
+      if (existingReaction?.reaction_type === reactionType) {
+        await fetchPosts();
+        return;
+      }
+
+      // Insert new reaction
+      const { error } = await supabase.from("post_reactions").insert({
+        post_id: postId,
+        user_id: currentUserId,
+        reaction_type: reactionType,
+      } as Record<string, unknown>);
+      if (error) {
+        toast.error("Failed to react");
+        return;
+      }
+
+      // Also insert into legacy likes table if it's a "like" (backward compat)
+      if (reactionType === "like") {
+        await supabase.from("likes").insert({ post_id: postId, user_id: currentUserId });
+      }
+
+      await fetchPosts();
+    },
+    [currentUserId, fetchPosts, posts]
+  );
+
+  const removeReaction = useCallback(
+    async (postId: string) => {
+      if (!currentUserId) return;
+      const targetPost = posts.find((post) => post.id === postId);
+      if (!targetPost) return;
+
+      const existingReaction = targetPost.reactions.find((r) => r.user_id === currentUserId);
+      if (existingReaction) {
+        await supabase.from("post_reactions").delete().eq("id", existingReaction.id);
+        await supabase.from("likes").delete().eq("post_id", postId).eq("user_id", currentUserId);
+      }
       await fetchPosts();
     },
     [currentUserId, fetchPosts, posts]
@@ -583,7 +667,7 @@ export function SocialFeed() {
     if (activeTab === "following") {
       filtered = filtered.filter(post => followingUserIds.has(post.user_id));
     } else if (activeTab === "popular") {
-      filtered = [...filtered].sort((a, b) => (b.likes.length + b.comments.length) - (a.likes.length + a.comments.length));
+      filtered = [...filtered].sort((a, b) => (b.reactions.length + b.likes.length + b.comments.length) - (a.reactions.length + a.likes.length + a.comments.length));
     }
     if (selectedHashtag) {
       filtered = filtered.filter(post => post.hashtags.includes(selectedHashtag.toLowerCase()));
@@ -758,7 +842,8 @@ export function SocialFeed() {
             key={post.id}
             post={post}
             currentUserId={currentUserId}
-            onLike={toggleLike}
+            onReact={toggleReaction}
+            onRemoveReaction={removeReaction}
             onShare={(postId) => { setSharePostId(postId); setShareDialogOpen(true); }}
             onPollVote={(optionIds) => handlePollVote(post.id, optionIds)}
             onHashtagClick={(tag) => setSelectedHashtag(tag)}
@@ -837,12 +922,16 @@ const ROLE_BADGE: Record<string, { label: string; className: string }> = {
   admin: { label: "Admin", className: "bg-red-500/20 text-red-400 hover:bg-red-500/30" },
 };
 
-function PostCard({ post, currentUserId, onLike, onShare, onPollVote, onHashtagClick, isBookmarked, onToggleBookmark, onAddComment, isExpanded, onToggleComments }: PostCardProps) {
-  const isLiked = post.likes.some((l) => l.user_id === currentUserId);
-  const likeReactions = post.likes.length > 0
-    ? [{ type: "like", count: post.likes.length, users: post.likes.map((l) => l.user_id) }]
-    : [];
-  const currentReaction = isLiked ? "like" : null;
+function PostCard({ post, currentUserId, onReact, onRemoveReaction, onShare, onPollVote, onHashtagClick, isBookmarked, onToggleBookmark, onAddComment, isExpanded, onToggleComments }: PostCardProps) {
+  // Use full reaction data if available, fall back to likes for backward compat
+  const hasReactions = post.reactionSummary.length > 0;
+  const displayReactions = hasReactions
+    ? post.reactionSummary
+    : (post.likes.length > 0
+        ? [{ type: "like", count: post.likes.length, users: post.likes.map((l) => l.user_id) }]
+        : []);
+  const currentReaction = post.currentUserReaction
+    ?? (post.likes.some((l) => l.user_id === currentUserId) ? "like" : null);
   const isPollExpired = post.poll_data?.endsAt ? new Date(post.poll_data.endsAt) < new Date() : false;
   const roleBadge = post.profile?.role && post.profile.role !== "user" ? ROLE_BADGE[post.profile.role] : null;
 
@@ -908,9 +997,9 @@ function PostCard({ post, currentUserId, onLike, onShare, onPollVote, onHashtagC
             <ReactionPicker
               postId={post.id}
               currentReaction={currentReaction}
-              reactions={likeReactions}
-              onReact={() => onLike(post.id)}
-              onRemove={() => onLike(post.id)}
+              reactions={displayReactions}
+              onReact={(type) => onReact(post.id, type)}
+              onRemove={() => onRemoveReaction(post.id)}
             />
             <button onClick={onToggleComments} className="flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
               <MessageCircle className="h-5 w-5" />

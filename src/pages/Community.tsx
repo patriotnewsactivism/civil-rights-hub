@@ -101,7 +101,7 @@ export default function Community() {
   };
 
   return (
-    <div className="min-h-screen bg-background pb-20 lg:pb-0">
+    <div className="min-h-screen flex flex-col bg-background">
       <Header />
       <SEO
         title="Community - Civil Rights Hub | Social Network for Activists"
@@ -114,109 +114,112 @@ export default function Community() {
         structuredData={structuredData}
       />
 
-      <div className="container mx-auto px-4 py-6">
-        {/* Header */}
-        <div className="mb-6 flex items-start justify-between">
-          <div>
-            <h1 className="text-3xl font-bold">Community</h1>
-            <p className="text-muted-foreground text-sm mt-1">
-              Post, report, go live, and connect with the movement
-            </p>
+      <main className="flex-1 pb-20 lg:pb-0">
+        <div className="container mx-auto px-4 py-6">
+          {/* Header */}
+          <div className="mb-6 flex items-start justify-between">
+            <div>
+              <h1 className="text-3xl font-bold">Community</h1>
+              <p className="text-muted-foreground text-sm mt-1">
+                Post, report, go live, and connect with the movement
+              </p>
+            </div>
+            <button
+              onClick={() => handleTabChange("notifications")}
+              className="relative p-2 rounded-full hover:bg-muted transition-colors mt-1"
+              aria-label="Notifications"
+            >
+              <Bell className="h-6 w-6 text-muted-foreground" />
+              {unreadNotifications > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 bg-destructive text-white text-[10px] font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1">
+                  {unreadNotifications > 99 ? "99+" : unreadNotifications}
+                </span>
+              )}
+            </button>
           </div>
-          <button
-            onClick={() => handleTabChange("notifications")}
-            className="relative p-2 rounded-full hover:bg-muted transition-colors mt-1"
-            aria-label="Notifications"
-          >
-            <Bell className="h-6 w-6 text-muted-foreground" />
-            {unreadNotifications > 0 && (
-              <span className="absolute -top-0.5 -right-0.5 bg-destructive text-white text-[10px] font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1">
-                {unreadNotifications > 99 ? "99+" : unreadNotifications}
-              </span>
-            )}
-          </button>
-        </div>
 
-        {/* Tabs */}
-        <Tabs value={activeTab} onValueChange={handleTabChange}>
-          <TabsList className="hidden lg:flex w-full justify-start overflow-x-auto flex-nowrap bg-transparent border-b border-border rounded-none h-auto p-0 gap-0">
-            {[
-              { value: "feed", icon: Newspaper, label: "Feed" },
-              { value: "discuss", icon: MessageCircle, label: "Discuss" },
-              { value: "events", icon: CalendarDays, label: "Events" },
-              { value: "messages", icon: MessageSquare, label: "Messages" },
-              { value: "notifications", icon: Bell, label: "Alerts" },
-              { value: "network", icon: Globe, label: "Network" },
-              { value: "profile", icon: User, label: "Profile" },
-            ].map(({ value, icon: Icon, label }) => (
-              <TabsTrigger
-                key={value}
-                value={value}
-                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none px-4 py-3 text-sm font-medium"
-              >
-                <Icon className="h-4 w-4 mr-1.5" />
-                {label}
-              </TabsTrigger>
-            ))}
-          </TabsList>
+          {/* Tabs */}
+          <Tabs value={activeTab} onValueChange={handleTabChange}>
+            <TabsList className="hidden lg:flex w-full justify-start overflow-x-auto flex-nowrap bg-transparent border-b border-border rounded-none h-auto p-0 gap-0">
+              {[
+                { value: "feed", icon: Newspaper, label: "Feed" },
+                { value: "discuss", icon: MessageCircle, label: "Discuss" },
+                { value: "events", icon: CalendarDays, label: "Events" },
+                { value: "messages", icon: MessageSquare, label: "Messages" },
+                { value: "notifications", icon: Bell, label: "Alerts" },
+                { value: "network", icon: Globe, label: "Network" },
+                { value: "profile", icon: User, label: "Profile" },
+              ].map(({ value, icon: Icon, label }) => (
+                <TabsTrigger
+                  key={value}
+                  value={value}
+                  className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none px-4 py-3 text-sm font-medium"
+                >
+                  <Icon className="h-4 w-4 mr-1.5" />
+                  {label}
+                </TabsTrigger>
+              ))}
+            </TabsList>
 
-          <CommunityMobileNav activeTab={activeTab} onTabChange={handleTabChange} />
+            <CommunityMobileNav activeTab={activeTab} onTabChange={handleTabChange} />
 
-          <div className="mt-6">
-            {/* Feed Tab - Social media style with sidebar */}
-            <TabsContent value="feed" className="mt-0">
-              <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6">
-                <div className="space-y-4">
-                  {/* Action Bar - Go Live, Report, etc */}
-                  <CommunityActionBar userId={user.id} />
-                  {/* Social Feed */}
-                  <SocialFeed />
-                </div>
-                <aside className="hidden lg:block">
-                  <div className="sticky top-24">
-                    <CommunitySidebar
-                      trendingTags={trendingTags}
-                      onTagClick={setSelectedHashtag}
-                      selectedTag={selectedHashtag}
-                      currentUserRole={currentUserRole}
-                    />
+            <div className="mt-6">
+              {/* Feed Tab - Social media style with sidebar */}
+              <TabsContent value="feed" className="mt-0">
+                <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6">
+                  <div className="space-y-4">
+                    {/* Action Bar - Go Live, Report, etc */}
+                    <CommunityActionBar userId={user.id} />
+                    {/* Social Feed */}
+                    <SocialFeed />
                   </div>
-                </aside>
-              </div>
-            </TabsContent>
+                  <aside className="hidden lg:block">
+                    <div className="sticky top-24">
+                      <CommunitySidebar
+                        trendingTags={trendingTags}
+                        onTagClick={setSelectedHashtag}
+                        selectedTag={selectedHashtag}
+                        currentUserRole={currentUserRole}
+                      />
+                    </div>
+                  </aside>
+                </div>
+              </TabsContent>
 
-            {/* Discussion Board */}
-            <TabsContent value="discuss" className="mt-0">
-              <DiscussionBoard />
-            </TabsContent>
+              {/* Discussion Board */}
+              <TabsContent value="discuss" className="mt-0">
+                <DiscussionBoard />
+              </TabsContent>
 
-            {/* Events */}
-            <TabsContent value="events" className="mt-0">
-              <EventsCalendar />
-            </TabsContent>
+              {/* Events */}
+              <TabsContent value="events" className="mt-0">
+                <EventsCalendar />
+              </TabsContent>
 
-            {/* Messages */}
-            <TabsContent value="messages" className="mt-0">
-              <MessagingPanel />
-            </TabsContent>
+              {/* Messages */}
+              <TabsContent value="messages" className="mt-0">
+                <MessagingPanel />
+              </TabsContent>
 
-            {/* Notifications */}
-            <TabsContent value="notifications" className="mt-0">
-              <NotificationsCenter />
-            </TabsContent>
+              {/* Notifications */}
+              <TabsContent value="notifications" className="mt-0">
+                <NotificationsCenter />
+              </TabsContent>
 
-            {/* Network */}
-            <TabsContent value="network" className="mt-0">
-              <UserNetwork />
-            </TabsContent>
+              {/* Network */}
+              <TabsContent value="network" className="mt-0">
+                <UserNetwork />
+              </TabsContent>
 
-            {/* Profile */}
-            <TabsContent value="profile" className="mt-0">
-              <UserProfile />
-            </TabsContent>
-          </div>
-        </Tabs>
-      </div>
+              {/* Profile */}
+              <TabsContent value="profile" className="mt-0">
+                <UserProfile />
+              </TabsContent>
+            </div>
+          </Tabs>
+        </div>
+      </main>
+      <Footer />
     </div>
   );
 }

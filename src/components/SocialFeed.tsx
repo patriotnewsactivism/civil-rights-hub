@@ -601,7 +601,14 @@ export function SocialFeed() {
             placeholder="Search movement hashtags..." 
             className="pl-10 bg-background/50 backdrop-blur-sm border-primary/20"
             value={selectedHashtag || ""}
-            onChange={(e) => setSelectedHashtag(e.target.value.startsWith('#') ? e.target.value : `#${e.target.value}`)}
+            onChange={(e) => {
+              const val = e.target.value.trim();
+              if (!val) {
+                setSelectedHashtag(null);
+              } else {
+                setSelectedHashtag(val.startsWith('#') ? val : `#${val}`);
+              }
+            }}
           />
         </div>
         <div className="flex gap-2 w-full md:w-auto overflow-x-auto pb-2 md:pb-0">

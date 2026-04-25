@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Shield, ArrowRight, FileText, Radio, AlertCircle, BookOpen, Users, Video, MapPin, Zap, ChevronRight } from "lucide-react";
+import { Shield, ArrowRight, FileText, Radio, AlertCircle, BookOpen, Users, Video, MapPin, Zap, ChevronRight, Scale, Flag } from "lucide-react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -134,18 +134,19 @@ export const Hero = () => {
               </Button>
             </div>
 
-            {/* Quick access grid */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 max-w-3xl mx-auto pt-4">
+            {/* Quick access grid — expanded with new items */}
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-3 md:gap-4 max-w-4xl mx-auto pt-4">
               {[
-                { icon: AlertCircle, label: "Report Violation", to: "/do-this-now#report", color: "text-red-400" },
-                { icon: FileText, label: "FOIA Builder", to: "/tools", color: "text-blue-400" },
-                { icon: Users, label: "Find Attorney", to: "/attorneys", color: "text-green-400" },
-                { icon: Radio, label: "Scanner Feeds", to: "/tools#scanner", color: "text-orange-400" },
-              ].map(({ icon: Icon, label, to, color }) => (
+                { icon: AlertCircle, label: "Report Violation", to: "/do-this-now#report", color: "text-red-400", bg: "hover:bg-red-500/10" },
+                { icon: Scale, label: "Conflicting Laws", to: "/rights?tab=conflicts", color: "text-amber-400", bg: "hover:bg-amber-500/10" },
+                { icon: FileText, label: "FOIA Builder", to: "/tools", color: "text-blue-400", bg: "hover:bg-blue-500/10" },
+                { icon: Users, label: "Find Attorney", to: "/attorneys", color: "text-green-400", bg: "hover:bg-green-500/10" },
+                { icon: Radio, label: "Scanner Feeds", to: "/tools#scanner", color: "text-orange-400", bg: "hover:bg-orange-500/10" },
+              ].map(({ icon: Icon, label, to, color, bg }) => (
                 <Link
                   key={label}
                   to={to}
-                  className="flex flex-col items-center gap-2 p-4 rounded-xl border border-border/50 bg-background/50 backdrop-blur-sm hover:border-primary/50 hover:bg-accent/50 transition-all group"
+                  className={`flex flex-col items-center gap-2 p-4 rounded-xl border border-border/50 bg-background/50 backdrop-blur-sm hover:border-primary/50 ${bg} transition-all group`}
                 >
                   <Icon className={`h-6 w-6 ${color} group-hover:scale-110 transition-transform`} />
                   <span className="text-xs font-medium text-center text-muted-foreground group-hover:text-foreground transition-colors">

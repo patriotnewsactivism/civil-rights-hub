@@ -26,14 +26,29 @@ const CityPage = lazy(() => import("./pages/CityPage"));
 const queryClient = new QueryClient();
 
 // ── Always scroll to the top when navigating to a new route ──────────────────
-function ScrollToTop() {
-  const { pathname } = useLocation();
+export function ScrollToTop() {
+  const { pathname, hash } = useLocation();
+
+  useEffect(() => {
+    if (!("scrollRestoration" in window.history)) {
+      return;
+    }
+
+    const previousScrollRestoration = window.history.scrollRestoration;
+    window.history.scrollRestoration = "manual";
+
+    return () => {
+      window.history.scrollRestoration = previousScrollRestoration;
+    };
+  }, []);
+
   useEffect(() => {
     // Only scroll to top if there is no hash — hash links should still work
-    if (!window.location.hash) {
-      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+    if (!hash) {
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
     }
-  }, [pathname]);
+  }, [pathname, hash]);
+
   return null;
 }
 

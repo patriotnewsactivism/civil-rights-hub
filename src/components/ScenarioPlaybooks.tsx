@@ -80,6 +80,79 @@ const playbooks: Playbook[] = [
       "Do not livestream sensitive organizer details that could expose participants.",
     ],
   },
+  {
+    id: "home-entry",
+    title: "Police at your door",
+    summary: "Verify the warrant, do not open the door without one, and document everything.",
+    script: "Do you have a warrant? Please slide it under the door. I do not consent to entry without a valid warrant signed by a judge.",
+    doList: [
+      "Speak through the closed door — you do not have to open it.",
+      "If they claim to have a warrant, ask them to hold it to the window or slide it under the door.",
+      "Verify the warrant is signed by a judge and lists your address specifically.",
+      "Start recording audio/video immediately.",
+    ],
+    dontList: [
+      "Do not open the door voluntarily if there is no warrant.",
+      "Do not physically resist if they force entry — state 'I do not consent' clearly.",
+      "Do not destroy evidence or run — this creates separate criminal charges.",
+      "Do not answer questions beyond identifying yourself — invoke your right to silence.",
+    ],
+  },
+  {
+    id: "arrest",
+    title: "Being arrested",
+    summary: "Stay calm, invoke your rights clearly, and preserve evidence for your attorney.",
+    script: "I am invoking my right to remain silent. I want a lawyer. I do not consent to any searches.",
+    doList: [
+      "Stay calm and keep your hands visible at all times.",
+      "Clearly state: 'I am invoking my right to remain silent' and 'I want a lawyer.'",
+      "Remember the officer's name, badge number, and patrol car number.",
+      "Ask someone nearby to record and to call your emergency contact.",
+      "Ask for the specific charge when booked.",
+    ],
+    dontList: [
+      "Do not physically resist the arrest — even if you believe it is unlawful.",
+      "Do not make any statements, explanations, or excuses without a lawyer present.",
+      "Do not sign anything without an attorney reviewing it.",
+      "Do not consent to any searches of your person, vehicle, or devices.",
+    ],
+  },
+  {
+    id: "first-amendment-audit",
+    title: "First Amendment audit / public filming",
+    summary: "You have the right to record in public. Know the boundaries and stay professional.",
+    script: "I am engaged in constitutionally protected activity — filming in a public place. I am not interfering with anyone. Am I free to go?",
+    doList: [
+      "Film from public property (sidewalks, streets, parks) — you have an absolute right.",
+      "Remain calm and professional; do not escalate confrontations.",
+      "If asked to leave private property, comply immediately — film from public areas instead.",
+      "Know your state's recording consent laws (one-party vs. two-party).",
+    ],
+    dontList: [
+      "Do not enter restricted areas, cross police lines, or block emergency operations.",
+      "Do not argue with security guards — they can ask you to leave private property.",
+      "Do not threaten, antagonize, or make inflammatory statements.",
+      "Do not delete recordings — even if ordered to by police (cite Riley v. California).",
+    ],
+  },
+  {
+    id: "foia-request",
+    title: "Filing a FOIA / public records request",
+    summary: "Access government documents through formal open records requests.",
+    script: "Under the Freedom of Information Act (5 U.S.C. § 552), I request copies of [specific records]. Please process this within the 20 business day statutory deadline.",
+    doList: [
+      "Be as specific as possible about what records you want — date ranges, departments, subjects.",
+      "Send to the designated FOIA officer at the correct agency.",
+      "Use certified mail or email with read receipt for documentation.",
+      "Appeal any denial — you have the right to administrative and judicial review.",
+    ],
+    dontList: [
+      "Do not request 'all records' — overly broad requests get delayed or denied.",
+      "Do not accept verbal denials — demand a written response citing specific exemptions.",
+      "Do not give up after the first denial — appeals succeed frequently.",
+      "Do not forget state open records laws may provide broader access than federal FOIA.",
+    ],
+  },
 ];
 
 export const ScenarioPlaybooks = () => {

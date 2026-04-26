@@ -111,7 +111,7 @@ const CITY_MAP: Record<string, { city: string; state: string; stateAbbr: string 
 interface CityData {
   violations: Array<{ id: string; title: string; incident_date: string; officer_name?: string | null; agency_name?: string | null }>;
   scanners: Array<{ id: string; scanner_name: string; feed_url?: string | null; listener_count?: number | null }>;
-  attorneys: Array<{ id: string; name: string; firm_name?: string | null; phone?: string | null; website?: string | null; accepts_pro_bono?: boolean | null }>;
+  attorneys: Array<{ id: string; name: string; firm?: string | null; phone?: string | null; website?: string | null; accepts_pro_bono?: boolean | null }>;
   violationCount: number;
 }
 
@@ -142,7 +142,7 @@ const CityPage = () => {
           .order("listener_count", { ascending: false })
           .limit(10),
         supabase.from("attorneys")
-          .select("id, name, firm_name, phone, website, accepts_pro_bono")
+          .select("id, name, firm, phone, website, accepts_pro_bono")
           .eq("state", cityInfo.state)
           .order("created_at", { ascending: false })
           .limit(12),
@@ -389,7 +389,7 @@ const CityPage = () => {
                         <div className="flex items-start justify-between gap-2">
                           <div>
                             <p className="font-semibold text-sm">{a.name}</p>
-                            {a.firm_name && <p className="text-xs text-muted-foreground">{a.firm_name}</p>}
+                            {a.firm && <p className="text-xs text-muted-foreground">{a.firm}</p>}
                             <div className="flex flex-wrap gap-1.5 mt-1.5">
                               {a.accepts_pro_bono && (
                                 <Badge variant="secondary" className="text-[10px] bg-green-500/10 text-green-700 dark:text-green-400">

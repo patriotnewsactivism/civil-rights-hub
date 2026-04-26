@@ -115,10 +115,18 @@ export type Database = {
           city: string | null
           created_at: string | null
           email: string | null
-          firm_name: string | null
+          firm: string | null
+          fts: string | null
           id: string
+          is_verified: boolean | null
+          languages: string[] | null
           name: string
+          notable_cases: string[] | null
           phone: string | null
+          practice_areas: string[]
+          professional_bio: string | null
+          rating: number | null
+          review_count: number | null
           specialties: string[] | null
           state: string
           updated_at: string | null
@@ -132,10 +140,17 @@ export type Database = {
           city?: string | null
           created_at?: string | null
           email?: string | null
-          firm_name?: string | null
+          firm?: string | null
           id?: string
+          is_verified?: boolean | null
+          languages?: string[] | null
           name: string
+          notable_cases?: string[] | null
           phone?: string | null
+          practice_areas: string[]
+          professional_bio?: string | null
+          rating?: number | null
+          review_count?: number | null
           specialties?: string[] | null
           state: string
           updated_at?: string | null
@@ -149,10 +164,17 @@ export type Database = {
           city?: string | null
           created_at?: string | null
           email?: string | null
-          firm_name?: string | null
+          firm?: string | null
           id?: string
+          is_verified?: boolean | null
+          languages?: string[] | null
           name?: string
+          notable_cases?: string[] | null
           phone?: string | null
+          practice_areas?: string[]
+          professional_bio?: string | null
+          rating?: number | null
+          review_count?: number | null
           specialties?: string[] | null
           state?: string
           updated_at?: string | null

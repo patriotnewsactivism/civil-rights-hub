@@ -48,7 +48,7 @@ vi.mock("@/integrations/supabase/client", () => {
 const buildAttorney = (overrides: Partial<AttorneyRecord> = {}): AttorneyRecord => ({
   id: "1",
   name: "Jane Doe",
-  firm_name: "Doe & Partners",
+  firm: "Doe & Partners",
   state: "Ohio",
   city: "Columbus",
   email: "jane@example.com",

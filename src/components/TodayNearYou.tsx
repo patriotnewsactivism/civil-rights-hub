@@ -47,7 +47,7 @@ interface ScannerRow {
 interface AttorneyRow {
   id: string;
   name: string;
-  firm_name: string | null;
+  firm: string | null;
   city: string | null;
   state: string;
   accepts_pro_bono: boolean | null;
@@ -96,7 +96,7 @@ export function TodayNearYou() {
 
     const attorneysQuery = supabase
       .from("attorneys")
-      .select("id, name, firm_name, city, state, accepts_pro_bono")
+      .select("id, name, firm, city, state, accepts_pro_bono")
       .order("created_at", { ascending: false })
       .limit(3);
     if (stateFilter) attorneysQuery.eq("state", stateFilter);
@@ -328,7 +328,7 @@ export function TodayNearYou() {
                   )}
                 </div>
                 <p className="mt-0.5 line-clamp-1 text-[11px] text-muted-foreground">
-                  {a.firm_name ?? "Independent"} · {[a.city, a.state].filter(Boolean).join(", ")}
+                  {a.firm ?? "Independent"} · {[a.city, a.state].filter(Boolean).join(", ")}
                 </p>
               </div>
             ))}

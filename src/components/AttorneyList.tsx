@@ -1,8 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 
 type Attorney = Database["public"]["Tables"]["attorneys"]["Row"];
+
+const PAGE_SIZE = 25;
 
 interface AttorneyListProps {
   searchQuery: string;
@@ -14,56 +16,74 @@ export default function AttorneyList({ searchQuery, selectedState, selectedSpeci
   const [attorneys, setAttorneys] = useState<Attorney[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [page, setPage] = useState(0);
+  const [totalCount, setTotalCount] = useState(0);
+  const [hasMore, setHasMore] = useState(false);
+
+  // Reset page when filters change
+  useEffect(() => {
+    setPage(0);
+  }, [searchQuery, selectedState, selectedSpecialty]);
+
+  const fetchAttorneys = useCallback(async (pageNum: number) => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      let query = supabase
+        .from("attorneys")
+        .select("*", { count: "exact" });
+
+      if (selectedState && selectedState !== "All States") {
+        query = query.eq("state", selectedState);
+      }
+
+      if (selectedSpecialty && selectedSpecialty !== "All Specialties") {
+        query = query.contains("specialties", [selectedSpecialty]);
+      }
+
+      if (searchQuery.trim()) {
+        // Use ilike for more flexible search — matches name, firm, city
+        const term = `%${searchQuery.trim()}%`;
+        query = query.or(`name.ilike.${term},firm.ilike.${term},city.ilike.${term}`);
+      }
+
+      const from = pageNum * PAGE_SIZE;
+      const to = from + PAGE_SIZE - 1;
+
+      const { data, error: fetchError, count } = await query
+        .order("name")
+        .range(from, to);
+
+      if (fetchError) throw fetchError;
+
+      setAttorneys(data ?? []);
+      setTotalCount(count ?? 0);
+      setHasMore((count ?? 0) > to + 1);
+    } catch (err) {
+      console.error("Supabase Fetch Error:", err);
+      setError("Connection to Civil Rights Database failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  }, [searchQuery, selectedSpecialty, selectedState]);
 
   useEffect(() => {
-    const fetchAttorneys = async () => {
-      setLoading(true);
-      setError(null);
-
-      try {
-        let query = supabase
-          .from("attorneys")
-          .select("*");
-
-        if (selectedState && selectedState !== "All States") {
-          query = query.eq("state", selectedState);
-        }
-
-        if (selectedSpecialty && selectedSpecialty !== "All Specialties") {
-          query = query.contains("specialties", [selectedSpecialty]);
-        }
-
-        if (searchQuery.trim()) {
-          query = query.textSearch("name", searchQuery.trim(), {
-            type: "plain",
-            config: "english",
-          });
-        }
-
-        const { data, error: fetchError } = await query.limit(50);
-
-        if (fetchError) throw fetchError;
-
-        setAttorneys(data ?? []);
-      } catch (err) {
-        console.error("Supabase Fetch Error:", err);
-        setError("Connection to Civil Rights Database failed. Please try again.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
     const timeoutId = window.setTimeout(() => {
-      void fetchAttorneys();
-    }, 500);
+      void fetchAttorneys(page);
+    }, 300);
 
     return () => window.clearTimeout(timeoutId);
-  }, [searchQuery, selectedSpecialty, selectedState]);
+  }, [fetchAttorneys, page]);
+
+  const totalPages = Math.ceil(totalCount / PAGE_SIZE);
+  const showingFrom = page * PAGE_SIZE + 1;
+  const showingTo = Math.min((page + 1) * PAGE_SIZE, totalCount);
 
   if (loading) {
     return (
       <div className="p-6 text-center text-gray-500 animate-pulse">
-        Searching the national database...
+        Searching the national database…
       </div>
     );
   }
@@ -89,8 +109,32 @@ export default function AttorneyList({ searchQuery, selectedState, selectedSpeci
 
   return (
     <div className="space-y-4">
-      <div className="text-sm text-gray-500 mb-2">
-        Showing {attorneys.length} results from live database
+      {/* Results count + pagination header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-sm text-gray-500">
+        <span>
+          Showing {showingFrom}–{showingTo} of <strong className="text-gray-800">{totalCount.toLocaleString()}</strong> attorneys
+        </span>
+        {totalPages > 1 && (
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setPage((p) => Math.max(0, p - 1))}
+              disabled={page === 0}
+              className="px-3 py-1 rounded-md border text-xs font-medium disabled:opacity-40 hover:bg-gray-50 transition"
+            >
+              ← Prev
+            </button>
+            <span className="text-xs tabular-nums">
+              Page {page + 1} of {totalPages}
+            </span>
+            <button
+              onClick={() => setPage((p) => p + 1)}
+              disabled={!hasMore}
+              className="px-3 py-1 rounded-md border text-xs font-medium disabled:opacity-40 hover:bg-gray-50 transition"
+            >
+              Next →
+            </button>
+          </div>
+        )}
       </div>
 
       {attorneys.map((lawyer) => (
@@ -101,33 +145,65 @@ export default function AttorneyList({ searchQuery, selectedState, selectedSpeci
           <div className="flex justify-between items-start">
             <div>
               <h3 className="text-xl font-bold text-gray-900">{lawyer.name}</h3>
-              {lawyer.firm_name && (
-                <p className="text-sm text-gray-600 font-medium">{lawyer.firm_name}</p>
+              {lawyer.firm && (
+                <p className="text-sm text-gray-600 font-medium">{lawyer.firm}</p>
               )}
             </div>
-            <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full font-semibold">
-              Verified
-            </span>
+            <div className="flex gap-1.5">
+              {lawyer.is_verified && (
+                <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-semibold">
+                  ✓ Verified
+                </span>
+              )}
+              {lawyer.accepts_pro_bono && (
+                <span className="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded-full font-semibold">
+                  Pro Bono
+                </span>
+              )}
+            </div>
           </div>
 
           {(lawyer.city || lawyer.state) && (
             <div className="mt-3 flex items-center text-gray-500 text-sm">
               <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
               {[lawyer.city, lawyer.state].filter(Boolean).join(", ")}
+              {lawyer.years_experience && (
+                <span className="ml-3 text-gray-400">· {lawyer.years_experience} yrs experience</span>
+              )}
             </div>
           )}
 
+          {/* Practice areas */}
+          {lawyer.practice_areas && lawyer.practice_areas.length > 0 && (
+            <div className="mt-3 flex flex-wrap gap-1.5">
+              {lawyer.practice_areas.slice(0, 5).map((area) => (
+                <span
+                  key={`${lawyer.id}-pa-${area}`}
+                  className="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200"
+                >
+                  {area}
+                </span>
+              ))}
+            </div>
+          )}
+
+          {/* Specialties */}
           {lawyer.specialties && lawyer.specialties.length > 0 && (
-            <div className="mt-3 flex flex-wrap gap-2">
+            <div className="mt-2 flex flex-wrap gap-1.5">
               {lawyer.specialties.slice(0, 4).map((spec) => (
                 <span
                   key={`${lawyer.id}-${spec}`}
-                  className="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium bg-gray-100 text-gray-800 border border-gray-200"
+                  className="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-gray-100 text-gray-700 border border-gray-200"
                 >
                   {spec}
                 </span>
               ))}
             </div>
+          )}
+
+          {/* Bio */}
+          {lawyer.bio && (
+            <p className="mt-3 text-sm text-gray-600 line-clamp-2">{lawyer.bio}</p>
           )}
 
           <div className="mt-4 pt-4 border-t border-gray-100 flex flex-col sm:flex-row gap-4">
@@ -143,9 +219,52 @@ export default function AttorneyList({ searchQuery, selectedState, selectedSpeci
                 {lawyer.phone}
               </a>
             )}
+            {lawyer.website && (
+              <a href={lawyer.website} target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-gray-900 text-sm font-medium flex items-center">
+                <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path></svg>
+                Website
+              </a>
+            )}
           </div>
         </div>
       ))}
+
+      {/* Bottom pagination */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-2 pt-4 border-t">
+          <button
+            onClick={() => { setPage(0); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+            disabled={page === 0}
+            className="px-3 py-1.5 rounded-md border text-xs font-medium disabled:opacity-40 hover:bg-gray-50 transition"
+          >
+            First
+          </button>
+          <button
+            onClick={() => { setPage((p) => Math.max(0, p - 1)); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+            disabled={page === 0}
+            className="px-3 py-1.5 rounded-md border text-xs font-medium disabled:opacity-40 hover:bg-gray-50 transition"
+          >
+            ← Prev
+          </button>
+          <span className="text-sm text-gray-600 tabular-nums mx-2">
+            Page {page + 1} / {totalPages}
+          </span>
+          <button
+            onClick={() => { setPage((p) => p + 1); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+            disabled={!hasMore}
+            className="px-3 py-1.5 rounded-md border text-xs font-medium disabled:opacity-40 hover:bg-gray-50 transition"
+          >
+            Next →
+          </button>
+          <button
+            onClick={() => { setPage(totalPages - 1); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+            disabled={!hasMore}
+            className="px-3 py-1.5 rounded-md border text-xs font-medium disabled:opacity-40 hover:bg-gray-50 transition"
+          >
+            Last
+          </button>
+        </div>
+      )}
     </div>
   );
 }

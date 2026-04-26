@@ -52,7 +52,7 @@ export function LawyerFinder() {
     try {
       const { data, error } = await supabase
         .from("attorneys")
-        .select("id, name, firm_name, state, city, email, phone, website, specialties, accepts_pro_bono, bar_number, years_experience, bio")
+        .select("id, name, firm, state, city, email, phone, website, specialties, practice_areas, accepts_pro_bono, bar_number, years_experience, bio, rating, is_verified")
         .order("name");
 
       if (error) throw error;
@@ -62,17 +62,24 @@ export function LawyerFinder() {
         const mapped: AttorneyRecord[] = data.map((row) => ({
           id: row.id,
           name: row.name,
-          firm_name: row.firm_name,
+          firm: row.firm,
           state: row.state,
           city: row.city,
           email: row.email,
           phone: row.phone,
           website: row.website,
           specialties: row.specialties ?? [],
+          practice_areas: row.practice_areas ?? [],
           accepts_pro_bono: row.accepts_pro_bono ?? false,
           bar_number: row.bar_number,
           years_experience: row.years_experience,
           bio: row.bio,
+          rating: row.rating ?? null,
+          review_count: null,
+          languages: null,
+          is_verified: row.is_verified ?? null,
+          notable_cases: null,
+          professional_bio: null,
         }));
         setAttorneys(mapped);
         setFallbackStatus("none");
@@ -130,7 +137,7 @@ export function LawyerFinder() {
         return true;
       }
 
-      const firmMatch = attorney.firm_name?.toLowerCase().includes(searchLower);
+      const firmMatch = attorney.firm?.toLowerCase().includes(searchLower);
       const cityMatch = attorney.city?.toLowerCase().includes(searchLower);
       const stateMatch = attorney.state.toLowerCase().includes(searchLower);
 
@@ -250,8 +257,8 @@ export function LawyerFinder() {
                 <div className="flex items-start justify-between">
                   <div>
                     <CardTitle className="text-xl">{attorney.name}</CardTitle>
-                    {attorney.firm_name && (
-                      <p className="text-sm text-muted-foreground mt-1">{attorney.firm_name}</p>
+                    {attorney.firm && (
+                      <p className="text-sm text-muted-foreground mt-1">{attorney.firm}</p>
                     )}
                   </div>
                   {attorney.accepts_pro_bono && (

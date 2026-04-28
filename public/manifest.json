@@ -1,62 +1,46 @@
 {
   "name": "Civil Rights Hub",
   "short_name": "CRH",
-  "description": "The nation's most comprehensive civil rights platform. Report violations, find attorneys, track FOIAs, and know your rights.",
+  "description": "Know your rights. Report violations. Find attorneys. Everything you need when it matters most.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#1a1f2e",
-  "theme_color": "#1a1f2e",
+  "background_color": "#030711",
+  "theme_color": "#3b82f6",
   "orientation": "portrait-primary",
-  "lang": "en-US",
-  "scope": "/",
   "icons": [
     {
-      "src": "/favicon.ico",
-      "sizes": "48x48",
-      "type": "image/x-icon"
-    },
-    {
-      "src": "/favicon.png",
+      "src": "/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/favicon.png",
+      "src": "/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
     }
   ],
-  "categories": ["education", "legal", "government", "social"],
+  "categories": ["news", "social", "education"],
+  "screenshots": [],
   "shortcuts": [
     {
-      "name": "Report a Violation",
+      "name": "Report Violation",
       "short_name": "Report",
-      "description": "Report a civil rights violation",
-      "url": "/#report-violation",
-      "icons": [{ "src": "/favicon.ico", "sizes": "48x48" }]
+      "url": "/do-this-now#report",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
     },
     {
-      "name": "Find an Attorney",
+      "name": "Find Attorney",
       "short_name": "Attorneys",
-      "description": "Search for civil rights attorneys near you",
       "url": "/attorneys",
-      "icons": [{ "src": "/favicon.ico", "sizes": "48x48" }]
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
     },
     {
       "name": "Know Your Rights",
       "short_name": "Rights",
-      "description": "Download Know Your Rights guides",
       "url": "/rights",
-      "icons": [{ "src": "/favicon.ico", "sizes": "48x48" }]
-    },
-    {
-      "name": "FOIA Builder",
-      "short_name": "FOIA",
-      "description": "Build and track your FOIA requests",
-      "url": "/tools",
-      "icons": [{ "src": "/favicon.ico", "sizes": "48x48" }]
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
     }
   ]
 }

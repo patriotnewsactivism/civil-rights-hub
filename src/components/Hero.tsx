@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 interface LiveStats {
   violations24h: number;
+  violationsTotal: number;
   activeFoias: number;
   totalAttorneys: number;
   activeScanners: number;
@@ -14,6 +15,7 @@ interface LiveStats {
 export const Hero = () => {
   const [stats, setStats] = useState<LiveStats>({
     violations24h: 0,
+    violationsTotal: 0,
     activeFoias: 0,
     totalAttorneys: 0,
     activeScanners: 0,
@@ -23,29 +25,44 @@ export const Hero = () => {
 
   useEffect(() => {
     const loadStats = async () => {
-      const since24h = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-      const [v, a, sc] = await Promise.all([
-        supabase.from("violations").select("id", { count: "exact", head: true }).gte("created_at", since24h),
-        supabase.from("attorneys").select("id", { count: "exact", head: true }),
-        supabase.from("scanner_links").select("id", { count: "exact", head: true }).eq("is_active", true),
-      ]);
-      setStats({
-        violations24h: v.count ?? 0,
-        activeFoias: 47,
-        totalAttorneys: a.count ?? 106,
-        activeScanners: sc.count ?? 0,
-      });
+      try {
+        const since24h = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+        const [v, vAll, a, sc, foia] = await Promise.all([
+          supabase.from("violations").select("id", { count: "exact", head: true }).gte("created_at", since24h),
+          supabase.from("violations").select("id", { count: "exact", head: true }),
+          supabase.from("attorneys").select("id", { count: "exact", head: true }),
+          supabase.from("scanner_links").select("id", { count: "exact", head: true }).eq("is_active", true),
+          supabase.from("foia_requests").select("id", { count: "exact", head: true }),
+        ]);
+
+        // Log errors but don't crash — use 0 as the safe fallback
+        if (v.error) console.warn("Stats: violations 24h query error:", v.error.message);
+        if (vAll.error) console.warn("Stats: violations total query error:", vAll.error.message);
+        if (a.error) console.warn("Stats: attorneys query error:", a.error.message);
+        if (sc.error) console.warn("Stats: scanners query error:", sc.error.message);
+        if (foia.error) console.warn("Stats: FOIA query error:", foia.error.message);
+
+        setStats({
+          violations24h: v.count ?? 0,
+          violationsTotal: vAll.count ?? 0,
+          activeFoias: foia.count ?? 0,
+          totalAttorneys: a.count ?? 0,
+          activeScanners: sc.count ?? 0,
+        });
+      } catch (err) {
+        console.error("Stats: failed to load live stats", err);
+      }
       setStatsLoaded(true);
     };
     void loadStats();
   }, []);
 
-  // Live ticker items
+  // Live ticker items — use nullish checks (??) instead of || to show real 0
   const tickerItems = [
-    `🔴 ${stats.violations24h || "12"} reports in last 24h`,
-    `📋 ${stats.activeFoias} active FOIAs tracked`,
-    `⚖️ ${stats.totalAttorneys} attorneys in directory`,
-    `📡 ${stats.activeScanners || "240+"} live scanner feeds`,
+    `🔴 ${stats.violationsTotal > 0 ? `${stats.violations24h} reports in last 24h · ${stats.violationsTotal.toLocaleString()} total` : `${stats.violations24h} reports in last 24h`}`,
+    ...(stats.activeFoias > 0 ? [`📋 ${stats.activeFoias} active FOIAs tracked`] : []),
+    `⚖️ ${stats.totalAttorneys.toLocaleString()} attorneys in directory`,
+    `📡 ${stats.activeScanners.toLocaleString()} live scanner feeds`,
     "✊ Know your rights — it starts here",
     "🎥 Go Live and document anything, anywhere",
     "🚨 Emergency contacts one tap away",
@@ -163,9 +180,9 @@ export const Hero = () => {
                 {statsLoaded ? stats.violations24h : "—"} reports (24h)
               </span>
               <span>·</span>
-              <span>{statsLoaded ? stats.totalAttorneys : "—"} attorneys</span>
+              <span>{statsLoaded ? stats.totalAttorneys.toLocaleString() : "—"} attorneys</span>
               <span>·</span>
-              <span>{statsLoaded ? stats.activeScanners : "—"} live scanners</span>
+              <span>{statsLoaded ? stats.activeScanners.toLocaleString() : "—"} live scanners</span>
               <span>·</span>
               <span>Free &amp; open to all</span>
             </div>

@@ -6,7 +6,6 @@ import { supabase } from "@/integrations/supabase/client";
 
 interface LiveStats {
   violations24h: number;
-  activeFoias: number;
   totalAttorneys: number;
   activeScanners: number;
 }
@@ -14,7 +13,6 @@ interface LiveStats {
 export const Hero = () => {
   const [stats, setStats] = useState<LiveStats>({
     violations24h: 0,
-    activeFoias: 0,
     totalAttorneys: 0,
     activeScanners: 0,
   });
@@ -31,8 +29,7 @@ export const Hero = () => {
       ]);
       setStats({
         violations24h: v.count ?? 0,
-        activeFoias: 47,
-        totalAttorneys: a.count ?? 106,
+        totalAttorneys: a.count ?? 0,
         activeScanners: sc.count ?? 0,
       });
       setStatsLoaded(true);
@@ -40,12 +37,17 @@ export const Hero = () => {
     void loadStats();
   }, []);
 
-  // Live ticker items
+  // Live ticker items — only show real data, no fake numbers
   const tickerItems = [
-    `🔴 ${stats.violations24h || "12"} reports in last 24h`,
-    `📋 ${stats.activeFoias} active FOIAs tracked`,
-    `⚖️ ${stats.totalAttorneys} attorneys in directory`,
-    `📡 ${stats.activeScanners || "240+"} live scanner feeds`,
+    stats.violations24h > 0
+      ? `🔴 ${stats.violations24h} reports in last 24h`
+      : "🔴 Report civil rights violations in real time",
+    stats.totalAttorneys > 0
+      ? `⚖️ ${stats.totalAttorneys.toLocaleString()} attorneys in directory`
+      : "⚖️ Find civil rights attorneys in your state",
+    stats.activeScanners > 0
+      ? `📡 ${stats.activeScanners} live scanner feeds`
+      : "📡 Live police scanner feeds nationwide",
     "✊ Know your rights — it starts here",
     "🎥 Go Live and document anything, anywhere",
     "🚨 Emergency contacts one tap away",
@@ -134,11 +136,11 @@ export const Hero = () => {
               </Button>
             </div>
 
-            {/* Quick access grid — expanded with new items */}
+            {/* Quick access grid */}
             <div className="grid grid-cols-2 md:grid-cols-5 gap-3 md:gap-4 max-w-4xl mx-auto pt-4">
               {[
                 { icon: AlertCircle, label: "Report Violation", to: "/do-this-now#report", color: "text-red-400", bg: "hover:bg-red-500/10" },
-                { icon: Scale, label: "Conflicting Laws", to: "/rights?tab=conflicts", color: "text-amber-400", bg: "hover:bg-amber-500/10" },
+                { icon: Scale, label: "Case Evaluator", to: "/tools?tab=evaluate", color: "text-amber-400", bg: "hover:bg-amber-500/10" },
                 { icon: FileText, label: "FOIA Builder", to: "/tools", color: "text-blue-400", bg: "hover:bg-blue-500/10" },
                 { icon: Users, label: "Find Attorney", to: "/attorneys", color: "text-green-400", bg: "hover:bg-green-500/10" },
                 { icon: Radio, label: "Scanner Feeds", to: "/tools#scanner", color: "text-orange-400", bg: "hover:bg-orange-500/10" },
@@ -156,17 +158,29 @@ export const Hero = () => {
               ))}
             </div>
 
-            {/* Live stats strip */}
+            {/* Live stats strip — only real data, no fake fallbacks */}
             <div className="flex flex-wrap justify-center gap-x-8 gap-y-2 pt-2 text-sm text-muted-foreground">
-              <span className="flex items-center gap-1.5">
-                <span className="h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse" />
-                {statsLoaded ? stats.violations24h : "—"} reports (24h)
-              </span>
-              <span>·</span>
-              <span>{statsLoaded ? stats.totalAttorneys : "—"} attorneys</span>
-              <span>·</span>
-              <span>{statsLoaded ? stats.activeScanners : "—"} live scanners</span>
-              <span>·</span>
+              {statsLoaded && stats.violations24h > 0 && (
+                <>
+                  <span className="flex items-center gap-1.5">
+                    <span className="h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse" />
+                    {stats.violations24h} reports (24h)
+                  </span>
+                  <span>·</span>
+                </>
+              )}
+              {statsLoaded && stats.totalAttorneys > 0 && (
+                <>
+                  <span>{stats.totalAttorneys.toLocaleString()} attorneys</span>
+                  <span>·</span>
+                </>
+              )}
+              {statsLoaded && stats.activeScanners > 0 && (
+                <>
+                  <span>{stats.activeScanners} live scanners</span>
+                  <span>·</span>
+                </>
+              )}
               <span>Free &amp; open to all</span>
             </div>
           </div>

@@ -1,4 +1,5 @@
 import { ChangeEvent, useCallback, useEffect, useMemo, useState, useRef } from "react";
+import { ExternalShareButtons } from "@/components/social/ExternalShareButtons";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -893,6 +894,11 @@ export function SocialFeed() {
               </Button>
             </div>
           </div>
+          <ExternalShareButtons
+            url={typeof window !== "undefined" ? `${window.location.origin}/community?post=${sharePostId}` : ""}
+            title="Civil Rights Hub"
+            text="Check this out on Civil Rights Hub — a free platform for civil rights advocacy"
+          />
           <DialogFooter>
             <Button variant="outline" onClick={() => setShareDialogOpen(false)}>Cancel</Button>
             <Button
@@ -905,7 +911,7 @@ export function SocialFeed() {
                 await fetchPosts();
               }}
             >
-              Share
+              Share in Community
             </Button>
           </DialogFooter>
         </DialogContent>

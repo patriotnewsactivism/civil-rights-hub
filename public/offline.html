@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Offline — Civil Rights Hub</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #030711; color: #e2e8f0; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; text-align: center; }
+    .shield { font-size: 4rem; margin-bottom: 1rem; }
+    h1 { font-size: 1.75rem; font-weight: 800; margin-bottom: 0.5rem; }
+    .sub { color: #94a3b8; font-size: 1rem; max-width: 30rem; margin-bottom: 2rem; line-height: 1.6; }
+    .card { background: #0f172a; border: 1px solid #1e293b; border-radius: 1rem; padding: 1.5rem; max-width: 28rem; width: 100%; text-align: left; margin-bottom: 1.5rem; }
+    .card h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.75rem; color: #3b82f6; }
+    .card ul { list-style: none; }
+    .card li { padding: 0.5rem 0; border-bottom: 1px solid #1e293b; font-size: 0.95rem; }
+    .card li:last-child { border-bottom: none; }
+    .card li strong { color: #f1f5f9; }
+    .emergency { background: #450a0a; border-color: #7f1d1d; }
+    .emergency h2 { color: #ef4444; }
+    .retry { display: inline-block; margin-top: 1rem; padding: 0.75rem 2rem; background: #3b82f6; color: #fff; border: none; border-radius: 0.5rem; font-size: 1rem; font-weight: 600; cursor: pointer; text-decoration: none; }
+    .retry:hover { background: #2563eb; }
+  </style>
+</head>
+<body>
+  <div class="shield">🛡️</div>
+  <h1>You're Offline</h1>
+  <p class="sub">Civil Rights Hub needs an internet connection for full access. Here's what you need to know right now:</p>
+
+  <div class="card emergency">
+    <h2>🚨 If You're Being Detained</h2>
+    <ul>
+      <li><strong>"I am exercising my right to remain silent."</strong></li>
+      <li><strong>"I do not consent to a search."</strong></li>
+      <li><strong>"Am I free to go?"</strong></li>
+      <li><strong>"I want to speak with a lawyer."</strong></li>
+      <li>Stay calm. Do not resist physically.</li>
+      <li>Remember: badge number, officer name, patrol car number.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>📋 Your Rights (Quick Reference)</h2>
+    <ul>
+      <li><strong>1st Amendment:</strong> You can film police in public.</li>
+      <li><strong>4th Amendment:</strong> No unreasonable searches without a warrant.</li>
+      <li><strong>5th Amendment:</strong> You have the right to remain silent.</li>
+      <li><strong>6th Amendment:</strong> You have the right to an attorney.</li>
+      <li><strong>14th Amendment:</strong> Equal protection under the law.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>📞 Emergency Numbers</h2>
+    <ul>
+      <li><strong>ACLU:</strong> 212-549-2500</li>
+      <li><strong>National Lawyers Guild:</strong> 212-679-5100</li>
+      <li><strong>NAACP Legal Defense:</strong> 212-965-2200</li>
+      <li><strong>We The People News:</strong> civilrightshub.org</li>
+    </ul>
+  </div>
+
+  <a href="/" class="retry" onclick="window.location.reload(); return false;">Try Again</a>
+</body>
+</html>

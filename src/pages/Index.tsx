@@ -11,6 +11,7 @@ import { QuickAccessHub } from "@/components/QuickAccessHub";
 import { TodayNearYou } from "@/components/TodayNearYou";
 import { DigestSubscribeBanner } from "@/components/DigestSubscribeBanner";
 import { EmergencyFAB } from "@/components/EmergencyActionSheet";
+import { DonationBanner } from "@/components/DonationBanner";
 
 const ResourceCommandCenter = lazy(() =>
   import("@/components/ResourceCommandCenter").then((module) => ({
@@ -116,6 +117,7 @@ const Index = () => {
       <Suspense fallback={<div className="py-8 text-center text-muted-foreground text-sm">Loading resources…</div>}>
         <ResourceCommandCenter />
       </Suspense>
+      <DonationBanner />
       <Footer />
       <EmergencyFAB />
     </div>

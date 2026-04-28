@@ -330,6 +330,7 @@ export const ResourceCommandCenter = () => {
                   value={searchQuery}
                   onValueChange={setSearchQuery}
                   placeholder="Find a resource, law, or tool"
+                  autoFocus={false}
                 />
                 <CommandList>
                   <CommandEmpty>No resources matched that phrase.</CommandEmpty>

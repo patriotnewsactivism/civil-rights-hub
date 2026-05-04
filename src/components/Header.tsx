@@ -16,8 +16,7 @@ import {
   Wrench,
   Newspaper,
   LifeBuoy,
-  BookOpenText,
-} from "lucide-react";
+  BookOpenText,, FileText} from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { StateQuickSelect } from "@/components/StateQuickSelect";
 import { NotificationBell } from "@/components/NotificationBell";
@@ -92,6 +91,12 @@ export function Header() {
               <Link to="/tools">
                 <Wrench className="h-4 w-4 mr-2" />
                 Tools
+              </Link>
+            </Button>
+            <Button variant="ghost" size="sm" asChild>
+              <Link to="/public-records">
+                <FileText className="h-4 w-4 mr-2" />
+                Public Records
               </Link>
             </Button>
             <Button variant="ghost" size="sm" asChild>

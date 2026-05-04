@@ -34,6 +34,7 @@ import { ActivistDirectory } from "@/components/ActivistDirectory";
 import { OfficerAccountability } from "@/components/OfficerAccountability";
 import { FOIABuilder } from "@/components/FOIABuilder";
 import { FOIATracker } from "@/components/FOIATracker";
+import { PublicRecordsTracker } from "@/components/PublicRecordsTracker";
 import { LegislativeActionCenter } from "@/components/LegislativeActionCenter";
 import { CaseSearch } from "@/components/CaseSearch";
 import { AITools } from "@/components/AITools";
@@ -153,11 +154,12 @@ const createResourceDefinitions = (
   },
   {
     id: "foia-tracker",
-    title: "FOIA Tracker",
-    description: "Track deadlines, appeals, and release schedules with reminders.",
+    title: "Public Records Tracker",
+    description: "File FOIA requests, send via secure email, track deadlines and see when agencies open your emails.",
     category: "Records & Data",
-    keywords: ["foia", "tracker", "deadlines"],
-    render: () => <FOIATracker />,
+    featured: true,
+    keywords: ["foia", "tracker", "deadlines", "public records", "email", "tracking"],
+    render: () => <PublicRecordsTracker />,
   },
   {
     id: "legislative-action",

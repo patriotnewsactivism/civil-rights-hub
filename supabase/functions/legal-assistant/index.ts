@@ -12,20 +12,26 @@ serve(async (req) => {
 
   try {
     const { question } = await req.json();
+    // Prefer DeepSeek V4 Flash ($0.14/M tokens) — falls back to Lovable/Gemini
+    const DEEPSEEK_API_KEY = Deno.env.get("DEEPSEEK_API_KEY");
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     
-    if (!LOVABLE_API_KEY) {
-      throw new Error("LOVABLE_API_KEY is not configured");
+    const useDeepSeek = DEEPSEEK_API_KEY && DEEPSEEK_API_KEY.length > 10;
+    const apiUrl = useDeepSeek ? "https://api.deepseek.com/v1/chat/completions" : "https://ai.gateway.lovable.dev/v1/chat/completions";
+    const apiKey = useDeepSeek ? DEEPSEEK_API_KEY : LOVABLE_API_KEY;
+    
+    if (!apiKey) {
+      throw new Error("No AI API key configured (set DEEPSEEK_API_KEY or LOVABLE_API_KEY)");
     }
 
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    const response = await fetch(apiUrl, {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${LOVABLE_API_KEY}`,
+        "Authorization": `Bearer ${apiKey}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash",
+        model: useDeepSeek ? "deepseek-v4-flash" : "google/gemini-2.5-flash",
         messages: [
           {
             role: "system",

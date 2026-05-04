@@ -82,6 +82,13 @@ interface FOIAAgency {
   foia_phone: string | null;
   foia_address: string | null;
   response_days: number | null;
+  request_count: number | null;
+  user_contributed: boolean | null;
+  community_verified: boolean | null;
+  foia_online_portal_url: string | null;
+  accepts_email: boolean | null;
+  accepts_online: boolean | null;
+  accepts_mail: boolean | null;
 }
 
 interface FOIATemplate {
@@ -403,7 +410,27 @@ function ManualEntryForm({ onCreated, onCancel }: { onCreated: () => void; onCan
         }
       }
 
-      toast.success("Request logged successfully!");
+      // Check if we contributed a new agency to the shared directory
+      let newAgencyName = "";
+      if (newReq?.agency_id) {
+        const { data: savedAgency } = await supabase
+          .from("foia_agencies")
+          .select("name, user_contributed, request_count")
+          .eq("id", newReq.agency_id)
+          .single();
+        if (savedAgency?.user_contributed && (savedAgency.request_count || 0) <= 1) {
+          newAgencyName = savedAgency.name;
+        }
+      }
+
+      if (newAgencyName) {
+        toast.success("Request logged!", {
+          description: `"${newAgencyName}" was added to the shared agency directory — others can now find it too. 🎉`,
+          duration: 6000,
+        });
+      } else {
+        toast.success("Request logged successfully!");
+      }
       onCreated();
     } catch (err: any) {
       toast.error(err.message || "Failed to save request");
@@ -799,6 +826,21 @@ function NewRequestForm({ onCreated, onCancel }: { onCreated: () => void; onCanc
         toast.success("Request saved as draft. Edit and send when ready.");
       }
 
+      // Check if we contributed a new agency to the shared directory
+      if (newReq?.agency_id && !selectedAgency) {
+        const { data: savedAgency } = await supabase
+          .from("foia_agencies")
+          .select("name, user_contributed, request_count")
+          .eq("id", newReq.agency_id)
+          .single();
+        if (savedAgency?.user_contributed && (savedAgency.request_count || 0) <= 1) {
+          toast.info(`"${savedAgency.name}" added to shared directory 🎉`, {
+            description: "Other users can now find and select this agency when filing requests.",
+            duration: 6000,
+          });
+        }
+      }
+
       onCreated();
     } catch (err: any) {
       toast.error(err.message || "Failed to create request");
@@ -855,25 +897,61 @@ function NewRequestForm({ onCreated, onCancel }: { onCreated: () => void; onCanc
 
             {agencySearch && (
               <div className="border rounded-lg divide-y max-h-48 overflow-y-auto">
-                {filteredAgencies.length === 0 && (
-                  <p className="text-sm text-muted-foreground p-3">No agencies found</p>
+                {filteredAgencies.length === 0 && agencySearch.trim().length > 1 && (
+                  <div className="p-3 space-y-1">
+                    <p className="text-sm font-medium">"{agencySearch}" not found in directory</p>
+                    <p className="text-xs text-muted-foreground">Fill in the details below — it'll be saved to the shared directory so others can find it too.</p>
+                    <button
+                      className="text-xs text-primary font-medium hover:underline mt-1"
+                      onClick={() => { setCustomAgencyName(agencySearch); setAgencySearch(""); }}
+                    >
+                      ↓ Use this name below →
+                    </button>
+                  </div>
                 )}
                 {filteredAgencies.map(a => (
                   <button
                     key={a.id}
-                    className={`w-full text-left p-3 hover:bg-muted transition-colors ${selectedAgency?.id === a.id ? "bg-primary/10" : ""}`}
+                    className={`w-full text-left p-3 hover:bg-muted transition-colors ${selectedAgency?.id === a.id ? "bg-primary/10 border-l-2 border-primary" : ""}`}
                     onClick={() => { setSelectedAgency(a); setAgencySearch(a.name); }}
                   >
-                    <p className="text-sm font-medium">{a.name}</p>
-                    <p className="text-xs text-muted-foreground">{[a.city, a.state, a.agency_type].filter(Boolean).join(" · ")}</p>
-                    {a.foia_email && <p className="text-xs text-blue-600 mt-0.5">{a.foia_email}</p>}
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <p className="text-sm font-medium">{a.name}</p>
+                          {a.user_contributed && !a.community_verified && (
+                            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-amber-50 text-amber-600 font-medium">Community Added</span>
+                          )}
+                          {a.community_verified && (
+                            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-green-50 text-green-600 font-medium">✓ Verified</span>
+                          )}
+                        </div>
+                        <p className="text-xs text-muted-foreground">{[a.city, a.state, a.agency_type].filter(Boolean).join(" · ")}</p>
+                        {a.foia_email && <p className="text-xs text-blue-600 mt-0.5">{a.foia_email}</p>}
+                        {a.foia_online_portal_url && <p className="text-xs text-purple-600 mt-0.5">🌐 Online portal available</p>}
+                      </div>
+                      {(a.request_count || 0) > 0 && (
+                        <span className="text-[10px] text-muted-foreground whitespace-nowrap pt-0.5">
+                          {a.request_count} request{(a.request_count || 0) !== 1 ? "s" : ""}
+                        </span>
+                      )}
+                    </div>
                   </button>
                 ))}
               </div>
             )}
 
             <Separator />
-            <p className="text-sm font-medium text-muted-foreground">Or enter a custom agency</p>
+            <div className="flex items-center justify-between">
+              <p className="text-sm font-medium text-muted-foreground">
+                {selectedAgency ? "Selected agency" : "Enter agency details"}
+              </p>
+              {!selectedAgency && customAgencyName && (
+                <span className="text-xs bg-amber-50 text-amber-700 px-2 py-0.5 rounded-full font-medium flex items-center gap-1">
+                  <Plus className="h-3 w-3" /> Will be added to shared directory
+                </span>
+              )}
+            </div>
 
             <div className="grid grid-cols-2 gap-3">
               <div>

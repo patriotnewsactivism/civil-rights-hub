@@ -16,6 +16,7 @@ import ResourceLibrary from "./pages/ResourceLibrary";
 import Rights from "./pages/Rights";
 import DoThisNow from "./pages/DoThisNow";
 import Tools from "./pages/Tools";
+import PublicRecords from "./pages/PublicRecords";
 import Learn from "./pages/Learn";
 import Newsroom from "./pages/Newsroom";
 import GetHelp from "./pages/GetHelp";
@@ -133,6 +134,7 @@ const App = () => (
                   </Suspense>
                 }
               />
+              <Route path="/public-records" element={<PublicRecords />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

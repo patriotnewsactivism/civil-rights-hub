@@ -16,7 +16,9 @@ import {
   FileText, Clock, CheckCircle, XCircle, AlertCircle, Send, Plus, Eye,
   Mail, MailOpen, Calendar, Building2, ArrowLeft, ChevronRight,
   RefreshCw, Download, Bell, Search, Filter, Inbox, AlertTriangle,
-  Shield, Zap, TrendingUp, MoreVertical, MessageSquare, ExternalLink
+  Shield, Zap, TrendingUp, MoreVertical, MessageSquare, ExternalLink,
+  Mailbox, Package, Printer, Upload, Paperclip, X as XIcon, Image, FileCheck,
+  Pencil, Truck
 } from "lucide-react";
 import { toast } from "sonner";
 import { format, differenceInBusinessDays, differenceInDays, addBusinessDays, isPast } from "date-fns";
@@ -53,6 +55,11 @@ interface FOIARequest {
   created_at: string;
   updated_at: string;
   agency_id: string | null;
+  submission_method: 'draft'|'email'|'mail'|'fax'|'hand_delivered'|'portal'|'other' | null;
+  mailed_date: string | null;
+  certified_mail_number: string | null;
+  attachment_urls: string[] | null;
+  attachment_notes: string | null;
 }
 
 interface FOIAUpdate {
@@ -192,6 +199,24 @@ function RequestCard({ request, onSelect }: { request: FOIARequest; onSelect: ()
                   {deadline.label}
                 </span>
               )}
+              {request.submission_method && request.submission_method !== "email" && request.submission_method !== "draft" && (
+                <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">
+                  {request.submission_method === "mail" && <Mailbox className="h-3 w-3" />}
+                  {request.submission_method === "fax" && <Printer className="h-3 w-3" />}
+                  {request.submission_method === "hand_delivered" && <Truck className="h-3 w-3" />}
+                  {request.submission_method === "portal" && <ExternalLink className="h-3 w-3" />}
+                  {(["mail","fax","hand_delivered","portal","other"].includes(request.submission_method || ""))
+                    ? request.submission_method === "hand_delivered" ? "Hand Delivered"
+                      : request.submission_method === "mail" ? "Mailed"
+                      : request.submission_method.charAt(0).toUpperCase() + request.submission_method.slice(1)
+                    : "Manual"}
+                </span>
+              )}
+              {request.attachment_urls && request.attachment_urls.length > 0 && (
+                <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-purple-50 text-purple-600">
+                  <Paperclip className="h-3 w-3" /> {request.attachment_urls.length}
+                </span>
+              )}
             </div>
             <h3 className="font-semibold text-sm truncate">{request.request_subject || "(No subject)"}</h3>
             <p className="text-xs text-muted-foreground mt-0.5 truncate">
@@ -219,6 +244,439 @@ function RequestCard({ request, onSelect }: { request: FOIARequest; onSelect: ()
         </div>
       </CardContent>
     </Card>
+  );
+}
+
+
+// ─── Manual Entry Form ────────────────────────────────────────────────────────
+// For requests already sent by email, mail, fax, or hand-delivery
+
+function ManualEntryForm({ onCreated, onCancel }: { onCreated: () => void; onCancel: () => void }) {
+  const { user } = useAuth();
+  const [submitting, setSubmitting] = useState(false);
+  const [uploadingFiles, setUploadingFiles] = useState(false);
+  const [uploadedFiles, setUploadedFiles] = useState<Array<{ name: string; url: string; size: number }>>([]);
+
+  // Agency info
+  const [agencyName, setAgencyName] = useState("");
+  const [agencyType, setAgencyType] = useState("Federal");
+  const [state, setState] = useState("Federal");
+  const [agencyEmail, setAgencyEmail] = useState("");
+  const [agencyPhone, setAgencyPhone] = useState("");
+
+  // Request info
+  const [subject, setSubject] = useState("");
+  const [requestBody, setRequestBody] = useState("");
+  const [priority, setPriority] = useState("normal");
+
+  // Submission info
+  const [submissionMethod, setSubmissionMethod] = useState<"email"|"mail"|"fax"|"hand_delivered"|"portal"|"other">("email");
+  const [submittedDate, setSubmittedDate] = useState(format(new Date(), "yyyy-MM-dd"));
+  const [certifiedMailNumber, setCertifiedMailNumber] = useState("");
+  const [trackingNumber, setTrackingNumber] = useState("");
+  const [contactName, setContactName] = useState("");
+  const [status, setStatus] = useState<StatusKey>("submitted");
+  const [notes, setNotes] = useState("");
+  const [attachmentNotes, setAttachmentNotes] = useState("");
+
+  const SUBMISSION_METHODS = [
+    { value: "email",          label: "Email",           icon: Mail     },
+    { value: "mail",           label: "US Mail",         icon: Mailbox  },
+    { value: "fax",            label: "Fax",             icon: Printer  },
+    { value: "hand_delivered", label: "Hand Delivered",  icon: Truck    },
+    { value: "portal",         label: "Agency Portal",   icon: ExternalLink },
+    { value: "other",          label: "Other",           icon: Package  },
+  ] as const;
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || !user) return;
+    setUploadingFiles(true);
+    const newUploads: Array<{ name: string; url: string; size: number }> = [];
+
+    for (const file of Array.from(files)) {
+      // 20MB limit
+      if (file.size > 20 * 1024 * 1024) {
+        toast.error(`${file.name} is too large (max 20 MB)`);
+        continue;
+      }
+      const ext = file.name.split(".").pop() || "bin";
+      const path = `foia/${user.id}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+      const { data, error } = await supabase.storage
+        .from("documents")
+        .upload(path, file, { contentType: file.type, upsert: false });
+
+      if (error) {
+        toast.error(`Failed to upload ${file.name}: ${error.message}`);
+        continue;
+      }
+
+      // Get a signed URL (valid 10 years — effectively permanent for private bucket)
+      const { data: signed } = await supabase.storage
+        .from("documents")
+        .createSignedUrl(path, 60 * 60 * 24 * 365 * 10);
+
+      newUploads.push({
+        name: file.name,
+        url: signed?.signedUrl || path,
+        size: file.size,
+      });
+    }
+
+    setUploadedFiles(prev => [...prev, ...newUploads]);
+    setUploadingFiles(false);
+    if (newUploads.length > 0) toast.success(`${newUploads.length} file(s) uploaded`);
+    e.target.value = ""; // reset input
+  };
+
+  const removeFile = (idx: number) => {
+    setUploadedFiles(prev => prev.filter((_, i) => i !== idx));
+  };
+
+  const formatFileSize = (bytes: number) => {
+    if (bytes < 1024) return bytes + " B";
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
+    return (bytes / (1024 * 1024)).toFixed(1) + " MB";
+  };
+
+  const handleSubmit = async () => {
+    if (!user) { toast.error("You must be signed in"); return; }
+    if (!agencyName.trim()) { toast.error("Agency name is required"); return; }
+    if (!subject.trim()) { toast.error("Subject / description is required"); return; }
+
+    setSubmitting(true);
+    try {
+      const deadline = addBusinessDays(
+        new Date(submittedDate),
+        STATE_RESPONSE_DAYS[state] || 20
+      );
+
+      const { data: newReq, error } = await supabase
+        .from("foia_requests")
+        .insert({
+          user_id: user.id,
+          agency_name: agencyName.trim(),
+          agency_type: agencyType,
+          state,
+          request_subject: subject.trim(),
+          request_body: requestBody.trim() || "(No body recorded — see attached documents)",
+          status,
+          submitted_date: submittedDate ? new Date(submittedDate).toISOString() : null,
+          response_deadline: deadline.toISOString(),
+          agency_email: agencyEmail || null,
+          contact_phone: agencyPhone || null,
+          contact_name: contactName || null,
+          tracking_number: trackingNumber || null,
+          priority: priority as any,
+          follow_up_count: 0,
+          appeal_filed: false,
+          notes: notes || null,
+          submission_method: submissionMethod,
+          mailed_date: submissionMethod === "mail" && submittedDate ? submittedDate : null,
+          certified_mail_number: certifiedMailNumber || null,
+          attachment_urls: uploadedFiles.map(f => f.url),
+          attachment_notes: attachmentNotes || null,
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      // Log initial event
+      if (newReq) {
+        const methodLabel = SUBMISSION_METHODS.find(m => m.value === submissionMethod)?.label || submissionMethod;
+        await supabase.from("foia_request_updates").insert({
+          request_id: newReq.id,
+          update_type: "manual_entry",
+          old_status: null,
+          new_status: status,
+          message: `Request manually logged — sent via ${methodLabel} on ${format(new Date(submittedDate), "MMMM d, yyyy")}`,
+          created_by: user.id,
+        });
+        if (uploadedFiles.length > 0) {
+          await supabase.from("foia_request_updates").insert({
+            request_id: newReq.id,
+            update_type: "attachment",
+            message: `${uploadedFiles.length} document(s) attached: ${uploadedFiles.map(f => f.name).join(", ")}`,
+            created_by: user.id,
+          });
+        }
+      }
+
+      toast.success("Request logged successfully!");
+      onCreated();
+    } catch (err: any) {
+      toast.error(err.message || "Failed to save request");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const selectedMethod = SUBMISSION_METHODS.find(m => m.value === submissionMethod);
+  const MethodIcon = selectedMethod?.icon || Package;
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center gap-2">
+        <Button variant="ghost" size="sm" onClick={onCancel}>
+          <ArrowLeft className="h-4 w-4 mr-1" /> Back
+        </Button>
+        <div>
+          <h2 className="font-semibold text-lg">Log an Existing Request</h2>
+          <p className="text-xs text-muted-foreground">For requests already sent — so you never lose track</p>
+        </div>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-4">
+        {/* Left column — agency + request info */}
+        <div className="space-y-4">
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <Building2 className="h-4 w-4 text-primary" /> Agency Information
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div>
+                <Label className="text-xs">Agency Name *</Label>
+                <Input placeholder="e.g. City of Chicago Police Dept" value={agencyName} onChange={e => setAgencyName(e.target.value)} />
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <Label className="text-xs">Jurisdiction</Label>
+                  <Select value={state} onValueChange={setState}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent className="max-h-48 overflow-y-auto">
+                      {Object.keys(STATE_RESPONSE_DAYS).map(s => (
+                        <SelectItem key={s} value={s}>{s}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label className="text-xs">Agency Type</Label>
+                  <Select value={agencyType} onValueChange={setAgencyType}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      {["Federal","State","County","Municipal","Other"].map(t => (
+                        <SelectItem key={t} value={t}>{t}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <Label className="text-xs">Agency Email</Label>
+                  <Input type="email" placeholder="records@agency.gov" value={agencyEmail} onChange={e => setAgencyEmail(e.target.value)} />
+                </div>
+                <div>
+                  <Label className="text-xs">Agency Phone</Label>
+                  <Input placeholder="(555) 000-0000" value={agencyPhone} onChange={e => setAgencyPhone(e.target.value)} />
+                </div>
+              </div>
+              <div>
+                <Label className="text-xs">Contact Name (if known)</Label>
+                <Input placeholder="Records Officer name" value={contactName} onChange={e => setContactName(e.target.value)} />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <FileText className="h-4 w-4 text-primary" /> Request Details
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div>
+                <Label className="text-xs">Subject / Description *</Label>
+                <Input placeholder="What records did you request?" value={subject} onChange={e => setSubject(e.target.value)} />
+              </div>
+              <div>
+                <Label className="text-xs">Request Body (optional if uploading document)</Label>
+                <Textarea
+                  placeholder="Paste the text of your request here, or leave blank if uploading a scan..."
+                  value={requestBody}
+                  onChange={e => setRequestBody(e.target.value)}
+                  rows={5}
+                  className="text-sm"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <Label className="text-xs">Priority</Label>
+                  <Select value={priority} onValueChange={setPriority}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="urgent">🔴 Urgent</SelectItem>
+                      <SelectItem value="normal">🔵 Normal</SelectItem>
+                      <SelectItem value="low">⚪ Low</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label className="text-xs">Current Status</Label>
+                  <Select value={status} onValueChange={v => setStatus(v as StatusKey)}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      {(Object.entries(STATUS_CONFIG) as [StatusKey, any][]).map(([k, v]) => (
+                        <SelectItem key={k} value={k}>{v.label}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <div>
+                <Label className="text-xs">Notes</Label>
+                <Textarea placeholder="Any additional context, next steps, follow-up notes..." value={notes} onChange={e => setNotes(e.target.value)} rows={2} className="text-sm" />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Right column — submission method + attachments */}
+        <div className="space-y-4">
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <Send className="h-4 w-4 text-primary" /> How Was It Sent?
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="grid grid-cols-2 gap-2">
+                {SUBMISSION_METHODS.map(m => {
+                  const Icon = m.icon;
+                  return (
+                    <button
+                      key={m.value}
+                      onClick={() => setSubmissionMethod(m.value)}
+                      className={`flex items-center gap-2 px-3 py-2.5 rounded-lg border text-sm font-medium transition-all ${
+                        submissionMethod === m.value
+                          ? "border-primary bg-primary/10 text-primary"
+                          : "hover:bg-muted"
+                      }`}
+                    >
+                      <Icon className="h-4 w-4 shrink-0" />
+                      {m.label}
+                    </button>
+                  );
+                })}
+              </div>
+
+              <Separator />
+
+              <div>
+                <Label className="text-xs">Date Submitted *</Label>
+                <Input type="date" value={submittedDate} onChange={e => setSubmittedDate(e.target.value)} />
+              </div>
+
+              {submissionMethod === "mail" && (
+                <div>
+                  <Label className="text-xs">Certified Mail / Tracking Number</Label>
+                  <Input
+                    placeholder="USPS 9400 1234 5678 9012 3456 78"
+                    value={certifiedMailNumber}
+                    onChange={e => setCertifiedMailNumber(e.target.value)}
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">Certified mail gives you proof of delivery</p>
+                </div>
+              )}
+
+              {(submissionMethod === "portal" || submissionMethod === "other") && (
+                <div>
+                  <Label className="text-xs">Tracking / Confirmation Number</Label>
+                  <Input
+                    placeholder="Agency-assigned reference number"
+                    value={trackingNumber}
+                    onChange={e => setTrackingNumber(e.target.value)}
+                  />
+                </div>
+              )}
+
+              {submittedDate && (
+                <Alert>
+                  <Calendar className="h-4 w-4" />
+                  <AlertDescription className="text-xs">
+                    <strong>Response deadline:</strong>{" "}
+                    {format(addBusinessDays(new Date(submittedDate), STATE_RESPONSE_DAYS[state] || 20), "MMMM d, yyyy")}
+                    {" "}({STATE_RESPONSE_DAYS[state] || 20} business days)
+                  </AlertDescription>
+                </Alert>
+              )}
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <Paperclip className="h-4 w-4 text-primary" /> Attach Documents
+              </CardTitle>
+              <CardDescription className="text-xs">
+                Upload scans of your letter, fax confirmation, certified mail receipt, or any agency correspondence
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {/* Drop zone */}
+              <label className="flex flex-col items-center justify-center gap-2 border-2 border-dashed rounded-lg p-5 cursor-pointer hover:border-primary hover:bg-primary/5 transition-colors">
+                <Upload className="h-6 w-6 text-muted-foreground" />
+                <div className="text-center">
+                  <p className="text-sm font-medium">Click to upload files</p>
+                  <p className="text-xs text-muted-foreground">PDF, JPG, PNG, DOCX — up to 20 MB each</p>
+                </div>
+                <input
+                  type="file"
+                  multiple
+                  accept=".pdf,.jpg,.jpeg,.png,.docx,.doc,.txt,.tiff,.tif"
+                  className="hidden"
+                  onChange={handleFileUpload}
+                  disabled={uploadingFiles}
+                />
+                {uploadingFiles && (
+                  <div className="flex items-center gap-2 text-primary text-xs">
+                    <RefreshCw className="h-3 w-3 animate-spin" /> Uploading…
+                  </div>
+                )}
+              </label>
+
+              {/* Uploaded files list */}
+              {uploadedFiles.length > 0 && (
+                <div className="space-y-2">
+                  {uploadedFiles.map((file, idx) => (
+                    <div key={idx} className="flex items-center gap-2 p-2 bg-muted rounded-lg text-sm">
+                      <FileCheck className="h-4 w-4 text-green-500 shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <p className="truncate font-medium text-xs">{file.name}</p>
+                        <p className="text-xs text-muted-foreground">{formatFileSize(file.size)}</p>
+                      </div>
+                      <button onClick={() => removeFile(idx)} className="text-muted-foreground hover:text-destructive">
+                        <XIcon className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              <div>
+                <Label className="text-xs">Notes about attachments</Label>
+                <Input
+                  placeholder="e.g. Page 1 = signed letter, Page 2 = USPS receipt"
+                  value={attachmentNotes}
+                  onChange={e => setAttachmentNotes(e.target.value)}
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Button className="w-full" onClick={handleSubmit} disabled={submitting || uploadingFiles}>
+            {submitting
+              ? <><RefreshCw className="h-4 w-4 mr-2 animate-spin" /> Saving…</>
+              : <><FileCheck className="h-4 w-4 mr-2" /> Log This Request</>
+            }
+          </Button>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -776,6 +1234,18 @@ function RequestDetail({ request, onBack, onUpdate }: { request: FOIARequest; on
                 <span className="text-muted-foreground">Filed</span>
                 <span>{format(new Date(request.created_at), "MMM d, yyyy")}</span>
               </div>
+              {request.submission_method && request.submission_method !== "draft" && (
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Method</span>
+                  <span className="capitalize">{request.submission_method === "hand_delivered" ? "Hand Delivered" : request.submission_method === "mail" ? "US Mail" : request.submission_method}</span>
+                </div>
+              )}
+              {request.certified_mail_number && (
+                <div className="flex flex-col gap-0.5">
+                  <span className="text-muted-foreground text-xs">Certified Mail #</span>
+                  <span className="font-mono text-xs break-all">{request.certified_mail_number}</span>
+                </div>
+              )}
               {request.submitted_date && (
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Submitted</span>
@@ -851,6 +1321,118 @@ function RequestDetail({ request, onBack, onUpdate }: { request: FOIARequest; on
             </CardContent>
           </Card>
 
+
+          {/* Attachments */}
+          {request.attachment_urls && request.attachment_urls.length > 0 && (
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm flex items-center gap-1.5">
+                  <Paperclip className="h-4 w-4" /> Attached Documents ({request.attachment_urls.length})
+                </CardTitle>
+                {request.attachment_notes && (
+                  <CardDescription className="text-xs">{request.attachment_notes}</CardDescription>
+                )}
+              </CardHeader>
+              <CardContent className="space-y-2">
+                {request.attachment_urls.map((url, idx) => {
+                  const name = url.split("/").pop()?.split("?")[0] || `Document ${idx + 1}`;
+                  const isPdf = name.toLowerCase().endsWith(".pdf");
+                  const isImg = /\.(jpg|jpeg|png|gif|tiff|tif)$/i.test(name);
+                  return (
+                    <a
+                      key={idx}
+                      href={url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-3 p-2.5 border rounded-lg hover:bg-muted transition-colors group"
+                    >
+                      {isImg
+                        ? <Image className="h-4 w-4 text-blue-500 shrink-0" />
+                        : <FileText className="h-4 w-4 text-red-500 shrink-0" />}
+                      <span className="text-sm flex-1 truncate">{decodeURIComponent(name.replace(/^\d+-[a-z0-9]+\./, ""))}</span>
+                      <ExternalLink className="h-3.5 w-3.5 text-muted-foreground group-hover:text-primary" />
+                    </a>
+                  );
+                })}
+
+                {/* Upload more */}
+                <label className="flex items-center gap-2 p-2 border border-dashed rounded-lg cursor-pointer hover:bg-muted text-sm text-muted-foreground transition-colors">
+                  <Upload className="h-4 w-4" />
+                  <span>Attach more documents…</span>
+                  <input
+                    type="file"
+                    multiple
+                    accept=".pdf,.jpg,.jpeg,.png,.docx,.doc,.txt,.tiff,.tif"
+                    className="hidden"
+                    onChange={async (e) => {
+                      if (!user || !e.target.files) return;
+                      const newUrls: string[] = [];
+                      for (const file of Array.from(e.target.files)) {
+                        const ext = file.name.split(".").pop() || "bin";
+                        const path = \`foia/\${user.id}/\${Date.now()}-\${Math.random().toString(36).slice(2)}.\${ext}\`;
+                        const { error } = await supabase.storage.from("documents").upload(path, file, { contentType: file.type });
+                        if (!error) {
+                          const { data: signed } = await supabase.storage.from("documents").createSignedUrl(path, 60*60*24*365*10);
+                          if (signed?.signedUrl) newUrls.push(signed.signedUrl);
+                        }
+                      }
+                      if (newUrls.length > 0) {
+                        const all = [...(request.attachment_urls || []), ...newUrls];
+                        await supabase.from("foia_requests").update({ attachment_urls: all }).eq("id", request.id);
+                        onUpdate({ ...request, attachment_urls: all });
+                        await supabase.from("foia_request_updates").insert({ request_id: request.id, update_type: "attachment", message: \`\${newUrls.length} document(s) added\`, created_by: user?.id });
+                        const { data: u } = await supabase.from("foia_request_updates").select("*").eq("request_id", request.id).order("created_at", { ascending: false });
+                        setUpdates(u || []);
+                        toast.success(\`\${newUrls.length} file(s) added\`);
+                      }
+                      e.target.value = "";
+                    }}
+                  />
+                </label>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* No attachments — offer to add */}
+          {(!request.attachment_urls || request.attachment_urls.length === 0) && (
+            <Card className="border-dashed">
+              <CardContent className="py-4">
+                <label className="flex items-center justify-center gap-2 cursor-pointer text-sm text-muted-foreground hover:text-primary transition-colors">
+                  <Paperclip className="h-4 w-4" />
+                  <span>Attach documents (scans, receipts, correspondence…)</span>
+                  <input
+                    type="file"
+                    multiple
+                    accept=".pdf,.jpg,.jpeg,.png,.docx,.doc,.txt,.tiff,.tif"
+                    className="hidden"
+                    onChange={async (e) => {
+                      if (!user || !e.target.files) return;
+                      const newUrls: string[] = [];
+                      for (const file of Array.from(e.target.files)) {
+                        const ext = file.name.split(".").pop() || "bin";
+                        const path = \`foia/\${user.id}/\${Date.now()}-\${Math.random().toString(36).slice(2)}.\${ext}\`;
+                        const { error } = await supabase.storage.from("documents").upload(path, file, { contentType: file.type });
+                        if (!error) {
+                          const { data: signed } = await supabase.storage.from("documents").createSignedUrl(path, 60*60*24*365*10);
+                          if (signed?.signedUrl) newUrls.push(signed.signedUrl);
+                        }
+                      }
+                      if (newUrls.length > 0) {
+                        const all = [...(request.attachment_urls || []), ...newUrls];
+                        await supabase.from("foia_requests").update({ attachment_urls: all }).eq("id", request.id);
+                        onUpdate({ ...request, attachment_urls: all });
+                        await supabase.from("foia_request_updates").insert({ request_id: request.id, update_type: "attachment", message: \`\${newUrls.length} document(s) attached\`, created_by: user?.id });
+                        const { data: u } = await supabase.from("foia_request_updates").select("*").eq("request_id", request.id).order("created_at", { ascending: false });
+                        setUpdates(u || []);
+                        toast.success(\`\${newUrls.length} file(s) attached\`);
+                      }
+                      e.target.value = "";
+                    }}
+                  />
+                </label>
+              </CardContent>
+            </Card>
+          )}
           {/* Activity log */}
           <Card>
             <CardHeader className="pb-2">
@@ -895,7 +1477,7 @@ function RequestDetail({ request, onBack, onUpdate }: { request: FOIARequest; on
 
 export function PublicRecordsTracker() {
   const { user } = useAuth();
-  const [view, setView] = useState<"dashboard" | "new" | "detail">("dashboard");
+  const [view, setView] = useState<"dashboard" | "new" | "manual" | "detail">("dashboard");
   const [requests, setRequests] = useState<FOIARequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedRequest, setSelectedRequest] = useState<FOIARequest | null>(null);
@@ -957,6 +1539,10 @@ export function PublicRecordsTracker() {
     return <NewRequestForm onCreated={() => { loadRequests(); setView("dashboard"); }} onCancel={() => setView("dashboard")} />;
   }
 
+  if (view === "manual") {
+    return <ManualEntryForm onCreated={() => { loadRequests(); setView("dashboard"); }} onCancel={() => setView("dashboard")} />;
+  }
+
   if (view === "detail" && selectedRequest) {
     return (
       <RequestDetail
@@ -983,9 +1569,14 @@ export function PublicRecordsTracker() {
             File, send, and track your FOIA requests — with email confirmation and read tracking
           </p>
         </div>
-        <Button onClick={() => setView("new")}>
-          <Plus className="h-4 w-4 mr-2" /> New Request
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={() => setView("manual")}>
+            <Pencil className="h-4 w-4 mr-2" /> Log Existing
+          </Button>
+          <Button onClick={() => setView("new")}>
+            <Plus className="h-4 w-4 mr-2" /> New Request
+          </Button>
+        </div>
       </div>
 
       {/* Stats */}
@@ -1042,9 +1633,14 @@ export function PublicRecordsTracker() {
                 : "Try adjusting your filters"}
             </p>
             {requests.length === 0 && (
-              <Button onClick={() => setView("new")}>
-                <Plus className="h-4 w-4 mr-2" /> File First Request
-              </Button>
+              <div className="flex gap-2 justify-center flex-wrap">
+                <Button onClick={() => setView("new")}>
+                  <Plus className="h-4 w-4 mr-2" /> File New Request
+                </Button>
+                <Button variant="outline" onClick={() => setView("manual")}>
+                  <Pencil className="h-4 w-4 mr-2" /> Log an Existing One
+                </Button>
+              </div>
             )}
           </CardContent>
         </Card>

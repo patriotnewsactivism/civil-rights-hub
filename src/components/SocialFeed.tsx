@@ -48,6 +48,12 @@ interface Post {
   media_urls: string[] | null;
   media_types: string[] | null;
   poll_data?: PollData | null;
+  hashtags?: string[] | null;
+  visibility?: string | null;
+  post_type?: string | null;
+  likes_count?: number;
+  shares_count?: number;
+  comments_count?: number;
 }
 
 interface UserProfile {
@@ -228,12 +234,12 @@ export function SocialFeed() {
   const fetchPosts = useCallback(async () => {
     const { data: postsData, error: postsError } = await supabase
       .from("posts")
-      .select("id, content, user_id, created_at, media_urls, media_types, poll_data")
+      .select("id, content, user_id, created_at, media_urls, media_types, poll_data, hashtags, visibility, post_type, likes_count, shares_count, comments_count, hashtags, visibility, post_type, likes_count, shares_count, comments_count")
       .order("created_at", { ascending: false })
       .limit(100);
 
     if (postsError) {
-      toast.error("Failed to load posts");
+      toast.error("Unable to load posts — please refresh the page"); console.error("fetchPosts error:", postsError);
       setPosts([]);
       return;
     }
@@ -382,7 +388,7 @@ export function SocialFeed() {
         reactionSummary,
         currentUserReaction,
         comments: commentsMap.get(post.id) ?? [],
-        hashtags: extractHashtags(post.content),
+        hashtags: (post.hashtags && post.hashtags.length > 0) ? post.hashtags : extractHashtags(post.content),
         isBookmarked: bookmarkedPostIds.has(post.id),
         shareCount: sharesMap.get(post.id) ?? 0,
         userVotes: userVotesMap.get(post.id),
@@ -458,6 +464,8 @@ export function SocialFeed() {
 
       const { error } = await supabase.from("posts").insert({
         content: newPost,
+        post_type: "text",
+        visibility: "public",
         media_urls: mediaUrls.length > 0 ? mediaUrls : null,
         media_types: mediaTypes.length > 0 ? mediaTypes : null,
         user_id: currentUserId,

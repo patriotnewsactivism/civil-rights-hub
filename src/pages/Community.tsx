@@ -62,7 +62,9 @@ export default function Community() {
       .select("id", { count: "exact", head: true })
       .eq("user_id", user.id)
       .eq("is_read", false)
-      .then(({ count }) => setUnreadNotifications(count ?? 0));
+      .then(({ count, error }) => {
+        if (!error) setUnreadNotifications(count ?? 0);
+      });
     supabase
       .from("user_profiles")
       .select("role")

@@ -63,8 +63,8 @@ export default function MessagingPanel() {
 
     const { data } = await supabase
       .from("user_profiles")
-      .select("id, display_name, avatar_url")
-      .neq("id", currentUser.id)
+      .select("id, user_id, display_name, avatar_url")
+      .neq("user_id", currentUser.id)
       .order("display_name");
 
     setAvailableUsers((data ?? []) as UserProfile[]);
@@ -105,10 +105,10 @@ export default function MessagingPanel() {
 
       const { data: profiles } = await supabase
         .from("user_profiles")
-        .select("id, display_name, avatar_url")
-        .in("id", Array.from(userIds));
+        .select("id, user_id, display_name, avatar_url")
+        .in("user_id", Array.from(userIds));
 
-      const profileMap = new Map((profiles ?? []).map((p) => [p.id, p as UserProfile]));
+      const profileMap = new Map((profiles ?? []).map((p) => [p.user_id || p.id, p as UserProfile]));
 
       const messagesWithProfiles: MessageWithProfiles[] = (data ?? []).map((msg) => ({
         ...msg,

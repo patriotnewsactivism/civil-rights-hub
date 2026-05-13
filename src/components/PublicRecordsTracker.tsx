@@ -1,6 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import SocialContentStudio from "@/components/SocialContentStudio";
+import FOIACampaigns from "@/components/FOIACampaigns";
+import AgencyTransparencyScoreboard from "@/components/AgencyTransparencyScoreboard";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -18,7 +22,7 @@ import {
   RefreshCw, Download, Bell, Search, Filter, Inbox, AlertTriangle,
   Shield, Zap, TrendingUp, MoreVertical, MessageSquare, ExternalLink,
   Mailbox, Package, Printer, Upload, Paperclip, X as XIcon, Image, FileCheck,
-  Pencil, Truck
+  Pencil, Truck, Megaphone, Sparkles, BarChart2
 } from "lucide-react";
 import { toast } from "sonner";
 import { format, differenceInBusinessDays, differenceInDays, addBusinessDays, isPast } from "date-fns";
@@ -1644,7 +1648,7 @@ export function PublicRecordsTracker() {
             Public Records Tracker
           </h2>
           <p className="text-muted-foreground text-sm mt-0.5">
-            File, send, and track your FOIA requests — with email confirmation and read tracking
+            File, send, track requests — and turn results into viral accountability content
           </p>
         </div>
         <div className="flex gap-2">
@@ -1656,6 +1660,36 @@ export function PublicRecordsTracker() {
           </Button>
         </div>
       </div>
+
+      {/* Main Tabs */}
+      <Tabs defaultValue="my-requests" className="w-full">
+        <TabsList className="w-full justify-start overflow-x-auto">
+          <TabsTrigger value="my-requests" className="flex items-center gap-1.5">
+            <Inbox className="h-3.5 w-3.5" /> My Requests
+          </TabsTrigger>
+          <TabsTrigger value="campaigns" className="flex items-center gap-1.5">
+            <Megaphone className="h-3.5 w-3.5" /> Campaigns
+          </TabsTrigger>
+          <TabsTrigger value="social" className="flex items-center gap-1.5">
+            <Sparkles className="h-3.5 w-3.5" /> Social Studio
+          </TabsTrigger>
+          <TabsTrigger value="scoreboard" className="flex items-center gap-1.5">
+            <BarChart2 className="h-3.5 w-3.5" /> Scoreboard
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="campaigns" className="mt-4">
+          <FOIACampaigns />
+        </TabsContent>
+        <TabsContent value="social" className="mt-4">
+          <SocialContentStudio />
+        </TabsContent>
+        <TabsContent value="scoreboard" className="mt-4">
+          <AgencyTransparencyScoreboard />
+        </TabsContent>
+
+        <TabsContent value="my-requests" className="mt-4">
+      {/* ↓ existing dashboard content wrapped ↓ */}
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -1733,6 +1767,8 @@ export function PublicRecordsTracker() {
           ))}
         </div>
       )}
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

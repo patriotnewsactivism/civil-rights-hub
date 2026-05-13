@@ -5,9 +5,9 @@ import { toast } from "sonner";
 import type { Database } from "@/integrations/supabase/types";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
 
-type ProfileRow = Database["public"]["Tables"]["profiles"]["Row"];
-type FollowRow = Database["public"]["Tables"]["follows"]["Row"];
-type RoleFilter = "all" | Database["public"]["Enums"]["app_role"];
+
+
+type RoleFilter = "all" | "admin" | "moderator" | "journalist" | "activist" | "attorney" | "user";
 
 type ContributorLevel = {
   level: string;
@@ -24,7 +24,7 @@ const ROLE_OPTIONS: { value: RoleFilter; label: string }[] = [
 ];
 
 export default function UserNetwork() {
-  const [users, setUsers] = useState<ProfileRow[]>([]);
+  const [users, setUsers] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterRole, setFilterRole] = useState<RoleFilter>("all");
   const [currentUser, setCurrentUser] = useState<SupabaseUser | null>(null);
@@ -60,12 +60,12 @@ export default function UserNetwork() {
       let query = supabase
         .from("user_profiles")
         .select("*")
-        .neq("id", currentUser.id)
+        .neq("user_id", currentUser.id)
         .order("created_at", { ascending: false })
         .limit(50);
 
       if (filterRole !== "all") {
-        query = query.eq("role", filterRole);
+        query = (query as any).eq("role", filterRole);
       }
 
       const { data, error } = await query;
@@ -92,7 +92,8 @@ export default function UserNetwork() {
     }
 
     try {
-      if (following.includes(userId)) {
+      const targetId = typeof userId === "string" ? userId : userId;
+    if (following.includes(targetId)) {
         await supabase
           .from("follows")
           .delete()
@@ -112,7 +113,7 @@ export default function UserNetwork() {
     }
   };
 
-  const getRoleBadge = (role: Database["public"]["Enums"]["app_role"] | null) => {
+  const getRoleBadge = (role: string | null) => {
     const roleMap: Record<string, { color: string; label: string; icon: string }> = {
       admin: { color: "bg-red-100 text-red-800 border-red-200", label: "Admin", icon: "👑" },
       moderator: { color: "bg-teal-100 text-teal-800 border-teal-200", label: "Moderator", icon: "🛡️" },
@@ -131,7 +132,7 @@ export default function UserNetwork() {
     );
   };
 
-  const getContributorLevel = (userProfile: ProfileRow): ContributorLevel => {
+  const getContributorLevel = (userProfile: any): ContributorLevel => {
     // Since we don't have activity stats in the profiles table, use a simple default
     return { level: "Member", color: "text-gray-600", icon: "🌱" };
   };
@@ -143,7 +144,7 @@ export default function UserNetwork() {
     return users.filter((user) => {
       const displayName = user.display_name?.toLowerCase() ?? "";
       const bio = user.bio?.toLowerCase() ?? "";
-      const email = user.email?.toLowerCase() ?? "";
+      const email = (user.email || user.username || user.display_name || "Member")?.toLowerCase() ?? "";
       return displayName.includes(search) || bio.includes(search) || email.includes(search);
     });
   }, [searchQuery, users]);
@@ -198,7 +199,7 @@ export default function UserNetwork() {
       ) : (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {filteredUsers.map((user) => {
-            const isFollowing = following.includes(user.id);
+            const isFollowing = following.includes(user.user_id);
             const contributorLevel = getContributorLevel(user);
 
             return (
@@ -237,9 +238,9 @@ export default function UserNetwork() {
                   </div>
                 </div>
 
-                {currentUser && currentUser.id !== user.id && (
+                {currentUser && currentUser.id !== user.user_id && (
                   <button
-                    onClick={() => toggleFollow(user.id)}
+                    onClick={() => toggleFollow(user.user_id)}
                     className={`flex w-full items-center justify-center space-x-2 rounded-lg px-4 py-2 font-semibold transition-all ${
                       isFollowing ? "bg-secondary text-secondary-foreground" : "bg-primary text-primary-foreground"
                     }`}

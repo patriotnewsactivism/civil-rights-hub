@@ -1,6 +1,7 @@
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SEO } from "@/components/SEO";
+import { DonationCTA } from "@/components/DonationCTA";
 import { PublicRecordsTracker } from "@/components/PublicRecordsTracker";
 
 const PublicRecords = () => (
@@ -15,6 +16,7 @@ const PublicRecords = () => (
     <main className="flex-1 container mx-auto px-4 py-8 max-w-5xl">
       <PublicRecordsTracker />
     </main>
+    <DonationCTA variant="banner" />
     <Footer />
   </div>
 );

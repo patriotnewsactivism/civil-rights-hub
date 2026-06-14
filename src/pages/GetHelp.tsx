@@ -1,6 +1,7 @@
 import { Suspense, lazy } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { DonationCTA } from "@/components/DonationCTA";
 import { LawyerFinder } from "@/components/LawyerFinder";
 import { ResourceLibrary } from "@/components/ResourceLibrary";
 import { SEO } from "@/components/SEO";
@@ -41,6 +42,7 @@ const GetHelp = () => (
         </Suspense>
       </div>
     </main>
+    <DonationCTA variant="banner" />
     <Footer />
   </div>
 );

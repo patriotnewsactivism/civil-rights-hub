@@ -20,6 +20,12 @@ import PublicRecords from "./pages/PublicRecords";
 import Learn from "./pages/Learn";
 import Newsroom from "./pages/Newsroom";
 import GetHelp from "./pages/GetHelp";
+import About from "./pages/About";
+import Volunteer from "./pages/Volunteer";
+import Contribute from "./pages/Contribute";
+import Transparency from "./pages/Transparency";
+import Donate from "./pages/Donate";
+import Store from "./pages/Store";
 import { JurisdictionProvider } from "./hooks/useJurisdiction";
 
 const CityPage = lazy(() => import("./pages/CityPage"));
@@ -135,6 +141,12 @@ const App = () => (
                 }
               />
               <Route path="/public-records" element={<PublicRecords />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/volunteer" element={<Volunteer />} />
+              <Route path="/contribute" element={<Contribute />} />
+              <Route path="/transparency" element={<Transparency />} />
+              <Route path="/donate" element={<Donate />} />
+              <Route path="/store" element={<Store />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

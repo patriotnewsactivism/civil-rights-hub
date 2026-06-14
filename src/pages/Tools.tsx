@@ -4,6 +4,7 @@ import { Footer } from "@/components/Footer";
 import { ViolationReport } from "@/components/ViolationReport";
 import { SEO } from "@/components/SEO";
 import { StatePreferenceBanner } from "@/components/StatePreferenceBanner";
+import { DonationCTA } from "@/components/DonationCTA";
 
 const ResourceCommandCenter = lazy(() =>
   import("@/components/ResourceCommandCenter").then((module) => ({
@@ -39,6 +40,7 @@ const Tools = () => (
         <ViolationReport />
       </div>
     </main>
+    <DonationCTA variant="banner" />
     <Footer />
   </div>
 );

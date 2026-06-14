@@ -114,9 +114,11 @@ export function LawyerFinder() {
 
   const filteredAttorneys = useMemo(() => {
     const searchLower = searchTerm.toLowerCase();
+    const NATIONAL_STATES = ["National", "Nationwide", "national", "nationwide"];
 
     return attorneys.filter((attorney) => {
-      if (selectedState !== "all" && attorney.state !== selectedState) {
+      // Always include nationally-scoped orgs when filtering by state
+      if (selectedState !== "all" && attorney.state !== selectedState && !NATIONAL_STATES.includes(attorney.state)) {
         return false;
       }
 
@@ -245,8 +247,47 @@ export function LawyerFinder() {
         <div className="text-center py-12">Loading attorneys...</div>
       ) : filteredAttorneys.length === 0 ? (
         <Card>
-          <CardContent className="py-12 text-center text-muted-foreground">
-            No attorneys found matching your criteria. Try adjusting your filters.
+          <CardContent className="py-12 text-center space-y-4">
+            <Scale className="h-10 w-10 text-muted-foreground/40 mx-auto" />
+            <div>
+              <p className="font-semibold text-foreground">No attorneys match your current filters</p>
+              <p className="text-sm text-muted-foreground mt-1">
+                Try broadening your search — remove the state or specialty filter, or search by name.
+              </p>
+            </div>
+            <div className="flex gap-2 justify-center flex-wrap">
+              {selectedState !== "all" && (
+                <Button variant="outline" size="sm" onClick={() => setSelectedState("all")}>
+                  Clear state filter
+                </Button>
+              )}
+              {selectedSpecialty !== "all" && (
+                <Button variant="outline" size="sm" onClick={() => setSelectedSpecialty("all")}>
+                  Clear specialty filter
+                </Button>
+              )}
+              {proBonoOnly && (
+                <Button variant="outline" size="sm" onClick={() => setProBonoOnly(false)}>
+                  Show all (not just pro bono)
+                </Button>
+              )}
+              {searchTerm && (
+                <Button variant="outline" size="sm" onClick={() => setSearchTerm("")}>
+                  Clear search
+                </Button>
+              )}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Need urgent help? Call the{" "}
+              <a href="https://www.aclu.org" target="_blank" rel="noopener noreferrer" className="text-primary underline">
+                ACLU
+              </a>{" "}
+              at 212-549-2500 or the{" "}
+              <a href="https://www.nlg.org" target="_blank" rel="noopener noreferrer" className="text-primary underline">
+                National Lawyers Guild
+              </a>{" "}
+              at 212-679-5100.
+            </p>
           </CardContent>
         </Card>
       ) : (

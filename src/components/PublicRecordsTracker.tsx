@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+﻿import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import SocialContentStudio from "@/components/SocialContentStudio";
@@ -27,7 +27,7 @@ import {
 import { toast } from "sonner";
 import { format, differenceInBusinessDays, differenceInDays, addBusinessDays, isPast } from "date-fns";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 type StatusKey = "draft" | "submitted" | "acknowledged" | "processing" | "completed" | "denied" | "appealed";
 
@@ -104,7 +104,7 @@ interface FOIATemplate {
   description: string | null;
 }
 
-// ─── Constants ───────────────────────────────────────────────────────────────
+// â”€â”€â”€ Constants â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 const STATE_RESPONSE_DAYS: Record<string, number> = {
   "Federal": 20, "California": 10, "New York": 5, "Texas": 10, "Florida": 10,
@@ -135,7 +135,7 @@ const PRIORITY_CONFIG = {
   low:    { label: "Low",     color: "text-slate-500",  bg: "bg-slate-100" },
 };
 
-// ─── Deadline helpers ─────────────────────────────────────────────────────────
+// â”€â”€â”€ Deadline helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function getDeadline(req: FOIARequest): Date | null {
   if (req.response_deadline) return new Date(req.response_deadline);
@@ -157,7 +157,7 @@ function getDeadlineStatus(req: FOIARequest) {
   return               { daysLeft, label: `${daysLeft}d left`,             color: "text-slate-500",  bg: "bg-slate-100",  urgent: false };
 }
 
-// ─── Stat Card ───────────────────────────────────────────────────────────────
+// â”€â”€â”€ Stat Card â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function StatCard({ icon: Icon, label, value, sub, color }: { icon: any; label: string; value: number; sub?: string; color: string }) {
   return (
@@ -178,7 +178,7 @@ function StatCard({ icon: Icon, label, value, sub, color }: { icon: any; label: 
   );
 }
 
-// ─── Request Card ─────────────────────────────────────────────────────────────
+// â”€â”€â”€ Request Card â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function RequestCard({ request, onSelect }: { request: FOIARequest; onSelect: () => void }) {
   const status = STATUS_CONFIG[request.status] || STATUS_CONFIG.draft;
@@ -232,7 +232,7 @@ function RequestCard({ request, onSelect }: { request: FOIARequest; onSelect: ()
             <h3 className="font-semibold text-sm truncate">{request.request_subject || "(No subject)"}</h3>
             <p className="text-xs text-muted-foreground mt-0.5 truncate">
               <Building2 className="h-3 w-3 inline mr-1" />
-              {request.agency_name} · {request.state}
+              {request.agency_name} Â· {request.state}
             </p>
           </div>
           <div className="text-right shrink-0">
@@ -259,7 +259,7 @@ function RequestCard({ request, onSelect }: { request: FOIARequest; onSelect: ()
 }
 
 
-// ─── Manual Entry Form ────────────────────────────────────────────────────────
+// â”€â”€â”€ Manual Entry Form â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // For requests already sent by email, mail, fax, or hand-delivery
 
 function ManualEntryForm({ onCreated, onCancel }: { onCreated: () => void; onCancel: () => void }) {
@@ -322,7 +322,7 @@ function ManualEntryForm({ onCreated, onCancel }: { onCreated: () => void; onCan
         continue;
       }
 
-      // Get a signed URL (valid 10 years — effectively permanent for private bucket)
+      // Get a signed URL (valid 10 years â€” effectively permanent for private bucket)
       const { data: signed } = await supabase.storage
         .from("documents")
         .createSignedUrl(path, 60 * 60 * 24 * 365 * 10);
@@ -370,7 +370,7 @@ function ManualEntryForm({ onCreated, onCancel }: { onCreated: () => void; onCan
           agency_type: agencyType,
           state,
           request_subject: subject.trim(),
-          request_body: requestBody.trim() || "(No body recorded — see attached documents)",
+          request_body: requestBody.trim() || "(No body recorded â€” see attached documents)",
           status,
           submitted_date: submittedDate ? new Date(submittedDate).toISOString() : null,
           response_deadline: deadline.toISOString(),
@@ -401,7 +401,7 @@ function ManualEntryForm({ onCreated, onCancel }: { onCreated: () => void; onCan
           update_type: "manual_entry",
           old_status: null,
           new_status: status,
-          message: `Request manually logged — sent via ${methodLabel} on ${format(new Date(submittedDate), "MMMM d, yyyy")}`,
+          message: `Request manually logged â€” sent via ${methodLabel} on ${format(new Date(submittedDate), "MMMM d, yyyy")}`,
           created_by: user.id,
         });
         if (uploadedFiles.length > 0) {
@@ -429,7 +429,7 @@ function ManualEntryForm({ onCreated, onCancel }: { onCreated: () => void; onCan
 
       if (newAgencyName) {
         toast.success("Request logged!", {
-          description: `"${newAgencyName}" was added to the shared agency directory — others can now find it too. 🎉`,
+          description: `"${newAgencyName}" was added to the shared agency directory â€” others can now find it too. ðŸŽ‰`,
           duration: 6000,
         });
       } else {
@@ -454,12 +454,12 @@ function ManualEntryForm({ onCreated, onCancel }: { onCreated: () => void; onCan
         </Button>
         <div>
           <h2 className="font-semibold text-lg">Log an Existing Request</h2>
-          <p className="text-xs text-muted-foreground">For requests already sent — so you never lose track</p>
+          <p className="text-xs text-muted-foreground">For requests already sent â€” so you never lose track</p>
         </div>
       </div>
 
       <div className="grid md:grid-cols-2 gap-4">
-        {/* Left column — agency + request info */}
+        {/* Left column â€” agency + request info */}
         <div className="space-y-4">
           <Card>
             <CardHeader className="pb-3">
@@ -540,9 +540,9 @@ function ManualEntryForm({ onCreated, onCancel }: { onCreated: () => void; onCan
                   <Select value={priority} onValueChange={setPriority}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="urgent">🔴 Urgent</SelectItem>
-                      <SelectItem value="normal">🔵 Normal</SelectItem>
-                      <SelectItem value="low">⚪ Low</SelectItem>
+                      <SelectItem value="urgent">ðŸ”´ Urgent</SelectItem>
+                      <SelectItem value="normal">ðŸ”µ Normal</SelectItem>
+                      <SelectItem value="low">âšª Low</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -566,7 +566,7 @@ function ManualEntryForm({ onCreated, onCancel }: { onCreated: () => void; onCan
           </Card>
         </div>
 
-        {/* Right column — submission method + attachments */}
+        {/* Right column â€” submission method + attachments */}
         <div className="space-y-4">
           <Card>
             <CardHeader className="pb-3">
@@ -653,7 +653,7 @@ function ManualEntryForm({ onCreated, onCancel }: { onCreated: () => void; onCan
                 <Upload className="h-6 w-6 text-muted-foreground" />
                 <div className="text-center">
                   <p className="text-sm font-medium">Click to upload files</p>
-                  <p className="text-xs text-muted-foreground">PDF, JPG, PNG, DOCX — up to 20 MB each</p>
+                  <p className="text-xs text-muted-foreground">PDF, JPG, PNG, DOCX â€” up to 20 MB each</p>
                 </div>
                 <input
                   type="file"
@@ -665,7 +665,7 @@ function ManualEntryForm({ onCreated, onCancel }: { onCreated: () => void; onCan
                 />
                 {uploadingFiles && (
                   <div className="flex items-center gap-2 text-primary text-xs">
-                    <RefreshCw className="h-3 w-3 animate-spin" /> Uploading…
+                    <RefreshCw className="h-3 w-3 animate-spin" /> Uploadingâ€¦
                   </div>
                 )}
               </label>
@@ -701,7 +701,7 @@ function ManualEntryForm({ onCreated, onCancel }: { onCreated: () => void; onCan
 
           <Button className="w-full" onClick={handleSubmit} disabled={submitting || uploadingFiles}>
             {submitting
-              ? <><RefreshCw className="h-4 w-4 mr-2 animate-spin" /> Saving…</>
+              ? <><RefreshCw className="h-4 w-4 mr-2 animate-spin" /> Savingâ€¦</>
               : <><FileCheck className="h-4 w-4 mr-2" /> Log This Request</>
             }
           </Button>
@@ -711,7 +711,7 @@ function ManualEntryForm({ onCreated, onCancel }: { onCreated: () => void; onCan
   );
 }
 
-// ─── New Request Form ─────────────────────────────────────────────────────────
+// â”€â”€â”€ New Request Form â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function NewRequestForm({ onCreated, onCancel }: { onCreated: () => void; onCancel: () => void }) {
   const { user } = useAuth();
@@ -838,7 +838,7 @@ function NewRequestForm({ onCreated, onCancel }: { onCreated: () => void; onCanc
           .eq("id", newReq.agency_id)
           .single();
         if (savedAgency?.user_contributed && (savedAgency.request_count || 0) <= 1) {
-          toast.info(`"${savedAgency.name}" added to shared directory 🎉`, {
+          toast.info(`"${savedAgency.name}" added to shared directory ðŸŽ‰`, {
             description: "Other users can now find and select this agency when filing requests.",
             duration: 6000,
           });
@@ -904,12 +904,12 @@ function NewRequestForm({ onCreated, onCancel }: { onCreated: () => void; onCanc
                 {filteredAgencies.length === 0 && agencySearch.trim().length > 1 && (
                   <div className="p-3 space-y-1">
                     <p className="text-sm font-medium">"{agencySearch}" not found in directory</p>
-                    <p className="text-xs text-muted-foreground">Fill in the details below — it'll be saved to the shared directory so others can find it too.</p>
+                    <p className="text-xs text-muted-foreground">Fill in the details below â€” it'll be saved to the shared directory so others can find it too.</p>
                     <button
                       className="text-xs text-primary font-medium hover:underline mt-1"
                       onClick={() => { setCustomAgencyName(agencySearch); setAgencySearch(""); }}
                     >
-                      ↓ Use this name below →
+                      â†“ Use this name below â†’
                     </button>
                   </div>
                 )}
@@ -927,12 +927,12 @@ function NewRequestForm({ onCreated, onCancel }: { onCreated: () => void; onCanc
                             <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-amber-50 text-amber-600 font-medium">Community Added</span>
                           )}
                           {a.community_verified && (
-                            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-green-50 text-green-600 font-medium">✓ Verified</span>
+                            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-green-50 text-green-600 font-medium">âœ“ Verified</span>
                           )}
                         </div>
-                        <p className="text-xs text-muted-foreground">{[a.city, a.state, a.agency_type].filter(Boolean).join(" · ")}</p>
+                        <p className="text-xs text-muted-foreground">{[a.city, a.state, a.agency_type].filter(Boolean).join(" Â· ")}</p>
                         {a.foia_email && <p className="text-xs text-blue-600 mt-0.5">{a.foia_email}</p>}
-                        {a.foia_online_portal_url && <p className="text-xs text-purple-600 mt-0.5">🌐 Online portal available</p>}
+                        {a.foia_online_portal_url && <p className="text-xs text-purple-600 mt-0.5">ðŸŒ Online portal available</p>}
                       </div>
                       {(a.request_count || 0) > 0 && (
                         <span className="text-[10px] text-muted-foreground whitespace-nowrap pt-0.5">
@@ -991,9 +991,9 @@ function NewRequestForm({ onCreated, onCancel }: { onCreated: () => void; onCanc
                 <Select value={priority} onValueChange={setPriority}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="urgent">🔴 Urgent</SelectItem>
-                    <SelectItem value="normal">🔵 Normal</SelectItem>
-                    <SelectItem value="low">⚪ Low</SelectItem>
+                    <SelectItem value="urgent">ðŸ”´ Urgent</SelectItem>
+                    <SelectItem value="normal">ðŸ”µ Normal</SelectItem>
+                    <SelectItem value="low">âšª Low</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -1049,7 +1049,7 @@ function NewRequestForm({ onCreated, onCancel }: { onCreated: () => void; onCanc
             <CardDescription>
               To: <strong>{selectedAgency?.name || customAgencyName}</strong>
               {(selectedAgency?.foia_email || customAgencyEmail) && (
-                <> · <span className="text-blue-600">{selectedAgency?.foia_email || customAgencyEmail}</span></>
+                <> Â· <span className="text-blue-600">{selectedAgency?.foia_email || customAgencyEmail}</span></>
               )}
             </CardDescription>
           </CardHeader>
@@ -1074,7 +1074,7 @@ function NewRequestForm({ onCreated, onCancel }: { onCreated: () => void; onCanc
               <AlertDescription>
                 <strong>Deadline:</strong> Agency must respond by{" "}
                 <strong>{format(deadline, "MMMM d, yyyy")}</strong>{" "}
-                ({STATE_RESPONSE_DAYS[selectedAgency?.state || customState] || 20} business days —{" "}
+                ({STATE_RESPONSE_DAYS[selectedAgency?.state || customState] || 20} business days â€”{" "}
                 {selectedAgency?.state || customState} law)
               </AlertDescription>
             </Alert>
@@ -1092,18 +1092,18 @@ function NewRequestForm({ onCreated, onCancel }: { onCreated: () => void; onCanc
                   onClick={() => setSendNow(!sendNow)}
                   className="shrink-0"
                 >
-                  {sendNow ? "✓ Yes, Send" : "Send Later"}
+                  {sendNow ? "âœ“ Yes, Send" : "Send Later"}
                 </Button>
               </div>
             )}
 
             <div className="flex gap-3">
               <Button variant="outline" onClick={() => setStep("template")} className="flex-1">
-                ← Back
+                â† Back
               </Button>
               <Button onClick={handleSubmit} disabled={sending} className="flex-2">
                 {sending ? (
-                  <><RefreshCw className="h-4 w-4 mr-2 animate-spin" /> Processing…</>
+                  <><RefreshCw className="h-4 w-4 mr-2 animate-spin" /> Processingâ€¦</>
                 ) : sendNow ? (
                   <><Send className="h-4 w-4 mr-2" /> Save & Send Email</>
                 ) : (
@@ -1118,7 +1118,7 @@ function NewRequestForm({ onCreated, onCancel }: { onCreated: () => void; onCanc
   );
 }
 
-// ─── Request Detail ───────────────────────────────────────────────────────────
+// â”€â”€â”€ Request Detail â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function RequestDetail({ request, onBack, onUpdate }: { request: FOIARequest; onBack: () => void; onUpdate: (r: FOIARequest) => void }) {
   const { user } = useAuth();
@@ -1262,7 +1262,7 @@ function RequestDetail({ request, onBack, onUpdate }: { request: FOIARequest; on
               <h2 className="text-xl font-bold">{request.request_subject}</h2>
               <p className="text-muted-foreground flex items-center gap-1.5">
                 <Building2 className="h-4 w-4" />
-                {request.agency_name} · {request.state}
+                {request.agency_name} Â· {request.state}
               </p>
             </div>
             <div className="flex gap-2 flex-wrap">
@@ -1288,7 +1288,7 @@ function RequestDetail({ request, onBack, onUpdate }: { request: FOIARequest; on
               {request.email_opened_at ? (
                 <span className="flex items-center gap-1.5 text-green-600 font-medium">
                   <MailOpen className="h-4 w-4" />
-                  ✓ Opened by agency {format(new Date(request.email_opened_at), "MMM d, h:mm a")}
+                  âœ“ Opened by agency {format(new Date(request.email_opened_at), "MMM d, h:mm a")}
                 </span>
               ) : (
                 <span className="flex items-center gap-1.5 text-muted-foreground">
@@ -1385,7 +1385,7 @@ function RequestDetail({ request, onBack, onUpdate }: { request: FOIARequest; on
                 >
                   {React.createElement(STATUS_CONFIG[s].icon, { className: "h-3 w-3" })}
                   {STATUS_CONFIG[s].label}
-                  {request.status === s && " ✓"}
+                  {request.status === s && " âœ“"}
                 </button>
               ))}
             </CardContent>
@@ -1440,7 +1440,7 @@ function RequestDetail({ request, onBack, onUpdate }: { request: FOIARequest; on
                 {/* Upload more */}
                 <label className="flex items-center gap-2 p-2 border border-dashed rounded-lg cursor-pointer hover:bg-muted text-sm text-muted-foreground transition-colors">
                   <Upload className="h-4 w-4" />
-                  <span>Attach more documents…</span>
+                  <span>Attach more documentsâ€¦</span>
                   <input
                     type="file"
                     multiple
@@ -1451,7 +1451,7 @@ function RequestDetail({ request, onBack, onUpdate }: { request: FOIARequest; on
                       const newUrls: string[] = [];
                       for (const file of Array.from(e.target.files)) {
                         const ext = file.name.split(".").pop() || "bin";
-                        const path = \`foia/\${user.id}/\${Date.now()}-\${Math.random().toString(36).slice(2)}.\${ext}\`;
+                        const path = `foia/\${user.id}/\${Date.now()}-\${Math.random().toString(36).slice(2)}.\${ext}`;
                         const { error } = await supabase.storage.from("documents").upload(path, file, { contentType: file.type });
                         if (!error) {
                           const { data: signed } = await supabase.storage.from("documents").createSignedUrl(path, 60*60*24*365*10);
@@ -1462,10 +1462,10 @@ function RequestDetail({ request, onBack, onUpdate }: { request: FOIARequest; on
                         const all = [...(request.attachment_urls || []), ...newUrls];
                         await supabase.from("foia_requests").update({ attachment_urls: all }).eq("id", request.id);
                         onUpdate({ ...request, attachment_urls: all });
-                        await supabase.from("foia_request_updates").insert({ request_id: request.id, update_type: "attachment", message: \`\${newUrls.length} document(s) added\`, created_by: user?.id });
+                        await supabase.from("foia_request_updates").insert({ request_id: request.id, update_type: "attachment", message: `\${newUrls.length} document(s) added`, created_by: user?.id });
                         const { data: u } = await supabase.from("foia_request_updates").select("*").eq("request_id", request.id).order("created_at", { ascending: false });
                         setUpdates(u || []);
-                        toast.success(\`\${newUrls.length} file(s) added\`);
+                        toast.success(`\${newUrls.length} file(s) added`);
                       }
                       e.target.value = "";
                     }}
@@ -1475,13 +1475,13 @@ function RequestDetail({ request, onBack, onUpdate }: { request: FOIARequest; on
             </Card>
           )}
 
-          {/* No attachments — offer to add */}
+          {/* No attachments â€” offer to add */}
           {(!request.attachment_urls || request.attachment_urls.length === 0) && (
             <Card className="border-dashed">
               <CardContent className="py-4">
                 <label className="flex items-center justify-center gap-2 cursor-pointer text-sm text-muted-foreground hover:text-primary transition-colors">
                   <Paperclip className="h-4 w-4" />
-                  <span>Attach documents (scans, receipts, correspondence…)</span>
+                  <span>Attach documents (scans, receipts, correspondenceâ€¦)</span>
                   <input
                     type="file"
                     multiple
@@ -1492,7 +1492,7 @@ function RequestDetail({ request, onBack, onUpdate }: { request: FOIARequest; on
                       const newUrls: string[] = [];
                       for (const file of Array.from(e.target.files)) {
                         const ext = file.name.split(".").pop() || "bin";
-                        const path = \`foia/\${user.id}/\${Date.now()}-\${Math.random().toString(36).slice(2)}.\${ext}\`;
+                        const path = `foia/\${user.id}/\${Date.now()}-\${Math.random().toString(36).slice(2)}.\${ext}`;
                         const { error } = await supabase.storage.from("documents").upload(path, file, { contentType: file.type });
                         if (!error) {
                           const { data: signed } = await supabase.storage.from("documents").createSignedUrl(path, 60*60*24*365*10);
@@ -1503,10 +1503,10 @@ function RequestDetail({ request, onBack, onUpdate }: { request: FOIARequest; on
                         const all = [...(request.attachment_urls || []), ...newUrls];
                         await supabase.from("foia_requests").update({ attachment_urls: all }).eq("id", request.id);
                         onUpdate({ ...request, attachment_urls: all });
-                        await supabase.from("foia_request_updates").insert({ request_id: request.id, update_type: "attachment", message: \`\${newUrls.length} document(s) attached\`, created_by: user?.id });
+                        await supabase.from("foia_request_updates").insert({ request_id: request.id, update_type: "attachment", message: `\${newUrls.length} document(s) attached`, created_by: user?.id });
                         const { data: u } = await supabase.from("foia_request_updates").select("*").eq("request_id", request.id).order("created_at", { ascending: false });
                         setUpdates(u || []);
-                        toast.success(\`\${newUrls.length} file(s) attached\`);
+                        toast.success(`\${newUrls.length} file(s) attached`);
                       }
                       e.target.value = "";
                     }}
@@ -1555,7 +1555,7 @@ function RequestDetail({ request, onBack, onUpdate }: { request: FOIARequest; on
   );
 }
 
-// ─── Main Dashboard ───────────────────────────────────────────────────────────
+// â”€â”€â”€ Main Dashboard â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export function PublicRecordsTracker() {
   const { user } = useAuth();
@@ -1648,7 +1648,7 @@ export function PublicRecordsTracker() {
             Public Records Tracker
           </h2>
           <p className="text-muted-foreground text-sm mt-0.5">
-            File, send, track requests — and turn results into viral accountability content
+            File, send, track requests â€” and turn results into viral accountability content
           </p>
         </div>
         <div className="flex gap-2">
@@ -1689,7 +1689,7 @@ export function PublicRecordsTracker() {
         </TabsContent>
 
         <TabsContent value="my-requests" className="mt-4">
-      {/* ↓ existing dashboard content wrapped ↓ */}
+      {/* â†“ existing dashboard content wrapped â†“ */}
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -1777,3 +1777,4 @@ export default PublicRecordsTracker;
 
 // Need React import for React.createElement in detail view
 import React from "react";
+

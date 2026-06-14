@@ -1,5 +1,6 @@
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { DonationCTA } from "@/components/DonationCTA";
 import { ScenarioPlaybooks } from "@/components/ScenarioPlaybooks";
 import { IncidentGuide } from "@/components/IncidentGuide";
 import { EmergencyRightsCard } from "@/components/EmergencyRightsCard";
@@ -32,6 +33,7 @@ const DoThisNow = () => (
         <IncidentGuide />
       </div>
     </main>
+    <DonationCTA variant="banner" />
     <Footer />
   </div>
 );

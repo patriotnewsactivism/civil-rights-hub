@@ -1,10 +1,18 @@
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { SEO } from "@/components/SEO";
+import { DonationCTA } from "@/components/DonationCTA";
 import { LawyerFinder } from "@/components/LawyerFinder";
 
 const Attorneys = () => {
   return (
     <div className="min-h-screen flex flex-col">
+      <SEO
+        title="Civil Rights Attorney Directory | Find Pro Bono Lawyers"
+        description="Search 1,700+ civil rights attorneys by state and specialty. Find pro bono lawyers for police misconduct, First Amendment, wrongful arrest, FOIA, and more."
+        ogTitle="Civil Rights Attorney Directory"
+        ogDescription="Find experienced civil rights attorneys near you — searchable by state, specialty, and pro bono status."
+      />
       <Header />
       <main className="flex-1">
         <div className="container mx-auto px-4 py-8">
@@ -17,6 +25,7 @@ const Attorneys = () => {
           <LawyerFinder />
         </div>
       </main>
+      <DonationCTA variant="banner" />
       <Footer />
     </div>
   );

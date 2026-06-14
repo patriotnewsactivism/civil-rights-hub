@@ -14,7 +14,8 @@
       "Bash(curl:*)",
       "Bash(psql:*)",
       "Bash(grep:*)",
-      "Bash(timeout 10 npm run dev:*)"
+      "Bash(timeout 10 npm run dev:*)",
+      "Bash(node *)"
     ],
     "deny": [],
     "ask": []

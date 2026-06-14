@@ -1,5 +1,6 @@
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { DonationCTA } from "@/components/DonationCTA";
 import { KnowYourRights } from "@/components/KnowYourRights";
 import { IncidentGuide } from "@/components/IncidentGuide";
 import { StateSelector } from "@/components/StateSelector";
@@ -88,6 +89,7 @@ const Rights = () => {
           </Tabs>
         </div>
       </main>
+      <DonationCTA variant="banner" />
       <Footer />
     </div>
   );

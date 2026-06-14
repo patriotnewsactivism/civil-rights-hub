@@ -16,7 +16,7 @@ import {
   Wrench,
   Newspaper,
   LifeBuoy,
-  BookOpenText,, FileText} from "lucide-react";
+  BookOpenText, FileText} from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { StateQuickSelect } from "@/components/StateQuickSelect";
 import { NotificationBell } from "@/components/NotificationBell";

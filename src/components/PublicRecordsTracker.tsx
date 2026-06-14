@@ -1451,7 +1451,7 @@ function RequestDetail({ request, onBack, onUpdate }: { request: FOIARequest; on
                       const newUrls: string[] = [];
                       for (const file of Array.from(e.target.files)) {
                         const ext = file.name.split(".").pop() || "bin";
-                        const path = \`foia/\${user.id}/\${Date.now()}-\${Math.random().toString(36).slice(2)}.\${ext}\`;
+                        const path = `foia/${user.id}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
                         const { error } = await supabase.storage.from("documents").upload(path, file, { contentType: file.type });
                         if (!error) {
                           const { data: signed } = await supabase.storage.from("documents").createSignedUrl(path, 60*60*24*365*10);
@@ -1462,10 +1462,10 @@ function RequestDetail({ request, onBack, onUpdate }: { request: FOIARequest; on
                         const all = [...(request.attachment_urls || []), ...newUrls];
                         await supabase.from("foia_requests").update({ attachment_urls: all }).eq("id", request.id);
                         onUpdate({ ...request, attachment_urls: all });
-                        await supabase.from("foia_request_updates").insert({ request_id: request.id, update_type: "attachment", message: \`\${newUrls.length} document(s) added\`, created_by: user?.id });
+                        await supabase.from("foia_request_updates").insert({ request_id: request.id, update_type: "attachment", message: `${newUrls.length} document(s) added`, created_by: user?.id });
                         const { data: u } = await supabase.from("foia_request_updates").select("*").eq("request_id", request.id).order("created_at", { ascending: false });
                         setUpdates(u || []);
-                        toast.success(\`\${newUrls.length} file(s) added\`);
+                        toast.success(`${newUrls.length} file(s) added`);
                       }
                       e.target.value = "";
                     }}
@@ -1492,7 +1492,7 @@ function RequestDetail({ request, onBack, onUpdate }: { request: FOIARequest; on
                       const newUrls: string[] = [];
                       for (const file of Array.from(e.target.files)) {
                         const ext = file.name.split(".").pop() || "bin";
-                        const path = \`foia/\${user.id}/\${Date.now()}-\${Math.random().toString(36).slice(2)}.\${ext}\`;
+                        const path = `foia/${user.id}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
                         const { error } = await supabase.storage.from("documents").upload(path, file, { contentType: file.type });
                         if (!error) {
                           const { data: signed } = await supabase.storage.from("documents").createSignedUrl(path, 60*60*24*365*10);
@@ -1503,10 +1503,10 @@ function RequestDetail({ request, onBack, onUpdate }: { request: FOIARequest; on
                         const all = [...(request.attachment_urls || []), ...newUrls];
                         await supabase.from("foia_requests").update({ attachment_urls: all }).eq("id", request.id);
                         onUpdate({ ...request, attachment_urls: all });
-                        await supabase.from("foia_request_updates").insert({ request_id: request.id, update_type: "attachment", message: \`\${newUrls.length} document(s) attached\`, created_by: user?.id });
+                        await supabase.from("foia_request_updates").insert({ request_id: request.id, update_type: "attachment", message: `${newUrls.length} document(s) attached`, created_by: user?.id });
                         const { data: u } = await supabase.from("foia_request_updates").select("*").eq("request_id", request.id).order("created_at", { ascending: false });
                         setUpdates(u || []);
-                        toast.success(\`\${newUrls.length} file(s) attached\`);
+                        toast.success(`${newUrls.length} file(s) attached`);
                       }
                       e.target.value = "";
                     }}

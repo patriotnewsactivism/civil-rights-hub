@@ -202,7 +202,7 @@ export const KnowYourRights = () => {
               <Scale className="h-4 w-4" />
               Constitutional Intelligence
             </div>
-            <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight">
+            <h2 className="bg-black text-white font-extrabold p-6 border-l-8 border-blue-900 rounded-sm uppercase tracking-tighter text-3xl md:text-4xl">
               Know Your <span className="text-blue-400">Rights</span>.
             </h2>
             <p className="text-slate-400 text-lg max-w-2xl leading-relaxed">
@@ -315,3 +315,4 @@ export const KnowYourRights = () => {
     </section>
   );
 };
+

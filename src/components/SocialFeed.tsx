@@ -1,5 +1,6 @@
 import { ChangeEvent, useCallback, useEffect, useMemo, useState, useRef } from "react";
 import { ExternalShareButtons } from "@/components/social/ExternalShareButtons";
+import { StoriesBar } from "@/components/StoriesBar";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -218,6 +219,7 @@ export function SocialFeed() {
   const [selectedHashtag, setSelectedHashtag] = useState<string | null>(null);
   const [newComment, setNewComment] = useState<Record<string, string>>({});
   const [expandedComments, setExpandedComments] = useState<Set<string>>(new Set());
+  const [userInterests, setUserInterests] = useState<Map<string, number>>(new Map());
   const [bookmarks, setBookmarks] = useState<Set<string>>(new Set());
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [sharePostId, setSharePostId] = useState<string | null>(null);
@@ -529,8 +531,10 @@ export function SocialFeed() {
       }
 
       await fetchPosts();
+      const targetPost2 = posts.find((p) => p.id === postId);
+      if (targetPost2?.hashtags?.length) void trackInterest(targetPost2.hashtags);
     },
-    [currentUserId, fetchPosts, posts]
+    [currentUserId, fetchPosts, posts, trackInterest]
   );
 
   const removeReaction = useCallback(
@@ -653,6 +657,15 @@ export function SocialFeed() {
           .then(({ data: followData }) => {
             setFollowingUserIds(new Set((followData ?? []).map((f) => f.following_id)));
           });
+        supabase
+          .from("user_interests")
+          .select("hashtag, weight")
+          .eq("user_id", uid)
+          .then(({ data: interestData }) => {
+            if (interestData) {
+              setUserInterests(new Map(interestData.map((i) => [i.hashtag, i.weight])));
+            }
+          });
       }
     });
   }, []);
@@ -662,6 +675,30 @@ export function SocialFeed() {
     const channel = supabase.channel("social-feed-stream").on("postgres_changes", { event: "*", schema: "public", table: "posts" }, () => fetchPosts()).subscribe();
     return () => { supabase.removeChannel(channel); };
   }, [fetchPosts]);
+
+  const scorePost = useCallback((post: PostWithDetails): { score: number; reason: string } => {
+    const ageHours = (Date.now() - new Date(post.created_at).getTime()) / 3600000;
+    let score = Math.max(0, 1 - ageHours / 72) * 25;
+    let reason = "recent content";
+    if (followingUserIds.has(post.user_id)) { score += 45; reason = "from someone you follow"; }
+    const alignedTags = post.hashtags.filter(t => userInterests.has(t));
+    if (alignedTags.length) { score += Math.min(alignedTags.length * 8, 20); reason = `matches your interest in ${alignedTags[0]}`; }
+    if (post.profile?.is_verified) score += 5;
+    score += Math.min((post.likes.length + post.reactions.length) / 10, 4);
+    return { score, reason };
+  }, [followingUserIds, userInterests]);
+
+  const trackInterest = useCallback(async (hashtags: string[]) => {
+    if (!currentUserId || !hashtags.length) return;
+    try {
+      await supabase.rpc("track_hashtag_interest", { p_user_id: currentUserId, p_hashtags: hashtags });
+      setUserInterests(prev => {
+        const next = new Map(prev);
+        hashtags.forEach(t => next.set(t, (next.get(t) ?? 0) + 1));
+        return next;
+      });
+    } catch { /* function not yet deployed */ }
+  }, [currentUserId]);
 
   const trendingHashtags = useMemo(() => {
     const tagCounts = new Map<string, number>();
@@ -673,7 +710,9 @@ export function SocialFeed() {
 
   const displayedPosts = useMemo(() => {
     let filtered = posts;
-    if (activeTab === "following") {
+    if (activeTab === "foryou") {
+      filtered = [...filtered].sort((a, b) => scorePost(b).score - scorePost(a).score);
+    } else if (activeTab === "following") {
       filtered = filtered.filter(post => followingUserIds.has(post.user_id));
     } else if (activeTab === "popular") {
       filtered = [...filtered].sort((a, b) => (b.reactions.length + b.likes.length + b.comments.length) - (a.reactions.length + a.likes.length + a.comments.length));
@@ -686,6 +725,7 @@ export function SocialFeed() {
 
   return (
     <div className="max-w-3xl mx-auto space-y-8">
+      <StoriesBar currentUserId={currentUserId} />
       {/* Search & Trending Header */}
       <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
         <div className="relative w-full md:w-auto flex-1">
@@ -846,23 +886,30 @@ export function SocialFeed() {
             </CardContent>
           </Card>
         )}
-        {displayedPosts.map((post) => (
-          <PostCard
-            key={post.id}
-            post={post}
-            currentUserId={currentUserId}
-            onReact={toggleReaction}
-            onRemoveReaction={removeReaction}
-            onShare={(postId) => { setSharePostId(postId); setShareDialogOpen(true); }}
-            onPollVote={(optionIds) => handlePollVote(post.id, optionIds)}
-            onHashtagClick={(tag) => setSelectedHashtag(tag)}
-            isBookmarked={bookmarks.has(post.id)}
-            onToggleBookmark={toggleBookmark}
-            onAddComment={(content, parentId) => addComment(post.id, content, parentId)}
-            isExpanded={expandedComments.has(post.id)}
-            onToggleComments={() => toggleComments(post.id)}
-          />
-        ))}
+        {displayedPosts.map((post) => {
+          const { reason } = activeTab === "foryou" ? scorePost(post) : { reason: null };
+          return (
+            <div key={post.id}>
+              {reason && (
+                <p className="text-xs text-muted-foreground px-1 pb-1">Suggested because: {reason}</p>
+              )}
+              <PostCard
+                post={post}
+                currentUserId={currentUserId}
+                onReact={toggleReaction}
+                onRemoveReaction={removeReaction}
+                onShare={(postId) => { setSharePostId(postId); setShareDialogOpen(true); }}
+                onPollVote={(optionIds) => handlePollVote(post.id, optionIds)}
+                onHashtagClick={(tag) => { setSelectedHashtag(tag); void trackInterest([tag]); }}
+                isBookmarked={bookmarks.has(post.id)}
+                onToggleBookmark={toggleBookmark}
+                onAddComment={(content, parentId) => addComment(post.id, content, parentId)}
+                isExpanded={expandedComments.has(post.id)}
+                onToggleComments={() => toggleComments(post.id)}
+              />
+            </div>
+          );
+        })}
       </div>
 
       {/* Share Dialog */}

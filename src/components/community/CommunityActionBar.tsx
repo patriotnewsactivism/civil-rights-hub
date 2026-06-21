@@ -62,7 +62,12 @@ export function CommunityActionBar({ userId }: { userId: string | null }) {
       </Card>
 
       {/* Expanded panels */}
-      {activePanel === "live" && <GoLiveRecorder />}
+      {activePanel === "live" && (
+        <GoLiveRecorder
+          userId={userId ?? undefined}
+          onPostedToFeed={() => setActivePanel("none")}
+        />
+      )}
       {activePanel === "report" && <QuickViolationReport userId={userId} />}
     </div>
   );

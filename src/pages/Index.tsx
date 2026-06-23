@@ -8,6 +8,7 @@ import { SEO } from "@/components/SEO";
 import { ATTORNEY_DIRECTORY } from "@/lib/seoData";
 import { StatePreferenceBanner } from "@/components/StatePreferenceBanner";
 import { QuickAccessHub } from "@/components/QuickAccessHub";
+import { CrisisHUD } from "@/components/CrisisHUD";
 import { TodayNearYou } from "@/components/TodayNearYou";
 import { DigestSubscribeBanner } from "@/components/DigestSubscribeBanner";
 import { EmergencyFAB } from "@/components/EmergencyActionSheet";
@@ -98,6 +99,7 @@ const Index = () => {
       <DigestSubscribeBanner />
       <div className="container mx-auto px-4 py-6">
         <StatePreferenceBanner />
+        <CrisisHUD />
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6 mt-4">
           <div>
             <QuickAccessHub />

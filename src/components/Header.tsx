@@ -62,13 +62,15 @@ export function Header() {
   }, [user]);
 
   return (
-    <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
-      <div className="container mx-auto px-4 py-3 md:py-4 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-2 font-bold text-base md:text-xl">
-          <Shield className="h-5 w-5 md:h-6 md:w-6 text-primary" />
+    <header className="border-b border-border/60 bg-background/90 backdrop-blur-xl supports-[backdrop-filter]:bg-background/70 sticky top-0 z-50">
+      <div className="container mx-auto px-4 py-3 flex items-center justify-between">
+        <Link to="/" className="flex items-center gap-2.5 group">
+          <div className="relative">
+            <Shield className="h-7 w-7 text-primary drop-shadow-[0_0_8px_hsl(var(--primary)/0.6)]" />
+          </div>
           <div className="flex flex-col">
-            <span className="text-sm md:text-base">Civil Rights Hub</span>
-            <span className="text-[10px] md:text-xs font-normal text-muted-foreground hidden sm:block">by We The People News</span>
+            <span className="text-sm md:text-base font-black tracking-tight leading-none">Civil Rights Hub</span>
+            <span className="text-[9px] md:text-[10px] font-medium text-muted-foreground hidden sm:block tracking-wide uppercase">by We The People News</span>
           </div>
         </Link>
 
@@ -142,7 +144,7 @@ export function Header() {
 
           {/* Auth Button / Community Button */}
           {user ? (
-            <Button asChild size="sm" className="hidden sm:flex">
+            <Button asChild size="sm" className="hidden sm:flex font-bold shadow-md shadow-primary/20">
               <Link to="/community">
                 <Users className="h-4 w-4 mr-2" />
                 Community
@@ -151,11 +153,8 @@ export function Header() {
           ) : (
             <Popover>
               <PopoverTrigger asChild>
-                <Button size="sm" className="hidden sm:flex flex-col items-start gap-0 px-3 md:px-4 text-left leading-tight h-auto py-2">
-                  <span className="font-semibold text-xs md:text-sm">Join Network</span>
-                  <span className="text-[10px] text-primary-foreground/90 hidden md:block">
-                    Reports, FOIAs & Legal Support
-                  </span>
+                <Button size="sm" className="hidden sm:flex font-bold shadow-md shadow-primary/20 px-4">
+                  <span className="text-xs md:text-sm">Join Free</span>
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-80" align="end">
@@ -202,7 +201,7 @@ export function Header() {
           {/* Mobile Menu */}
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
             <SheetTrigger asChild>
-              <Button variant="outline" size="icon" className="md:hidden h-9 w-9">
+              <Button variant="outline" size="icon" className="md:hidden h-9 w-9 border-border/60">
                 <Menu className="h-5 w-5" />
                 <span className="sr-only">Toggle menu</span>
               </Button>

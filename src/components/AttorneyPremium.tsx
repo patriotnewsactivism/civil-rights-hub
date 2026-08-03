@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { AugustPromoCountdown } from "@/components/AugustPromoCountdown";
 import { SEO } from "@/components/SEO";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -155,6 +156,7 @@ export function AttorneyPremium() {
             </div>
             <p className="text-sm text-amber-700/80 dark:text-amber-400/80">
               Lock in half-price for your entire first month. Offer ends August 31, 2026.
+            <div className="mt-3"><AugustPromoCountdown /></div>
             </p>
           </div>
         )}

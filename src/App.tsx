@@ -26,6 +26,7 @@ import SolCalculatorPage from "./pages/SolCalculatorPage";
 import StateComparisonPage from "./pages/StateComparisonPage";
 import AttorneyPremiumPage from "./pages/AttorneyPremiumPage";
 import AttorneyDashboardPage from "./pages/AttorneyDashboardPage";
+import NewsletterPage from "./pages/NewsletterPage";
 import { JurisdictionProvider } from "./hooks/useJurisdiction";
 import { PageSkeleton } from "@/components/PageSkeleton";
 import { SearchCommandDialog } from "@/components/SearchCommandDialog";
@@ -106,6 +107,8 @@ const App = () => (
               {/* Attorney premium + dashboard */}
               <Route path="/attorney-premium" element={<AttorneyPremiumPage />} />
               <Route path="/attorney-dashboard" element={<AttorneyDashboardPage />} />
+              {/* Newsletter */}
+              <Route path="/newsletter" element={<NewsletterPage />} />
               {/* Consolidated into the /help hub */}
               <Route path="/tools" element={<Navigate to="/help#tools" replace />} />
               <Route path="/activists" element={<Navigate to="/help#activists" replace />} />

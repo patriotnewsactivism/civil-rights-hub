@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Shield, ExternalLink, Heart } from "lucide-react";
+import { Shield, ExternalLink } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -223,9 +223,7 @@ export const Footer = () => {
             </div>
 
             <div className="flex items-center gap-1 text-xs text-slate-500">
-              <span>Built with</span>
-              <Heart className="h-3 w-3 text-red-500 fill-red-500" />
-              <span>for the people</span>
+              <span>Built for the people</span>
             </div>
             <p className="text-xs text-slate-500 font-semibold tracking-wide">A Don Matthews creation</p>
           </div>

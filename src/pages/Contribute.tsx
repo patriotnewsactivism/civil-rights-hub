@@ -10,7 +10,7 @@ import {
   Scale,
   Radio,
   Flag,
-  Heart,
+  DollarSign,
   Code,
   ExternalLink,
   ArrowRight,
@@ -68,7 +68,7 @@ const WAYS = [
     internal: false,
   },
   {
-    icon: Heart,
+    icon: DollarSign,
     title: "Donate",
     description:
       "Hosting, data, and development cost money. Donations go directly to keeping the platform free and expanding its reach.",

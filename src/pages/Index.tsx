@@ -7,6 +7,7 @@ import { SEO } from "@/components/SEO";
 import { ATTORNEY_DIRECTORY } from "@/lib/seoData";
 import { StatePreferenceBanner } from "@/components/StatePreferenceBanner";
 import { DonationBanner } from "@/components/DonationBanner";
+import { FeaturedAttorney } from "@/components/FeaturedAttorney";
 import { EmergencyFAB } from "@/components/EmergencyActionSheet";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -96,6 +97,7 @@ const Index = () => {
         <Suspense fallback={<Skeleton className="h-96 rounded-xl" />}>
           <CrisisHUD />
         </Suspense>
+        <FeaturedAttorney />
       </div>
       <KnowYourRights />
       <Suspense fallback={<div className="container mx-auto px-4 py-10 space-y-4"><Skeleton className="h-8 w-1/3" /><div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{[...Array(6)].map((_, i) => <Skeleton key={i} className="h-28 rounded-xl" />)}</div></div>}>

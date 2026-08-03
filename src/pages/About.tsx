@@ -4,7 +4,7 @@ import { SEO } from "@/components/SEO";
 import { ImpactCounter } from "@/components/ImpactCounter";
 import { DonationCTA } from "@/components/DonationCTA";
 import { Button } from "@/components/ui/button";
-import { Shield, Heart, ExternalLink, Mail } from "lucide-react";
+import { Shield, ExternalLink, Mail } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const STORY_ITEMS = [

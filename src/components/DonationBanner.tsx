@@ -2,13 +2,13 @@ import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Heart, X, ExternalLink, DollarSign, Coffee, Users } from "lucide-react";
+import { X, ExternalLink, DollarSign, Coffee, Users } from "lucide-react";
 
 const DONATION_LINKS = [
   {
     name: "Patreon",
     url: "https://www.patreon.com/patriotnewsactivism",
-    icon: Heart,
+    icon: DollarSign,
     color: "bg-[#FF424D]",
     description: "Monthly support",
   },

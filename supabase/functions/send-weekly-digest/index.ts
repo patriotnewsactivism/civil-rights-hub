@@ -81,7 +81,7 @@ function buildHtml(payload: DigestPayload, recipientName: string | null): string
     <ul style="padding-left:18px;margin:0;">${attorneyItems || "<li style='color:#94a3b8;'>No new attorney listings.</li>"}</ul>
 
     <hr style="border:none;border-top:1px solid #e2e8f0;margin:32px 0;">
-    <p style="font-size:12px;color:#94a3b8;margin:0;">You're getting this because you subscribed to weekly civil-rights updates. <a href="${Deno.env.get("PUBLIC_SITE_URL") || "https://civilrights.lovable.app"}/profile" style="color:#3b82f6;">Manage preferences</a>.</p>
+    <p style="font-size:12px;color:#94a3b8;margin:0;">You're getting this because you subscribed to weekly civil-rights updates. <a href="${Deno.env.get("PUBLIC_SITE_URL") || "https://civilrightshub.org"}/profile" style="color:#3b82f6;">Manage preferences</a>.</p>
   </div>
 </body></html>`;
 }

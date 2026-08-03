@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import {
   Smile,
-  Heart,
+  Shield,
   ThumbsUp,
   Laugh,
   Angry,
@@ -44,7 +44,7 @@ interface ReactionPickerProps {
 
 const REACTION_CONFIGS: ReactionConfig[] = [
   { type: "like", emoji: "👍", label: "Like", icon: ThumbsUp, color: "text-blue-500" },
-  { type: "love", emoji: "❤️", label: "Love", icon: Heart, color: "text-red-500" },
+  { type: "support", emoji: "🤝", label: "Support", icon: Shield, color: "text-accent" },
   { type: "laugh", emoji: "😂", label: "Laugh", icon: Laugh, color: "text-yellow-500" },
   { type: "wow", emoji: "😮", label: "Wow", icon: Sparkles, color: "text-amber-500" },
   { type: "sad", emoji: "😢", label: "Sad", icon: Frown, color: "text-blue-400" },

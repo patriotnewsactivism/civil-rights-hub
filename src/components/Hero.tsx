@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import {
   Shield, ArrowRight, FileText, Radio, AlertCircle,
   Users, Video, Zap, ChevronRight, ChevronLeft, Scale,
-  Activity, Clock, MapPin,
+  Activity, Clock, MapPin, Newspaper, Gift, Mic, BookOpen,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useLiveStats } from "@/hooks/useLiveStats";
@@ -17,6 +17,7 @@ interface TickerItem {
   to: string;
   icon?: LucideIcon;
   priority?: "normal" | "alert";
+  external?: boolean;
 }
 
 interface QuickAccessItem {
@@ -59,6 +60,17 @@ const STAT_CHIPS: { key: keyof import("@/hooks/useLiveStats").LiveStats; icon: L
   { key: "activeFoias", icon: FileText, label: "FOIA requests", to: "/help#records" },
 ];
 
+const PROMO_ITEMS: TickerItem[] = [
+  { text: "WTPN: US Marshals FOIA reveals #OperationSilenceThePress", to: "https://www.wtpnews.org/us-marshals-foia-operation-silence-the-press/", icon: Newspaper, external: true },
+  { text: "WTPN: Exclusive interview — Attorney Courtney Vincent on the Trooper Assault", to: "https://www.wtpnews.org/exclusive-one-on-one-interview-civil-rights-attorney-courtney-vincent-regarding-the-trooper-assault/", icon: Newspaper, external: true },
+  { text: "WTPN: Federal lawsuit exposes Galveston-Mississippi conspiracy to imprison journalist", to: "https://www.wtpnews.org/galveston-lafayette-lawsuit/", icon: Newspaper, external: true },
+  { text: "TubeScribe — forensic video transcription with AI-powered analysis", to: "https://tubescribe.app", icon: Video, external: true },
+  { text: "Don Matthews — journalist, author, civil rights activist at donmatthews.live", to: "https://donmatthews.live", icon: Mic, external: true },
+  { text: "Free downloadable Know Your Rights cards + FOIA templates", to: "/help#records", icon: Gift },
+  { text: "Free emergency rights card — save to your phone for police encounters", to: "/do-this-now", icon: Gift },
+  { text: "Stay informed — civil rights newsroom & investigative journalism", to: "/newsroom", icon: BookOpen },
+];
+
 export const Hero = () => {
   const { stats, recent, isLoading, isSuccess, dataUpdatedAt } = useLiveStats();
   const [tickerIndex, setTickerIndex] = useState(0);
@@ -89,9 +101,17 @@ export const Hero = () => {
       : []),
     { text: `${stats.totalAttorneys.toLocaleString()} civil rights attorneys in our directory`, to: "/help#attorneys", icon: Scale },
     { text: `${stats.activeScanners.toLocaleString()} live scanner feeds monitored`, to: "/help#tools", icon: Radio },
+    PROMO_ITEMS[0],
     { text: "Go live and document encounters — recordings saved to your account", to: "/community", icon: Video },
+    PROMO_ITEMS[1],
     { text: "Emergency contacts and legal aid one tap away", to: "/do-this-now", icon: Zap },
+    PROMO_ITEMS[2],
     { text: "Anti-censorship · No shadow-banning · No engagement bait", to: "/about", icon: Shield },
+    PROMO_ITEMS[3],
+    PROMO_ITEMS[4],
+    PROMO_ITEMS[5],
+    PROMO_ITEMS[6],
+    PROMO_ITEMS[7],
   ];
 
   const safeIndex = tickerItems.length > 0 ? tickerIndex % tickerItems.length : 0;
@@ -179,20 +199,38 @@ export const Hero = () => {
 
           {/* Ticker text — clickable link */}
           <div className="overflow-hidden flex-1" aria-live="polite" aria-atomic="true">
-            <Link
-              key={safeIndex}
-              to={currentItem.to}
-              className="flex items-center gap-2 text-xs md:text-sm text-foreground font-semibold animate-fade-in hover:text-accent transition-colors group"
-              aria-label={currentItem.text}
-            >
-              {currentItem.icon && (
-                <currentItem.icon className={cn("h-3.5 w-3.5 shrink-0", currentItem.priority === "alert" ? "text-destructive" : "text-accent")} />
-              )}
-              <span className="truncate group-hover:underline decoration-accent/50 underline-offset-2">
-                {currentItem.text}
-              </span>
-              <ArrowRight className="h-3 w-3 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
-            </Link>
+            {currentItem.external ? (
+              <a
+                key={safeIndex}
+                href={currentItem.to}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 text-xs md:text-sm text-foreground font-semibold animate-fade-in hover:text-accent transition-colors group"
+              >
+                {currentItem.icon && (
+                  <currentItem.icon className={cn("h-3.5 w-3.5 shrink-0", currentItem.priority === "alert" ? "text-destructive" : "text-accent")} />
+                )}
+                <span className="truncate group-hover:underline decoration-accent/50 underline-offset-2">
+                  {currentItem.text}
+                </span>
+                <ArrowRight className="h-3 w-3 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
+              </a>
+            ) : (
+              <Link
+                key={safeIndex}
+                to={currentItem.to}
+                className="flex items-center gap-2 text-xs md:text-sm text-foreground font-semibold animate-fade-in hover:text-accent transition-colors group"
+                aria-label={currentItem.text}
+              >
+                {currentItem.icon && (
+                  <currentItem.icon className={cn("h-3.5 w-3.5 shrink-0", currentItem.priority === "alert" ? "text-destructive" : "text-accent")} />
+                )}
+                <span className="truncate group-hover:underline decoration-accent/50 underline-offset-2">
+                  {currentItem.text}
+                </span>
+                <ArrowRight className="h-3 w-3 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
+              </Link>
+            )}
           </div>
 
           {/* Prev / Next controls */}

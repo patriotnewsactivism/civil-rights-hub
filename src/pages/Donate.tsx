@@ -5,7 +5,7 @@ import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ImpactCounter } from "@/components/ImpactCounter";
-import { Heart, ExternalLink, CheckCircle, Shield } from "lucide-react";
+import { DollarSign, ExternalLink, CheckCircle, Shield } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 // Set these in your Stripe dashboard → Payment Links, then add to .env
@@ -89,7 +89,7 @@ const Donate = () => {
         <section className="border-b bg-gradient-to-b from-primary/10 to-background">
           <div className="container mx-auto px-4 py-16 text-center max-w-3xl space-y-5">
             <div className="inline-flex items-center gap-2 text-accent text-sm font-semibold">
-              <Heart className="h-4 w-4 fill-accent" />
+              <DollarSign className="h-4 w-4 text-accent" />
               Keep it free for everyone
             </div>
             <h1 className="text-4xl md:text-5xl font-black">
@@ -183,7 +183,7 @@ const Donate = () => {
                     asChild
                   >
                     <a href={getDonateUrl(tier.key)} target="_blank" rel="noopener noreferrer">
-                      <Heart className="h-3.5 w-3.5" />
+                      <DollarSign className="h-3.5 w-3.5" />
                       Donate {tier.amount}/mo
                       <ExternalLink className="h-3 w-3 opacity-60" />
                     </a>
@@ -193,7 +193,7 @@ const Donate = () => {
             </div>
           ) : (
             <div className="max-w-md mx-auto rounded-xl border bg-card p-8 text-center space-y-5">
-              <Heart className="h-10 w-10 text-accent fill-accent mx-auto" />
+              <DollarSign className="h-10 w-10 text-accent mx-auto" />
               <div>
                 <h2 className="text-2xl font-bold">Any amount helps</h2>
                 <p className="text-muted-foreground text-sm mt-2">
@@ -202,7 +202,7 @@ const Donate = () => {
               </div>
               <Button size="lg" className="w-full gap-2" asChild>
                 <a href={oneTimeUrl} target="_blank" rel="noopener noreferrer">
-                  <Heart className="h-4 w-4" />
+                  <DollarSign className="h-4 w-4" />
                   Donate via Stripe
                   <ExternalLink className="h-3.5 w-3.5 opacity-60" />
                 </a>

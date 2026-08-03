@@ -12,7 +12,7 @@ import jsPDF from "jspdf";
 const rightsData: Record<string, { summary: string; color: string; details: string[] }> = {
   "First Amendment": {
     summary: "Freedom of speech, press, religion, assembly & petition",
-    color: "from-blue-600 to-blue-800",
+    color: "from-primary to-primary/60",
     details: [
       "You have the right to freedom of speech — express opinions without government censorship.",
       "Freedom of the press — gather and report news without credentials in most public spaces.",
@@ -24,7 +24,7 @@ const rightsData: Record<string, { summary: string; color: string; details: stri
   },
   "Second Amendment": {
     summary: "Right to keep and bear arms",
-    color: "from-green-700 to-green-900",
+    color: "from-primary to-primary/60",
     details: [
       "The right to keep and bear arms shall not be infringed.",
       "States can regulate firearm possession and carrying to varying degrees.",
@@ -36,7 +36,7 @@ const rightsData: Record<string, { summary: string; color: string; details: stri
   },
   "Fourth Amendment": {
     summary: "Protection against unreasonable searches & seizures",
-    color: "from-red-600 to-red-800",
+    color: "from-primary to-primary/60",
     details: [
       "Police generally need probable cause and a warrant to search you, your home, or vehicle.",
       "You have the right to refuse consent to warrantless searches — say: 'I do not consent.'",
@@ -48,7 +48,7 @@ const rightsData: Record<string, { summary: string; color: string; details: stri
   },
   "Fifth Amendment": {
     summary: "Right to remain silent & due process",
-    color: "from-orange-600 to-orange-800",
+    color: "from-primary to-primary/60",
     details: [
       "You have the right to remain silent during police questioning — use it.",
       "Clearly invoke: 'I am exercising my right to remain silent.'",
@@ -60,7 +60,7 @@ const rightsData: Record<string, { summary: string; color: string; details: stri
   },
   "Sixth Amendment": {
     summary: "Right to a speedy trial, jury & legal counsel",
-    color: "from-purple-600 to-purple-800",
+    color: "from-primary to-primary/60",
     details: [
       "You have the right to a speedy and public trial by an impartial jury.",
       "You have the right to be informed of charges against you.",
@@ -72,7 +72,7 @@ const rightsData: Record<string, { summary: string; color: string; details: stri
   },
   "Eighth Amendment": {
     summary: "Protection against cruel & unusual punishment",
-    color: "from-rose-700 to-rose-900",
+    color: "from-primary to-primary/60",
     details: [
       "Excessive bail shall not be required, nor excessive fines imposed.",
       "Cruel and unusual punishments are prohibited.",
@@ -84,7 +84,7 @@ const rightsData: Record<string, { summary: string; color: string; details: stri
   },
   "Tenth Amendment": {
     summary: "Powers reserved to states & the people",
-    color: "from-teal-600 to-teal-800",
+    color: "from-primary to-primary/60",
     details: [
       "Powers not delegated to the federal government are reserved to the states or the people.",
       "This is the foundation of federalism — states have broad regulatory authority.",

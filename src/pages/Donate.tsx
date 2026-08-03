@@ -85,10 +85,10 @@ const Donate = () => {
       <Header />
       <main className="flex-1">
         {/* Hero */}
-        <section className="border-b bg-gradient-to-b from-red-950/30 to-background">
+        <section className="border-b bg-gradient-to-b from-primary/10 to-background">
           <div className="container mx-auto px-4 py-16 text-center max-w-3xl space-y-5">
-            <div className="inline-flex items-center gap-2 text-red-400 text-sm font-semibold">
-              <Heart className="h-4 w-4 fill-red-400" />
+            <div className="inline-flex items-center gap-2 text-accent text-sm font-semibold">
+              <Heart className="h-4 w-4 fill-accent" />
               Keep it free for everyone
             </div>
             <h1 className="text-4xl md:text-5xl font-black">
@@ -192,7 +192,7 @@ const Donate = () => {
             </div>
           ) : (
             <div className="max-w-md mx-auto rounded-xl border bg-card p-8 text-center space-y-5">
-              <Heart className="h-10 w-10 text-red-400 fill-red-400 mx-auto" />
+              <Heart className="h-10 w-10 text-accent fill-accent mx-auto" />
               <div>
                 <h2 className="text-2xl font-bold">Any amount helps</h2>
                 <p className="text-muted-foreground text-sm mt-2">

@@ -150,11 +150,11 @@ export const Hero = () => {
             {/* Quick-access action grid */}
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 md:gap-3 max-w-5xl mx-auto mb-10">
               {[
-                { icon: AlertCircle, label: "Report Violation", to: "/do-this-now#report", color: "text-red-500", border: "hover:border-red-500/50 hover:bg-red-500/8" },
-                { icon: Scale, label: "Know Your Rights", to: "/rights", color: "text-amber-500", border: "hover:border-amber-500/50 hover:bg-amber-500/8" },
-                { icon: FileText, label: "FOIA Request", to: "/tools", color: "text-sky-400", border: "hover:border-sky-400/50 hover:bg-sky-400/8" },
-                { icon: Users, label: "Find Attorney", to: "/attorneys", color: "text-emerald-400", border: "hover:border-emerald-400/50 hover:bg-emerald-400/8" },
-                { icon: Radio, label: "Live Scanners", to: "/tools#scanner", color: "text-orange-400", border: "hover:border-orange-400/50 hover:bg-orange-400/8" },
+                { icon: AlertCircle, label: "Report Violation", to: "/do-this-now#report", color: "text-destructive", border: "hover:border-destructive/50 hover:bg-destructive/8" },
+                { icon: Scale, label: "Know Your Rights", to: "/rights", color: "text-primary", border: "hover:border-primary/50 hover:bg-primary/8" },
+                { icon: FileText, label: "FOIA Request", to: "/help#records", color: "text-accent", border: "hover:border-accent/50 hover:bg-accent/8" },
+                { icon: Users, label: "Find Attorney", to: "/help#attorneys", color: "text-primary", border: "hover:border-primary/50 hover:bg-primary/8" },
+                { icon: Radio, label: "Live Scanners", to: "/help#tools", color: "text-accent", border: "hover:border-accent/50 hover:bg-accent/8" },
                 { icon: Video, label: "Go Live", to: "/community", color: "text-primary", border: "hover:border-primary/50 hover:bg-primary/8" },
               ].map(({ icon: Icon, label, to, color, border }) => (
                 <Link

@@ -243,7 +243,7 @@ export const FeaturedNews = () => {
               <div className="grid gap-4 md:gap-8 lg:grid-cols-[1.3fr_0.7fr]">
                 {/* Hero Story */}
                 <Card className="bg-background shadow-strong border-2 border-primary/40 relative overflow-hidden">
-                  <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-red-500 to-orange-500" />
+                  <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary via-primary to-accent" />
                   <CardHeader className="p-4 md:p-6 space-y-3 md:space-y-4">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2 text-xs md:text-sm font-semibold text-primary">

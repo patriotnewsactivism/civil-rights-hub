@@ -117,7 +117,7 @@ export function Header() {
           {user && (
             <>
               <NotificationBell />
-              <Button variant="ghost" size="icon" asChild className="relative h-9 w-9">
+              <Button variant="ghost" size="icon" asChild className="relative h-11 w-11">
                 <Link to="/community?tab=messages" aria-label="Messages">
                   <MessageCircle className="h-4 w-4 md:h-5 md:w-5" />
                   {unreadMessages > 0 && (
@@ -189,7 +189,7 @@ export function Header() {
           {/* Mobile Menu */}
           <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
             <SheetTrigger asChild>
-              <Button variant="outline" size="icon" className="md:hidden h-9 w-9 border-border/60">
+              <Button variant="outline" size="icon" className="md:hidden h-11 w-11 border-border/60">
                 <Menu className="h-5 w-5" />
                 <span className="sr-only">Toggle menu</span>
               </Button>

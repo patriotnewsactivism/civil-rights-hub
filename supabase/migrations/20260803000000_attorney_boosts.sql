@@ -24,22 +24,23 @@ CREATE POLICY "Public can view active boosts"
   ON attorney_boosts FOR SELECT
   USING (payment_status = 'paid' AND end_date >= NOW());
 
--- Admins can manage all boosts
+-- Admins can manage all boosts (user_profiles.user_id links to auth.users)
 CREATE POLICY "Admins can manage boosts"
   ON attorney_boosts FOR ALL
   USING (
     EXISTS (
       SELECT 1 FROM user_profiles
-      WHERE id = auth.uid() AND role IN ('admin', 'super_admin')
+      WHERE user_id = auth.uid() AND role IN ('admin', 'super_admin')
     )
   );
 
--- Attorneys can view their own boosts
+-- Attorneys can view their own boosts (matched by email to user profile)
 CREATE POLICY "Attorneys can view own boosts"
   ON attorney_boosts FOR SELECT
   USING (
     EXISTS (
-      SELECT 1 FROM attorneys
-      WHERE id = attorney_id AND user_id = auth.uid()
+      SELECT 1 FROM attorneys a
+      WHERE a.id = attorney_boosts.attorney_id
+        AND a.email = (SELECT email FROM user_profiles WHERE user_id = auth.uid())
     )
   );

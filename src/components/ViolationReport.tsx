@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,40 +20,32 @@ const US_STATES = [
   "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"
 ];
 
-interface Agency {
-  id: string;
-  name: string;
-  state: string;
-}
-
 export const ViolationReport = () => {
   const { toast } = useToast();
   const location = useGeolocation();
   const [loading, setLoading] = useState(false);
-  const [agencies, setAgencies] = useState<Agency[]>([]);
   const [formData, setFormData] = useState({
     title: "",
     description: "",
     locationState: location.state || "",
     locationCity: location.city || "",
     incidentDate: "",
-    agencyId: "",
+    agencyName: "",
     officerBadge: "",
     officerFirstName: "",
     officerLastName: "",
     officerRank: "",
   });
 
-  useEffect(() => {
-    // Agencies table doesn't exist yet - will be added in future migration
-    setAgencies([]);
-  }, []);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
+      const officerName = [formData.officerFirstName.trim(), formData.officerLastName.trim()]
+        .filter(Boolean)
+        .join(" ") || null;
+
       // Insert violation
       const { data: violationData, error: violationError } = await supabase
         .from("violations")
@@ -65,14 +57,15 @@ export const ViolationReport = () => {
           incident_date: new Date(formData.incidentDate).toISOString(),
           latitude: location.latitude,
           longitude: location.longitude,
+          agency_name: formData.agencyName.trim() || null,
+          officer_name: officerName,
+          officer_badge: formData.officerBadge.trim() || null,
+          officer_rank: formData.officerRank.trim() || null,
         })
         .select()
         .single();
 
       if (violationError) throw violationError;
-
-      // Agency and officer linking disabled until database tables are created
-      // Tables needed: agencies, officers, violation_agencies, violation_officers
 
       toast({
         title: "Report Submitted",
@@ -85,7 +78,7 @@ export const ViolationReport = () => {
         locationState: location.state || "",
         locationCity: location.city || "",
         incidentDate: "",
-        agencyId: "",
+        agencyName: "",
         officerBadge: "",
         officerFirstName: "",
         officerLastName: "",
@@ -204,70 +197,54 @@ export const ViolationReport = () => {
                   <CardContent className="space-y-4">
                     <div className="space-y-2">
                       <Label htmlFor="agency">Law Enforcement Agency</Label>
-                      <Select
-                        value={formData.agencyId}
-                        onValueChange={(value) => setFormData({ ...formData, agencyId: value === "none" ? "" : value })}
-                      >
-                        <SelectTrigger id="agency">
-                          <SelectValue placeholder="Select agency (optional)" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="none">None</SelectItem>
-                          {agencies
-                            .filter(a => !formData.locationState || a.state === formData.locationState || a.state === "Multiple")
-                            .map((agency) => (
-                              <SelectItem key={agency.id} value={agency.id}>
-                                {agency.name} ({agency.state})
-                              </SelectItem>
-                            ))}
-                        </SelectContent>
-                      </Select>
+                      <Input
+                        id="agency"
+                        value={formData.agencyName}
+                        onChange={(e) => setFormData({ ...formData, agencyName: e.target.value })}
+                        placeholder="e.g., Galveston Police Department"
+                      />
                     </div>
 
-                    {formData.agencyId && (
-                      <>
-                        <div className="space-y-2">
-                          <Label htmlFor="badge">Officer Badge Number</Label>
-                          <Input
-                            id="badge"
-                            value={formData.officerBadge}
-                            onChange={(e) => setFormData({ ...formData, officerBadge: e.target.value })}
-                            placeholder="e.g., 12345"
-                          />
-                        </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="badge">Officer Badge Number</Label>
+                      <Input
+                        id="badge"
+                        value={formData.officerBadge}
+                        onChange={(e) => setFormData({ ...formData, officerBadge: e.target.value })}
+                        placeholder="e.g., 12345"
+                      />
+                    </div>
 
-                        <div className="grid md:grid-cols-2 gap-4">
-                          <div className="space-y-2">
-                            <Label htmlFor="officerFirst">Officer First Name</Label>
-                            <Input
-                              id="officerFirst"
-                              value={formData.officerFirstName}
-                              onChange={(e) => setFormData({ ...formData, officerFirstName: e.target.value })}
-                              placeholder="First name"
-                            />
-                          </div>
-                          <div className="space-y-2">
-                            <Label htmlFor="officerLast">Officer Last Name</Label>
-                            <Input
-                              id="officerLast"
-                              value={formData.officerLastName}
-                              onChange={(e) => setFormData({ ...formData, officerLastName: e.target.value })}
-                              placeholder="Last name"
-                            />
-                          </div>
-                        </div>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="officerFirst">Officer First Name</Label>
+                        <Input
+                          id="officerFirst"
+                          value={formData.officerFirstName}
+                          onChange={(e) => setFormData({ ...formData, officerFirstName: e.target.value })}
+                          placeholder="First name"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="officerLast">Officer Last Name</Label>
+                        <Input
+                          id="officerLast"
+                          value={formData.officerLastName}
+                          onChange={(e) => setFormData({ ...formData, officerLastName: e.target.value })}
+                          placeholder="Last name"
+                        />
+                      </div>
+                    </div>
 
-                        <div className="space-y-2">
-                          <Label htmlFor="rank">Officer Rank</Label>
-                          <Input
-                            id="rank"
-                            value={formData.officerRank}
-                            onChange={(e) => setFormData({ ...formData, officerRank: e.target.value })}
-                            placeholder="e.g., Officer, Sergeant, Lieutenant"
-                          />
-                        </div>
-                      </>
-                    )}
+                    <div className="space-y-2">
+                      <Label htmlFor="rank">Officer Rank</Label>
+                      <Input
+                        id="rank"
+                        value={formData.officerRank}
+                        onChange={(e) => setFormData({ ...formData, officerRank: e.target.value })}
+                        placeholder="e.g., Officer, Sergeant, Lieutenant"
+                      />
+                    </div>
                   </CardContent>
                 </Card>
 

@@ -26,13 +26,13 @@ interface Resource {
   title: string;
   description: string | null;
   resource_type: string;
-  category: string[] | null;
-  url: string;
+  category: string;
+  external_url: string | null;
   download_count: number | null;
-  avg_rating: number | null;
-  total_ratings: number | null;
-  is_featured: boolean | null;
-  submitter_id: string | null;
+  rating: number | null;
+  rating_count: number | null;
+  is_approved: boolean | null;
+  uploaded_by: string | null;
   created_at: string | null;
   updated_at: string | null;
 }
@@ -79,7 +79,7 @@ export const ResourceLibrary = () => {
     setLoading(true);
     const { data, error } = await supabase
       .from("resource_library")
-      .select("id, title, description, resource_type, category, url, download_count, avg_rating, total_ratings, is_featured, submitter_id, created_at, updated_at")
+      .select("id, title, description, resource_type, category, external_url, download_count, rating, rating_count, is_approved, uploaded_by, created_at, updated_at")
       .order("created_at", { ascending: false })
       .limit(100);
 
@@ -130,8 +130,7 @@ export const ResourceLibrary = () => {
 
   useEffect(() => {
     const next = resources.filter((resource) => {
-      const categories = resource.category ?? [];
-      const matchesCategory = !categoryFilter || categoryFilter === "__all__" ? true : categories.includes(categoryFilter);
+      const matchesCategory = !categoryFilter || categoryFilter === "__all__" ? true : resource.category === categoryFilter;
       const matchesType = !typeFilter || typeFilter === "__all__" ? true : resource.resource_type === typeFilter;
       const matchesSearch = searchTerm
         ? resource.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -143,7 +142,7 @@ export const ResourceLibrary = () => {
   }, [resources, categoryFilter, typeFilter, searchTerm]);
 
   const categories = useMemo(() => {
-    const allCategories = resources.flatMap((r) => r.category ?? []);
+    const allCategories = resources.map((r) => r.category);
     return Array.from(new Set(allCategories)).filter(Boolean);
   }, [resources]);
 
@@ -206,9 +205,9 @@ export const ResourceLibrary = () => {
       title: formState.title,
       description: formState.description || null,
       resource_type: formState.resource_type,
-      category: [formState.category],
-      url: formState.url,
-      submitter_id: user.id,
+      category: formState.category,
+      external_url: formState.url,
+      uploaded_by: user.id,
     });
 
     if (error) {
@@ -367,9 +366,9 @@ export const ResourceLibrary = () => {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-                    {(resource.category ?? []).map((cat) => (
-                      <Badge key={cat} variant="outline">{cat}</Badge>
-                    ))}
+                    {resource.category && (
+                      <Badge variant="outline">{resource.category}</Badge>
+                    )}
                   </div>
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <Download className="h-4 w-4" /> {resource.download_count ?? 0} downloads
@@ -386,7 +385,7 @@ export const ResourceLibrary = () => {
                         <Star className={`h-5 w-5 ${star <= userRating ? "fill-primary" : "fill-transparent"}`} />
                       </button>
                     ))}
-                    <span className="ml-2 text-xs text-muted-foreground">Average: {resource.avg_rating?.toFixed(1) ?? "—"}</span>
+                    <span className="ml-2 text-xs text-muted-foreground">Average: {resource.rating?.toFixed(1) ?? "—"}</span>
                   </div>
                 </CardContent>
                 <CardFooter className="flex flex-wrap items-center justify-between gap-2">
@@ -395,7 +394,7 @@ export const ResourceLibrary = () => {
                   </div>
                   <div className="flex items-center gap-2">
                     <Button asChild size="sm">
-                      <a href={resource.url} target="_blank" rel="noopener noreferrer">
+                      <a href={resource.external_url ?? "#"} target="_blank" rel="noopener noreferrer">
                         <LinkIcon className="mr-2 h-4 w-4" /> Open
                       </a>
                     </Button>

@@ -25,25 +25,9 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { format, differenceInDays, addBusinessDays } from "date-fns";
+import type { Database } from "@/integrations/supabase/types";
 
-interface FOIARequest {
-  id: string;
-  agency_name: string;
-  subject: string;
-  details: string;
-  request_type: string;
-  state: string;
-  status: string | null;
-  requester_name: string;
-  requester_email: string;
-  requester_address: string | null;
-  submitted_at: string | null;
-  response_due_date: string | null;
-  response_text: string | null;
-  created_at: string | null;
-  updated_at: string | null;
-  user_id: string;
-}
+type FOIARequest = Database["public"]["Tables"]["foia_requests"]["Row"];
 
 type StatusKey = "draft" | "submitted" | "acknowledged" | "processing" | "completed" | "denied" | "appealed";
 
@@ -141,7 +125,7 @@ export function FOIARequestDetail({ requestId, onBack }: FOIARequestDetailProps)
         .single();
 
       if (requestError) throw requestError;
-      setRequest(requestData as FOIARequest);
+      setRequest(requestData);
     } catch (error) {
       console.error("Error fetching request details:", error);
       toast.error("Failed to load request details");
@@ -182,11 +166,11 @@ export function FOIARequestDetail({ requestId, onBack }: FOIARequestDetailProps)
   };
 
   const getDeadlineInfo = () => {
-    if (!request?.response_due_date) {
+    if (!request?.response_deadline) {
       // Calculate deadline based on state
-      if (request?.submitted_at) {
+      if (request?.submitted_date) {
         const stateDays = STATE_RESPONSE_DAYS[request.state] || STATE_RESPONSE_DAYS["Federal"];
-        const deadline = addBusinessDays(new Date(request.submitted_at), stateDays);
+        const deadline = addBusinessDays(new Date(request.submitted_date!), stateDays);
         const daysRemaining = differenceInDays(deadline, new Date());
         
         return {
@@ -200,7 +184,7 @@ export function FOIARequestDetail({ requestId, onBack }: FOIARequestDetailProps)
       return null;
     }
 
-    const deadline = new Date(request.response_due_date);
+    const deadline = new Date(request.response_deadline!);
     const daysRemaining = differenceInDays(deadline, new Date());
 
     return {
@@ -265,7 +249,7 @@ export function FOIARequestDetail({ requestId, onBack }: FOIARequestDetailProps)
         <CardHeader>
           <div className="flex items-start justify-between">
             <div className="flex-1">
-              <CardTitle className="text-2xl mb-2">{request.subject}</CardTitle>
+              <CardTitle className="text-2xl mb-2">{request.request_subject}</CardTitle>
               <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
                 <div className="flex items-center gap-1">
                   <Building2 className="h-4 w-4" />
@@ -277,10 +261,10 @@ export function FOIARequestDetail({ requestId, onBack }: FOIARequestDetailProps)
                     {request.state}
                   </div>
                 )}
-                {request.submitted_at && (
+                {request.submitted_date && (
                   <div className="flex items-center gap-1">
                     <Calendar className="h-4 w-4" />
-                    Submitted {format(new Date(request.submitted_at), "MMM d, yyyy")}
+                    Submitted {format(new Date(request.submitted_date!), "MMM d, yyyy")}
                   </div>
                 )}
               </div>
@@ -334,10 +318,10 @@ export function FOIARequestDetail({ requestId, onBack }: FOIARequestDetailProps)
 
           <div className="space-y-3">
             <h3 className="font-semibold">Request Details</h3>
-            <div className="bg-muted/50 rounded-lg p-4 text-sm whitespace-pre-line">{request.details}</div>
+            <div className="bg-muted/50 rounded-lg p-4 text-sm whitespace-pre-line">{request.request_body}</div>
           </div>
 
-          {request.requester_name && (
+          {request.contact_name && (
             <div className="space-y-3">
               <h3 className="font-semibold flex items-center gap-2">
                 <User className="h-4 w-4" />
@@ -346,18 +330,18 @@ export function FOIARequestDetail({ requestId, onBack }: FOIARequestDetailProps)
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
                 <div>
                   <p className="text-muted-foreground">Name</p>
-                  <p>{request.requester_name}</p>
+                  <p>{request.contact_name}</p>
                 </div>
-                {request.requester_email && (
+                {request.contact_email && (
                   <div>
                     <p className="text-muted-foreground">Email</p>
-                    <p>{request.requester_email}</p>
+                    <p>{request.contact_email}</p>
                   </div>
                 )}
-                {request.requester_address && (
+                {request.notes && (
                   <div className="md:col-span-2">
-                    <p className="text-muted-foreground">Address</p>
-                    <p>{request.requester_address}</p>
+                    <p className="text-muted-foreground">Notes</p>
+                    <p>{request.notes}</p>
                   </div>
                 )}
               </div>

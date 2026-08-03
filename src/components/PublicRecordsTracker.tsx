@@ -12,7 +12,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -84,8 +83,7 @@ interface FOIAAgency {
   city: string | null;
   foia_email: string | null;
   foia_phone: string | null;
-  foia_address: string | null;
-  response_days: number | null;
+  standard_response_days: number | null;
   request_count: number | null;
   user_contributed: boolean | null;
   community_verified: boolean | null;
@@ -98,10 +96,10 @@ interface FOIAAgency {
 interface FOIATemplate {
   id: string;
   title: string;
-  category: string;
-  subject_template: string;
-  body_template: string;
-  description: string | null;
+  template_type: string | null;
+  subject_line: string;
+  template_body: string;
+  instructions: string;
 }
 
 // â”€â”€â”€ Constants â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
@@ -735,7 +733,7 @@ function NewRequestForm({ onCreated, onCancel }: { onCreated: () => void; onCanc
     supabase.from("foia_agencies").select("*").eq("is_active", true).order("name").then(({ data }) => {
       setAgencies(data || []);
     });
-    supabase.from("foia_templates").select("*").order("is_featured", { ascending: false }).then(({ data }) => {
+    supabase.from("foia_templates").select("*").order("is_popular", { ascending: false }).then(({ data }) => {
       setTemplates(data || []);
     });
   }, []);
@@ -745,14 +743,14 @@ function NewRequestForm({ onCreated, onCancel }: { onCreated: () => void; onCanc
     return !q || a.name.toLowerCase().includes(q) || (a.state || "").toLowerCase().includes(q) || (a.city || "").toLowerCase().includes(q);
   }).slice(0, 20);
 
-  const deadline = selectedAgency?.response_days
-    ? addBusinessDays(new Date(), selectedAgency.response_days)
+  const deadline = selectedAgency?.standard_response_days
+    ? addBusinessDays(new Date(), selectedAgency.standard_response_days)
     : addBusinessDays(new Date(), STATE_RESPONSE_DAYS[customState] || 20);
 
   const applyTemplate = (tpl: FOIATemplate) => {
     setSelectedTemplate(tpl);
-    setSubject(tpl.subject_template);
-    let b = tpl.body_template;
+    setSubject(tpl.subject_line);
+    let b = tpl.template_body;
     if (user) {
       b = b.replace(/\[YOUR_NAME\]/g, user.user_metadata?.full_name || "");
       b = b.replace(/\[YOUR_EMAIL\]/g, user.email || "");
@@ -1027,9 +1025,9 @@ function NewRequestForm({ onCreated, onCancel }: { onCreated: () => void; onCanc
                 >
                   <div className="flex items-center justify-between">
                     <p className="text-sm font-medium">{t.title}</p>
-                    <Badge variant="secondary" className="text-xs">{t.category}</Badge>
+                    <Badge variant="secondary" className="text-xs">{t.template_type}</Badge>
                   </div>
-                  {t.description && <p className="text-xs text-muted-foreground mt-1">{t.description}</p>}
+                  {t.instructions && <p className="text-xs text-muted-foreground mt-1">{t.instructions}</p>}
                 </button>
               ))}
             </div>

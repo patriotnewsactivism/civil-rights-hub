@@ -166,7 +166,8 @@ export function UserProfile() {
     setSubmittingVerify(true);
     const { error } = await supabase.from("user_verification").insert({
       user_id: user?.id,
-      role: verifyRole,
+      verification_type: verifyRole,
+      badge_type: verifyRole,
       organization: verifyOrg,
       credential_detail: verifyDetail,
       status: "pending",

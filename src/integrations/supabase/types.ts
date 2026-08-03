@@ -5249,8 +5249,11 @@ export type Database = {
         Row: {
           badge_type: string
           created_at: string | null
+          credential_detail: string | null
           id: string
           is_active: boolean | null
+          organization: string | null
+          status: string
           updated_at: string | null
           user_id: string
           verification_document_url: string | null
@@ -5261,8 +5264,11 @@ export type Database = {
         Insert: {
           badge_type: string
           created_at?: string | null
+          credential_detail?: string | null
           id?: string
           is_active?: boolean | null
+          organization?: string | null
+          status?: string
           updated_at?: string | null
           user_id: string
           verification_document_url?: string | null
@@ -5273,8 +5279,11 @@ export type Database = {
         Update: {
           badge_type?: string
           created_at?: string | null
+          credential_detail?: string | null
           id?: string
           is_active?: boolean | null
+          organization?: string | null
+          status?: string
           updated_at?: string | null
           user_id?: string
           verification_document_url?: string | null

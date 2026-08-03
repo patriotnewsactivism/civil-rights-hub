@@ -36,13 +36,17 @@ export function EmptyState({
   hint,
   className,
 }: EmptyStateProps) {
-  const IconEl =
+  // TS can't narrow LucideIcon (a generic exotic component type) out of the
+  // `LucideIcon | ReactNode` union via the typeof check below, even though the
+  // runtime logic is correct - a plain type assertion in the fallback branch
+  // reflects what's actually true at this point, not a behavior change.
+  const IconEl: ReactNode =
     icon && typeof icon === "function"
       ? (() => {
           const I = icon as LucideIcon;
           return <I className="h-10 w-10 text-muted-foreground/40" />;
         })()
-      : icon ?? null;
+      : (icon as ReactNode) ?? null;
 
   const renderAction = (action: EmptyStateAction, isPrimary: boolean) => {
     const props = {

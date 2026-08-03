@@ -70,7 +70,7 @@ export function Header() {
           </div>
           <div className="flex flex-col">
             <span className="text-sm md:text-base font-black tracking-tight leading-none">Civil Rights Hub</span>
-            <span className="text-[9px] md:text-[10px] font-medium text-muted-foreground hidden sm:block tracking-wide uppercase">by We The People News</span>
+            <span className="text-[9px] md:text-[10px] font-medium text-muted-foreground hidden sm:block tracking-wide">Brought to you by We The People News</span>
           </div>
         </Link>
 

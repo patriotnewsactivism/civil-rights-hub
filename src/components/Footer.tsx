@@ -34,7 +34,7 @@ const NAVIGATION = [
     links: [
       { to: "/do-this-now", label: "Do This Now" },
       { to: "/rights?tab=conflicts", label: "Conflicting Laws" },
-      { to: "/tools", label: "FOIA Builder" },
+      { to: "/help#tools", label: "FOIA Builder" },
       { to: "/do-this-now#report", label: "Report Violation" },
     ],
   },
@@ -43,8 +43,8 @@ const NAVIGATION = [
     links: [
       { to: "/rights", label: "Know Your Rights" },
       { to: "/learn", label: "Law Library" },
-      { to: "/attorneys", label: "Attorney Directory" },
-      { to: "/tools#scanner", label: "Scanner Feeds" },
+      { to: "/help#attorneys", label: "Attorney Directory" },
+      { to: "/help#tools", label: "Scanner Feeds" },
     ],
   },
   {
@@ -52,7 +52,7 @@ const NAVIGATION = [
     links: [
       { to: "/community", label: "Social Feed" },
       { to: "/newsroom", label: "Newsroom" },
-      { to: "/activists", label: "Activist Directory" },
+      { to: "/help#activists", label: "Activist Directory" },
       { to: "/help", label: "Get Help" },
     ],
   },
@@ -178,7 +178,7 @@ export const Footer = () => {
               <Shield className="h-7 w-7 text-primary" />
               <div className="flex flex-col">
                 <span className="text-xl font-bold text-white">Civil Rights Hub</span>
-                <span className="text-sm text-slate-400">by We The People News</span>
+                <span className="text-sm text-slate-400">Brought to you by We The People News</span>
               </div>
             </div>
             <p className="text-sm text-slate-400 leading-relaxed max-w-sm">
@@ -227,6 +227,7 @@ export const Footer = () => {
               <Heart className="h-3 w-3 text-red-500 fill-red-500" />
               <span>for the people</span>
             </div>
+            <p className="text-xs text-slate-500 font-semibold tracking-wide">A Don Matthews creation</p>
           </div>
 
           {/* Navigation columns */}

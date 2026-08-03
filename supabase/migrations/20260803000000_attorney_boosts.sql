@@ -1,7 +1,3 @@
--- Attorney Homepage Boost System
--- Allows attorneys to pay for prominent homepage placement ($700/week, $350 in August)
--- Falls back gracefully — FeaturedAttorney component shows promo CTA when no active boost exists
-
 CREATE TABLE IF NOT EXISTS attorney_boosts (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   attorney_id UUID REFERENCES attorneys(id) ON DELETE CASCADE,
@@ -12,35 +8,21 @@ CREATE TABLE IF NOT EXISTS attorney_boosts (
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
--- Index for fast lookup of active boosts
 CREATE INDEX IF NOT EXISTS idx_attorney_boosts_active
   ON attorney_boosts (end_date, payment_status)
   WHERE payment_status = 'paid';
 
--- RLS: Anyone can view active (paid, non-expired) boosts
 ALTER TABLE attorney_boosts ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Public can view active boosts"
   ON attorney_boosts FOR SELECT
   USING (payment_status = 'paid' AND end_date >= NOW());
 
--- Admins can manage all boosts (user_profiles.user_id links to auth.users)
 CREATE POLICY "Admins can manage boosts"
   ON attorney_boosts FOR ALL
   USING (
     EXISTS (
       SELECT 1 FROM user_profiles
       WHERE user_id = auth.uid() AND role IN ('admin', 'super_admin')
-    )
-  );
-
--- Attorneys can view their own boosts (matched by email to user profile)
-CREATE POLICY "Attorneys can view own boosts"
-  ON attorney_boosts FOR SELECT
-  USING (
-    EXISTS (
-      SELECT 1 FROM attorneys a
-      WHERE a.id = attorney_boosts.attorney_id
-        AND a.email = (SELECT email FROM user_profiles WHERE user_id = auth.uid())
     )
   );

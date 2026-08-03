@@ -7,7 +7,6 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTr
 import { Download, Scale, AlertCircle, Shield, HelpCircle, ChevronRight } from "lucide-react";
 import { useJurisdiction } from "@/hooks/useJurisdiction";
 import { DEFAULT_JURISDICTION } from "@/data/usStates";
-import jsPDF from "jspdf";
 
 const rightsData: Record<string, { summary: string; color: string; details: string[] }> = {
   "First Amendment": {
@@ -168,7 +167,8 @@ export const KnowYourRights = () => {
   const { state: jurisdictionState } = useJurisdiction();
   const state = jurisdictionState === DEFAULT_JURISDICTION ? null : jurisdictionState;
 
-  const downloadPDF = (amendment: string) => {
+  const downloadPDF = async (amendment: string) => {
+    const { default: jsPDF } = await import("jspdf");
     const doc = new jsPDF();
     const data = rightsData[amendment];
     doc.setFontSize(18);

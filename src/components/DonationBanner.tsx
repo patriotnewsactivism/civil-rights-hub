@@ -43,11 +43,11 @@ export function DonationBanner() {
     setDismissed(true);
     try {
       sessionStorage.setItem("crh-donate-dismissed", "1");
-    } catch {}
+    } catch { /* sessionStorage unavailable — dismiss in-memory only */ }
   };
 
   return (
-    <section className="py-12">
+    <section className="py-12 animate-fade-in-up">
       <div className="container mx-auto px-4">
         <Card className="border-primary/30 bg-gradient-to-br from-primary/5 via-background to-primary/5 overflow-hidden relative">
           <button

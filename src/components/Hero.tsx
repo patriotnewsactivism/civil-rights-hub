@@ -3,10 +3,11 @@ import { Button } from "@/components/ui/button";
 import {
   Shield, ArrowRight, FileText, Radio, AlertCircle,
   Users, Video, Zap, ChevronRight, ChevronLeft, Scale,
-  Activity, Clock,
+  Activity, Clock, MapPin,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useLiveStats } from "@/hooks/useLiveStats";
+import type { RecentViolation } from "@/hooks/useLiveStats";
 import { cn } from "@/lib/utils";
 
 type LucideIcon = typeof Shield;
@@ -59,13 +60,24 @@ const STAT_CHIPS: { key: keyof import("@/hooks/useLiveStats").LiveStats; icon: L
 ];
 
 export const Hero = () => {
-  const { stats, isLoading, isSuccess, dataUpdatedAt } = useLiveStats();
+  const { stats, recent, isLoading, isSuccess, dataUpdatedAt } = useLiveStats();
   const [tickerIndex, setTickerIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const tickerRef = useRef<HTMLDivElement>(null);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
+  const recentItems: TickerItem[] = recent.map((v: RecentViolation) => {
+    const loc = [v.location_city, v.location_state].filter(Boolean).join(", ");
+    return {
+      text: `New report: ${v.title}${loc ? ` — ${loc}` : ""} · ${formatRelative(new Date(v.created_at).getTime())}`,
+      to: "/community?tab=feed",
+      icon: MapPin,
+      priority: "alert" as const,
+    };
+  });
+
   const tickerItems: TickerItem[] = [
+    ...recentItems,
     {
       text: `${stats.violations24h} violation reports in last 24h · ${stats.violationsTotal.toLocaleString()} total documented`,
       to: "/do-this-now#report",
@@ -368,6 +380,9 @@ export const Hero = () => {
           </div>
         </div>
       </div>
+
+      {/* Gradient transition to page body */}
+      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-b from-transparent to-background z-0 pointer-events-none" />
     </section>
   );
 };

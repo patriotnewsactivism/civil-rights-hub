@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useJurisdiction } from "@/hooks/useJurisdiction";
 import { DEFAULT_JURISDICTION, US_STATES } from "@/data/usStates";
+import { cn } from "@/lib/utils";
 
 export const StatePreferenceBanner = () => {
   const { state, city, setState, detectLocation, detecting, locationSource } = useJurisdiction();
@@ -60,14 +61,17 @@ export const StatePreferenceBanner = () => {
             size="sm"
             onClick={() => void detectLocation()}
             disabled={detecting}
-            className="w-full gap-2"
+            className={cn(
+              "w-full gap-2 transition-all",
+              locationSource === "default" && "ring-2 ring-primary/40 ring-offset-2 ring-offset-background animate-pulse-slow",
+            )}
           >
             {detecting ? (
               <><Loader2 className="h-4 w-4 animate-spin" /> Detecting your location…</>
             ) : locationSource !== "default" ? (
               <><CheckCircle2 className="h-4 w-4 text-green-500" /> Update my location</>
             ) : (
-              <><LocateFixed className="h-4 w-4" /> Detect my location</>
+              <><LocateFixed className="h-4 w-4 animate-bounce-slow" /> Tap to detect your location</>
             )}
           </Button>
 

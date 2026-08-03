@@ -88,11 +88,11 @@ export function FOIARequestDashboard({ onRequestSelect }: FOIARequestDashboardPr
   }, [fetchRequests]);
 
   const getDeadlineAlert = useCallback((request: FOIARequest): DeadlineAlert | null => {
-    if (!request.response_due_date || ["completed", "denied"].includes(request.status || "")) {
+    if (!request.response_deadline || ["completed", "denied"].includes(request.status || "")) {
       return null;
     }
 
-    const deadline = new Date(request.response_due_date);
+    const deadline = new Date(request.response_deadline);
     const now = new Date();
     const daysRemaining = differenceInDays(deadline, now);
 
@@ -130,9 +130,9 @@ export function FOIARequestDashboard({ onRequestSelect }: FOIARequestDashboardPr
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(
         (r) =>
-          r.subject?.toLowerCase().includes(query) ||
+          r.request_subject?.toLowerCase().includes(query) ||
           r.agency_name?.toLowerCase().includes(query) ||
-          r.details?.toLowerCase().includes(query)
+          r.request_body?.toLowerCase().includes(query)
       );
     }
 
@@ -176,7 +176,7 @@ export function FOIARequestDashboard({ onRequestSelect }: FOIARequestDashboardPr
                 return (
                   <div key={alert.requestId} className="flex items-center justify-between text-sm">
                     <span className="truncate flex-1">
-                      {request.subject} - {request.agency_name}
+                      {request.request_subject} - {request.agency_name}
                     </span>
                     <Badge variant={alert.isOverdue ? "destructive" : "secondary"} className="ml-2">
                       {alert.isOverdue
@@ -379,7 +379,7 @@ function RequestCard({ request, deadlineAlert, onSelect }: RequestCardProps) {
       <CardHeader>
         <div className="flex items-start justify-between gap-3">
           <div className="flex-1 min-w-0">
-            <CardTitle className="text-lg mb-1 truncate">{request.subject}</CardTitle>
+            <CardTitle className="text-lg mb-1 truncate">{request.request_subject}</CardTitle>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <Building2 className="h-3 w-3" />
               <span className="truncate">{request.agency_name}</span>
@@ -399,20 +399,20 @@ function RequestCard({ request, deadlineAlert, onSelect }: RequestCardProps) {
       </CardHeader>
 
       <CardContent className="space-y-3">
-        {request.submitted_at && (
+        {request.submitted_date && (
           <div className="flex items-center gap-2 text-sm">
             <Calendar className="h-4 w-4 text-muted-foreground" />
             <span>
-              Submitted: {format(new Date(request.submitted_at), "MMM d, yyyy")}
+              Submitted: {format(new Date(request.submitted_date), "MMM d, yyyy")}
             </span>
           </div>
         )}
 
-        {request.response_due_date && !["completed", "denied"].includes(request.status || "") && (
+        {request.response_deadline && !["completed", "denied"].includes(request.status || "") && (
           <div className="flex items-center gap-2 text-sm">
             <Clock className="h-4 w-4 text-muted-foreground" />
             <span>
-              Deadline: {format(new Date(request.response_due_date), "MMM d, yyyy")}
+              Deadline: {format(new Date(request.response_deadline), "MMM d, yyyy")}
             </span>
             {deadlineAlert && (
               <Badge
@@ -446,9 +446,9 @@ function RequestCard({ request, deadlineAlert, onSelect }: RequestCardProps) {
           </Alert>
         )}
 
-        {request.details && (
+        {request.request_body && (
           <div className="text-sm text-muted-foreground line-clamp-2 bg-muted/30 p-2 rounded">
-            {request.details}
+            {request.request_body}
           </div>
         )}
 

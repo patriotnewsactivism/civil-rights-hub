@@ -24,21 +24,21 @@ interface FOIAAgency {
   city: string | null;
   foia_email: string | null;
   foia_phone: string | null;
-  foia_url: string | null;
-  foia_address: string | null;
-  response_days: number | null;
+  foia_online_portal_url: string | null;
+  mailing_address: string | null;
+  standard_response_days: number | null;
 }
 
 interface FOIATemplate {
   id: string;
   title: string;
-  category: string;
-  subject_template: string;
-  body_template: string;
-  description: string | null;
-  applicable_agency_types: string[] | null;
-  is_featured: boolean | null;
-  usage_count: number | null;
+  template_type: string | null;
+  subject_line: string;
+  template_body: string;
+  instructions: string;
+  agency_type: string | null;
+  is_popular: boolean | null;
+  use_count: number | null;
 }
 
 interface FOIARequestFormProps {
@@ -101,8 +101,8 @@ export function FOIARequestForm({ onRequestCreated }: FOIARequestFormProps) {
       const { data, error } = await supabase
         .from("foia_templates")
         .select("*")
-        .order("is_featured", { ascending: false })
-        .order("usage_count", { ascending: false });
+        .order("is_popular", { ascending: false })
+        .order("use_count", { ascending: false });
       
       if (error) {
         console.error("Error fetching templates:", error);
@@ -136,8 +136,8 @@ export function FOIARequestForm({ onRequestCreated }: FOIARequestFormProps) {
 
   // Filter templates based on agency type
   const filteredTemplates = templates.filter(template => {
-    if (!template.applicable_agency_types) return true;
-    return template.applicable_agency_types.includes(agencyType);
+    if (!template.agency_type) return true;
+    return template.agency_type === agencyType;
   });
 
   // Get selected agency details
@@ -145,7 +145,7 @@ export function FOIARequestForm({ onRequestCreated }: FOIARequestFormProps) {
 
   // Calculate deadline based on selected agency
   useEffect(() => {
-    const responseDays = selectedAgency?.response_days ?? (agencyType === "Federal" ? 20 : null);
+    const responseDays = selectedAgency?.standard_response_days ?? (agencyType === "Federal" ? 20 : null);
     
     if (responseDays && responseDays > 0) {
       const deadline = addBusinessDays(new Date(), responseDays);
@@ -160,13 +160,13 @@ export function FOIARequestForm({ onRequestCreated }: FOIARequestFormProps) {
     setSelectedTemplateId(templateId);
     const template = templates.find(t => t.id === templateId);
     if (template) {
-      setSubject(template.subject_template);
-      setRequestBody(template.body_template);
+      setSubject(template.subject_line);
+      setRequestBody(template.template_body);
       
       // Increment usage count
       await supabase
         .from("foia_templates")
-        .update({ usage_count: (template.usage_count ?? 0) + 1 })
+        .update({ use_count: (template.use_count ?? 0) + 1 })
         .eq("id", templateId);
     }
   };
@@ -184,8 +184,8 @@ export function FOIARequestForm({ onRequestCreated }: FOIARequestFormProps) {
     
     let letter = `${today}\n\n`;
     letter += `${agencyName || "[Agency Name]"}\n`;
-    if (selectedAgency?.foia_address) {
-      letter += `${selectedAgency.foia_address}\n`;
+    if (selectedAgency?.mailing_address) {
+      letter += `${selectedAgency.mailing_address}\n`;
     } else {
       letter += `[Agency Address]\n`;
     }
@@ -243,13 +243,13 @@ export function FOIARequestForm({ onRequestCreated }: FOIARequestFormProps) {
       const { error } = await supabase.from("foia_requests").insert({
         user_id: user.id,
         agency_name: agencyName,
+        agency_type: agencyType,
         state: selectedAgency?.state ?? (agencyType === "Federal" ? "Federal" : ""),
-        subject,
-        details: requestBody,
-        request_type: agencyType,
-        requester_name: requesterName,
-        requester_email: requesterEmail,
-        requester_address: requesterAddress || null,
+        request_subject: subject,
+        request_body: requestBody,
+        contact_name: requesterName,
+        contact_email: requesterEmail,
+        notes: requesterAddress ? `Mailing address: ${requesterAddress}` : null,
         status: "draft",
       });
 
@@ -286,16 +286,16 @@ export function FOIARequestForm({ onRequestCreated }: FOIARequestFormProps) {
       const { error } = await supabase.from("foia_requests").insert({
         user_id: user.id,
         agency_name: agencyName,
+        agency_type: agencyType,
         state: selectedAgency?.state ?? (agencyType === "Federal" ? "Federal" : ""),
-        subject,
-        details: requestBody,
-        request_type: agencyType,
-        requester_name: requesterName,
-        requester_email: requesterEmail,
-        requester_address: requesterAddress || null,
+        request_subject: subject,
+        request_body: requestBody,
+        contact_name: requesterName,
+        contact_email: requesterEmail,
+        notes: requesterAddress ? `Mailing address: ${requesterAddress}` : null,
         status: "submitted",
-        submitted_at: submittedAt,
-        response_due_date: deadline,
+        submitted_date: submittedAt,
+        response_deadline: deadline,
       });
 
       if (error) throw error;
@@ -333,7 +333,7 @@ export function FOIARequestForm({ onRequestCreated }: FOIARequestFormProps) {
     );
   }
 
-  const responseDays = selectedAgency?.response_days ?? (agencyType === "Federal" ? 20 : null);
+  const responseDays = selectedAgency?.standard_response_days ?? (agencyType === "Federal" ? 20 : null);
 
   return (
     <div className="space-y-6">
@@ -444,16 +444,16 @@ export function FOIARequestForm({ onRequestCreated }: FOIARequestFormProps) {
                 {selectedAgency.foia_phone && (
                   <p><span className="font-medium">Phone:</span> {selectedAgency.foia_phone}</p>
                 )}
-                {selectedAgency.foia_url && (
+                {selectedAgency.foia_online_portal_url && (
                   <p>
                     <span className="font-medium">Website:</span>{" "}
-                    <a href={selectedAgency.foia_url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                    <a href={selectedAgency.foia_online_portal_url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                       FOIA Portal
                     </a>
                   </p>
                 )}
-                {selectedAgency.response_days && (
-                  <p><span className="font-medium">Response Time:</span> {selectedAgency.response_days} business days</p>
+                {selectedAgency.standard_response_days && (
+                  <p><span className="font-medium">Response Time:</span> {selectedAgency.standard_response_days} business days</p>
                 )}
               </div>
             </div>
@@ -505,16 +505,16 @@ export function FOIARequestForm({ onRequestCreated }: FOIARequestFormProps) {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
                         <h4 className="font-semibold">{template.title}</h4>
-                        {template.is_featured && (
+                        {template.is_popular && (
                           <Badge variant="default" className="text-xs">Featured</Badge>
                         )}
                       </div>
                       <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
-                        {template.description || template.subject_template}
+                        {template.instructions || template.subject_line}
                       </p>
                     </div>
                     <Badge variant="secondary" className="shrink-0">
-                      {template.category}
+                      {template.template_type}
                     </Badge>
                   </div>
                 </button>

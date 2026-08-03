@@ -173,6 +173,18 @@ export default {
           from: { opacity: "0", transform: "translateX(30px)" },
           to: { opacity: "1", transform: "translateX(0)" },
         },
+        "ticker-progress": {
+          from: { transform: "scaleX(0)" },
+          to: { transform: "scaleX(1)" },
+        },
+        "radar-sweep": {
+          from: { transform: "rotate(0deg)" },
+          to: { transform: "rotate(360deg)" },
+        },
+        "shimmer": {
+          from: { backgroundPosition: "-200% 0" },
+          to: { backgroundPosition: "200% 0" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -183,6 +195,9 @@ export default {
         "slide-in-right": "slide-in-right 0.5s ease-out",
         "bounce-slow": "bounce 2s infinite",
         "pulse-slow": "pulse 3s infinite",
+        "ticker-progress": "ticker-progress 4s linear forwards",
+        "radar-sweep": "radar-sweep 3s linear infinite",
+        "shimmer": "shimmer 2s linear infinite",
       },
     },
   },

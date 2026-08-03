@@ -9,7 +9,13 @@ import { DiscussionBoard } from "@/components/DiscussionBoard";
 import { EventsCalendar } from "@/components/EventsCalendar";
 import { Users, MessageSquare, User, Bell, Globe, Newspaper, CalendarDays, MessageCircle } from "lucide-react";
 import { SEO } from "@/components/SEO";
-import MessagingPanel from "@/components/MessagingPanel";
+// NOTE (2026-08-03): MessagingPanel disabled — depends on conversations/conversation_members/
+// conversation_messages/typing_indicators tables that do not exist in the live database yet
+// (confirmed via direct REST probe, PGRST205 on all four). Was silently non-functional (no
+// crash, just an empty, permanently-loading conversation list). See
+// supabase/MISSING_TABLES_MIGRATION.sql at repo root for the real schema + RLS needed to ship
+// this for real — component code itself is untouched and ready to go once that's run.
+// import MessagingPanel from "@/components/MessagingPanel";
 import NotificationsCenter from "@/components/NotificationsCenter";
 import UserNetwork from "@/components/UserNetwork";
 import { CommunityActionBar } from "@/components/community/CommunityActionBar";
@@ -200,7 +206,9 @@ export default function Community() {
 
               {/* Messages */}
               <TabsContent value="messages" className="mt-0">
-                <MessagingPanel />
+                <div className="rounded-lg border border-dashed p-8 text-center text-sm text-muted-foreground">
+                  Direct messaging is coming soon.
+                </div>
               </TabsContent>
 
               {/* Notifications */}

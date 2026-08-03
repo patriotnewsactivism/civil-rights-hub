@@ -4512,6 +4512,77 @@ export type Database = {
         }
         Relationships: []
       }
+      stories: {
+        Row: {
+          background_color: string | null
+          content: string | null
+          created_at: string
+          expires_at: string
+          hashtags: string[] | null
+          id: string
+          media_type: string
+          media_url: string | null
+          text_color: string | null
+          user_id: string
+          view_count: number
+        }
+        Insert: {
+          background_color?: string | null
+          content?: string | null
+          created_at?: string
+          expires_at?: string
+          hashtags?: string[] | null
+          id?: string
+          media_type?: string
+          media_url?: string | null
+          text_color?: string | null
+          user_id: string
+          view_count?: number
+        }
+        Update: {
+          background_color?: string | null
+          content?: string | null
+          created_at?: string
+          expires_at?: string
+          hashtags?: string[] | null
+          id?: string
+          media_type?: string
+          media_url?: string | null
+          text_color?: string | null
+          user_id?: string
+          view_count?: number
+        }
+        Relationships: []
+      }
+      story_views: {
+        Row: {
+          id: string
+          story_id: string
+          viewed_at: string
+          viewer_id: string
+        }
+        Insert: {
+          id?: string
+          story_id: string
+          viewed_at?: string
+          viewer_id: string
+        }
+        Update: {
+          id?: string
+          story_id?: string
+          viewed_at?: string
+          viewer_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "story_views_story_id_fkey"
+            columns: ["story_id"]
+            isOneToOne: false
+            referencedRelation: "stories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       success_stories: {
         Row: {
           approved_by: string | null
@@ -4854,6 +4925,30 @@ export type Database = {
           follower_id?: string
           following_id?: string
           id?: string
+        }
+        Relationships: []
+      }
+      user_interests: {
+        Row: {
+          hashtag: string
+          id: string
+          updated_at: string
+          user_id: string
+          weight: number
+        }
+        Insert: {
+          hashtag: string
+          id?: string
+          updated_at?: string
+          user_id: string
+          weight?: number
+        }
+        Update: {
+          hashtag?: string
+          id?: string
+          updated_at?: string
+          user_id?: string
+          weight?: number
         }
         Relationships: []
       }
@@ -5876,6 +5971,10 @@ export type Database = {
       toggle_message_star: {
         Args: { p_message_id: string; p_user_id: string }
         Returns: boolean
+      }
+      track_hashtag_interest: {
+        Args: { p_hashtags: string[]; p_user_id: string }
+        Returns: undefined
       }
       update_user_last_seen: { Args: { p_user_id: string }; Returns: undefined }
     }

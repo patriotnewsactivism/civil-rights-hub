@@ -246,7 +246,7 @@ export function SocialFeed() {
       return;
     }
 
-    const typedPosts = (postsData ?? []) as Post[];
+    const typedPosts = (postsData ?? []) as unknown as Post[];
     
     if (typedPosts.length === 0) {
       setPosts([]);
@@ -349,14 +349,14 @@ export function SocialFeed() {
       try {
         const { data: pollVotesData, error: pvErr } = await supabase
           .from("poll_votes")
-          .select("post_id, option_id")
+          .select("poll_id, option_id")
           .eq("user_id", currentUserId)
-          .in("post_id", postIds);
+          .in("poll_id", postIds);
         if (!pvErr) {
           (pollVotesData ?? []).forEach((vote) => {
-            const existing = userVotesMap.get(vote.post_id) ?? [];
+            const existing = userVotesMap.get(vote.poll_id) ?? [];
             existing.push(vote.option_id);
-            userVotesMap.set(vote.post_id, existing);
+            userVotesMap.set(vote.poll_id, existing);
           });
         }
       } catch {
@@ -490,6 +490,18 @@ export function SocialFeed() {
     }
   }, [currentUserId, fetchPosts, mediaFiles, newPost, pendingPoll, uploadMedia]);
 
+  const trackInterest = useCallback(async (hashtags: string[]) => {
+    if (!currentUserId || !hashtags.length) return;
+    try {
+      await supabase.rpc("track_hashtag_interest", { p_user_id: currentUserId, p_hashtags: hashtags });
+      setUserInterests(prev => {
+        const next = new Map(prev);
+        hashtags.forEach(t => next.set(t, (next.get(t) ?? 0) + 1));
+        return next;
+      });
+    } catch { /* function not yet deployed */ }
+  }, [currentUserId]);
+
   const toggleReaction = useCallback(
     async (postId: string, reactionType: string) => {
       if (!currentUserId) {
@@ -519,7 +531,7 @@ export function SocialFeed() {
         post_id: postId,
         user_id: currentUserId,
         reaction_type: reactionType,
-      } as Record<string, unknown>);
+      });
       if (error) {
         toast.error("Failed to react");
         return;
@@ -605,7 +617,7 @@ export function SocialFeed() {
     // Record user votes in poll_votes table (graceful)
     try {
       await supabase.from("poll_votes").upsert(
-        optionIds.map((optId) => ({ post_id: postId, user_id: currentUserId, option_id: optId }))
+        optionIds.map((optId) => ({ poll_id: postId, user_id: currentUserId, option_id: optId }))
       );
     } catch { /* poll_votes table not yet migrated */ }
 
@@ -687,18 +699,6 @@ export function SocialFeed() {
     score += Math.min((post.likes.length + post.reactions.length) / 10, 4);
     return { score, reason };
   }, [followingUserIds, userInterests]);
-
-  const trackInterest = useCallback(async (hashtags: string[]) => {
-    if (!currentUserId || !hashtags.length) return;
-    try {
-      await supabase.rpc("track_hashtag_interest", { p_user_id: currentUserId, p_hashtags: hashtags });
-      setUserInterests(prev => {
-        const next = new Map(prev);
-        hashtags.forEach(t => next.set(t, (next.get(t) ?? 0) + 1));
-        return next;
-      });
-    } catch { /* function not yet deployed */ }
-  }, [currentUserId]);
 
   const trendingHashtags = useMemo(() => {
     const tagCounts = new Map<string, number>();

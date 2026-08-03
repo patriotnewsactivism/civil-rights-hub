@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Shield, ExternalLink } from "lucide-react";
 import { Link } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -43,8 +44,9 @@ const NAVIGATION = [
     links: [
       { to: "/rights", label: "Know Your Rights" },
       { to: "/learn", label: "Law Library" },
-      { to: "/help#attorneys", label: "Attorney Directory" },
-      { to: "/help#tools", label: "Scanner Feeds" },
+      { to: "/find-attorney", label: "Find an Attorney" },
+      { to: "/compare-states", label: "Compare States" },
+      { to: "/sol-calculator", label: "SOL Calculator" },
     ],
   },
   {
@@ -52,7 +54,7 @@ const NAVIGATION = [
     links: [
       { to: "/community", label: "Social Feed" },
       { to: "/newsroom", label: "Newsroom" },
-      { to: "/help#activists", label: "Activist Directory" },
+      { to: "/newsletter", label: "Newsletter" },
       { to: "/help", label: "Get Help" },
     ],
   },
@@ -114,7 +116,6 @@ const SOCIAL_LINKS = [
 ];
 
 const GITHUB_URL = "https://github.com/patriotnewsactivism/civil-rights-hub";
-const BUTTONDOWN_USERNAME = import.meta.env.VITE_BUTTONDOWN_USERNAME as string | undefined;
 
 function FooterNewsletter() {
   const [email, setEmail] = useState("");
@@ -126,14 +127,12 @@ function FooterNewsletter() {
     if (!email) return;
     setLoading(true);
     try {
-      if (BUTTONDOWN_USERNAME) {
-        const res = await fetch("https://api.buttondown.email/v1/subscribers", {
-          method: "POST",
-          headers: { "Content-Type": "application/json", Authorization: `Token ${BUTTONDOWN_USERNAME}` },
-          body: JSON.stringify({ email_address: email }),
-        });
-        if (!res.ok && res.status !== 409) throw new Error();
-      }
+      const { error } = await supabase.from("newsletter_subscribers").insert({
+        email,
+        source: "footer_widget",
+        is_confirmed: false,
+      });
+      if (error && error.code !== "23505") throw error; // 23505 = duplicate, treat as success
       setDone(true);
       toast.success("Subscribed!", { description: "Check your inbox to confirm." });
     } catch {
@@ -209,37 +208,19 @@ export const Footer = () => {
                   {icon}
                 </a>
               ))}
-              <a
-                href={GITHUB_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="GitHub"
-                className="text-slate-500 hover:text-primary transition-colors"
-              >
-                <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current" aria-hidden="true">
-                  <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
-                </svg>
-              </a>
             </div>
-
-            <div className="flex items-center gap-1 text-xs text-slate-500">
-              <span>Built for the people</span>
-            </div>
-            <p className="text-xs text-slate-500 font-semibold tracking-wide">A Don Matthews creation</p>
           </div>
 
           {/* Navigation columns */}
           {NAVIGATION.map((section) => (
             <div key={section.title}>
-              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-4">
-                {section.title}
-              </h3>
+              <h3 className="text-sm font-semibold text-white mb-4">{section.title}</h3>
               <ul className="space-y-2.5">
                 {section.links.map((link) => (
                   <li key={link.to}>
                     <Link
                       to={link.to}
-                      className="text-sm text-slate-400 hover:text-white transition-colors"
+                      className="text-sm text-slate-400 hover:text-primary transition-colors"
                     >
                       {link.label}
                     </Link>
@@ -249,46 +230,38 @@ export const Footer = () => {
             </div>
           ))}
         </div>
-      </div>
 
-      {/* External resources strip */}
-      <div className="border-t border-white/5">
-        <div className="container mx-auto px-4 py-6">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">
-            Trusted External Resources
-          </h3>
+        {/* City links */}
+        <div className="mt-12 pt-8 border-t border-white/5">
+          <h3 className="text-sm font-semibold text-white mb-4">City Hubs</h3>
+          <div className="flex flex-wrap gap-x-4 gap-y-2">
+            {CITY_LINKS.map((city) => (
+              <Link
+                key={city.slug}
+                to={`/city/${city.slug}`}
+                className="text-xs text-slate-500 hover:text-primary transition-colors"
+              >
+                {city.label}
+              </Link>
+            ))}
+          </div>
+        </div>
+
+        {/* External resources */}
+        <div className="mt-8 pt-8 border-t border-white/5">
+          <h3 className="text-sm font-semibold text-white mb-4">External Resources</h3>
           <div className="flex flex-wrap gap-x-6 gap-y-2">
-            {EXTERNAL_RESOURCES.map(({ label, url }) => (
+            {EXTERNAL_RESOURCES.map((resource) => (
               <a
-                key={label}
-                href={url}
+                key={resource.url}
+                href={resource.url}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-xs text-slate-500 hover:text-primary transition-colors inline-flex items-center gap-1"
               >
-                {label}
-                <ExternalLink className="h-2.5 w-2.5" />
+                {resource.label}
+                <ExternalLink className="h-3 w-3" />
               </a>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* City SEO links */}
-      <div className="border-t border-white/5">
-        <div className="container mx-auto px-4 py-6">
-          <p className="text-xs uppercase tracking-wider text-slate-600 mb-3 font-semibold">
-            City Civil Rights Hubs
-          </p>
-          <div className="flex flex-wrap gap-x-4 gap-y-1.5">
-            {CITY_LINKS.map(({ slug, label }) => (
-              <Link
-                key={slug}
-                to={`/city/${slug}`}
-                className="text-xs text-slate-600 hover:text-slate-400 transition-colors"
-              >
-                {label}
-              </Link>
             ))}
           </div>
         </div>
@@ -296,18 +269,32 @@ export const Footer = () => {
 
       {/* Bottom bar */}
       <div className="border-t border-white/5">
-        <div className="container mx-auto px-4 py-5">
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-3">
-            <p className="text-xs text-slate-600">
-              © {currentYear} Civil Rights Hub by We The People News. Educational resource — not a substitute for legal advice.
+        <div className="container mx-auto px-4 py-6">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <p className="text-xs text-slate-500">
+              © {currentYear} Civil Rights Hub. Powered by We The People News.
             </p>
-            <div className="flex gap-4 text-xs">
-              <Link to="/transparency" className="text-slate-600 hover:text-slate-400 transition-colors">Transparency</Link>
-              <button className="text-slate-600 hover:text-slate-400 transition-colors">Privacy</button>
-              <button className="text-slate-600 hover:text-slate-400 transition-colors">Terms</button>
-              <a href="mailto:info@civilrightshub.org" className="text-slate-600 hover:text-slate-400 transition-colors">Contact</a>
+            <div className="flex items-center gap-6">
+              <Link to="/about" className="text-xs text-slate-500 hover:text-primary transition-colors">
+                About
+              </Link>
+              <Link to="/transparency" className="text-xs text-slate-500 hover:text-primary transition-colors">
+                Transparency
+              </Link>
+              <a
+                href={GITHUB_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs text-slate-500 hover:text-primary transition-colors"
+              >
+                GitHub
+              </a>
             </div>
           </div>
+          <p className="text-[11px] text-slate-600 mt-3 text-center">
+            This site is for informational purposes only and does not constitute legal advice.
+            Consult a licensed attorney for your specific situation.
+          </p>
         </div>
       </div>
     </footer>

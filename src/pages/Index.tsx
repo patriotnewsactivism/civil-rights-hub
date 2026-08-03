@@ -2,17 +2,13 @@ import { Suspense, lazy } from "react";
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { KnowYourRights } from "@/components/KnowYourRights";
-import { CommunityCarousel } from "@/components/CommunityCarousel";
 import { Footer } from "@/components/Footer";
 import { SEO } from "@/components/SEO";
 import { ATTORNEY_DIRECTORY } from "@/lib/seoData";
 import { StatePreferenceBanner } from "@/components/StatePreferenceBanner";
-import { QuickAccessHub } from "@/components/QuickAccessHub";
 import { CrisisHUD } from "@/components/CrisisHUD";
-import { TodayNearYou } from "@/components/TodayNearYou";
-import { DigestSubscribeBanner } from "@/components/DigestSubscribeBanner";
-import { EmergencyFAB } from "@/components/EmergencyActionSheet";
 import { DonationBanner } from "@/components/DonationBanner";
+import { EmergencyFAB } from "@/components/EmergencyActionSheet";
 
 const ResourceCommandCenter = lazy(() =>
   import("@/components/ResourceCommandCenter").then((module) => ({
@@ -24,10 +20,6 @@ const OfficerAccountability = lazy(() =>
   import("@/components/OfficerAccountability").then((module) => ({
     default: module.OfficerAccountability,
   }))
-);
-
-const CivicScore = lazy(() =>
-  import("@/components/CivicScore").then((module) => ({ default: module.CivicScore }))
 );
 
 const attorneyNames = ATTORNEY_DIRECTORY.map((entry) => entry.name);
@@ -95,27 +87,14 @@ const Index = () => {
       />
       <Header />
       <Hero />
-      <TodayNearYou />
-      <DigestSubscribeBanner />
-      <div className="container mx-auto px-4 py-6">
+      <div className="container mx-auto px-4 py-6 space-y-4">
         <StatePreferenceBanner />
         <CrisisHUD />
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6 mt-4">
-          <div>
-            <QuickAccessHub />
-          </div>
-          <div className="space-y-4">
-            <Suspense fallback={null}>
-              <CivicScore />
-            </Suspense>
-          </div>
-        </div>
       </div>
       <KnowYourRights />
       <Suspense fallback={<div className="py-8 text-center text-muted-foreground text-sm">Loading accountability data…</div>}>
         <OfficerAccountability />
       </Suspense>
-      <CommunityCarousel />
       <Suspense fallback={<div className="py-8 text-center text-muted-foreground text-sm">Loading resources…</div>}>
         <ResourceCommandCenter />
       </Suspense>

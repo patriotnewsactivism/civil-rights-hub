@@ -13,10 +13,10 @@ import {
   Menu,
   ShieldCheck,
   Zap,
-  Wrench,
   Newspaper,
   LifeBuoy,
-  BookOpenText, FileText} from "lucide-react";
+  Info,
+} from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { StateQuickSelect } from "@/components/StateQuickSelect";
 import { NotificationBell } from "@/components/NotificationBell";
@@ -76,7 +76,7 @@ export function Header() {
 
         <nav className="flex items-center gap-2">
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-2">
+          <div className="hidden md:flex items-center gap-1">
             <Button variant="ghost" size="sm" asChild>
               <Link to="/rights">
                 <ShieldCheck className="h-4 w-4 mr-2" />
@@ -86,25 +86,13 @@ export function Header() {
             <Button variant="ghost" size="sm" asChild>
               <Link to="/do-this-now">
                 <Zap className="h-4 w-4 mr-2" />
-                Do This Now
+                Act Now
               </Link>
             </Button>
             <Button variant="ghost" size="sm" asChild>
-              <Link to="/tools">
-                <Wrench className="h-4 w-4 mr-2" />
-                Tools
-              </Link>
-            </Button>
-            <Button variant="ghost" size="sm" asChild>
-              <Link to="/public-records">
-                <FileText className="h-4 w-4 mr-2" />
-                Public Records
-              </Link>
-            </Button>
-            <Button variant="ghost" size="sm" asChild>
-              <Link to="/learn">
-                <BookOpenText className="h-4 w-4 mr-2" />
-                Learn
+              <Link to="/help">
+                <LifeBuoy className="h-4 w-4 mr-2" />
+                Get Help
               </Link>
             </Button>
             <Button variant="ghost" size="sm" asChild>
@@ -114,9 +102,9 @@ export function Header() {
               </Link>
             </Button>
             <Button variant="ghost" size="sm" asChild>
-              <Link to="/help">
-                <LifeBuoy className="h-4 w-4 mr-2" />
-                Get Help
+              <Link to="/about">
+                <Info className="h-4 w-4 mr-2" />
+                About
               </Link>
             </Button>
           </div>
@@ -215,25 +203,19 @@ export function Header() {
                 <Button variant="ghost" asChild className="justify-start" onClick={() => setMobileMenuOpen(false)}>
                   <Link to="/rights">
                     <ShieldCheck className="h-4 w-4 mr-3" />
-                    Know Your Rights
+                    Rights
                   </Link>
                 </Button>
                 <Button variant="ghost" asChild className="justify-start" onClick={() => setMobileMenuOpen(false)}>
                   <Link to="/do-this-now">
                     <Zap className="h-4 w-4 mr-3" />
-                    Do This Now
+                    Act Now
                   </Link>
                 </Button>
                 <Button variant="ghost" asChild className="justify-start" onClick={() => setMobileMenuOpen(false)}>
-                  <Link to="/tools">
-                    <Wrench className="h-4 w-4 mr-3" />
-                    Tools
-                  </Link>
-                </Button>
-                <Button variant="ghost" asChild className="justify-start" onClick={() => setMobileMenuOpen(false)}>
-                  <Link to="/learn">
-                    <BookOpenText className="h-4 w-4 mr-3" />
-                    Learn
+                  <Link to="/help">
+                    <LifeBuoy className="h-4 w-4 mr-3" />
+                    Get Help
                   </Link>
                 </Button>
                 <Button variant="ghost" asChild className="justify-start" onClick={() => setMobileMenuOpen(false)}>
@@ -243,9 +225,9 @@ export function Header() {
                   </Link>
                 </Button>
                 <Button variant="ghost" asChild className="justify-start" onClick={() => setMobileMenuOpen(false)}>
-                  <Link to="/help">
-                    <LifeBuoy className="h-4 w-4 mr-3" />
-                    Get Help
+                  <Link to="/about">
+                    <Info className="h-4 w-4 mr-3" />
+                    About
                   </Link>
                 </Button>
                 {user ? (

@@ -10,13 +10,8 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
 import Community from "./pages/Community";
-import Activists from "./pages/Activists";
-import Attorneys from "./pages/Attorneys";
-import ResourceLibrary from "./pages/ResourceLibrary";
 import Rights from "./pages/Rights";
 import DoThisNow from "./pages/DoThisNow";
-import Tools from "./pages/Tools";
-import PublicRecords from "./pages/PublicRecords";
 import Learn from "./pages/Learn";
 import Newsroom from "./pages/Newsroom";
 import GetHelp from "./pages/GetHelp";
@@ -92,15 +87,16 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/rights" element={<Rights />} />
               <Route path="/do-this-now" element={<DoThisNow />} />
-              <Route path="/tools" element={<Tools />} />
               <Route path="/learn" element={<Learn />} />
               <Route path="/newsroom" element={<Newsroom />} />
               <Route path="/help" element={<GetHelp />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/community" element={<Community />} />
-              <Route path="/activists" element={<Activists />} />
-              <Route path="/attorneys" element={<Attorneys />} />
-              <Route path="/resources" element={<ResourceLibrary />} />
+              {/* Consolidated into the /help hub */}
+              <Route path="/tools" element={<Navigate to="/help#tools" replace />} />
+              <Route path="/activists" element={<Navigate to="/help#activists" replace />} />
+              <Route path="/attorneys" element={<Navigate to="/help#attorneys" replace />} />
+              <Route path="/resources" element={<Navigate to="/help#resources" replace />} />
               {/* City pages – /city/los-angeles, /city/chicago, etc. */}
               <Route
                 path="/city/:slug"
@@ -140,7 +136,7 @@ const App = () => (
                   </Suspense>
                 }
               />
-              <Route path="/public-records" element={<PublicRecords />} />
+              <Route path="/public-records" element={<Navigate to="/help#records" replace />} />
               <Route path="/about" element={<About />} />
               <Route path="/volunteer" element={<Volunteer />} />
               <Route path="/contribute" element={<Contribute />} />

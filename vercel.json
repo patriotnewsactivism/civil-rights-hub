@@ -2,6 +2,13 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "framework": "vite",
+  "redirects": [
+    { "source": "/tools", "destination": "/help#tools", "permanent": true },
+    { "source": "/public-records", "destination": "/help#records", "permanent": true },
+    { "source": "/resources", "destination": "/help#resources", "permanent": true },
+    { "source": "/attorneys", "destination": "/help#attorneys", "permanent": true },
+    { "source": "/activists", "destination": "/help#activists", "permanent": true }
+  ],
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ],

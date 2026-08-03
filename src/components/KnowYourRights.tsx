@@ -96,7 +96,7 @@ const rightsData: Record<string, { summary: string; color: string; details: stri
   },
   "Fourteenth Amendment": {
     summary: "Equal protection, due process & citizenship rights",
-    color: "from-indigo-600 to-indigo-800",
+    color: "from-primary to-primary/60",
     details: [
       "All persons born or naturalized in the US are citizens — birthright citizenship.",
       "No state shall deprive any person of life, liberty, or property without due process of law.",

@@ -66,11 +66,11 @@ export const Hero = () => {
     <section className="relative overflow-hidden bg-background min-h-[90vh] flex flex-col">
 
       {/* Background treatment */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[hsl(20_12%_6%)] via-background to-background dark:from-[hsl(20_15%_5%)] dark:to-background z-0" />
+      <div className="absolute inset-0 bg-gradient-to-br from-[hsl(222_30%_7%)] via-background to-background dark:from-[hsl(222_35%_5%)] dark:to-background z-0" />
 
-      {/* Crimson ambient glow — top left */}
+      {/* Navy ambient glow — top left */}
       <div className="absolute -top-32 -left-32 w-[600px] h-[600px] bg-primary/8 rounded-full blur-[160px] pointer-events-none" />
-      {/* Amber ambient glow — bottom right */}
+      {/* Gold ambient glow — bottom right */}
       <div className="absolute bottom-0 right-0 w-[500px] h-[400px] bg-accent/6 rounded-full blur-[140px] pointer-events-none" />
 
       {/* Top border line */}
@@ -108,7 +108,7 @@ export const Hero = () => {
             <div className="text-center space-y-4 mb-10">
               <h1 className="text-5xl md:text-7xl lg:text-8xl font-black leading-[0.95] tracking-tighter">
                 <span className="block text-foreground">KNOW YOUR</span>
-                <span className="block bg-gradient-to-r from-primary via-red-400 to-amber-500 bg-clip-text text-transparent">
+                <span className="block bg-gradient-to-r from-primary via-primary to-accent bg-clip-text text-transparent">
                   RIGHTS.
                 </span>
                 <span className="block text-foreground/90 text-4xl md:text-5xl lg:text-6xl mt-2 font-black">

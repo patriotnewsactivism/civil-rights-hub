@@ -16,6 +16,9 @@ const CATEGORIES = [
   { key: "body_camera_required", label: "Body Cameras Required", icon: "🎥" },
   { key: "civilian_review_board", label: "Civilian Review Board", icon: "👀" },
   { key: "hate_crime_law", label: "Hate Crime Law", icon: "⚖️" },
+  { key: "stand_your_ground", label: "Stand Your Ground", icon: "🛡️" },
+  { key: "open_carry", label: "Open Carry", icon: "🔫" },
+  { key: "expungement_available", label: "Expungement Available", icon: "📋" },
 ] as const;
 
 type RightStatus = "yes" | "no" | "partial" | "unclear";
@@ -86,7 +89,7 @@ export function StateComparison() {
     <>
       <SEO
         title="State Rights Comparison Tool — Civil Rights by State | Civil Rights Hub"
-        description="Compare civil rights protections across US states. Can you record police? Do they need body cameras? Find out in seconds."
+        description="Compare civil rights protections across US states. Can you record police? Do they need body cameras? Hate crime laws, stand your ground, open carry, expungement — all side by side."
       />
 
       <div className="container mx-auto px-4 py-8 max-w-4xl">
@@ -160,7 +163,6 @@ export function StateComparison() {
                     <div className="grid grid-cols-3 gap-4 items-start">
                       <div>
                         <p className="font-medium text-sm mb-1">{cat.icon} {cat.label}</p>
-                        {/* Show summary for state A */}
                         {rowA && (
                           <p className="text-xs text-muted-foreground line-clamp-3 hidden md:block">{rowA.summary}</p>
                         )}
@@ -222,7 +224,7 @@ export function StateComparison() {
                   <GitCompare className="h-4 w-4" />
                   Need help navigating your rights in {stateA} or {stateB}?
                 </p>
-                <a href="/get-help?tab=attorneys" className="text-primary hover:underline font-medium">
+                <a href="/find-attorney" className="text-primary hover:underline font-medium">
                   Find a civil rights attorney →
                 </a>
               </CardContent>
@@ -234,6 +236,7 @@ export function StateComparison() {
           <div className="text-center py-12 text-muted-foreground">
             <GitCompare className="h-12 w-12 mx-auto mb-3 opacity-50" />
             <p>Select two states above to compare rights side by side.</p>
+            <p className="text-xs mt-2">8 categories: record police, stop & identify, body cameras, civilian review boards, hate crime laws, stand your ground, open carry, expungement.</p>
           </div>
         )}
       </div>

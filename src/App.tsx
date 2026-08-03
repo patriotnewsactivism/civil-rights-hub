@@ -24,6 +24,8 @@ import Store from "./pages/Store";
 import AttorneyMatchPage from "./pages/AttorneyMatchPage";
 import SolCalculatorPage from "./pages/SolCalculatorPage";
 import StateComparisonPage from "./pages/StateComparisonPage";
+import AttorneyPremiumPage from "./pages/AttorneyPremiumPage";
+import AttorneyDashboardPage from "./pages/AttorneyDashboardPage";
 import { JurisdictionProvider } from "./hooks/useJurisdiction";
 import { PageSkeleton } from "@/components/PageSkeleton";
 import { SearchCommandDialog } from "@/components/SearchCommandDialog";
@@ -101,6 +103,9 @@ const App = () => (
               <Route path="/find-attorney" element={<AttorneyMatchPage />} />
               <Route path="/sol-calculator" element={<SolCalculatorPage />} />
               <Route path="/compare-states" element={<StateComparisonPage />} />
+              {/* Attorney premium + dashboard */}
+              <Route path="/attorney-premium" element={<AttorneyPremiumPage />} />
+              <Route path="/attorney-dashboard" element={<AttorneyDashboardPage />} />
               {/* Consolidated into the /help hub */}
               <Route path="/tools" element={<Navigate to="/help#tools" replace />} />
               <Route path="/activists" element={<Navigate to="/help#activists" replace />} />

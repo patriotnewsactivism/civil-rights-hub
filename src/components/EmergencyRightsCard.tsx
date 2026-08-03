@@ -17,7 +17,6 @@ import {
   Mic,
   Users,
 } from "lucide-react";
-import jsPDF from "jspdf";
 
 const RIGHTS_QUICK_REF = [
   {
@@ -76,7 +75,8 @@ export const EmergencyRightsCard = () => {
     toast.success("All rights scripts copied");
   };
 
-  const downloadPDF = () => {
+  const downloadPDF = async () => {
+    const { default: jsPDF } = await import("jspdf");
     const doc = new jsPDF({ unit: "mm", format: [85.6, 200] }); // Credit card width
 
     doc.setFillColor(15, 23, 42);

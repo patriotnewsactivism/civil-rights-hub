@@ -102,18 +102,18 @@ export default {
       },
       backgroundImage: {
         'gradient-hero': 'var(--gradient-hero)',
-        'gradient-accent': 'var(--gradient-accent)',
+        'gradient-accent': 'linear-gradient(135deg, hsl(42 78% 44%) 0%, hsl(42 80% 54%) 100%)',
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
-        'gradient-primary': 'linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%)',
-        'gradient-secondary': 'linear-gradient(135deg, #EEF2FF 0%, #F3E8FF 100%)',
+        'gradient-primary': 'linear-gradient(135deg, hsl(222 70% 22%) 0%, hsl(217 82% 52%) 100%)',
+        'gradient-secondary': 'linear-gradient(135deg, hsl(215 22% 94%) 0%, hsl(42 78% 90%) 100%)',
       },
       boxShadow: {
         'soft': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
         'medium': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
         'strong': '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-        'glow': '0 0 20px rgba(59, 130, 246, 0.15)',
-        'glow-lg': '0 0 40px rgba(59, 130, 246, 0.2)',
+        'glow': '0 0 20px hsl(222 70% 34% / 0.15)',
+        'glow-lg': '0 0 40px hsl(222 70% 34% / 0.20)',
       },
       transitionProperty: {
         'smooth': 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',

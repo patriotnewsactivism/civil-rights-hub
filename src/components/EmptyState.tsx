@@ -127,7 +127,7 @@ export function FOIAEmptyState({ onNew }: { onNew?: () => void }) {
       headline="No FOIA requests tracked yet"
       description="Start tracking a public records request. We'll monitor deadlines, send reminders, and help you follow up."
       primaryAction={{ label: "New FOIA request", onClick: onNew }}
-      secondaryAction={{ label: "Browse templates", href: "/tools" }}
+      secondaryAction={{ label: "Browse templates", href: "/help#tools" }}
       hint="Federal agencies must respond within 20 business days. State deadlines vary."
     />
   );
@@ -139,7 +139,7 @@ export function NetworkEmptyState() {
       icon={Users}
       headline="Your network is empty"
       description="Connect with activists, journalists, and advocates in your area to build your civil rights network."
-      primaryAction={{ label: "Browse activists", href: "/activists" }}
+      primaryAction={{ label: "Browse activists", href: "/help#activists" }}
       secondaryAction={{ label: "Join community", href: "/community" }}
     />
   );

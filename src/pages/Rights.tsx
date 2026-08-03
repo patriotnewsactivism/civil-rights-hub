@@ -21,6 +21,7 @@ const Rights = () => {
         description="State-aware stop-and-identify rules, recording laws, conflicting state legislation, and rapid scripts to assert your rights safely."
         ogTitle="Know Your Rights"
         ogDescription="Tailored guidance for stops, searches, recording, and protests with state-level nuance. Identify laws that conflict with your federal rights."
+        canonicalUrl="https://civilrightshub.org/rights"
       />
       <Header />
       <main className="flex-1">

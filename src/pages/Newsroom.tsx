@@ -14,6 +14,7 @@ const Newsroom = () => (
       description="Investigations, explainers, and document drops from the Civil Rights Hub newsroom — verified reporting on civil rights violations, police accountability, press freedom, and constitutional law."
       ogTitle="Civil Rights Hub Newsroom"
       ogDescription="Investigations, timelines, and document drops. Verified civil rights reporting."
+      canonicalUrl="https://civilrightshub.org/newsroom"
     />
     <Header />
     <main className="flex-1">

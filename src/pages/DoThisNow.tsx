@@ -14,6 +14,7 @@ const DoThisNow = () => (
       description="Fast playbooks for stops, searches, trespass warnings, protest encounters, and a printable pocket rights card with scripts and emergency contacts."
       ogTitle="Do This Now"
       ogDescription="Rapid response scripts, printable rights card, and safety checklists for high-stress moments."
+      canonicalUrl="https://civilrightshub.org/do-this-now"
     />
     <Header />
     <main className="flex-1">

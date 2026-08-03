@@ -876,13 +876,27 @@ export function SocialFeed() {
         {displayedPosts.length === 0 && (
           <Card className="border-dashed">
             <CardContent className="flex flex-col items-center justify-center py-16 text-center">
-              <Shield className="h-12 w-12 text-muted-foreground/30 mb-4" />
+              <Shield className="h-12 w-12 text-primary/30 mb-4" />
               <h3 className="text-lg font-semibold mb-2">No posts yet</h3>
-              <p className="text-sm text-muted-foreground max-w-md">
+              <p className="text-sm text-muted-foreground max-w-md mb-5">
                 {currentUserId
                   ? "Be the first to broadcast an update. Document violations, share resources, or organize with the community."
                   : "Sign in to see community posts and share updates with the movement."}
               </p>
+              <div className="flex gap-2 flex-wrap justify-center">
+                {currentUserId ? (
+                  <Button size="sm" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
+                    Share an update
+                  </Button>
+                ) : (
+                  <Button size="sm" asChild>
+                    <a href="/auth">Sign in to post</a>
+                  </Button>
+                )}
+                <Button size="sm" variant="outline" asChild>
+                  <a href="/do-this-now#report">Report a violation</a>
+                </Button>
+              </div>
             </CardContent>
           </Card>
         )}

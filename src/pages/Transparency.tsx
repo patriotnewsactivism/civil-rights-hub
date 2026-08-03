@@ -40,6 +40,7 @@ const Transparency = () => (
       description="Monthly operating costs, revenue sources, impact metrics, and governance principles for Civil Rights Hub."
       ogTitle="Transparency — Civil Rights Hub"
       ogDescription="Full breakdown of how Civil Rights Hub is funded, what it costs to run, and how decisions are made."
+      canonicalUrl="https://civilrightshub.org/transparency"
     />
     <Header />
     <main className="flex-1">

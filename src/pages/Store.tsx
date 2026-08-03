@@ -56,6 +56,7 @@ const Store = () => (
       description="Support Civil Rights Hub with merchandise — pocket rights cards, protest safety guides, stickers, and shirts. Proceeds keep the platform free."
       ogTitle="Civil Rights Hub Store"
       ogDescription="Pocket rights cards, protest guides, stickers, and shirts. Proceeds go directly to keeping Civil Rights Hub free."
+      canonicalUrl="https://civilrightshub.org/store"
     />
     <Header />
     <main className="flex-1">

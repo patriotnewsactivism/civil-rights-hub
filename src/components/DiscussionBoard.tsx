@@ -406,6 +406,11 @@ export const DiscussionBoard = () => {
               Be the first to start a thread! Share urgent news, upcoming actions, or legal support requests with the network.
             </CardDescription>
           </CardHeader>
+          <CardContent>
+            <Button size="sm" asChild>
+              <a href="/community?tab=feed">Post in the community feed</a>
+            </Button>
+          </CardContent>
         </Card>
       )}
       {reportDialog.open && (

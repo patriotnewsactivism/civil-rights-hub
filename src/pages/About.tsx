@@ -36,6 +36,7 @@ const About = () => (
       description="Civil Rights Hub is a free, open-source platform built by We The People News to make civil rights resources accessible to everyone in America."
       ogTitle="About Civil Rights Hub"
       ogDescription="Free, ad-free, and open source. Built by We The People News to put civil rights tools in everyone's hands."
+      canonicalUrl="https://civilrightshub.org/about"
     />
     <Header />
     <main className="flex-1">

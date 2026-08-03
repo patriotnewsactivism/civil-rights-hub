@@ -104,6 +104,7 @@ const Volunteer = () => {
         description="Volunteer with Civil Rights Hub — contribute as a legal researcher, content writer, developer, translator, or community moderator."
         ogTitle="Volunteer with Civil Rights Hub"
         ogDescription="Help build the nation's most comprehensive civil rights platform. We need legal researchers, writers, developers, translators, and moderators."
+        canonicalUrl="https://civilrightshub.org/volunteer"
       />
       <Header />
       <main className="flex-1">

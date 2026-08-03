@@ -81,6 +81,7 @@ const Donate = () => {
         description="Support Civil Rights Hub with a monthly or one-time donation. Free for users, funded by people who believe civil rights tools should be accessible to all."
         ogTitle="Support Civil Rights Hub"
         ogDescription="Keep civil rights tools free for everyone. Donate monthly or one-time — no account required."
+      canonicalUrl="https://civilrightshub.org/donate"
       />
       <Header />
       <main className="flex-1">

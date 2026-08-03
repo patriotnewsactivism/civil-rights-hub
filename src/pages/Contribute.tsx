@@ -85,6 +85,7 @@ const Contribute = () => (
       description="Contribute to Civil Rights Hub — submit violations, add attorneys, suggest scanner feeds, report errors, contribute code, or donate."
       ogTitle="Contribute to Civil Rights Hub"
       ogDescription="Six ways to help make civil rights resources better for everyone."
+      canonicalUrl="https://civilrightshub.org/contribute"
     />
     <Header />
     <main className="flex-1">

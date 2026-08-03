@@ -189,6 +189,7 @@ const CityPage = () => {
         description={description}
         ogTitle={title}
         ogDescription={description}
+        canonicalUrl={`https://civilrightshub.org/city/${slug}`}
       />
       <Header />
       <main className="flex-1">

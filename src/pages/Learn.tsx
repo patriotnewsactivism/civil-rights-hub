@@ -17,6 +17,7 @@ const Learn = () => {
         description="Explore federal and state civil rights laws, recording rules, and accountability resources tailored to your jurisdiction."
         ogTitle="Learn the law"
         ogDescription="State-by-state guides and maps for filming, ID rules, and public records."
+        canonicalUrl="https://civilrightshub.org/learn"
       />
       <Header />
       <main className="flex-1">

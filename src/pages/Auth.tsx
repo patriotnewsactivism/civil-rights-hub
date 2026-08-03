@@ -65,6 +65,7 @@ export default function Auth() {
       <SEO
         title="Sign In - Civil Rights Hub"
         description="Join the network of journalists, activists, and attorneys."
+        canonicalUrl="https://civilrightshub.org/auth"
       />
       
       {/* Left Panel - Branding */}

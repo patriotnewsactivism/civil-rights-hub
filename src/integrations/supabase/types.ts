@@ -3779,6 +3779,51 @@ export type Database = {
         }
         Relationships: []
       }
+      reporting_contacts: {
+        Row: {
+          available_hours: string
+          category: string
+          contact_type: string
+          contact_value: string
+          created_at: string
+          description: string
+          id: string
+          is_emergency: boolean
+          name: string
+          organization: string
+          scope: string
+          state: string | null
+        }
+        Insert: {
+          available_hours?: string
+          category: string
+          contact_type: string
+          contact_value: string
+          created_at?: string
+          description?: string
+          id?: string
+          is_emergency?: boolean
+          name: string
+          organization: string
+          scope?: string
+          state?: string | null
+        }
+        Update: {
+          available_hours?: string
+          category?: string
+          contact_type?: string
+          contact_value?: string
+          created_at?: string
+          description?: string
+          id?: string
+          is_emergency?: boolean
+          name?: string
+          organization?: string
+          scope?: string
+          state?: string | null
+        }
+        Relationships: []
+      }
       representatives: {
         Row: {
           chamber: string | null
@@ -4272,6 +4317,54 @@ export type Database = {
           status?: string | null
           title?: string | null
           user_id?: string | null
+        }
+        Relationships: []
+      }
+      state_law_conflicts: {
+        Row: {
+          affected_right: string
+          challenge_tips: string[]
+          conflict_title: string
+          created_at: string
+          description: string
+          federal_protection: string
+          id: string
+          last_updated: string
+          reporting_contacts: Json
+          severity: string
+          state: string
+          state_law_citation: string
+          status: string
+        }
+        Insert: {
+          affected_right: string
+          challenge_tips?: string[]
+          conflict_title: string
+          created_at?: string
+          description: string
+          federal_protection: string
+          id?: string
+          last_updated?: string
+          reporting_contacts?: Json
+          severity?: string
+          state: string
+          state_law_citation: string
+          status?: string
+        }
+        Update: {
+          affected_right?: string
+          challenge_tips?: string[]
+          conflict_title?: string
+          created_at?: string
+          description?: string
+          federal_protection?: string
+          id?: string
+          last_updated?: string
+          reporting_contacts?: Json
+          severity?: string
+          state?: string
+          state_law_citation?: string
+          status?: string
         }
         Relationships: []
       }

@@ -29,11 +29,11 @@ interface ViolationRow {
 
 interface FoiaRow {
   id: string;
-  subject: string;
+  request_subject: string;
   agency_name: string;
   status: string | null;
-  response_due_date: string | null;
-  submitted_at: string | null;
+  response_deadline: string | null;
+  submitted_date: string | null;
 }
 
 interface ScannerRow {
@@ -141,10 +141,10 @@ export function TodayNearYou() {
   const fetchFoia = useCallback(async (uid: string) => {
     const { data, count } = await supabase
       .from("foia_requests")
-      .select("id, subject, agency_name, status, response_due_date, submitted_at", { count: "exact" })
+      .select("id, request_subject, agency_name, status, response_deadline, submitted_date", { count: "exact" })
       .eq("user_id", uid)
       .not("status", "in", "(completed,denied)")
-      .order("response_due_date", { ascending: true, nullsFirst: false })
+      .order("response_deadline", { ascending: true, nullsFirst: false })
       .limit(3);
 
     if (data) setFoias(data as FoiaRow[]);
@@ -265,11 +265,11 @@ export function TodayNearYou() {
             }
           >
             {foias.map((f) => {
-              const due = f.response_due_date ? new Date(f.response_due_date) : null;
+              const due = f.response_deadline ? new Date(f.response_deadline) : null;
               const overdue = due && due < new Date();
               return (
                 <div key={f.id} className="border-b border-border/40 py-2 last:border-0">
-                  <p className="line-clamp-1 text-sm font-medium">{f.subject}</p>
+                  <p className="line-clamp-1 text-sm font-medium">{f.request_subject}</p>
                   <div className="mt-0.5 flex items-center gap-1.5 text-[11px] text-muted-foreground">
                     <span className="line-clamp-1">{f.agency_name}</span>
                     {due && (

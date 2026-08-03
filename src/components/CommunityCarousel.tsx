@@ -25,12 +25,12 @@ interface Profile {
 const CYCLE_MS = 4000;
 
 const ROLE_STYLES: Record<string, { bg: string; text: string; label: string }> = {
-  admin:      { bg: "bg-red-500/20",     text: "text-red-400",     label: "Admin" },
-  moderator:  { bg: "bg-amber-500/20",   text: "text-amber-400",   label: "Moderator" },
-  journalist: { bg: "bg-sky-500/20",     text: "text-sky-400",     label: "Journalist" },
-  activist:   { bg: "bg-emerald-500/20", text: "text-emerald-400", label: "Activist" },
-  attorney:   { bg: "bg-teal-500/20",  text: "text-teal-300",  label: "Attorney" },
-  member:     { bg: "bg-slate-500/20",   text: "text-slate-400",   label: "Member" },
+  admin:      { bg: "bg-destructive/15",   text: "text-destructive",   label: "Admin" },
+  moderator:  { bg: "bg-accent/15",        text: "text-accent",        label: "Moderator" },
+  journalist: { bg: "bg-primary/15",       text: "text-primary",       label: "Journalist" },
+  activist:   { bg: "bg-secondary",       text: "text-secondary-foreground", label: "Activist" },
+  attorney:   { bg: "bg-accent/20",       text: "text-accent",        label: "Attorney" },
+  member:     { bg: "bg-muted",            text: "text-muted-foreground", label: "Member" },
 };
 
 /* ------------------------------------------------------------------ */

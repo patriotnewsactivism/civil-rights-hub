@@ -11,6 +11,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
@@ -351,8 +352,14 @@ export const DiscussionBoard = () => {
         </p>
       </header>
       {loading && (
-        <div className="flex items-center gap-3 rounded-lg border border-dashed p-6 text-muted-foreground">
-          <Loader2 className="h-4 w-4 animate-spin" /> Loading community threads...
+        <div className="space-y-3">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="rounded-lg border p-4 space-y-2">
+              <Skeleton className="h-5 w-2/3" />
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-1/3" />
+            </div>
+          ))}
         </div>
       )}
       {!loading && pinnedThreads.length > 0 && (

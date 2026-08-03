@@ -16,6 +16,7 @@ import {
   Newspaper,
   LifeBuoy,
   Info,
+  Search,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { StateQuickSelect } from "@/components/StateQuickSelect";
@@ -109,6 +110,18 @@ export function Header() {
             </Button>
           </div>
 
+          {/* Search trigger (⌘K) */}
+          <button
+            type="button"
+            onClick={() => window.dispatchEvent(new KeyboardEvent("keydown", { key: "k", metaKey: true }))}
+            className="hidden md:flex items-center gap-2 px-3 h-9 rounded-md border border-border/60 bg-muted/40 text-sm text-muted-foreground hover:bg-muted transition-colors w-44 lg:w-56"
+            aria-label="Search the platform"
+          >
+            <Search className="h-4 w-4 shrink-0" />
+            <span className="flex-1 text-left">Search…</span>
+            <kbd className="text-[10px] font-mono px-1.5 py-0.5 rounded border border-border/60 bg-background">⌘K</kbd>
+          </button>
+
           <div className="hidden lg:block">
             <StateQuickSelect />
           </div>
@@ -199,6 +212,18 @@ export function Header() {
                 <SheetTitle>Navigation</SheetTitle>
               </SheetHeader>
               <div className="mt-6 flex flex-col gap-3">
+                <Button
+                  variant="outline"
+                  className="justify-start w-full"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    setTimeout(() => window.dispatchEvent(new KeyboardEvent("keydown", { key: "k", metaKey: true })), 150);
+                  }}
+                >
+                  <Search className="h-4 w-4 mr-3" />
+                  Search…
+                  <kbd className="ml-auto text-[10px] font-mono px-1.5 py-0.5 rounded border border-border/60">⌘K</kbd>
+                </Button>
                 <StateQuickSelect />
                 <Button variant="ghost" asChild className="justify-start" onClick={() => setMobileMenuOpen(false)}>
                   <Link to="/rights">

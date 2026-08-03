@@ -39,19 +39,19 @@ interface Agency {
 }
 
 const gradeColor = (score: number | null) => {
-  if (score === null) return { bg: "bg-gray-100", text: "text-gray-600", label: "?" };
-  if (score >= 80) return { bg: "bg-green-50", text: "text-green-700", label: "A" };
-  if (score >= 60) return { bg: "bg-blue-50", text: "text-blue-700", label: "B" };
-  if (score >= 40) return { bg: "bg-yellow-50", text: "text-yellow-700", label: "C" };
-  if (score >= 20) return { bg: "bg-orange-50", text: "text-orange-700", label: "D" };
-  return { bg: "bg-red-50", text: "text-red-700", label: "F" };
+  if (score === null) return { bg: "bg-muted", text: "text-muted-foreground", label: "?" };
+  if (score >= 80) return { bg: "bg-green-500/15", text: "text-green-600 dark:text-green-400", label: "A" };
+  if (score >= 60) return { bg: "bg-blue-500/15", text: "text-blue-600 dark:text-blue-400", label: "B" };
+  if (score >= 40) return { bg: "bg-yellow-500/15", text: "text-yellow-600 dark:text-yellow-400", label: "C" };
+  if (score >= 20) return { bg: "bg-orange-500/15", text: "text-orange-600 dark:text-orange-400", label: "D" };
+  return { bg: "bg-red-500/15", text: "text-red-600 dark:text-red-400", label: "F" };
 };
 
 const denialColor = (rate: number | null) => {
   if (rate === null) return "text-muted-foreground";
-  if (rate < 20) return "text-green-600";
-  if (rate < 40) return "text-yellow-600";
-  return "text-red-600";
+  if (rate < 20) return "text-green-600 dark:text-green-400";
+  if (rate < 40) return "text-yellow-600 dark:text-yellow-400";
+  return "text-red-600 dark:text-red-400";
 };
 
 export default function AgencyTransparencyScoreboard() {
@@ -136,9 +136,9 @@ export default function AgencyTransparencyScoreboard() {
       {(topAgencies.length > 0 || worstAgencies.length > 0) && (
         <div className="grid md:grid-cols-2 gap-3">
           {topAgencies.length > 0 && (
-            <Card className="border-green-200 bg-green-50/30">
+            <Card className="border-green-500/20 bg-green-500/5">
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm flex items-center gap-2 text-green-700">
+                <CardTitle className="text-sm flex items-center gap-2 text-green-600 dark:text-green-400">
                   <Trophy className="h-4 w-4" /> Most Transparent
                 </CardTitle>
               </CardHeader>
@@ -156,9 +156,9 @@ export default function AgencyTransparencyScoreboard() {
             </Card>
           )}
           {worstAgencies.length > 0 && (
-            <Card className="border-red-200 bg-red-50/30">
+            <Card className="border-red-500/20 bg-red-500/5">
               <CardHeader className="pb-2">
-                <CardTitle className="text-sm flex items-center gap-2 text-red-700">
+                <CardTitle className="text-sm flex items-center gap-2 text-red-600 dark:text-red-400">
                   <AlertTriangle className="h-4 w-4" /> Highest Denial Rates
                 </CardTitle>
               </CardHeader>
@@ -237,10 +237,10 @@ export default function AgencyTransparencyScoreboard() {
                       <div className="flex items-center gap-2 flex-wrap">
                         <p className="font-medium text-sm truncate">{agency.name}</p>
                         {agency.user_contributed && !agency.community_verified && (
-                          <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-amber-50 text-amber-600">Community</span>
+                          <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-accent/15 text-accent">Community</span>
                         )}
                         {agency.community_verified && (
-                          <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-green-50 text-green-600">✓ Verified</span>
+                          <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-green-500/10 text-green-600 dark:text-green-400">✓ Verified</span>
                         )}
                       </div>
                       <p className="text-xs text-muted-foreground">{[agency.agency_type, agency.city, agency.state].filter(Boolean).join(" · ")}</p>
@@ -288,10 +288,10 @@ export default function AgencyTransparencyScoreboard() {
                       {(agency.total_requests ?? 0) > 0 && (
                         <div className="space-y-1">
                           <div className="flex justify-between text-xs">
-                            <span className="text-green-600">Fulfilled {agency.total_fulfilled ?? 0}</span>
-                            <span className="text-red-600">Denied {agency.total_denied ?? 0}</span>
+                            <span className="text-green-600 dark:text-green-400">Fulfilled {agency.total_fulfilled ?? 0}</span>
+                            <span className="text-red-600 dark:text-red-400">Denied {agency.total_denied ?? 0}</span>
                           </div>
-                          <div className="h-2 rounded-full bg-red-100 overflow-hidden">
+                          <div className="h-2 rounded-full bg-muted overflow-hidden">
                             <div
                               className="h-full bg-green-400 rounded-full"
                               style={{ width: `${((agency.total_fulfilled ?? 0) / (agency.total_requests ?? 1)) * 100}%` }}

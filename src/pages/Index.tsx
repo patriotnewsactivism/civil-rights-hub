@@ -9,6 +9,7 @@ import { StatePreferenceBanner } from "@/components/StatePreferenceBanner";
 import { CrisisHUD } from "@/components/CrisisHUD";
 import { DonationBanner } from "@/components/DonationBanner";
 import { EmergencyFAB } from "@/components/EmergencyActionSheet";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const ResourceCommandCenter = lazy(() =>
   import("@/components/ResourceCommandCenter").then((module) => ({
@@ -92,10 +93,10 @@ const Index = () => {
         <CrisisHUD />
       </div>
       <KnowYourRights />
-      <Suspense fallback={<div className="py-8 text-center text-muted-foreground text-sm">Loading accountability data…</div>}>
+      <Suspense fallback={<div className="container mx-auto px-4 py-10 space-y-4"><Skeleton className="h-8 w-1/3" /><div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{[...Array(6)].map((_, i) => <Skeleton key={i} className="h-28 rounded-xl" />)}</div></div>}>
         <OfficerAccountability />
       </Suspense>
-      <Suspense fallback={<div className="py-8 text-center text-muted-foreground text-sm">Loading resources…</div>}>
+      <Suspense fallback={<div className="container mx-auto px-4 py-10 space-y-4"><Skeleton className="h-8 w-1/3" /><div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{[...Array(6)].map((_, i) => <Skeleton key={i} className="h-28 rounded-xl" />)}</div></div>}>
         <ResourceCommandCenter />
       </Suspense>
       <DonationBanner />

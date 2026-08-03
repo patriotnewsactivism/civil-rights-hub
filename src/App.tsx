@@ -22,6 +22,8 @@ import Transparency from "./pages/Transparency";
 import Donate from "./pages/Donate";
 import Store from "./pages/Store";
 import { JurisdictionProvider } from "./hooks/useJurisdiction";
+import { PageSkeleton } from "@/components/PageSkeleton";
+import { SearchCommandDialog } from "@/components/SearchCommandDialog";
 
 const CityPage = lazy(() => import("./pages/CityPage"));
 const StatePage = lazy(() => import("./pages/StatePage"));
@@ -101,7 +103,7 @@ const App = () => (
               <Route
                 path="/city/:slug"
                 element={
-                  <Suspense fallback={<div className="min-h-screen flex items-center justify-center text-muted-foreground text-sm">Loading city hub…</div>}>
+                  <Suspense fallback={<PageSkeleton label="Loading city hub…" />}>
                     <CityPage />
                   </Suspense>
                 }
@@ -110,7 +112,7 @@ const App = () => (
               <Route
                 path="/states"
                 element={
-                  <Suspense fallback={<div className="min-h-screen flex items-center justify-center text-muted-foreground text-sm">Loading states…</div>}>
+                  <Suspense fallback={<PageSkeleton label="Loading states…" />}>
                     <StatesDirectory />
                   </Suspense>
                 }
@@ -118,7 +120,7 @@ const App = () => (
               <Route
                 path="/state/:stateSlug"
                 element={
-                  <Suspense fallback={<div className="min-h-screen flex items-center justify-center text-muted-foreground text-sm">Loading state…</div>}>
+                  <Suspense fallback={<PageSkeleton label="Loading state…" />}>
                     <StatePage />
                   </Suspense>
                 }
@@ -131,7 +133,7 @@ const App = () => (
               <Route
                 path="/sitemap"
                 element={
-                  <Suspense fallback={<div className="min-h-screen flex items-center justify-center text-muted-foreground text-sm">Loading sitemap…</div>}>
+                  <Suspense fallback={<PageSkeleton label="Loading sitemap…" />}>
                     <Sitemap />
                   </Suspense>
                 }
@@ -146,6 +148,7 @@ const App = () => (
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
+            <SearchCommandDialog />
           </BrowserRouter>
           <Analytics />
         </JurisdictionProvider>

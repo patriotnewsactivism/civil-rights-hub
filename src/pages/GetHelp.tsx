@@ -11,7 +11,9 @@ import { PublicRecordsTracker } from "@/components/PublicRecordsTracker";
 import { ResourceLibrary } from "@/components/ResourceLibrary";
 import { SEO } from "@/components/SEO";
 import { StatePreferenceBanner } from "@/components/StatePreferenceBanner";
+import { PageHeader } from "@/components/PageHeader";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const ResourceCommandCenter = lazy(() =>
   import("@/components/ResourceCommandCenter").then((module) => ({
@@ -60,15 +62,12 @@ const GetHelp = () => {
       />
       <Header />
       <main className="flex-1">
-        <div className="container mx-auto px-4 py-10 space-y-8">
-          <div className="max-w-3xl space-y-3">
-            <p className="text-sm uppercase tracking-wide text-accent font-semibold">Help &amp; Tools</p>
-            <h1 className="text-4xl font-bold">Everything you need to defend your rights</h1>
-            <p className="text-lg text-muted-foreground">
-              Find legal representation, connect with activists, file and track public records requests, browse vetted resources,
-              and launch every accountability tool — all from one place.
-            </p>
-          </div>
+        <PageHeader
+          eyebrow="Help & Tools"
+          title="Everything you need to defend your rights"
+          description="Find legal representation, connect with activists, file and track public records requests, browse vetted resources, and launch every accountability tool — all from one place."
+        />
+        <div className="container mx-auto px-4 pb-10 space-y-6">
           <StatePreferenceBanner />
           <Tabs value={tab} onValueChange={onTabChange} className="w-full">
             <TabsList className="w-full justify-start overflow-x-auto h-auto py-1.5">
@@ -96,7 +95,7 @@ const GetHelp = () => {
             </TabsContent>
             <TabsContent value="tools" className="mt-6">
               <Suspense
-                fallback={<div className="py-8 text-center text-muted-foreground text-sm">Loading tools…</div>}
+                fallback={<div className="space-y-3"><Skeleton className="h-8 w-1/3" /><div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{[...Array(6)].map((_, i) => <Skeleton key={i} className="h-24 rounded-xl" />)}</div></div>}
               >
                 <ResourceCommandCenter />
               </Suspense>

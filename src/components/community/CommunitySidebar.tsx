@@ -23,9 +23,9 @@ interface SuggestedUser {
 }
 
 const ROLE_COLORS: Record<string, string> = {
-  journalist: "bg-blue-500/20 text-blue-400",
-  attorney: "bg-teal-500/20 text-teal-300",
-  activist: "bg-orange-500/20 text-orange-400",
+  journalist: "bg-primary/15 text-primary",
+  attorney: "bg-accent/20 text-accent",
+  activist: "bg-secondary text-secondary-foreground",
 };
 
 const SAFETY_RESOURCES: Record<string, { title: string; links: { label: string; href: string }[] }> = {
@@ -213,17 +213,17 @@ export function CommunitySidebar({
 
       {/* Role-based Safety Resources */}
       {safetyResources && (
-        <Card className="border-border/50 border-orange-500/30 bg-orange-500/5">
+        <Card className="border-border/50 border-accent/30 bg-accent/5">
           <CardHeader className="p-4 pb-2">
             <CardTitle className="text-sm flex items-center gap-2">
-              <Shield className="h-4 w-4 text-orange-400" />
+              <Shield className="h-4 w-4 text-accent" />
               {safetyResources.title}
             </CardTitle>
           </CardHeader>
           <CardContent className="p-4 pt-0 space-y-1">
             {safetyResources.links.map(({ label, href }) =>
               href.startsWith("/") ? (
-                <Button key={label} variant="ghost" size="sm" asChild className="w-full justify-start text-xs h-8 text-orange-300 hover:text-orange-200">
+                <Button key={label} variant="ghost" size="sm" asChild className="w-full justify-start text-xs h-8 text-accent/90 hover:text-accent">
                   <Link to={href}>{label}</Link>
                 </Button>
               ) : (
@@ -232,7 +232,7 @@ export function CommunitySidebar({
                   href={href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs text-orange-300 hover:text-orange-200 hover:bg-muted transition-colors w-full"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs text-accent/90 hover:text-accent hover:bg-muted transition-colors w-full"
                 >
                   {label}
                   <ExternalLink className="h-3 w-3 ml-auto shrink-0" />

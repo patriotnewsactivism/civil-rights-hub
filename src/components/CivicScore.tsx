@@ -36,10 +36,10 @@ interface Achievement {
 
 const LEVELS = [
   { name: "Newcomer", min: 0, max: 49, color: "text-muted-foreground" },
-  { name: "Advocate", min: 50, max: 149, color: "text-blue-500" },
-  { name: "Activist", min: 150, max: 349, color: "text-green-500" },
-  { name: "Defender", min: 350, max: 699, color: "text-purple-500" },
-  { name: "Champion", min: 700, max: 999, color: "text-orange-500" },
+  { name: "Advocate", min: 50, max: 149, color: "text-primary/60" },
+  { name: "Activist", min: 150, max: 349, color: "text-primary" },
+  { name: "Defender", min: 350, max: 699, color: "text-accent/70" },
+  { name: "Champion", min: 700, max: 999, color: "text-accent" },
   { name: "Guardian", min: 1000, max: Infinity, color: "text-primary" },
 ];
 
@@ -153,7 +153,7 @@ export function CivicScore() {
           </CardTitle>
           <div className="flex items-center gap-2">
             {data.streak > 0 && (
-              <Badge variant="outline" className="text-orange-500 border-orange-500/30 text-xs">
+              <Badge variant="outline" className="text-accent border-accent/30 text-xs">
                 <Flame className="h-3 w-3 mr-1" />
                 {data.streak}d streak
               </Badge>

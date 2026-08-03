@@ -3020,6 +3020,65 @@ export type Database = {
           },
         ]
       }
+      live_streams: {
+        Row: {
+          created_at: string
+          duration_seconds: number | null
+          ended_at: string | null
+          id: string
+          location_city: string | null
+          location_lat: number | null
+          location_lng: number | null
+          location_state: string | null
+          post_id: string | null
+          recording_url: string | null
+          started_at: string | null
+          status: string
+          title: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          duration_seconds?: number | null
+          ended_at?: string | null
+          id?: string
+          location_city?: string | null
+          location_lat?: number | null
+          location_lng?: number | null
+          location_state?: string | null
+          post_id?: string | null
+          recording_url?: string | null
+          started_at?: string | null
+          status?: string
+          title: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          duration_seconds?: number | null
+          ended_at?: string | null
+          id?: string
+          location_city?: string | null
+          location_lat?: number | null
+          location_lng?: number | null
+          location_state?: string | null
+          post_id?: string | null
+          recording_url?: string | null
+          started_at?: string | null
+          status?: string
+          title?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "live_streams_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mentions: {
         Row: {
           comment_id: string | null
@@ -5500,6 +5559,7 @@ export type Database = {
       }
       violations: {
         Row: {
+          agency_name: string | null
           created_at: string
           description: string
           id: string
@@ -5509,12 +5569,16 @@ export type Database = {
           location_state: string
           longitude: number | null
           media_urls: string[] | null
+          officer_badge: string | null
+          officer_name: string | null
+          officer_rank: string | null
           status: string | null
           title: string
           updated_at: string
           user_id: string | null
         }
         Insert: {
+          agency_name?: string | null
           created_at?: string
           description: string
           id?: string
@@ -5524,12 +5588,16 @@ export type Database = {
           location_state: string
           longitude?: number | null
           media_urls?: string[] | null
+          officer_badge?: string | null
+          officer_name?: string | null
+          officer_rank?: string | null
           status?: string | null
           title: string
           updated_at?: string
           user_id?: string | null
         }
         Update: {
+          agency_name?: string | null
           created_at?: string
           description?: string
           id?: string
@@ -5539,6 +5607,9 @@ export type Database = {
           location_state?: string
           longitude?: number | null
           media_urls?: string[] | null
+          officer_badge?: string | null
+          officer_name?: string | null
+          officer_rank?: string | null
           status?: string | null
           title?: string
           updated_at?: string

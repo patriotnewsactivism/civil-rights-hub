@@ -58,7 +58,7 @@ export function GoLiveRecorder({ userId, onPostedToFeed }: GoLiveRecorderProps) 
 
       // Upload to Supabase Storage
       const { data: uploadData, error: uploadError } = await supabase.storage
-        .from("media")
+        .from("videos")
         .upload(filename, blob, { contentType: blob.type, upsert: false });
 
       if (uploadError) {
@@ -67,7 +67,7 @@ export function GoLiveRecorder({ userId, onPostedToFeed }: GoLiveRecorderProps) 
       }
 
       const recordingUrl = uploadData
-        ? supabase.storage.from("media").getPublicUrl(filename).data.publicUrl
+        ? supabase.storage.from("videos").getPublicUrl(filename).data.publicUrl
         : null;
 
       // Calculate duration

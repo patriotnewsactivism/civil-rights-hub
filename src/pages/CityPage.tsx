@@ -136,7 +136,7 @@ const CityPage = () => {
           .order("incident_date", { ascending: false })
           .limit(20),
         supabase.from("scanner_links")
-          .select("id, scanner_name, feed_url, listener_count")
+          .select("id, scanner_name, listener_count, broadcastify_url, other_url, scanner_radio_url")
           .ilike("city", `%${cityInfo.city}%`)
           .eq("is_active", true)
           .order("listener_count", { ascending: false })
@@ -152,7 +152,12 @@ const CityPage = () => {
       ]);
       setData({
         violations: vRes.data ?? [],
-        scanners: sRes.data ?? [],
+        scanners: (sRes.data ?? []).map((s) => ({
+          id: s.id,
+          scanner_name: s.scanner_name,
+          listener_count: s.listener_count,
+          feed_url: s.broadcastify_url || s.other_url || s.scanner_radio_url || null,
+        })),
         attorneys: aRes.data ?? [],
         violationCount: vCount.count ?? 0,
       });

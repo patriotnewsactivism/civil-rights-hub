@@ -10,6 +10,13 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
   Dialog,
   DialogContent,
   DialogHeader,
@@ -30,6 +37,13 @@ import {
   Send,
   Link2,
   Check,
+  Trash2,
+  Flag,
+  Globe,
+  Users,
+  Lock,
+  Copy,
+  Link as LinkIcon,
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { UserMentions } from "./community/UserMentions";
@@ -126,6 +140,8 @@ interface PostCardProps {
   onAddComment: (content?: string, parentId?: string) => Promise<void>;
   isExpanded: boolean;
   onToggleComments: () => void;
+  onDeletePost: (postId: string) => Promise<void>;
+  onReportPost: (postId: string) => void;
 }
 
 function extractHashtags(content: string): string[] {
@@ -161,6 +177,7 @@ const renderContentWithEntities = (content: string, onHashtagClick: (tag: string
 export function SocialFeed() {
   const [posts, setPosts] = useState<PostWithDetails[]>([]);
   const [newPost, setNewPost] = useState("");
+  const [visibility, setVisibility] = useState<"public" | "followers" | "private">("public");
   const [mentionQuery, setMentionQuery] = useState<string | null>(null);
   const [mentionPos, setMentionPos] = useState({ top: 0, left: 0 });
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -467,7 +484,7 @@ export function SocialFeed() {
       const { error } = await supabase.from("posts").insert({
         content: newPost,
         post_type: "text",
-        visibility: "public",
+        visibility: visibility,
         media_urls: mediaUrls.length > 0 ? mediaUrls : null,
         media_types: mediaTypes.length > 0 ? mediaTypes : null,
         user_id: currentUserId,
@@ -477,6 +494,7 @@ export function SocialFeed() {
       if (error) throw error;
 
       setNewPost("");
+      setVisibility("public");
       setMediaFiles([]);
       setPendingPoll(null);
       setShowPollCreator(false);
@@ -657,6 +675,26 @@ export function SocialFeed() {
     }
   }, [currentUserId, bookmarks]);
 
+  const deletePost = useCallback(async (postId: string) => {
+    const { error } = await supabase.from("posts").delete().eq("id", postId);
+    if (error) { toast.error("Unable to delete post"); return; }
+    toast.success("Post deleted");
+    await fetchPosts();
+  }, [fetchPosts]);
+
+  const reportPost = useCallback(async (postId: string) => {
+    if (!currentUserId) { toast.error("Sign in to report"); return; }
+    const { error } = await supabase.from("content_reports").insert({
+      content_type: "post",
+      content_id: postId,
+      reporter_id: currentUserId,
+      reason: "Reported by user",
+      status: "pending",
+    });
+    if (error) { toast.error("Unable to submit report"); return; }
+    toast.success("Report submitted — moderators will review");
+  }, [currentUserId]);
+
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
       const uid = data.user?.id ?? null;
@@ -788,7 +826,25 @@ export function SocialFeed() {
                 <Shield className="h-4 w-4" />
                 New Intelligence Report
               </div>
-              <Badge variant="outline" className="text-[10px] opacity-70">ENCRYPTED END-TO-END</Badge>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm" className="text-[10px] gap-1.5 h-6">
+                    {visibility === "public" ? <Globe className="h-3 w-3" /> : visibility === "followers" ? <Users className="h-3 w-3" /> : <Lock className="h-3 w-3" />}
+                    {visibility === "public" ? "Public" : visibility === "followers" ? "Followers" : "Private"}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={() => setVisibility("public")}>
+                    <Globe className="h-4 w-4 mr-2" /> Public — visible to everyone
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setVisibility("followers")}>
+                    <Users className="h-4 w-4 mr-2" /> Followers — only people who follow you
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setVisibility("private")}>
+                    <Lock className="h-4 w-4 mr-2" /> Private — only visible to you
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
             <div className="p-6 space-y-4 relative">
               <Textarea
@@ -920,6 +976,8 @@ export function SocialFeed() {
                 onAddComment={(content, parentId) => addComment(post.id, content, parentId)}
                 isExpanded={expandedComments.has(post.id)}
                 onToggleComments={() => toggleComments(post.id)}
+                onDeletePost={deletePost}
+                onReportPost={reportPost}
               />
             </div>
           );
@@ -997,7 +1055,7 @@ const ROLE_BADGE: Record<string, { label: string; className: string }> = {
   admin: { label: "Admin", className: "bg-red-500/20 text-red-400 hover:bg-red-500/30" },
 };
 
-function PostCard({ post, currentUserId, onReact, onRemoveReaction, onShare, onPollVote, onHashtagClick, isBookmarked, onToggleBookmark, onAddComment, isExpanded, onToggleComments }: PostCardProps) {
+function PostCard({ post, currentUserId, onReact, onRemoveReaction, onShare, onPollVote, onHashtagClick, isBookmarked, onToggleBookmark, onAddComment, isExpanded, onToggleComments, onDeletePost, onReportPost }: PostCardProps) {
   // Use full reaction data if available, fall back to likes for backward compat
   const hasReactions = post.reactionSummary.length > 0;
   const displayReactions = hasReactions
@@ -1032,13 +1090,45 @@ function PostCard({ post, currentUserId, onReact, onRemoveReaction, onShare, onP
               <div className="text-xs text-muted-foreground flex items-center gap-2">
                 {formatDistanceToNow(new Date(post.created_at), { addSuffix: true })}
                 <span className="h-1 w-1 rounded-full bg-muted-foreground/30"></span>
-                Public
+                {post.visibility === "private" ? (
+                  <><Lock className="h-3 w-3" /> Private</>
+                ) : post.visibility === "followers" ? (
+                  <><Users className="h-3 w-3" /> Followers</>
+                ) : (
+                  <><Globe className="h-3 w-3" /> Public</>
+                )}
               </div>
             </div>
           </div>
-          <Button variant="ghost" size="icon" className="opacity-0 group-hover:opacity-100 transition-opacity">
-            <MoreHorizontal className="h-5 w-5" />
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="opacity-0 group-hover:opacity-100 transition-opacity">
+                <MoreHorizontal className="h-5 w-5" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => onToggleBookmark(post.id)}>
+                {isBookmarked ? <Check className="h-4 w-4 mr-2" /> : <Bookmark className="h-4 w-4 mr-2" />}
+                {isBookmarked ? "Saved" : "Save"}
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={async () => { await navigator.clipboard.writeText(`${window.location.origin}/community?post=${post.id}`); toast.success("Link copied"); }}>
+                <LinkIcon className="h-4 w-4 mr-2" />
+                Copy Link
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              {post.user_id === currentUserId ? (
+                <DropdownMenuItem className="text-destructive" onClick={() => onDeletePost(post.id)}>
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  Delete Post
+                </DropdownMenuItem>
+              ) : (
+                <DropdownMenuItem className="text-destructive" onClick={() => onReportPost(post.id)}>
+                  <Flag className="h-4 w-4 mr-2" />
+                  Report Post
+                </DropdownMenuItem>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </CardHeader>
       <CardContent className="p-6 pt-0 space-y-4">
@@ -1050,9 +1140,24 @@ function PostCard({ post, currentUserId, onReact, onRemoveReaction, onShare, onP
 
         {post.media_urls && post.media_urls.length > 0 && (
           <div className={`grid gap-2 overflow-hidden rounded-xl border border-white/5 ${post.media_urls.length > 1 ? 'grid-cols-2' : 'grid-cols-1'}`}>
-            {post.media_urls.map((url: string, i: number) => (
-              <img key={i} src={url} alt="Post intel" className="w-full h-auto object-cover max-h-[400px] hover:scale-[1.02] transition-transform cursor-zoom-in" />
-            ))}
+            {post.media_urls.map((url: string, i: number) => {
+              const mediaType = post.media_types?.[i] || "";
+              if (mediaType.startsWith("video/")) {
+                return <video key={i} src={url} controls className="w-full h-auto max-h-[400px] object-cover rounded-lg" />;
+              }
+              if (mediaType.startsWith("audio/")) {
+                return <audio key={i} src={url} controls className="w-full mt-2" />;
+              }
+              if (mediaType === "application/pdf") {
+                return (
+                  <a key={i} href={url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 p-3 rounded-lg border border-border/40 bg-card/40 hover:bg-muted/50 transition-colors text-sm text-primary">
+                    <FileText className="h-4 w-4" />
+                    View PDF Document
+                  </a>
+                );
+              }
+              return <img key={i} src={url} alt="Post media" className="w-full h-auto object-cover max-h-[400px] hover:scale-[1.02] transition-transform cursor-zoom-in" />;
+            })}
           </div>
         )}
 

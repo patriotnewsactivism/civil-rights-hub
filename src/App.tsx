@@ -21,6 +21,12 @@ import Contribute from "./pages/Contribute";
 import Transparency from "./pages/Transparency";
 import Donate from "./pages/Donate";
 import Store from "./pages/Store";
+import AttorneyMatchPage from "./pages/AttorneyMatchPage";
+import SolCalculatorPage from "./pages/SolCalculatorPage";
+import StateComparisonPage from "./pages/StateComparisonPage";
+import AttorneyPremiumPage from "./pages/AttorneyPremiumPage";
+import AttorneyDashboardPage from "./pages/AttorneyDashboardPage";
+import NewsletterPage from "./pages/NewsletterPage";
 import { JurisdictionProvider } from "./hooks/useJurisdiction";
 import { PageSkeleton } from "@/components/PageSkeleton";
 import { SearchCommandDialog } from "@/components/SearchCommandDialog";
@@ -94,10 +100,19 @@ const App = () => (
               <Route path="/help" element={<GetHelp />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/community" element={<Community />} />
+              {/* Interactive tools */}
+              <Route path="/find-attorney" element={<AttorneyMatchPage />} />
+              <Route path="/sol-calculator" element={<SolCalculatorPage />} />
+              <Route path="/compare-states" element={<StateComparisonPage />} />
+              {/* Attorney premium + dashboard */}
+              <Route path="/attorney-premium" element={<AttorneyPremiumPage />} />
+              <Route path="/attorney-dashboard" element={<AttorneyDashboardPage />} />
+              {/* Newsletter */}
+              <Route path="/newsletter" element={<NewsletterPage />} />
               {/* Consolidated into the /help hub */}
               <Route path="/tools" element={<Navigate to="/help#tools" replace />} />
               <Route path="/activists" element={<Navigate to="/help#activists" replace />} />
-              <Route path="/attorneys" element={<Navigate to="/help#attorneys" replace />} />
+              <Route path="/attorneys" element={<Navigate to="/find-attorney" replace />} />
               <Route path="/resources" element={<Navigate to="/help#resources" replace />} />
               {/* City pages – /city/los-angeles, /city/chicago, etc. */}
               <Route

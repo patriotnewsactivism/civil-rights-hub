@@ -55,10 +55,17 @@ const buildAttorney = (overrides: Partial<AttorneyRecord> = {}): AttorneyRecord 
   phone: "555-123-4567",
   website: "https://example.com",
   specialties: ["Civil Rights"],
+  practice_areas: ["Civil Rights"],
   accepts_pro_bono: true,
   bar_number: "OH12345",
   years_experience: 10,
   bio: "Test attorney",
+  rating: null,
+  review_count: null,
+  languages: null,
+  is_verified: null,
+  notable_cases: null,
+  professional_bio: null,
   ...overrides,
 });
 

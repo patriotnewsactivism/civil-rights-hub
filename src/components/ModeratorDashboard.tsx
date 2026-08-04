@@ -84,13 +84,17 @@ export function ModeratorDashboard() {
 
       const userProfiles: Record<string, { display_name: string | null; email: string | null }> = {};
       if (reportUserIds.length > 0) {
+        // NOTE: reporter_id references auth.users.id, while user_profiles has its
+        // own separate `id` primary key - the real join column is `user_id`.
+        // (Previously matched on `id`, which never matches auth user ids - reporter
+        // names/emails always silently came back blank.)
         const { data: profilesData } = await supabase
           .from("user_profiles")
-          .select("id, display_name, email")
-          .in("id", reportUserIds);
+          .select("user_id, display_name, email")
+          .in("user_id", reportUserIds);
 
         profilesData?.forEach((p) => {
-          userProfiles[p.id] = {
+          userProfiles[p.user_id] = {
             display_name: p.display_name,
             email: p.email,
           };
@@ -135,11 +139,12 @@ export function ModeratorDashboard() {
       setCurrentUserId(data.user?.id ?? null);
 
       if (data.user?.id) {
+        // user_roles table doesn't exist - role lives on user_profiles instead
         const { data: roleData } = await supabase
-          .from("user_roles")
+          .from("user_profiles")
           .select("role")
           .eq("user_id", data.user.id)
-          .single();
+          .maybeSingle();
         setIsModerator(roleData?.role === "admin" || roleData?.role === "moderator");
       }
     };

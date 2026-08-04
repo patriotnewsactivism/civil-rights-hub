@@ -269,7 +269,12 @@ export const PanicButton = () => {
           ? [location.city, location.state].filter(Boolean).join(", ")
           : null,
       alert_type: testMode ? "test" : alertType,
-      notes: message.trim() ? message.trim() : null,
+      // real column is `message`, not `notes`
+      message: message.trim() ? message.trim() : null,
+      // NOTE: this only records who *should* be notified. There is no actual
+      // SMS/email delivery wired up anywhere in this app yet - see toast copy
+      // below, deliberately not claiming contacts were actually reached.
+      contacts_notified: notifiedContacts,
     };
 
     const { data, error } = await supabase.from("panic_alerts").insert(alertPayload).select().single();
@@ -285,7 +290,7 @@ export const PanicButton = () => {
         title: testMode ? "Test alert sent" : "Panic alert activated",
         description: testMode
           ? "This was only a drill. Your contacts were not notified."
-          : "Your emergency contacts have been notified with your current location.",
+          : "Alert logged with your current location. Automatic SMS/email delivery to your contacts is not yet connected - reach them directly if you can.",
       });
       setAlerts((current) => (data ? [data, ...current].slice(0, 10) : current));
       setMessage("");
@@ -625,7 +630,7 @@ export const PanicButton = () => {
                       </Button>
                     )}
                   </div>
-                  {alert.notes && <p className="mt-2 text-sm">"{alert.notes}"</p>}
+                  {alert.message && <p className="mt-2 text-sm">"{alert.message}"</p>}
                 </div>
               ))}
           </div>

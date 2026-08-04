@@ -72,13 +72,17 @@ export function CivicScore() {
     if (!userId) return;
 
     const calculate = async () => {
-      // Count user's contributions across tables
-      const [reportsRes, postsRes, foiasRes, followsRes] = await Promise.all([
-        supabase.from("violations").select("id", { count: "exact", head: true }).eq("reporter_id", userId),
-        supabase.from("posts").select("id", { count: "exact", head: true }).eq("user_id", userId),
-        supabase.from("foia_requests").select("id", { count: "exact", head: true }).eq("user_id", userId),
-        supabase.from("follows").select("id", { count: "exact", head: true }).eq("follower_id", userId),
-      ]);
+      // Count user's contributions across tables.
+      // NOTE: violations has no `reporter_id` column - the real FK is
+      // `user_id` (same as every other table here). Also: run sequentially
+      // rather than via Promise.all - combining 4 differently-shaped
+      // Postgrest builders in one array blows up TS's type inference
+      // ("Type instantiation is excessively deep") against this app's very
+      // large generated Database union type.
+      const reportsRes = await supabase.from("violations").select("id", { count: "exact", head: true }).eq("user_id", userId);
+      const postsRes = await supabase.from("posts").select("id", { count: "exact", head: true }).eq("user_id", userId);
+      const foiasRes = await supabase.from("foia_requests").select("id", { count: "exact", head: true }).eq("user_id", userId);
+      const followsRes = await supabase.from("follows").select("id", { count: "exact", head: true }).eq("follower_id", userId);
 
       const reports = reportsRes.count ?? 0;
       const posts = postsRes.count ?? 0;

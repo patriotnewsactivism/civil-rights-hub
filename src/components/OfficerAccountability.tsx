@@ -89,7 +89,25 @@ export function OfficerAccountability() {
 
       // Build officer list — from DB or synthesize from violations
       if ((oRes.data ?? []).length > 0) {
-        setOfficers(oRes.data as Officer[]);
+        // Real `officers` table shape differs from the Officer interface used
+        // for display (first_name/last_name instead of name, agency_id instead
+        // of a resolved department string, total_complaints instead of
+        // complaint_count) — map explicitly rather than blind-casting.
+        const agencyNameById = new Map(
+          (aRes.data ?? []).map((a) => [a.id, a.name])
+        );
+        setOfficers(
+          (oRes.data ?? []).map((o) => ({
+            id: o.id,
+            name: [o.first_name, o.last_name].filter(Boolean).join(" ") || "Unknown Officer",
+            badge_number: o.badge_number,
+            department: o.agency_id ? agencyNameById.get(o.agency_id) ?? null : null,
+            rank: o.rank,
+            state: null,
+            complaint_count: o.total_complaints ?? o.total_violations ?? 0,
+            last_incident: null,
+          }))
+        );
       } else {
         const officerMap = new Map<string, Officer>();
         (vRes.data ?? []).forEach((v: ViolationWithOfficer) => {
@@ -115,7 +133,16 @@ export function OfficerAccountability() {
 
       // Build agency list
       if ((aRes.data ?? []).length > 0) {
-        setAgencies(aRes.data as Agency[]);
+        setAgencies(
+          (aRes.data ?? []).map((a) => ({
+            id: a.id,
+            name: a.name,
+            state: a.state,
+            city: a.city,
+            type: a.agency_type,
+            violation_count: a.total_complaints ?? 0,
+          }))
+        );
       } else {
         const agencyMap = new Map<string, Agency>();
         (vRes.data ?? []).forEach((v: ViolationWithOfficer) => {

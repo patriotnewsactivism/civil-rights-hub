@@ -42,7 +42,6 @@ import {
   Globe,
   Users,
   Lock,
-  Copy,
   Link as LinkIcon,
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
@@ -506,7 +505,7 @@ export function SocialFeed() {
     } finally {
       setUploading(false);
     }
-  }, [currentUserId, fetchPosts, mediaFiles, newPost, pendingPoll, uploadMedia]);
+  }, [currentUserId, fetchPosts, mediaFiles, newPost, pendingPoll, uploadMedia, visibility]);
 
   const trackInterest = useCallback(async (hashtags: string[]) => {
     if (!currentUserId || !hashtags.length) return;

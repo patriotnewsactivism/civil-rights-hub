@@ -30,6 +30,13 @@ import {
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 
+interface AiModerationVerdict {
+  label: "genuine" | "troll" | "uncertain";
+  confidence: number;
+  reasoning: string;
+  provider_used: string;
+}
+
 interface ContentReport {
   id: string;
   content_id: string;
@@ -43,6 +50,7 @@ interface ContentReport {
     email: string | null;
   } | null;
   content_preview?: string;
+  ai_verdict?: AiModerationVerdict | null;
 }
 
 const contentTypeIcons: Record<string, React.ReactNode> = {
@@ -104,6 +112,7 @@ export function ModeratorDashboard() {
       const reportsWithDetails = await Promise.all(
         (data ?? []).map(async (report) => {
           let contentPreview = "";
+          let aiVerdict: AiModerationVerdict | null = null;
           if (report.content_type === "post") {
             const { data: postData } = await supabase
               .from("posts")
@@ -118,12 +127,22 @@ export function ModeratorDashboard() {
               .eq("id", report.content_id)
               .single();
             contentPreview = commentData?.content?.slice(0, 200) ?? "Content not found";
+
+            // Surface the AI classifier's verdict (if one exists yet) so the
+            // moderator has a second opinion to weigh — advisory only.
+            const { data: verdictData } = await supabase
+              .from("comment_moderation_verdicts")
+              .select("label, confidence, reasoning, provider_used")
+              .eq("comment_id", report.content_id)
+              .maybeSingle();
+            aiVerdict = verdictData ?? null;
           }
 
           return {
             ...report,
             reporter: report.reporter_id ? userProfiles[report.reporter_id] ?? null : null,
             content_preview: contentPreview,
+            ai_verdict: aiVerdict,
           };
         })
       );
@@ -289,6 +308,23 @@ export function ModeratorDashboard() {
                                 <p className="text-xs text-muted-foreground mt-2">
                                   Reported by: {report.reporter.display_name ?? "Anonymous"}
                                 </p>
+                              )}
+                              {report.ai_verdict && (
+                                <div className="mt-2 flex items-start gap-2 rounded-md border border-dashed p-2">
+                                  <Badge
+                                    variant={
+                                      report.ai_verdict.label === "troll"
+                                        ? "destructive"
+                                        : report.ai_verdict.label === "genuine"
+                                        ? "secondary"
+                                        : "outline"
+                                    }
+                                    className="shrink-0"
+                                  >
+                                    AI: {report.ai_verdict.label} ({Math.round(report.ai_verdict.confidence * 100)}%)
+                                  </Badge>
+                                  <p className="text-xs text-muted-foreground">{report.ai_verdict.reasoning}</p>
+                                </div>
                               )}
                             </div>
                           </div>

@@ -591,12 +591,16 @@ export function SocialFeed() {
     const body = content ?? newComment[postId]?.trim();
     if (!body) return;
 
-    const { error } = await supabase.from("comments").insert({
-      post_id: postId,
-      user_id: currentUserId,
-      content: body,
-      ...(parentId ? { parent_comment_id: parentId } : {}),
-    });
+    const { data: insertedComment, error } = await supabase
+      .from("comments")
+      .insert({
+        post_id: postId,
+        user_id: currentUserId,
+        content: body,
+        ...(parentId ? { parent_comment_id: parentId } : {}),
+      })
+      .select("id")
+      .single();
 
     if (error) {
       toast.error("Failed to add comment");
@@ -605,6 +609,14 @@ export function SocialFeed() {
 
     if (!content) setNewComment(prev => ({ ...prev, [postId]: "" }));
     await fetchPosts();
+
+    // Fire-and-forget AI moderation classification — assists human moderators,
+    // never blocks the commenter's UX and never auto-removes anything itself.
+    if (insertedComment?.id) {
+      supabase.functions
+        .invoke("moderate-comment", { body: { comment_id: insertedComment.id } })
+        .catch((err) => console.error("Comment moderation classification failed:", err));
+    }
   }, [currentUserId, newComment, fetchPosts]);
 
   const handlePollVote = useCallback(async (postId: string, optionIds: string[]) => {

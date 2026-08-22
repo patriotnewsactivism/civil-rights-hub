@@ -21,6 +21,8 @@ import Contribute from "./pages/Contribute";
 import Transparency from "./pages/Transparency";
 import Donate from "./pages/Donate";
 import Store from "./pages/Store";
+import Privacy from "./pages/Privacy";
+import Terms from "./pages/Terms";
 import AttorneyMatchPage from "./pages/AttorneyMatchPage";
 import SolCalculatorPage from "./pages/SolCalculatorPage";
 import StateComparisonPage from "./pages/StateComparisonPage";
@@ -38,16 +40,11 @@ const Sitemap = lazy(() => import("./pages/Sitemap"));
 
 const queryClient = new QueryClient();
 
-// ── Always scroll to the top when navigating to a new route ──────────────────
-// Uses a MutationObserver to re-scroll after lazy-loaded components render and
-// potentially steal focus (e.g. cmdk's CommandInput auto-focus).
 export function ScrollToTop() {
   const { pathname, hash } = useLocation();
 
   useEffect(() => {
-    if (!("scrollRestoration" in window.history)) {
-      return;
-    }
+    if (!("scrollRestoration" in window.history)) return;
 
     const previousScrollRestoration = window.history.scrollRestoration;
     window.history.scrollRestoration = "manual";
@@ -58,15 +55,11 @@ export function ScrollToTop() {
   }, []);
 
   useEffect(() => {
-    // Only scroll to top if there is no hash — hash links should still work
     if (!hash) {
       window.scrollTo({ top: 0, left: 0, behavior: "auto" });
 
-      // Guard against lazy-loaded components that steal focus after initial
-      // scroll (e.g. cmdk CommandInput). Watch for DOM mutations for a short
-      // window and re-scroll if the viewport has been dragged away from 0.
       let ticks = 0;
-      const maxTicks = 10; // stop after ~500ms
+      const maxTicks = 10;
       const interval = setInterval(() => {
         ticks++;
         if (window.scrollY > 0) {
@@ -100,21 +93,16 @@ const App = () => (
               <Route path="/help" element={<GetHelp />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/community" element={<Community />} />
-              {/* Interactive tools */}
               <Route path="/find-attorney" element={<AttorneyMatchPage />} />
               <Route path="/sol-calculator" element={<SolCalculatorPage />} />
               <Route path="/compare-states" element={<StateComparisonPage />} />
-              {/* Attorney premium + dashboard */}
               <Route path="/attorney-premium" element={<AttorneyPremiumPage />} />
               <Route path="/attorney-dashboard" element={<AttorneyDashboardPage />} />
-              {/* Newsletter */}
               <Route path="/newsletter" element={<NewsletterPage />} />
-              {/* Consolidated into the /help hub */}
               <Route path="/tools" element={<Navigate to="/help#tools" replace />} />
               <Route path="/activists" element={<Navigate to="/help#activists" replace />} />
               <Route path="/attorneys" element={<Navigate to="/find-attorney" replace />} />
               <Route path="/resources" element={<Navigate to="/help#resources" replace />} />
-              {/* City pages – /city/los-angeles, /city/chicago, etc. */}
               <Route
                 path="/city/:slug"
                 element={
@@ -123,7 +111,6 @@ const App = () => (
                   </Suspense>
                 }
               />
-              {/* State pages – /state/california, /state/texas, etc. */}
               <Route
                 path="/states"
                 element={
@@ -140,11 +127,9 @@ const App = () => (
                   </Suspense>
                 }
               />
-              {/* Convenience routes that redirect to Community tabs */}
               <Route path="/notifications" element={<Navigate to="/community?tab=notifications" replace />} />
               <Route path="/messages" element={<Navigate to="/community?tab=messages" replace />} />
               <Route path="/network" element={<Navigate to="/community?tab=network" replace />} />
-              {/* Sitemap */}
               <Route
                 path="/sitemap"
                 element={
@@ -160,7 +145,8 @@ const App = () => (
               <Route path="/transparency" element={<Transparency />} />
               <Route path="/donate" element={<Donate />} />
               <Route path="/store" element={<Store />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="/privacy" element={<Privacy />} />
+              <Route path="/terms" element={<Terms />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
             <SearchCommandDialog />

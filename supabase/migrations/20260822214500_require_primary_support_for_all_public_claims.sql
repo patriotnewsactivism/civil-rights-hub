@@ -50,6 +50,14 @@ AS $$
       AND (p_row -> field_name) <> '""'::JSONB
       AND (p_row -> field_name) <> '[]'::JSONB
       AND (p_row -> field_name) <> '{}'::JSONB
+      -- `accepts_pro_bono=false` is the table's safe/default absence state and
+      -- is not displayed as a negative availability claim. Only a true badge is
+      -- public-facing and therefore needs primary evidence.
+      AND NOT (
+        p_entity_type = 'attorney'
+        AND field_name = 'accepts_pro_bono'
+        AND (p_row -> field_name) = 'false'::JSONB
+      )
   )
   SELECT public.provenance_supports_fields(
     p_entity_type,

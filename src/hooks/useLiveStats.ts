@@ -25,40 +25,24 @@ const EMPTY_STATS: LiveStats = {
   activeScanners: 0,
 };
 
+// Publication hold: legacy attorney and incident verification flags cannot be
+// trusted until the source-provenance migration has been applied and audited in
+// production. Keep those public counts at zero regardless of the old DB flags.
 async function fetchLiveStats(): Promise<{ stats: LiveStats; recent: RecentViolation[] }> {
-  const since24h = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-  const [v, vAll, a, sc, foia, recent] = await Promise.all([
-    supabase
-      .from("violations")
-      .select("id", { count: "exact", head: true })
-      .eq("status", "verified")
-      .gte("created_at", since24h),
-    supabase
-      .from("violations")
-      .select("id", { count: "exact", head: true })
-      .eq("status", "verified"),
-    supabase
-      .from("attorneys")
-      .select("id", { count: "exact", head: true })
-      .eq("is_verified", true),
+  const [sc, foia] = await Promise.all([
     supabase.from("scanner_links").select("id", { count: "exact", head: true }).eq("is_active", true),
     supabase.from("foia_requests").select("id", { count: "exact", head: true }),
-    supabase
-      .from("violations")
-      .select("id, title, location_city, location_state, created_at")
-      .eq("status", "verified")
-      .order("created_at", { ascending: false })
-      .limit(5),
   ]);
+
   return {
     stats: {
-      violations24h: v.count ?? 0,
-      violationsTotal: vAll.count ?? 0,
+      violations24h: 0,
+      violationsTotal: 0,
       activeFoias: foia.count ?? 0,
-      totalAttorneys: a.count ?? 0,
+      totalAttorneys: 0,
       activeScanners: sc.count ?? 0,
     },
-    recent: (recent.data as RecentViolation[]) ?? [],
+    recent: [],
   };
 }
 
@@ -69,7 +53,7 @@ interface LiveStatsResult {
 
 export const useLiveStats = (): UseQueryResult<LiveStatsResult> & { stats: LiveStats; recent: RecentViolation[] } => {
   const query = useQuery<LiveStatsResult>({
-    queryKey: ["live-stats"],
+    queryKey: ["live-stats-publication-hold"],
     queryFn: fetchLiveStats,
     staleTime: 60_000,
     refetchInterval: 120_000,

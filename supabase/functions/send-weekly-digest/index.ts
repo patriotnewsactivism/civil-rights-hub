@@ -27,7 +27,7 @@ interface DigestPayload {
   violations: Array<{ title: string; location_city: string | null; location_state: string; created_at: string }>;
   foiaCount: number;
   scanners: Array<{ scanner_name: string; city: string | null; state: string }>;
-  attorneys: Array<{ name: string; firm_name: string | null; city: string | null; state: string }>;
+  attorneys: Array<{ name: string; firm: string | null; city: string | null; state: string }>;
 }
 
 function buildHtml(payload: DigestPayload, recipientName: string | null): string {
@@ -52,7 +52,7 @@ function buildHtml(payload: DigestPayload, recipientName: string | null): string
     .map(
       (a) =>
         `<li style="margin:6px 0;"><strong>${escapeHtml(a.name)}</strong> <span style="color:#64748b;font-size:13px;">— ${escapeHtml(
-          a.firm_name ?? "Independent",
+          a.firm ?? "Independent",
         )}, ${escapeHtml([a.city, a.state].filter(Boolean).join(", "))}</span></li>`,
     )
     .join("");
@@ -62,10 +62,10 @@ function buildHtml(payload: DigestPayload, recipientName: string | null): string
   <div style="max-width:560px;margin:0 auto;background:#ffffff;border-radius:12px;padding:32px;border:1px solid #e2e8f0;">
     <p style="font-size:12px;font-weight:700;color:#3b82f6;letter-spacing:0.08em;text-transform:uppercase;margin:0 0 8px;">Civil Rights Hub · Weekly</p>
     <h1 style="font-size:24px;margin:0 0 8px;line-height:1.2;">${recipientName ? `Hi ${escapeHtml(recipientName)}, ` : ""}here's ${escapeHtml(where)} this week</h1>
-    <p style="color:#64748b;margin:0 0 24px;">A quick look at civil-rights activity in your area.</p>
+    <p style="color:#64748b;margin:0 0 24px;">A quick look at source-verified civil-rights records and live resources in your area.</p>
 
-    <h2 style="font-size:14px;text-transform:uppercase;letter-spacing:0.06em;color:#64748b;margin:24px 0 8px;">🚨 Recent reports (${payload.violations.length})</h2>
-    <ul style="padding-left:18px;margin:0;">${violationItems || "<li style='color:#94a3b8;'>No new reports this week.</li>"}</ul>
+    <h2 style="font-size:14px;text-transform:uppercase;letter-spacing:0.06em;color:#64748b;margin:24px 0 8px;">🚨 Verified incidents (${payload.violations.length})</h2>
+    <ul style="padding-left:18px;margin:0;">${violationItems || "<li style='color:#94a3b8;'>No new source-verified incidents this week.</li>"}</ul>
 
     ${
       payload.foiaCount > 0
@@ -77,11 +77,11 @@ function buildHtml(payload: DigestPayload, recipientName: string | null): string
     <h2 style="font-size:14px;text-transform:uppercase;letter-spacing:0.06em;color:#64748b;margin:24px 0 8px;">📻 Top scanners</h2>
     <ul style="padding-left:18px;margin:0;">${scannerItems || "<li style='color:#94a3b8;'>No active scanners.</li>"}</ul>
 
-    <h2 style="font-size:14px;text-transform:uppercase;letter-spacing:0.06em;color:#64748b;margin:24px 0 8px;">⚖️ Attorneys to know</h2>
-    <ul style="padding-left:18px;margin:0;">${attorneyItems || "<li style='color:#94a3b8;'>No new attorney listings.</li>"}</ul>
+    <h2 style="font-size:14px;text-transform:uppercase;letter-spacing:0.06em;color:#64748b;margin:24px 0 8px;">⚖️ Source-verified attorney records</h2>
+    <ul style="padding-left:18px;margin:0;">${attorneyItems || "<li style='color:#94a3b8;'>No source-verified attorney records for this digest.</li>"}</ul>
 
     <hr style="border:none;border-top:1px solid #e2e8f0;margin:32px 0;">
-    <p style="font-size:12px;color:#94a3b8;margin:0;">You're getting this because you subscribed to weekly civil-rights updates. <a href="${Deno.env.get("PUBLIC_SITE_URL") || "https://civilrightshub.org"}/profile" style="color:#3b82f6;">Manage preferences</a>.</p>
+    <p style="font-size:12px;color:#94a3b8;margin:0;">Attorney listings are informational. Confirm current licensing, availability, services, and fees directly. You're getting this because you subscribed to weekly civil-rights updates. <a href="${Deno.env.get("PUBLIC_SITE_URL") || "https://civilrightshub.org"}/profile" style="color:#3b82f6;">Manage preferences</a>.</p>
   </div>
 </body></html>`;
 }
@@ -124,7 +124,6 @@ serve(async (req) => {
       // empty body is fine
     }
 
-    // Pick subscribers due for a send (>= 6 days since last send for weekly).
     const cutoff = new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString();
     let query = admin
       .from("digest_subscriptions")
@@ -144,7 +143,6 @@ serve(async (req) => {
     const results: Array<{ user_id: string; ok: boolean; error?: string }> = [];
 
     for (const sub of (subs ?? []) as DigestSubscription[]) {
-      // Resolve recipient email + name
       const { data: userRes } = await admin.auth.admin.getUserById(sub.user_id);
       const email = userRes?.user?.email;
       const recipientName =
@@ -154,10 +152,11 @@ serve(async (req) => {
         continue;
       }
 
-      // Pull payload data
+      // Service-role queries bypass RLS, so verified filters are mandatory here.
       const violationsQ = admin
         .from("violations")
         .select("title, location_city, location_state, created_at")
+        .eq("status", "verified")
         .gte("created_at", since)
         .order("created_at", { ascending: false })
         .limit(5);
@@ -173,7 +172,8 @@ serve(async (req) => {
 
       const attorneysQ = admin
         .from("attorneys")
-        .select("name, firm_name, city, state")
+        .select("name, firm, city, state")
+        .eq("is_verified", true)
         .order("created_at", { ascending: false })
         .limit(3);
       if (sub.state) attorneysQ.eq("state", sub.state);
@@ -194,13 +194,12 @@ serve(async (req) => {
         foiaCount: fRes.count ?? 0,
       };
 
-      // Skip if nothing to say
       if (payload.violations.length === 0 && payload.foiaCount === 0 && payload.scanners.length === 0 && payload.attorneys.length === 0) {
         results.push({ user_id: sub.user_id, ok: true, error: "skipped: no content" });
         continue;
       }
 
-      const subject = `📍 ${sub.state ?? "Civil Rights"} weekly: ${payload.violations.length} new report${payload.violations.length === 1 ? "" : "s"}`;
+      const subject = `📍 ${sub.state ?? "Civil Rights"} weekly: ${payload.violations.length} new verified incident${payload.violations.length === 1 ? "" : "s"}`;
       const html = buildHtml(payload, recipientName);
 
       if (body.dryRun) {

@@ -33,9 +33,10 @@ export const StatePreferenceBanner = () => {
               )}
             </div>
             <p className="text-sm text-muted-foreground max-w-2xl">
-              We tailor guides, FOIA templates, attorney recommendations, and local violations to your location.
+              Your selected state helps organize jurisdiction-specific reference material, public-records tools, and scanner resources.
+              Attorney and incident datasets remain withheld while legacy records are re-verified.
               {locationSource === "default" && (
-                <span className="text-yellow-600 dark:text-yellow-400 font-medium"> Click "Detect My Location" to get local results.</span>
+                <span className="text-yellow-600 dark:text-yellow-400 font-medium"> Choose a state or detect your location for local navigation.</span>
               )}
             </p>
           </div>
@@ -47,7 +48,7 @@ export const StatePreferenceBanner = () => {
               <SelectValue placeholder="Choose a state" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value={DEFAULT_JURISDICTION}>Nationwide / Federal guidance</SelectItem>
+              <SelectItem value={DEFAULT_JURISDICTION}>Nationwide / Federal reference</SelectItem>
               {US_STATES.map((stateName) => (
                 <SelectItem key={stateName} value={stateName}>
                   {stateName}
@@ -77,7 +78,7 @@ export const StatePreferenceBanner = () => {
 
           <p className="text-xs text-muted-foreground flex items-center gap-1">
             <Sparkles className="h-3 w-3" />
-            Saved locally on this device. Location used only to filter local results.
+            Saved locally on this device and used to organize location-aware resources.
           </p>
         </div>
       </CardContent>

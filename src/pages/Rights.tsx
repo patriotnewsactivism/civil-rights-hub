@@ -3,45 +3,48 @@ import { Footer } from "@/components/Footer";
 import { DonationCTA } from "@/components/DonationCTA";
 import { KnowYourRights } from "@/components/KnowYourRights";
 import { IncidentGuide } from "@/components/IncidentGuide";
-import { StateSelector } from "@/components/StateSelector";
-import { StatePreferenceBanner } from "@/components/StatePreferenceBanner";
-import { StateConflictLaws } from "@/components/StateConflictLaws";
 import { SEO } from "@/components/SEO";
-import { useJurisdiction } from "@/hooks/useJurisdiction";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ShieldCheck, AlertTriangle, BookOpen, FileWarning } from "lucide-react";
+import { VerifiedDataHold } from "@/components/VerifiedDataHold";
 
 const Rights = () => {
-  const { state, setState } = useJurisdiction();
-
   return (
     <div className="min-h-screen flex flex-col">
       <SEO
-        title="Know Your Rights | Civil Rights Hub"
-        description="State-aware stop-and-identify rules, recording laws, conflicting state legislation, and rapid scripts to assert your rights safely."
+        title="Know Your Rights | Federal Reference & Documentation Guide | Civil Rights Hub"
+        description="Plain-language federal constitutional orientation and conservative incident-documentation guidance. State-specific legal conclusions are temporarily withheld pending primary-source verification."
         ogTitle="Know Your Rights"
-        ogDescription="Tailored guidance for stops, searches, recording, and protests with state-level nuance. Identify laws that conflict with your federal rights."
+        ogDescription="Federal constitutional orientation and incident-documentation guidance with state-specific data held until primary-source verification is complete."
         canonicalUrl="https://civilrightshub.org/rights"
       />
       <Header />
       <main className="flex-1">
         <div className="container mx-auto px-4 py-10 space-y-8">
-          {/* Page Header */}
           <div className="max-w-3xl space-y-3">
             <p className="text-sm uppercase tracking-wide text-primary font-semibold">Rights</p>
-            <h1 className="text-4xl font-bold">Know your rights with state-aware context</h1>
+            <h1 className="text-4xl font-bold">Federal rights reference and documentation guidance</h1>
             <p className="text-lg text-muted-foreground">
-              Understand your constitutional protections, identify state laws that may conflict with your rights,
-              and get actionable guidance for challenging them. Use the tabs below to explore recording rules,
-              conflicting legislation, and incident guides.
+              Use the federal reference as a starting point for research and the incident guide for evidence-preservation practices. State-specific recording, identification, conflict, and contact data is withheld until each claim is tied to current primary authority.
             </p>
           </div>
 
-          <StatePreferenceBanner />
-
-          {/* Tabbed Layout */}
-          <Tabs defaultValue="state-laws" className="space-y-6">
+          <Tabs defaultValue="know-rights" className="space-y-6">
             <TabsList className="flex w-full justify-start overflow-x-auto flex-nowrap bg-transparent border-b border-border rounded-none h-auto p-0 gap-0">
+              <TabsTrigger
+                value="know-rights"
+                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none px-4 py-3 text-sm font-medium"
+              >
+                <BookOpen className="h-4 w-4 mr-1.5" />
+                Federal Reference
+              </TabsTrigger>
+              <TabsTrigger
+                value="incident"
+                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none px-4 py-3 text-sm font-medium"
+              >
+                <FileWarning className="h-4 w-4 mr-1.5" />
+                Incident Guide
+              </TabsTrigger>
               <TabsTrigger
                 value="state-laws"
                 className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none px-4 py-3 text-sm font-medium"
@@ -54,31 +57,9 @@ const Rights = () => {
                 className="rounded-none border-b-2 border-transparent data-[state=active]:border-red-500 data-[state=active]:bg-transparent data-[state=active]:shadow-none px-4 py-3 text-sm font-medium"
               >
                 <AlertTriangle className="h-4 w-4 mr-1.5 text-red-500" />
-                <span>Conflicting Laws</span>
-              </TabsTrigger>
-              <TabsTrigger
-                value="know-rights"
-                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none px-4 py-3 text-sm font-medium"
-              >
-                <BookOpen className="h-4 w-4 mr-1.5" />
-                Know Your Rights
-              </TabsTrigger>
-              <TabsTrigger
-                value="incident"
-                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none px-4 py-3 text-sm font-medium"
-              >
-                <FileWarning className="h-4 w-4 mr-1.5" />
-                Incident Guide
+                State Conflicts
               </TabsTrigger>
             </TabsList>
-
-            <TabsContent value="state-laws" className="space-y-6">
-              <StateSelector selectedState={state} onStateChange={setState} />
-            </TabsContent>
-
-            <TabsContent value="conflicts" className="space-y-6">
-              <StateConflictLaws />
-            </TabsContent>
 
             <TabsContent value="know-rights" className="space-y-6">
               <KnowYourRights />
@@ -86,6 +67,22 @@ const Rights = () => {
 
             <TabsContent value="incident" className="space-y-6">
               <IncidentGuide />
+            </TabsContent>
+
+            <TabsContent value="state-laws" className="space-y-6">
+              <VerifiedDataHold
+                title="State recording-law summaries are temporarily withheld"
+                description="The legacy state selector contains generated organizations, generated legal-support labels, and generalized state recording conclusions that are not tied field-by-field to current statutes or controlling cases."
+                detail="The rebuilt state view will cite current primary authority and show its verification date instead of generating state-specific organizations or legal conclusions from a template."
+              />
+            </TabsContent>
+
+            <TabsContent value="conflicts" className="space-y-6">
+              <VerifiedDataHold
+                title="State conflict-law database is temporarily withheld"
+                description="The legacy conflict table includes legal-status conclusions, severity labels, challenge advice, and reporting contacts without the provenance controls required for high-stakes legal guidance."
+                detail="Those records will return only after current statutes, court orders, and source-backed contact information are independently verified."
+              />
             </TabsContent>
           </Tabs>
         </div>

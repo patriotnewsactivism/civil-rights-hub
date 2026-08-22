@@ -82,15 +82,15 @@ export function HomeCommandHero() {
                 Civil Rights Intelligence Network
               </div>
 
-              <h1 className="max-w-4xl text-4xl font-black leading-[0.98] tracking-[-0.045em] text-white sm:text-5xl md:text-6xl lg:text-7xl">
+              <h1 className="max-w-4xl text-4xl font-black leading-[0.98] tracking-[-0.045em] text-white sm:text-5xl md:text-6xl lg:text-6xl">
                 Know your rights.
                 <span className="block bg-gradient-to-r from-white via-white to-primary bg-clip-text text-transparent">
                   Document the truth.
                 </span>
-                <span className="block text-white/88">Take action.</span>
+                <span className="block text-white/90">Take action.</span>
               </h1>
 
-              <p className="mt-6 max-w-2xl text-base leading-7 text-white/68 md:text-lg">
+              <p className="mt-6 max-w-2xl text-base leading-7 text-white/70 md:text-lg">
                 Civil Rights Hub puts emergency encounter tools, state-specific rights guidance, attorneys,
                 public-records tools, accountability data, and community resources in one place — free and independent.
               </p>
@@ -110,7 +110,7 @@ export function HomeCommandHero() {
                 </Button>
               </div>
 
-              <div className="mt-8 flex flex-wrap gap-x-5 gap-y-2 text-xs font-semibold text-white/55">
+              <div className="mt-8 flex flex-wrap gap-x-5 gap-y-2 text-xs font-semibold text-white/60">
                 <span>Free to use</span>
                 <span className="hidden text-white/20 sm:inline">•</span>
                 <span>No paywall</span>
@@ -123,11 +123,11 @@ export function HomeCommandHero() {
 
             <div className="relative">
               <div className="absolute -inset-4 rounded-[2rem] bg-gradient-to-br from-primary/20 via-transparent to-amber-500/10 blur-2xl" />
-              <div className="relative rounded-[1.6rem] border border-white/12 bg-black/25 p-3 shadow-2xl shadow-black/30 backdrop-blur-xl sm:p-4">
+              <div className="relative rounded-[1.6rem] border border-white/10 bg-black/25 p-3 shadow-2xl shadow-black/30 backdrop-blur-xl sm:p-4">
                 <div className="mb-3 flex items-center justify-between px-1">
                   <div>
                     <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40">Choose your next move</p>
-                    <p className="mt-1 text-sm font-bold text-white/85">Start with the situation you are in.</p>
+                    <p className="mt-1 text-sm font-bold text-white/80">Start with the situation you are in.</p>
                   </div>
                   <div className="flex items-center gap-1.5 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-emerald-300">
                     <span className="h-1.5 w-1.5 rounded-full bg-emerald-300 animate-pulse" />
@@ -146,12 +146,12 @@ export function HomeCommandHero() {
                         <Icon className="h-5 w-5" />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <p className="text-[10px] font-black uppercase tracking-[0.18em] text-white/45">{eyebrow}</p>
+                        <p className="text-[10px] font-black uppercase tracking-[0.18em] text-white/40">{eyebrow}</p>
                         <div className="mt-0.5 flex items-center gap-2">
                           <h2 className="text-base font-black text-white sm:text-lg">{title}</h2>
                           <ArrowRight className="h-4 w-4 text-white/25 transition-transform group-hover:translate-x-1 group-hover:text-white/70" />
                         </div>
-                        <p className="mt-1 text-xs leading-5 text-white/58">{description}</p>
+                        <p className="mt-1 text-xs leading-5 text-white/60">{description}</p>
                       </div>
                     </Link>
                   ))}
@@ -165,7 +165,7 @@ export function HomeCommandHero() {
               <Link
                 key={label}
                 to={to}
-                className="group flex items-center justify-between rounded-xl border border-white/10 bg-white/[0.035] px-4 py-3 text-sm font-bold text-white/72 transition-colors hover:border-white/20 hover:bg-white/[0.07] hover:text-white"
+                className="group flex items-center justify-between rounded-xl border border-white/10 bg-white/[0.035] px-4 py-3 text-sm font-bold text-white/70 transition-colors hover:border-white/20 hover:bg-white/[0.07] hover:text-white"
               >
                 <span className="flex items-center gap-2.5">
                   <Icon className="h-4 w-4 text-primary" />
@@ -176,12 +176,12 @@ export function HomeCommandHero() {
             ))}
           </div>
 
-          <div className="mt-5 flex flex-col gap-3 rounded-xl border border-white/8 bg-white/[0.025] px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="mt-5 flex flex-col gap-3 rounded-xl border border-white/10 bg-white/[0.025] px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.18em] text-white/40">
               <Activity className="h-3.5 w-3.5 text-emerald-300" />
               Live platform intelligence
             </div>
-            <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-white/55">
+            <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-white/60">
               {isLoading ? (
                 <span>Syncing live data…</span>
               ) : (

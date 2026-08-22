@@ -82,6 +82,7 @@ export function TodayNearYou() {
     const violationsQuery = supabase
       .from("violations")
       .select("id, title, location_city, location_state, incident_date, created_at")
+      .eq("status", "verified")
       .order("created_at", { ascending: false })
       .limit(5);
     if (stateFilter) violationsQuery.eq("location_state", stateFilter);
@@ -97,6 +98,7 @@ export function TodayNearYou() {
     const attorneysQuery = supabase
       .from("attorneys")
       .select("id, name, firm, city, state, accepts_pro_bono")
+      .eq("is_verified", true)
       .order("created_at", { ascending: false })
       .limit(3);
     if (stateFilter) attorneysQuery.eq("state", stateFilter);
@@ -104,6 +106,7 @@ export function TodayNearYou() {
     const reports24hQuery = supabase
       .from("violations")
       .select("id", { count: "exact", head: true })
+      .eq("status", "verified")
       .gte("created_at", since);
     if (stateFilter) reports24hQuery.eq("location_state", stateFilter);
 
@@ -183,7 +186,6 @@ export function TodayNearYou() {
 
   return (
     <section className="relative overflow-hidden border-b border-border/50 bg-gradient-to-b from-background to-muted/30">
-      {/* Live ticker */}
       <div className="border-b border-border/40 bg-background/80 backdrop-blur">
         <div className="container mx-auto flex flex-wrap items-center gap-x-6 gap-y-2 px-4 py-2.5 text-xs">
           <span className="inline-flex items-center gap-2 font-semibold text-primary">
@@ -194,7 +196,7 @@ export function TodayNearYou() {
             LIVE
           </span>
           <span className="text-muted-foreground">
-            <span className="font-bold text-foreground">{counts.reports24h}</span> reports in last 24h
+            <span className="font-bold text-foreground">{counts.reports24h}</span> verified incidents added in last 24h
           </span>
           <span className="text-muted-foreground">
             <span className="font-bold text-foreground">{counts.activeScanners}</span> active scanners
@@ -222,21 +224,20 @@ export function TodayNearYou() {
               What's happening in <span className="text-primary">{locationLabel}</span>
             </h2>
             <p className="mt-1 text-sm text-muted-foreground">
-              Live civil-rights activity, deadlines, and resources in your area.
+              Source-verified civil-rights incidents, your deadlines, and live resources in your area.
             </p>
           </div>
         </div>
 
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {/* Violations */}
           <TileCard
             icon={<AlertTriangle className="h-4 w-4" />}
-            title="Recent reports"
+            title="Verified incidents"
             href="/community"
             accent="text-orange-500"
             loading={loading}
             empty={violations.length === 0}
-            emptyAction={{ label: "Report a violation", href: "/community" }}
+            emptyAction={{ label: "Report an incident", href: "/community" }}
           >
             {violations.slice(0, 3).map((v) => (
               <div key={v.id} className="border-b border-border/40 py-2 last:border-0">
@@ -250,7 +251,6 @@ export function TodayNearYou() {
             ))}
           </TileCard>
 
-          {/* FOIA */}
           <TileCard
             icon={<Clock className="h-4 w-4" />}
             title="Your FOIA deadlines"
@@ -286,7 +286,6 @@ export function TodayNearYou() {
             })}
           </TileCard>
 
-          {/* Scanners */}
           <TileCard
             icon={<Radio className="h-4 w-4" />}
             title="Active scanners"
@@ -307,10 +306,9 @@ export function TodayNearYou() {
             ))}
           </TileCard>
 
-          {/* Attorneys */}
           <TileCard
             icon={<Scale className="h-4 w-4" />}
-            title="Attorneys nearby"
+            title="Verified attorneys"
             href="/attorneys"
             accent="text-cyan-500"
             loading={loading}
@@ -384,7 +382,7 @@ function TileCard({
           </div>
         ) : empty ? (
           <div className="flex h-full flex-col items-start justify-center gap-2 py-2">
-            <p className="text-xs text-muted-foreground">No activity yet.</p>
+            <p className="text-xs text-muted-foreground">No source-verified activity yet.</p>
             <Button asChild size="sm" variant="outline" className="h-7 text-xs">
               <Link to={emptyAction.href}>{emptyAction.label}</Link>
             </Button>

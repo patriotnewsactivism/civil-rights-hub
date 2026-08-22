@@ -4,13 +4,12 @@ import { HomeCommandHero } from "@/components/HomeCommandHero";
 import { KnowYourRights } from "@/components/KnowYourRights";
 import { Footer } from "@/components/Footer";
 import { SEO } from "@/components/SEO";
-import { ATTORNEY_DIRECTORY } from "@/lib/seoData";
 import { StatePreferenceBanner } from "@/components/StatePreferenceBanner";
 import { DonationBanner } from "@/components/DonationBanner";
 import { NewsletterSubscribe } from "@/components/NewsletterSubscribe";
-import { FeaturedAttorney } from "@/components/FeaturedAttorney";
 import { EmergencyFAB } from "@/components/EmergencyActionSheet";
 import { Skeleton } from "@/components/ui/skeleton";
+import { VerifiedDataHold } from "@/components/VerifiedDataHold";
 
 const CrisisHUD = lazy(() =>
   import("@/components/CrisisHUD").then((module) => ({ default: module.CrisisHUD }))
@@ -22,64 +21,20 @@ const ResourceCommandCenter = lazy(() =>
   }))
 );
 
-const OfficerAccountability = lazy(() =>
-  import("@/components/OfficerAccountability").then((module) => ({
-    default: module.OfficerAccountability,
-  }))
-);
-
-const attorneyNames = ATTORNEY_DIRECTORY.map((entry) => entry.name);
-const organizationNames = ATTORNEY_DIRECTORY.map((entry) => entry.organization).filter(
-  (o): o is string => Boolean(o)
-);
-
 const seoKeywords = [
   "civil rights hub",
-  "We The People News attorneys",
-  "constitutional rights legal resources",
-  "civil rights pro bono network",
-  "attorney directory for protest defense",
-  "media freedom legal help",
-  "FOIA litigation lawyers",
-  "report police misconduct",
+  "constitutional rights resources",
+  "report civil rights violations",
   "know your rights",
-  "civil rights violations",
-  "police accountability",
-  ...attorneyNames,
-  ...organizationNames,
+  "FOIA request tools",
+  "police accountability resources",
+  "public records",
+  "civil liberties",
 ].join(", ");
 
-const seoTitle = "Civil Rights Hub | Know Your Rights · Report Violations · Find Attorneys";
+const seoTitle = "Civil Rights Hub | Know Your Rights · Document · Take Action";
 const seoDescription =
-  "Civil Rights Hub is the nation's most comprehensive civil rights platform. Report violations, find pro bono attorneys, track FOIA requests, access Know Your Rights guides, and connect with your community.";
-
-const legalServicesStructuredData = {
-  "@context": "https://schema.org",
-  "@graph": ATTORNEY_DIRECTORY.map((entry) => {
-    const keywords = [...entry.practiceAreas, ...(entry.specialties ?? [])];
-    const service: Record<string, unknown> = {
-      "@type": "LegalService",
-      name: entry.name,
-      description: entry.description,
-      areaServed: entry.state,
-      keywords: keywords.join(", "),
-    };
-    if (entry.website) {
-      service.url = entry.website;
-      service.sameAs = entry.website;
-    }
-    if (entry.phone) service.telephone = entry.phone;
-    if (entry.email) service.email = entry.email;
-    if (entry.organization) {
-      service.parentOrganization = {
-        "@type": "Organization",
-        name: entry.organization,
-        ...(entry.website ? { url: entry.website } : {}),
-      };
-    }
-    return service;
-  }),
-};
+  "Civil Rights Hub provides Know Your Rights guides, emergency encounter tools, FOIA resources, scanner links, incident reporting, and civil-rights research tools. Public attorney and accountability datasets are being re-verified against source evidence.";
 
 const LoadingCards = () => (
   <div className="container mx-auto px-4 py-10 space-y-4">
@@ -103,7 +58,6 @@ const Index = () => {
         ogDescription={seoDescription}
         twitterTitle={seoTitle}
         twitterDescription={seoDescription}
-        structuredData={legalServicesStructuredData}
       />
       <Header />
       <HomeCommandHero />
@@ -118,13 +72,9 @@ const Index = () => {
 
         <KnowYourRights />
 
-        <div className="container mx-auto px-4 py-3">
-          <FeaturedAttorney />
+        <div className="container mx-auto px-4 py-6">
+          <VerifiedDataHold />
         </div>
-
-        <Suspense fallback={<LoadingCards />}>
-          <OfficerAccountability />
-        </Suspense>
 
         <Suspense fallback={<LoadingCards />}>
           <ResourceCommandCenter />

@@ -22,6 +22,8 @@ CREATE TABLE IF NOT EXISTS private.verification_quarantine (
 CREATE INDEX IF NOT EXISTS idx_verification_quarantine_entity
   ON private.verification_quarantine (entity_type, entity_id);
 
+-- Public evidence ledger. Only fields safe and useful for public auditability
+-- live here; reviewer identity and internal notes are kept in private schema.
 CREATE TABLE IF NOT EXISTS public.data_provenance (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   entity_type TEXT NOT NULL CHECK (entity_type IN ('attorney', 'violation', 'activist')),
@@ -32,8 +34,6 @@ CREATE TABLE IF NOT EXISTS public.data_provenance (
   source_type TEXT NOT NULL DEFAULT 'official'
     CHECK (source_type IN ('official', 'court_record', 'government', 'bar_directory', 'organization', 'news', 'other')),
   is_primary_source BOOLEAN NOT NULL DEFAULT false,
-  verification_notes TEXT,
-  verified_by UUID REFERENCES auth.users(id) ON DELETE SET NULL,
   verified_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   is_active BOOLEAN NOT NULL DEFAULT true,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -44,6 +44,13 @@ CREATE TABLE IF NOT EXISTS public.data_provenance (
 CREATE INDEX IF NOT EXISTS idx_data_provenance_entity
   ON public.data_provenance (entity_type, entity_id)
   WHERE is_active = true;
+
+CREATE TABLE IF NOT EXISTS private.provenance_reviews (
+  provenance_id UUID PRIMARY KEY REFERENCES public.data_provenance(id) ON DELETE CASCADE,
+  verified_by UUID REFERENCES auth.users(id) ON DELETE SET NULL,
+  verification_notes TEXT,
+  reviewed_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
 
 ALTER TABLE public.data_provenance ENABLE ROW LEVEL SECURITY;
 
@@ -256,3 +263,5 @@ COMMENT ON TABLE public.data_provenance IS
   'Public source ledger for records that Civil Rights Hub publishes as verified.';
 COMMENT ON TABLE private.verification_quarantine IS
   'Audit snapshot of legacy verification decisions demoted by the provenance gate.';
+COMMENT ON TABLE private.provenance_reviews IS
+  'Internal reviewer identity and notes for public provenance records.';

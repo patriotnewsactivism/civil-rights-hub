@@ -1,22 +1,18 @@
 import { useEffect, useMemo, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { Link, Navigate, useSearchParams } from "react-router-dom";
+import { Navigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { SocialFeed } from "@/components/SocialFeed";
 import { UserProfile } from "@/components/UserProfile";
-import { DiscussionBoard } from "@/components/DiscussionBoard";
-import { EventsCalendar } from "@/components/EventsCalendar";
-import { Users, MessageSquare, User, Bell, Globe, Newspaper, CalendarDays, MessageCircle } from "lucide-react";
+import { User, Bell, Globe, Newspaper, CalendarDays, MessageCircle, MessageSquare } from "lucide-react";
 import { SEO } from "@/components/SEO";
 import MessagingPanel from "@/components/MessagingPanel";
 import NotificationsCenter from "@/components/NotificationsCenter";
-import UserNetwork from "@/components/UserNetwork";
-import { CommunityActionBar } from "@/components/community/CommunityActionBar";
 import { CommunitySidebar } from "@/components/community/CommunitySidebar";
 import { CommunityMobileNav } from "@/components/community/CommunityMobileNav";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { VerifiedDataHold } from "@/components/VerifiedDataHold";
 
 type CommunityTab = "feed" | "discuss" | "events" | "messages" | "notifications" | "network" | "profile";
 const COMMUNITY_TABS: CommunityTab[] = ["feed", "discuss", "events", "messages", "notifications", "network", "profile"];
@@ -24,23 +20,8 @@ const COMMUNITY_TABS: CommunityTab[] = ["feed", "discuss", "events", "messages",
 export default function Community() {
   const { user, loading } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [selectedHashtag, setSelectedHashtag] = useState<string | null>(null);
-  const [trendingTags, setTrendingTags] = useState<{ tag: string; count: number }[]>([]);
   const [unreadNotifications, setUnreadNotifications] = useState(0);
   const [currentUserRole, setCurrentUserRole] = useState<string | null>(null);
-
-  useEffect(() => {
-    supabase
-      .from("popular_tags")
-      .select("tag, use_count")
-      .order("use_count", { ascending: false })
-      .limit(10)
-      .then(({ data }) => {
-        if (data) {
-          setTrendingTags(data.map((row) => ({ tag: row.tag, count: row.use_count })));
-        }
-      });
-  }, []);
 
   const initialTab = useMemo(() => {
     const paramTab = searchParams.get("tab") as CommunityTab | null;
@@ -65,6 +46,7 @@ export default function Community() {
       .then(({ count, error }) => {
         if (!error) setUnreadNotifications(count ?? 0);
       });
+
     supabase
       .from("user_profiles")
       .select("role")
@@ -84,65 +66,49 @@ export default function Community() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-primary" />
       </div>
     );
   }
 
-  if (!user) {
-    return <Navigate to="/auth" />;
-  }
-
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "CollectionPage",
-    "name": "Community Network - Civil Rights Hub",
-    "description": "Connect with journalists, activists, and attorneys across the civil rights movement",
-    "url": "https://civilrightshub.org/community"
-  };
+  if (!user) return <Navigate to="/auth" />;
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <Header />
       <SEO
-        title="Community - Civil Rights Hub | Social Network for Activists"
-        description="Post updates, report violations, go live recording police encounters, and connect with activists and attorneys fighting for justice."
-        keywords="civil rights community, activist network, police accountability, violation reporting, live recording"
+        title="Community Account Workspace | Civil Rights Hub"
+        description="Use private messaging, notifications, and your account profile while Civil Rights Hub removes synthetic community seed content and rebuilds public community verification."
         canonicalUrl="https://civilrightshub.org/community"
         ogUrl="https://civilrightshub.org/community"
-        ogTitle="Community Network - Civil Rights Hub"
-        ogDescription="Connect with journalists, activists, and attorneys across the civil rights movement"
-        structuredData={structuredData}
       />
 
       <main className="flex-1 pb-20 lg:pb-0">
         <div className="container mx-auto px-4 py-6">
-          {/* Header */}
           <div className="mb-6 flex items-start justify-between">
             <div>
               <h1 className="text-3xl font-bold">Community</h1>
-              <p className="text-muted-foreground text-sm mt-1">
-                Post, report, go live, and connect with the movement
+              <p className="mt-1 text-sm text-muted-foreground">
+                Messaging and account tools remain available while public social content is cleaned and re-verified.
               </p>
             </div>
             <button
               onClick={() => handleTabChange("notifications")}
-              className="relative p-2 rounded-full hover:bg-muted transition-colors mt-1"
+              className="relative mt-1 rounded-full p-2 transition-colors hover:bg-muted"
               aria-label="Notifications"
             >
               <Bell className="h-6 w-6 text-muted-foreground" />
               {unreadNotifications > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 bg-destructive text-white text-[10px] font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1">
+                <span className="absolute -right-0.5 -top-0.5 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-bold text-white">
                   {unreadNotifications > 99 ? "99+" : unreadNotifications}
                 </span>
               )}
             </button>
           </div>
 
-          {/* Tabs */}
           <Tabs value={activeTab} onValueChange={handleTabChange}>
-            <TabsList className="hidden lg:flex w-full justify-start overflow-x-auto flex-nowrap bg-transparent border-b border-border rounded-none h-auto p-0 gap-0">
+            <TabsList className="hidden h-auto w-full flex-nowrap justify-start gap-0 overflow-x-auto rounded-none border-b border-border bg-transparent p-0 lg:flex">
               {[
                 { value: "feed", icon: Newspaper, label: "Feed" },
                 { value: "discuss", icon: MessageCircle, label: "Discuss" },
@@ -155,9 +121,9 @@ export default function Community() {
                 <TabsTrigger
                   key={value}
                   value={value}
-                  className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none px-4 py-3 text-sm font-medium"
+                  className="rounded-none border-b-2 border-transparent px-4 py-3 text-sm font-medium data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none"
                 >
-                  <Icon className="h-4 w-4 mr-1.5" />
+                  <Icon className="mr-1.5 h-4 w-4" />
                   {label}
                 </TabsTrigger>
               ))}
@@ -166,54 +132,53 @@ export default function Community() {
             <CommunityMobileNav activeTab={activeTab} onTabChange={handleTabChange} />
 
             <div className="mt-6">
-              {/* Feed Tab - Social media style with sidebar */}
               <TabsContent value="feed" className="mt-0">
-                <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6">
-                  <div className="space-y-4">
-                    {/* Action Bar - Go Live, Report, etc */}
-                    <CommunityActionBar userId={user.id} />
-                    {/* Social Feed */}
-                    <SocialFeed />
-                  </div>
+                <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_300px]">
+                  <VerifiedDataHold
+                    title="Public social feed is temporarily withheld"
+                    description="Known demo migrations inserted synthetic legal/news posts under a real user's account. Those records are being quarantined and removed before the public feed is restored."
+                    detail="No activity totals, trending counters, seeded posts, or public incident feed are shown while the cleanup migration remains unapplied."
+                  />
                   <aside className="hidden lg:block">
                     <div className="sticky top-24">
-                      <CommunitySidebar
-                        trendingTags={trendingTags}
-                        onTagClick={setSelectedHashtag}
-                        selectedTag={selectedHashtag}
-                        currentUserRole={currentUserRole}
-                      />
+                      <CommunitySidebar currentUserRole={currentUserRole} />
                     </div>
                   </aside>
                 </div>
               </TabsContent>
 
-              {/* Discussion Board */}
               <TabsContent value="discuss" className="mt-0">
-                <DiscussionBoard />
+                <VerifiedDataHold
+                  title="Public discussions are temporarily withheld"
+                  description="A legacy seed created synthetic forum threads, fabricated view counts, and first-person claims under a real user's account. The known seeded threads are being quarantined before discussions reopen."
+                  detail="Private messaging and your own account profile remain available during the cleanup."
+                />
               </TabsContent>
 
-              {/* Events */}
               <TabsContent value="events" className="mt-0">
-                <EventsCalendar />
+                <VerifiedDataHold
+                  title="Community events are temporarily withheld"
+                  description="The legacy events dataset contains published dates, organizer identities, contacts, locations, and registration links without durable per-event provenance. Events will return only after each listing is checked against an authoritative organizer or venue source."
+                  detail="Do not rely on a previously displayed Civil Rights Hub event date or registration link unless you independently confirm it with the organizer."
+                />
               </TabsContent>
 
-              {/* Messages */}
               <TabsContent value="messages" className="mt-0">
                 <MessagingPanel />
               </TabsContent>
 
-              {/* Notifications */}
               <TabsContent value="notifications" className="mt-0">
                 <NotificationsCenter />
               </TabsContent>
 
-              {/* Network */}
               <TabsContent value="network" className="mt-0">
-                <UserNetwork />
+                <VerifiedDataHold
+                  title="Public profile discovery is temporarily withheld"
+                  description="Legacy community profile verification flags have not yet been tied to the same source-provenance standard used for public directories."
+                  detail="Your own profile remains available, but Civil Rights Hub is not presenting other accounts as verified journalists, attorneys, or activists until that workflow is audited."
+                />
               </TabsContent>
 
-              {/* Profile */}
               <TabsContent value="profile" className="mt-0">
                 <UserProfile />
               </TabsContent>

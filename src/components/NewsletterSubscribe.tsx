@@ -1,12 +1,11 @@
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { SEO } from "@/components/SEO";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CheckCircle2, Mail, Newspaper, Clock } from "lucide-react";
+import { CheckCircle2, Mail, Newspaper, Info } from "lucide-react";
 
 const STATES = [
   "Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","District of Columbia","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming"
@@ -54,7 +53,6 @@ export function NewsletterSubscribe({
         is_confirmed: false,
       });
       if (insertError) {
-        // If duplicate email, treat as success (already subscribed)
         if (insertError.code === "23505") {
           setSuccess(true);
           return;
@@ -63,7 +61,7 @@ export function NewsletterSubscribe({
       }
       setSuccess(true);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to subscribe. Please try again.");
+      setError(err instanceof Error ? err.message : "Failed to save signup. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -76,9 +74,9 @@ export function NewsletterSubscribe({
           <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-900/30">
             <CheckCircle2 className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
           </div>
-          <h3 className="font-semibold text-lg mb-1">You're subscribed!</h3>
+          <h3 className="font-semibold text-lg mb-1">Signup recorded</h3>
           <p className="text-muted-foreground text-sm max-w-md mx-auto">
-            Watch for your first Civil Rights Digest soon. We'll send you the most relevant updates based on your interests{state ? ` in ${state}` : ""}.
+            Your email and selected preferences were saved. Recurring digest delivery and confirmation workflows are still being finalized, so this signup does not yet guarantee a delivery schedule.
           </p>
         </CardContent>
       </Card>
@@ -90,36 +88,34 @@ export function NewsletterSubscribe({
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Newspaper className="h-5 w-5" />
-          {variant === "compact" ? "Get Weekly Updates" : "Civil Rights Digest — Free Weekly Newsletter"}
+          {variant === "compact" ? "Civil Rights Digest Signup" : "Register for Civil Rights Digest Updates"}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         {variant === "full" && (
           <p className="text-sm text-muted-foreground">
-            Get a weekly digest of civil rights news, new tools, attorney listings, and public records updates — tailored to your state and interests. Free. No spam. Unsubscribe anytime.
+            Save your email and optional state/topic preferences for future Civil Rights Digest updates. The recurring delivery workflow is still being finalized.
           </p>
         )}
 
         <div>
           <Label htmlFor="nl-email">Email Address *</Label>
-          <div className="flex gap-2">
-            <Input
-              id="nl-email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@email.com"
-            />
-          </div>
+          <Input
+            id="nl-email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="you@email.com"
+          />
         </div>
 
         {variant === "full" && (
           <>
             <div>
-              <Label htmlFor="nl-state">Your State (for local updates)</Label>
+              <Label htmlFor="nl-state">Your State (optional)</Label>
               <Select value={state} onValueChange={setState}>
                 <SelectTrigger id="nl-state">
-                  <SelectValue placeholder="Select your state (optional)" />
+                  <SelectValue placeholder="Select your state" />
                 </SelectTrigger>
                 <SelectContent>
                   {STATES.map((s) => (
@@ -163,14 +159,13 @@ export function NewsletterSubscribe({
 
         <Button onClick={handleSubmit} disabled={!email || loading} className="w-full" size="lg">
           <Mail className="mr-2 h-4 w-4" />
-          {loading ? "Subscribing..." : "Subscribe Free"}
+          {loading ? "Saving..." : "Save Digest Signup"}
         </Button>
 
         {variant === "full" && (
-          <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground">
-            <span className="flex items-center gap-1"><Clock className="h-3 w-3" /> Weekly</span>
-            <span className="flex items-center gap-1"><CheckCircle2 className="h-3 w-3" /> No spam</span>
-            <span className="flex items-center gap-1"><Mail className="h-3 w-3" /> Unsubscribe anytime</span>
+          <div className="flex items-start justify-center gap-2 text-xs text-muted-foreground">
+            <Info className="h-3.5 w-3.5 mt-0.5 flex-shrink-0" />
+            <span>Delivery cadence, confirmation, and preference-management workflows are still under review.</span>
           </div>
         )}
       </CardContent>

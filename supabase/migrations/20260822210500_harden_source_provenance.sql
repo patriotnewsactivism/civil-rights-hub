@@ -20,8 +20,15 @@ ALTER TABLE public.data_provenance
   ADD COLUMN IF NOT EXISTS source_fingerprint TEXT,
   ADD COLUMN IF NOT EXISTS verification_status TEXT NOT NULL DEFAULT 'needs_review';
 
--- Never infer review quality from legacy flags. The new status defaults to
--- needs_review for every pre-existing provenance record.
+-- The public evidence ledger is intentionally readable, but never writable,
+-- from browser roles. RLS below controls which reviewed source rows are visible.
+GRANT SELECT ON public.data_provenance TO anon, authenticated;
+REVOKE INSERT, UPDATE, DELETE, TRUNCATE, REFERENCES, TRIGGER
+  ON public.data_provenance FROM anon, authenticated;
+
+-- Never infer review quality from legacy flags. The new column default leaves
+-- pre-existing provenance at needs_review unless a trusted workflow explicitly
+-- reviews and promotes the source.
 UPDATE public.data_provenance
 SET verification_status = 'needs_review'
 WHERE verification_status IS NULL
@@ -86,8 +93,23 @@ CREATE INDEX IF NOT EXISTS idx_data_provenance_publishable
     AND is_primary_source = true
     AND verification_status = 'verified_primary';
 
--- Central publication predicate. SECURITY DEFINER makes the check deterministic
--- inside RLS and trigger evaluation while execute permission is revoked below.
+-- Public evidence ledger exposes only reviewed source rows. Unfinished,
+-- rejected, and stale review records remain non-public.
+DROP POLICY IF EXISTS "Public can view active provenance" ON public.data_provenance;
+DROP POLICY IF EXISTS "Public can view reviewed provenance" ON public.data_provenance;
+CREATE POLICY "Public can view reviewed provenance"
+  ON public.data_provenance
+  FOR SELECT
+  TO anon, authenticated
+  USING (
+    is_active = true
+    AND verification_status IN ('verified_primary', 'verified_secondary')
+  );
+
+-- Central publication predicate. SECURITY INVOKER is deliberate: the function
+-- cannot bypass RLS and can only see provenance rows the caller is allowed to
+-- read. Because reviewed provenance is itself public evidence, this does not
+-- require privilege elevation.
 CREATE OR REPLACE FUNCTION public.has_publishable_provenance(
   p_entity_type TEXT,
   p_entity_id UUID
@@ -95,7 +117,7 @@ CREATE OR REPLACE FUNCTION public.has_publishable_provenance(
 RETURNS BOOLEAN
 LANGUAGE sql
 STABLE
-SECURITY DEFINER
+SECURITY INVOKER
 SET search_path = ''
 AS $$
   SELECT EXISTS (
@@ -134,15 +156,17 @@ AS $$
   );
 $$;
 
-REVOKE ALL ON FUNCTION public.has_publishable_provenance(TEXT, UUID)
-  FROM PUBLIC, anon, authenticated;
+REVOKE ALL ON FUNCTION public.has_publishable_provenance(TEXT, UUID) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.has_publishable_provenance(TEXT, UUID)
+  TO anon, authenticated, service_role;
 
 -- Promotion trigger: even trusted writes cannot set a publication flag unless
--- the reviewed primary-source predicate is already satisfied.
+-- the reviewed primary-source predicate is already satisfied. SECURITY INVOKER
+-- avoids creating a hidden RLS bypass path.
 CREATE OR REPLACE FUNCTION public.enforce_source_provenance()
 RETURNS trigger
 LANGUAGE plpgsql
-SECURITY DEFINER
+SECURITY INVOKER
 SET search_path = ''
 AS $$
 DECLARE
@@ -175,21 +199,8 @@ BEGIN
 END;
 $$;
 
-REVOKE ALL ON FUNCTION public.enforce_source_provenance()
-  FROM PUBLIC, anon, authenticated;
-
--- Public evidence ledger exposes only reviewed source records. Internal review
--- state remains private rather than leaking unfinished evidence collection.
-DROP POLICY IF EXISTS "Public can view active provenance" ON public.data_provenance;
-DROP POLICY IF EXISTS "Public can view reviewed provenance" ON public.data_provenance;
-CREATE POLICY "Public can view reviewed provenance"
-  ON public.data_provenance
-  FOR SELECT
-  TO anon, authenticated
-  USING (
-    is_active = true
-    AND verification_status IN ('verified_primary', 'verified_secondary')
-  );
+-- Trigger functions are not an RPC surface.
+REVOKE ALL ON FUNCTION public.enforce_source_provenance() FROM PUBLIC, anon, authenticated;
 
 -- Attorneys: both the entity flag AND current primary-source review are needed.
 ALTER TABLE public.attorneys ENABLE ROW LEVEL SECURITY;
@@ -201,7 +212,7 @@ CREATE POLICY "Public can view verified attorneys"
   TO anon, authenticated
   USING (
     COALESCE(is_verified, false) = true
-    AND public.has_publishable_provenance('attorney', id)
+    AND (SELECT public.has_publishable_provenance('attorney', id))
   );
 
 -- Activists/directories: same fail-closed rule, including annual freshness.
@@ -215,7 +226,7 @@ CREATE POLICY "Public can view verified activists"
   TO anon, authenticated
   USING (
     COALESCE(verified, false) = true
-    AND public.has_publishable_provenance('activist', id)
+    AND (SELECT public.has_publishable_provenance('activist', id))
   );
 
 -- Incidents: anonymous users receive only primary-source-verified records.
@@ -230,7 +241,7 @@ CREATE POLICY "Public can view verified violations"
   TO anon
   USING (
     status = 'verified'
-    AND public.has_publishable_provenance('violation', id)
+    AND (SELECT public.has_publishable_provenance('violation', id))
   );
 CREATE POLICY "Users can view verified or own violations"
   ON public.violations
@@ -239,7 +250,7 @@ CREATE POLICY "Users can view verified or own violations"
   USING (
     (
       status = 'verified'
-      AND public.has_publishable_provenance('violation', id)
+      AND (SELECT public.has_publishable_provenance('violation', id))
     )
     OR user_id = (SELECT auth.uid())
   );
@@ -258,7 +269,7 @@ CREATE POLICY "Public can view verified violation_officers links"
       FROM public.violations v
       WHERE v.id = violation_id
         AND v.status = 'verified'
-        AND public.has_publishable_provenance('violation', v.id)
+        AND (SELECT public.has_publishable_provenance('violation', v.id))
     )
   );
 
@@ -274,12 +285,12 @@ CREATE POLICY "Public can view verified violation_agencies links"
       FROM public.violations v
       WHERE v.id = violation_id
         AND v.status = 'verified'
-        AND public.has_publishable_provenance('violation', v.id)
+        AND (SELECT public.has_publishable_provenance('violation', v.id))
     )
   );
 
 COMMENT ON FUNCTION public.has_publishable_provenance(TEXT, UUID) IS
-  'Fail-closed publication predicate requiring reviewed primary-source provenance, including freshness for directory records.';
+  'Fail-closed SECURITY INVOKER publication predicate requiring reviewed primary-source provenance, including freshness for directory records.';
 
 COMMENT ON COLUMN public.data_provenance.verification_status IS
   'Review state for one source. Only verified_primary can independently satisfy the public publication gate.';

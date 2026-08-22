@@ -15,46 +15,50 @@ interface SEOProps {
   structuredData?: object;
 }
 
+const DEFAULT_TITLE = "Civil Rights Hub | Rights · Records · Research · Response";
+const DEFAULT_DESCRIPTION = "Civil Rights Hub is a public-interest toolkit for rights references, emergency encounter tools, incident documentation, public-records work, legal research, scanner resources, and community collaboration.";
+const DEFAULT_KEYWORDS = "civil rights, constitutional rights, rights references, public records, FOIA request, incident documentation, civil liberties, legal research, government transparency";
+
 export const SEO = ({
-  title = "Civil Rights Hub by We The People News - Know Your Rights | Constitutional Rights & Legal Resources",
-  description = "Comprehensive civil rights platform with state-specific laws, legal resources, attorney directory, violation reporting, FOIA requests, and community forums. Protect your constitutional rights.",
-  keywords = "civil rights, constitutional rights, know your rights, legal aid, attorney directory, state laws, recording laws, police accountability, FOIA requests, violation reporting, legal resources, First Amendment, Fourth Amendment, Fifth Amendment",
+  title = DEFAULT_TITLE,
+  description = DEFAULT_DESCRIPTION,
+  keywords = DEFAULT_KEYWORDS,
   ogTitle,
   ogDescription,
   ogImage = "https://civilrightshub.org/og-image.png",
-  ogUrl = "https://civilrightshub.org/",
+  ogUrl,
   twitterTitle,
   twitterDescription,
   twitterImage = "https://civilrightshub.org/twitter-image.png",
   canonicalUrl = "https://civilrightshub.org/",
   structuredData
 }: SEOProps) => {
+  const effectiveUrl = ogUrl || canonicalUrl;
+
   return (
     <Helmet>
-      {/* Primary Meta Tags */}
       <title>{title}</title>
       <meta name="title" content={title} />
       <meta name="description" content={description} />
       <meta name="keywords" content={keywords} />
-
-      {/* Canonical URL */}
       <link rel="canonical" href={canonicalUrl} />
 
-      {/* Open Graph / Facebook */}
       <meta property="og:type" content="website" />
-      <meta property="og:url" content={ogUrl} />
+      <meta property="og:site_name" content="Civil Rights Hub" />
+      <meta property="og:url" content={effectiveUrl} />
       <meta property="og:title" content={ogTitle || title} />
       <meta property="og:description" content={ogDescription || description} />
       <meta property="og:image" content={ogImage} />
+      <meta property="og:image:alt" content="Civil Rights Hub" />
 
-      {/* Twitter */}
       <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:url" content={ogUrl} />
+      <meta name="twitter:site" content="@CivilRightsHub" />
+      <meta name="twitter:url" content={effectiveUrl} />
       <meta name="twitter:title" content={twitterTitle || ogTitle || title} />
       <meta name="twitter:description" content={twitterDescription || ogDescription || description} />
       <meta name="twitter:image" content={twitterImage} />
+      <meta name="twitter:image:alt" content="Civil Rights Hub" />
 
-      {/* Structured Data */}
       {structuredData && (
         <script type="application/ld+json">
           {JSON.stringify(structuredData)}

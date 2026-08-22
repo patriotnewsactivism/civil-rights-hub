@@ -105,8 +105,8 @@ export default function StatePage() {
     supabase
       .from("attorneys")
       .select("id, name, firm, city, state, phone, email, website, practice_areas, specialties, rating, review_count, is_verified, accepts_pro_bono, years_experience, languages, bio, professional_bio")
+      .eq("is_verified", true)
       .eq("state", stateInfo.abbr)
-      .order("is_verified", { ascending: false })
       .order("rating", { ascending: false, nullsFirst: false })
       .limit(300)
       .then(({ data }) => {
@@ -163,14 +163,13 @@ export default function StatePage() {
     );
   }
 
-  const verifiedCount = attorneys.filter((a) => a.is_verified).length;
   const proBonoCount = attorneys.filter((a) => a.accepts_pro_bono).length;
 
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    name: `Civil Rights Attorneys in ${stateInfo.name}`,
-    description: `Find ${attorneys.length} civil rights attorneys in ${stateInfo.name}. Free attorney directory.`,
+    name: `Source-Verified Civil Rights Attorney Records in ${stateInfo.name}`,
+    description: `Directory of ${attorneys.length} source-verified civil rights attorney records in ${stateInfo.name}.`,
     url: `https://civilrightshub.org/state/${stateSlug}`,
     numberOfItems: attorneys.length,
     itemListElement: attorneys.slice(0, 10).map((a, i) => ({
@@ -188,18 +187,17 @@ export default function StatePage() {
     <div className="min-h-screen flex flex-col bg-background">
       <Header />
       <SEO
-        title={`Civil Rights Attorneys in ${stateInfo.name} | ${attorneys.length} Lawyers — Civil Rights Hub`}
-        description={`Find ${attorneys.length} civil rights attorneys in ${stateInfo.name}. Free directory — police brutality, civil rights violations, excessive force, constitutional rights lawyers.`}
-        keywords={`civil rights attorney ${stateInfo.name}, police brutality lawyer ${stateInfo.name}, ${stateInfo.abbr} civil rights lawyer, excessive force attorney ${stateInfo.abbr}`}
+        title={`Source-Verified Civil Rights Attorneys in ${stateInfo.name} | Civil Rights Hub`}
+        description={`Browse source-verified civil rights attorney directory records in ${stateInfo.name}. Confirm current licensing, availability, services, and fees directly before relying on a listing.`}
+        keywords={`civil rights attorney ${stateInfo.name}, police misconduct lawyer ${stateInfo.name}, ${stateInfo.abbr} civil rights lawyer, constitutional rights attorney ${stateInfo.abbr}`}
         canonicalUrl={`https://civilrightshub.org/state/${stateSlug}`}
         ogUrl={`https://civilrightshub.org/state/${stateSlug}`}
-        ogTitle={`Civil Rights Attorneys in ${stateInfo.name}`}
-        ogDescription={`${attorneys.length} civil rights attorneys ready to fight for your rights in ${stateInfo.name}`}
+        ogTitle={`Source-Verified Civil Rights Attorney Records in ${stateInfo.name}`}
+        ogDescription={`${attorneys.length} source-verified civil rights attorney directory records in ${stateInfo.name}`}
         structuredData={structuredData}
       />
 
       <main className="flex-1">
-        {/* Hero */}
         <section className="bg-gradient-to-br from-primary/10 via-background to-primary/5 border-b">
           <div className="container mx-auto px-4 py-10 md:py-14">
             <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
@@ -217,23 +215,18 @@ export default function StatePage() {
             </h1>
             <p className="text-muted-foreground max-w-2xl text-lg">
               {loading
-                ? "Loading attorneys..."
+                ? "Loading source-verified attorney records..."
                 : attorneys.length > 0
-                ? `${attorneys.length} civil rights attorneys ready to fight for your rights in ${stateInfo.name}. All listings are free — no referral fees.`
-                : `We're building our ${stateInfo.name} directory. Check back soon or try a neighboring state.`}
+                ? `${attorneys.length} attorney directory records currently meet Civil Rights Hub's source-verification gate for ${stateInfo.name}. Verify licensing, availability, scope of practice, and fees directly before relying on a listing.`
+                : `No source-verified attorney records are currently published for ${stateInfo.name}. Legacy records stay hidden until their source evidence is re-verified.`}
             </p>
             <div className="flex flex-wrap gap-3 mt-4">
               <Badge variant="secondary" className="gap-1.5">
-                <Scale className="h-3 w-3" /> {attorneys.length} Attorneys
+                <Shield className="h-3 w-3" /> {attorneys.length} Source Verified
               </Badge>
-              {verifiedCount > 0 && (
-                <Badge variant="secondary" className="gap-1.5">
-                  <Shield className="h-3 w-3" /> {verifiedCount} Verified
-                </Badge>
-              )}
               {proBonoCount > 0 && (
                 <Badge className="bg-green-500/20 text-green-400 border-green-500/30 gap-1.5">
-                  <Users className="h-3 w-3" /> {proBonoCount} Pro Bono
+                  <Users className="h-3 w-3" /> {proBonoCount} listed as accepting pro bono matters
                 </Badge>
               )}
             </div>
@@ -247,9 +240,7 @@ export default function StatePage() {
             </div>
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-8">
-              {/* Main Content */}
               <div className="space-y-6">
-                {/* Search + Filter */}
                 <div className="flex flex-col sm:flex-row gap-3">
                   <div className="relative flex-1">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -275,18 +266,17 @@ export default function StatePage() {
                 </div>
 
                 <p className="text-sm text-muted-foreground">
-                  Showing {filteredAttorneys.length} of {attorneys.length} attorneys
+                  Showing {filteredAttorneys.length} of {attorneys.length} source-verified records
                   {selectedArea && <> in <strong>{selectedArea}</strong> <button onClick={() => setSelectedArea(null)} className="text-primary hover:underline ml-1">clear</button></>}
                 </p>
 
-                {/* Attorney Cards */}
                 {filteredAttorneys.length === 0 ? (
                   <Card>
                     <CardContent className="py-12 text-center">
                       <Scale className="h-12 w-12 mx-auto text-muted-foreground/30 mb-4" />
-                      <h3 className="text-lg font-semibold mb-2">No attorneys found</h3>
+                      <h3 className="text-lg font-semibold mb-2">No source-verified attorneys found</h3>
                       <p className="text-sm text-muted-foreground">
-                        {searchQuery ? "Try adjusting your search." : `Check back soon — we're growing our ${stateInfo.name} network.`}
+                        {searchQuery ? "Try adjusting your search." : `Records for ${stateInfo.name} are being re-verified against durable sources.`}
                       </p>
                     </CardContent>
                   </Card>
@@ -299,14 +289,12 @@ export default function StatePage() {
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-2 flex-wrap mb-1">
                                 <h3 className="font-semibold text-base">{a.name}</h3>
-                                {a.is_verified && (
-                                  <Badge className="bg-blue-500/20 text-blue-400 text-[10px] px-1.5 py-0 border-blue-500/30">
-                                    ✓ Verified
-                                  </Badge>
-                                )}
+                                <Badge className="bg-blue-500/20 text-blue-400 text-[10px] px-1.5 py-0 border-blue-500/30">
+                                  ✓ Source Verified
+                                </Badge>
                                 {a.accepts_pro_bono && (
                                   <Badge className="bg-green-500/20 text-green-400 text-[10px] px-1.5 py-0 border-green-500/30">
-                                    Pro Bono
+                                    Listed Pro Bono
                                   </Badge>
                                 )}
                                 {a.rating && (
@@ -330,7 +318,7 @@ export default function StatePage() {
                                 )}
                                 {a.years_experience && (
                                   <span className="flex items-center gap-1">
-                                    <Shield className="h-3 w-3" /> {a.years_experience}+ yrs
+                                    <Shield className="h-3 w-3" /> {a.years_experience}+ yrs listed
                                   </span>
                                 )}
                                 {a.languages && a.languages.length > 1 && (
@@ -339,7 +327,6 @@ export default function StatePage() {
                                   </span>
                                 )}
                               </div>
-                              {/* Practice areas */}
                               {a.practice_areas && a.practice_areas.length > 0 && (
                                 <div className="flex flex-wrap gap-1.5 mt-2">
                                   {a.practice_areas.slice(0, 4).map((p) => (
@@ -354,14 +341,12 @@ export default function StatePage() {
                                   )}
                                 </div>
                               )}
-                              {/* Short bio */}
                               {(a.bio || a.professional_bio) && (
                                 <p className="text-xs text-muted-foreground mt-2 line-clamp-2">
                                   {a.professional_bio || a.bio}
                                 </p>
                               )}
                             </div>
-                            {/* Actions */}
                             <div className="flex flex-wrap sm:flex-col gap-2 shrink-0">
                               {a.phone && (
                                 <a href={`tel:${a.phone}`}>
@@ -393,9 +378,7 @@ export default function StatePage() {
                 )}
               </div>
 
-              {/* Sidebar */}
               <aside className="space-y-4">
-                {/* Emergency */}
                 <Card className="border-red-500/30 bg-red-500/5">
                   <CardHeader className="p-4 pb-2">
                     <CardTitle className="text-sm flex items-center gap-2 text-red-400">
@@ -405,7 +388,7 @@ export default function StatePage() {
                   </CardHeader>
                   <CardContent className="p-4 pt-0 space-y-2">
                     <p className="text-xs text-muted-foreground">
-                      You have the right to remain silent. Ask for a lawyer immediately. Do not consent to searches.
+                      You can clearly state that you wish to remain silent and that you do not consent to a search. If you are in custody and being interrogated, clearly ask for a lawyer. Identification and other encounter rules can vary by jurisdiction.
                     </p>
                     <Button variant="destructive" size="sm" className="w-full" asChild>
                       <Link to="/rights">Know Your Rights</Link>
@@ -416,12 +399,11 @@ export default function StatePage() {
                   </CardContent>
                 </Card>
 
-                {/* Top Cities */}
                 {cities.length > 0 && (
                   <Card className="border-border/50">
                     <CardHeader className="p-4 pb-2">
                       <CardTitle className="text-sm flex items-center gap-2">
-                        <MapPin className="h-4 w-4 text-primary" /> Top Cities
+                        <MapPin className="h-4 w-4 text-primary" /> Cities in Verified Records
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="p-4 pt-0 space-y-0.5">
@@ -439,7 +421,6 @@ export default function StatePage() {
                   </Card>
                 )}
 
-                {/* Practice Areas */}
                 {practiceAreas.length > 0 && (
                   <Card className="border-border/50">
                     <CardHeader className="p-4 pb-2">
@@ -462,14 +443,13 @@ export default function StatePage() {
                   </Card>
                 )}
 
-                {/* Resources */}
                 <Card className="border-border/50">
                   <CardHeader className="p-4 pb-2">
                     <CardTitle className="text-sm">Resources</CardTitle>
                   </CardHeader>
                   <CardContent className="p-4 pt-0 space-y-1">
                     <Button variant="ghost" size="sm" asChild className="w-full justify-start text-xs h-8">
-                      <Link to="/tools">File FOIA Request</Link>
+                      <Link to="/tools"><FileText className="h-3 w-3 mr-1.5" />File Public Records Request</Link>
                     </Button>
                     <Button variant="ghost" size="sm" asChild className="w-full justify-start text-xs h-8">
                       <Link to="/community">Join Community</Link>

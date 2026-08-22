@@ -37,13 +37,14 @@ if (!SUPABASE_URL || !SERVICE_KEY) {
   process.exit(1);
 }
 
-const inputPath = process.argv[2];
+const args = process.argv.slice(2);
+const dryRun = args.includes('--dry-run');
+const inputPath = args.find((arg) => !arg.startsWith('--'));
 if (!inputPath) {
   console.error('Usage: node scripts/verified-seeder.js <verified-seed.json> [--dry-run]');
   process.exit(1);
 }
 
-const dryRun = process.argv.includes('--dry-run');
 const absoluteInput = path.resolve(process.cwd(), inputPath);
 if (!fs.existsSync(absoluteInput)) {
   console.error(`Input file not found: ${absoluteInput}`);
@@ -56,9 +57,73 @@ const supabase = createClient(SUPABASE_URL, SERVICE_KEY, {
 });
 
 const CONFIG = {
-  attorneys: { table: 'attorneys', entityType: 'attorney', verifiedColumn: 'is_verified', verifiedValue: true },
-  violations: { table: 'violations', entityType: 'violation', verifiedColumn: 'status', verifiedValue: 'verified' },
-  activists: { table: 'activists', entityType: 'activist', verifiedColumn: 'verified', verifiedValue: true },
+  attorneys: {
+    table: 'attorneys',
+    entityType: 'attorney',
+    verifiedColumn: 'is_verified',
+    verifiedValue: true,
+    required: ['name', 'state'],
+    reset: {
+      firm: null,
+      city: null,
+      practice_areas: [],
+      specialties: [],
+      phone: null,
+      email: null,
+      website: null,
+      bio: null,
+      bar_number: null,
+      years_experience: null,
+      rating: null,
+      review_count: null,
+      accepts_pro_bono: false,
+      languages: [],
+      verified_date: null,
+      bar_association_status: null,
+      bar_status_date: null,
+      case_success_rate: null,
+      total_cases_handled: null,
+      client_reviews: null,
+      average_rating: null,
+      total_reviews: null,
+      years_with_organization: null,
+      notable_cases: [],
+      professional_bio: null,
+    },
+  },
+  violations: {
+    table: 'violations',
+    entityType: 'violation',
+    verifiedColumn: 'status',
+    verifiedValue: 'verified',
+    required: ['title', 'description', 'location_state', 'incident_date'],
+    reset: {
+      location_city: null,
+      latitude: null,
+      longitude: null,
+      media_urls: [],
+      officer_name: null,
+      officer_badge: null,
+      officer_rank: null,
+      agency_name: null,
+    },
+  },
+  activists: {
+    table: 'activists',
+    entityType: 'activist',
+    verifiedColumn: 'verified',
+    verifiedValue: true,
+    required: ['name'],
+    reset: {
+      alias: null,
+      primary_platform: null,
+      channel_url: null,
+      focus_areas: [],
+      home_state: null,
+      profile_image_url: null,
+      bio: null,
+    },
+  },
 };
 
 function assertPlainObject(value, label) {
@@ -104,20 +169,27 @@ function validateEntry(kind, entry, index) {
     throw new Error(`${kind}[${index}] must include at least one source`);
   }
 
-  const sources = entry.sources.map(normalizeSource);
-  const record = structuredClone(entry.record);
-
-  // Caller cannot smuggle verification through the entity insert. The script
-  // always inserts/updates evidence first, then performs the verification step.
   const config = CONFIG[kind];
+  for (const field of config.required) {
+    const value = entry.record[field];
+    if (value == null || (typeof value === 'string' && value.trim() === '')) {
+      throw new Error(`${kind}[${index}].record.${field} is required for source verification`);
+    }
+  }
+
+  const sources = entry.sources.map(normalizeSource);
+  const record = { ...config.reset, ...structuredClone(entry.record) };
+
+  // Caller cannot smuggle verification through the entity write. The script
+  // always writes an unverified/scrubbed record, then evidence, then verification.
   if (kind === 'violations') {
-    record.status = record.status === 'resolved' ? 'resolved' : 'pending';
+    record.status = 'pending';
   } else {
     record[config.verifiedColumn] = false;
     if (kind === 'attorneys') record.verified_date = null;
   }
 
-  // Existing records must be addressed explicitly by UUID. We do not fuzzy-match
+  // Existing records must be addressed explicitly by UUID. We never fuzzy-match
   // people or organizations because that can merge two real people incorrectly.
   const existingId = typeof entry.entity_id === 'string' ? entry.entity_id : null;
 
@@ -194,7 +266,8 @@ async function processKind(kind) {
 
     // Failure mode is intentionally safe: the entity is written unverified first.
     // It can only become verified after source rows exist, and the DB trigger
-    // independently enforces the same rule.
+    // independently enforces the same rule. Existing legacy claim fields are
+    // scrubbed unless the source-backed input explicitly repopulates them.
     const entityId = await upsertUnverifiedEntity(kind, entry);
     await insertSources(CONFIG[kind], entityId, entry.sources);
     await markVerified(kind, entityId);

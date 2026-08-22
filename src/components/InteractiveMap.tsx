@@ -8,12 +8,6 @@ import type { FeatureCollection } from "geojson";
 import type { Topology } from "topojson-specification";
 import { MapPin, AlertCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 
 const stateGeographies = (() => {
   const topology = usaTopology as Topology;
@@ -43,6 +37,7 @@ export const InteractiveMap = ({ onStateSelect }: InteractiveMapProps) => {
       const { data, error } = await supabase
         .from("violations")
         .select("id, title, latitude, longitude, location_city, location_state")
+        .eq("status", "verified")
         .not("latitude", "is", null)
         .not("longitude", "is", null)
         .order("created_at", { ascending: false })
@@ -64,7 +59,7 @@ export const InteractiveMap = ({ onStateSelect }: InteractiveMapProps) => {
           Interactive Incident Map
         </CardTitle>
         <CardDescription>
-          Click a state to view laws. Red dots indicate recent verified violations.
+          Click a state to view laws. Red dots indicate source-verified incidents.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -110,8 +105,8 @@ export const InteractiveMap = ({ onStateSelect }: InteractiveMapProps) => {
             </Geographies>
 
             {violations.map((violation) => (
-              <Marker 
-                key={violation.id} 
+              <Marker
+                key={violation.id}
                 coordinates={[violation.longitude, violation.latitude]}
                 onMouseEnter={() => setHoveredViolation(violation.title)}
                 onMouseLeave={() => setHoveredViolation(null)}
@@ -121,14 +116,13 @@ export const InteractiveMap = ({ onStateSelect }: InteractiveMapProps) => {
             ))}
           </ComposableMap>
 
-          {/* Overlays */}
           <div className="absolute bottom-4 left-4 right-4 flex justify-between pointer-events-none">
             {hoveredState && (
               <Badge variant="secondary" className="text-sm shadow-lg pointer-events-auto animate-fade-in bg-slate-800 text-slate-200 border-slate-700">
                 {hoveredState}
               </Badge>
             )}
-            
+
             {hoveredViolation && (
               <div className="max-w-xs pointer-events-auto animate-fade-in">
                 <Badge variant="destructive" className="text-sm shadow-lg flex gap-2 items-center px-3 py-1.5">

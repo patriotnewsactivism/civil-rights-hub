@@ -46,8 +46,7 @@ export const ViolationReport = () => {
         .filter(Boolean)
         .join(" ") || null;
 
-      // Insert violation
-      const { data: violationData, error: violationError } = await supabase
+      const { error: reportError } = await supabase
         .from("violations")
         .insert({
           title: formData.title,
@@ -61,15 +60,13 @@ export const ViolationReport = () => {
           officer_name: officerName,
           officer_badge: formData.officerBadge.trim() || null,
           officer_rank: formData.officerRank.trim() || null,
-        })
-        .select()
-        .single();
+        });
 
-      if (violationError) throw violationError;
+      if (reportError) throw reportError;
 
       toast({
-        title: "Report Submitted",
-        description: "Your violation report has been published to the community feed.",
+        title: "Incident Report Submitted",
+        description: "Your report was saved for review. Submission does not establish misconduct or verified publication.",
       });
 
       setFormData({
@@ -85,7 +82,7 @@ export const ViolationReport = () => {
         officerRank: "",
       });
     } catch (error) {
-      console.error("Error submitting report:", error);
+      console.error("Error submitting incident report:", error);
       toast({
         title: "Error",
         description: "Failed to submit report. Please try again.",
@@ -104,10 +101,10 @@ export const ViolationReport = () => {
             <CardHeader>
               <div className="flex items-center gap-2 mb-2">
                 <AlertCircle className="h-6 w-6 text-destructive" />
-                <CardTitle className="text-2xl">Report a Violation</CardTitle>
+                <CardTitle className="text-2xl">Report an Incident</CardTitle>
               </div>
               <CardDescription>
-                Document and share civil rights violations with the community. Reports are public and help track patterns.
+                Submit an incident account for review and documentation. A submitted report is an allegation or account, not a finding that a civil-rights violation occurred.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -131,7 +128,7 @@ export const ViolationReport = () => {
                     required
                     value={formData.description}
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                    placeholder="Provide detailed information: what happened, who was involved, any witnesses, badge numbers, etc."
+                    placeholder="Describe what happened and identify sources or evidence you have. Distinguish what you personally observed from what others told you."
                     rows={6}
                     maxLength={2000}
                   />
@@ -191,7 +188,7 @@ export const ViolationReport = () => {
                       <CardTitle className="text-lg">Agency & Officer Information (Optional)</CardTitle>
                     </div>
                     <CardDescription>
-                      Help track patterns of misconduct by linking this report to a law enforcement agency and/or officer.
+                      Add identifying information only when you have a reasonable factual basis for it. Naming an agency or officer does not establish wrongdoing.
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
@@ -250,17 +247,15 @@ export const ViolationReport = () => {
 
                 <Card className="border-amber-500/50 bg-amber-500/5">
                   <CardContent className="pt-4">
-                    <p className="text-sm">
-                      <strong>Before submitting:</strong> Ensure you have saved backups of any recordings. 
-                      Do not include personally identifiable information of victims without consent. 
-                      Reports are public and cannot be deleted.
+                    <p className="text-sm leading-relaxed">
+                      <strong>Before submitting:</strong> Preserve original recordings and source documents separately. Avoid unnecessary private identifiers or confidential communications. Public display is not guaranteed, and the current site does not provide a verified self-service deletion workflow for submitted incident records.
                     </p>
                   </CardContent>
                 </Card>
 
                 <Button type="submit" className="w-full" disabled={loading}>
                   <Send className="mr-2 h-4 w-4" />
-                  {loading ? "Submitting..." : "Submit Report"}
+                  {loading ? "Submitting..." : "Submit Incident Report"}
                 </Button>
               </form>
             </CardContent>

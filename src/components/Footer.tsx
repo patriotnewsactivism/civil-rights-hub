@@ -30,7 +30,7 @@ const NAVIGATION = [
     links: [
       { to: "/community", label: "Social Feed" },
       { to: "/newsroom", label: "Newsroom" },
-      { to: "/newsletter", label: "Newsletter" },
+      { to: "/newsletter", label: "Digest Signup" },
       { to: "/help", label: "Get Help" },
     ],
   },
@@ -78,15 +78,15 @@ function FooterNewsletter() {
       });
       if (error && error.code !== "23505") throw error;
       setDone(true);
-      toast.success("Subscribed!", { description: "Check your inbox to confirm." });
+      toast.success("Digest signup recorded");
     } catch {
-      toast.error("Subscription failed. Try again.");
+      toast.error("Signup failed. Try again.");
     } finally {
       setLoading(false);
     }
   };
 
-  if (done) return <p className="text-xs text-green-400">✓ Subscribed. Check your inbox.</p>;
+  if (done) return <p className="text-xs text-green-400">✓ Signup recorded.</p>;
 
   return (
     <form onSubmit={handleSubmit} className="flex gap-2 mt-2">
@@ -99,7 +99,7 @@ function FooterNewsletter() {
         className="h-8 text-xs bg-slate-900 border-slate-700 text-slate-100 placeholder:text-slate-500 focus-visible:ring-primary"
       />
       <Button type="submit" size="sm" className="h-8 px-3 text-xs flex-shrink-0" disabled={loading}>
-        {loading ? "…" : "Go"}
+        {loading ? "…" : "Save"}
       </Button>
     </form>
   );
@@ -129,9 +129,9 @@ export const Footer = () => {
             </p>
 
             <div>
-              <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Weekly digest</p>
+              <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Digest signup</p>
               <FooterNewsletter />
-              <p className="text-[11px] text-slate-600 mt-1.5">Unsubscribe anytime.</p>
+              <p className="text-[11px] text-slate-600 mt-1.5">Delivery cadence and confirmation are still being finalized.</p>
             </div>
 
             <div className="flex flex-wrap gap-x-4 gap-y-2">
@@ -182,9 +182,11 @@ export const Footer = () => {
         <div className="container mx-auto px-4 py-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-xs text-slate-500">© {currentYear} Civil Rights Hub. Powered by We The People News.</p>
-            <div className="flex items-center gap-6">
+            <div className="flex flex-wrap items-center justify-center gap-6">
               <Link to="/about" className="text-xs text-slate-500 hover:text-primary transition-colors">About</Link>
               <Link to="/transparency" className="text-xs text-slate-500 hover:text-primary transition-colors">Transparency</Link>
+              <Link to="/privacy" className="text-xs text-slate-500 hover:text-primary transition-colors">Privacy</Link>
+              <Link to="/terms" className="text-xs text-slate-500 hover:text-primary transition-colors">Terms</Link>
               <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" className="text-xs text-slate-500 hover:text-primary transition-colors">GitHub</a>
             </div>
           </div>

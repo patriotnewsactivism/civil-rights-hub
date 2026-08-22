@@ -23,18 +23,19 @@ const ResourceCommandCenter = lazy(() =>
 
 const seoKeywords = [
   "civil rights hub",
-  "constitutional rights resources",
-  "report civil rights violations",
-  "know your rights",
+  "constitutional rights references",
+  "incident documentation",
   "FOIA request tools",
-  "police accountability resources",
   "public records",
+  "legal research",
+  "police scanner resources",
+  "government transparency",
   "civil liberties",
 ].join(", ");
 
-const seoTitle = "Civil Rights Hub | Know Your Rights · Document · Take Action";
+const seoTitle = "Civil Rights Hub | Rights · Records · Research · Response";
 const seoDescription =
-  "Civil Rights Hub provides Know Your Rights guides, emergency encounter tools, FOIA resources, scanner links, incident reporting, and civil-rights research tools. Public attorney and accountability datasets are being re-verified against source evidence.";
+  "Civil Rights Hub is a public-interest toolkit for rights references, emergency encounter tools, incident documentation, FOIA and public-records work, legal research, scanner resources, and community collaboration. Legacy attorney and accountability datasets are being re-verified against source evidence.";
 
 const LoadingCards = () => (
   <div className="container mx-auto px-4 py-10 space-y-4">

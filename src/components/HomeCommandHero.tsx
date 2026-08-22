@@ -5,7 +5,6 @@ import {
   FileSearch,
   FileText,
   Radio,
-  Scale,
   Shield,
   ShieldCheck,
   Video,
@@ -18,7 +17,7 @@ const primaryActions = [
   {
     eyebrow: "Emergency",
     title: "I Need Help Now",
-    description: "Open encounter scripts, document what is happening, share your location, and get to legal help fast.",
+    description: "Open encounter checklists, document what is happening, share your location, and preserve information for follow-up.",
     to: "/do-this-now",
     icon: Zap,
     treatment: "border-red-500/35 bg-red-500/10 hover:bg-red-500/15 hover:border-red-400/60",
@@ -27,16 +26,16 @@ const primaryActions = [
   {
     eyebrow: "Rights",
     title: "Know My Rights",
-    description: "Get clear constitutional guidance and state-specific rules before an encounter becomes a crisis.",
+    description: "Review plain-language constitutional references and jurisdiction-specific material before an encounter becomes a crisis.",
     to: "/rights",
     icon: ShieldCheck,
     treatment: "border-primary/35 bg-primary/10 hover:bg-primary/15 hover:border-primary/60",
     iconTreatment: "bg-primary/15 text-primary ring-primary/30",
   },
   {
-    eyebrow: "Accountability",
+    eyebrow: "Research",
     title: "Investigate & Take Action",
-    description: "Search records, build FOIA requests, research agencies, find attorneys, and document misconduct.",
+    description: "Build public-records requests, research cases and agencies, document incidents, and preserve source material.",
     to: "/tools",
     icon: FileSearch,
     treatment: "border-amber-500/30 bg-amber-500/10 hover:bg-amber-500/15 hover:border-amber-400/55",
@@ -45,8 +44,8 @@ const primaryActions = [
 ] as const;
 
 const rapidLinks = [
-  { label: "Report a Violation", to: "/do-this-now#report", icon: FileText },
-  { label: "Find an Attorney", to: "/attorneys", icon: Scale },
+  { label: "Report an Incident", to: "/do-this-now#report", icon: FileText },
+  { label: "FOIA Builder", to: "/help#tools", icon: FileSearch },
   { label: "Go Live / Backup", to: "/do-this-now#golive", icon: Video },
   { label: "Live Scanners", to: "/help#tools", icon: Radio },
 ] as const;
@@ -55,9 +54,7 @@ export function HomeCommandHero() {
   const { stats, isLoading } = useLiveStats();
 
   const liveStats = [
-    { value: stats.totalAttorneys, label: "civil rights attorneys" },
     { value: stats.activeScanners, label: "live scanner feeds" },
-    { value: stats.violationsTotal, label: "documented reports" },
   ].filter((item) => item.value > 0);
 
   return (
@@ -79,7 +76,7 @@ export function HomeCommandHero() {
             <div>
               <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3.5 py-1.5 text-[11px] font-black uppercase tracking-[0.18em] text-white/75">
                 <Shield className="h-3.5 w-3.5 text-primary" />
-                Civil Rights Intelligence Network
+                Civil Rights Research & Response Hub
               </div>
 
               <h1 className="max-w-4xl text-4xl font-black leading-[0.98] tracking-[-0.045em] text-white sm:text-5xl md:text-6xl lg:text-6xl">
@@ -91,8 +88,8 @@ export function HomeCommandHero() {
               </h1>
 
               <p className="mt-6 max-w-2xl text-base leading-7 text-white/70 md:text-lg">
-                Civil Rights Hub puts emergency encounter tools, state-specific rights guidance, attorneys,
-                public-records tools, accountability data, and community resources in one place — free and independent.
+                Civil Rights Hub brings together emergency encounter tools, constitutional references,
+                public-records tools, research resources, incident reporting, and community features — free and independent.
               </p>
 
               <div className="mt-7 flex flex-wrap items-center gap-3">
@@ -104,7 +101,7 @@ export function HomeCommandHero() {
                 </Button>
                 <Button asChild size="lg" variant="outline" className="h-12 rounded-full border-white/20 bg-white/5 px-6 font-bold text-white hover:bg-white/10 hover:text-white">
                   <Link to="/rights">
-                    Explore Your Rights
+                    Explore Rights References
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
                 </Button>
@@ -115,7 +112,7 @@ export function HomeCommandHero() {
                 <span className="hidden text-white/20 sm:inline">•</span>
                 <span>No paywall</span>
                 <span className="hidden text-white/20 sm:inline">•</span>
-                <span>Location-aware guidance</span>
+                <span>Source-first data policy</span>
                 <span className="hidden text-white/20 sm:inline">•</span>
                 <span>Powered by We The People News</span>
               </div>
@@ -131,7 +128,7 @@ export function HomeCommandHero() {
                   </div>
                   <div className="flex items-center gap-1.5 rounded-full border border-emerald-400/20 bg-emerald-400/10 px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-emerald-300">
                     <span className="h-1.5 w-1.5 rounded-full bg-emerald-300 animate-pulse" />
-                    Ready
+                    Tools Online
                   </div>
                 </div>
 
@@ -179,11 +176,11 @@ export function HomeCommandHero() {
           <div className="mt-5 flex flex-col gap-3 rounded-xl border border-white/10 bg-white/[0.025] px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.18em] text-white/40">
               <Activity className="h-3.5 w-3.5 text-emerald-300" />
-              Live platform intelligence
+              Live platform status
             </div>
             <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-white/60">
               {isLoading ? (
-                <span>Syncing live data…</span>
+                <span>Syncing live tools…</span>
               ) : (
                 <>
                   {liveStats.map((item) => (
@@ -194,7 +191,7 @@ export function HomeCommandHero() {
                   ))}
                   <span>
                     <strong className="mr-1 text-white">50</strong>
-                    states covered
+                    state navigation options
                   </span>
                 </>
               )}

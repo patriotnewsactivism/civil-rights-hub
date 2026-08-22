@@ -27,8 +27,14 @@ export function ImpactCounter({ className, layout = "grid" }: ImpactCounterProps
     const load = async () => {
       try {
         const [violations, attorneys, foiaRequests] = await Promise.all([
-          supabase.from("violations").select("id", { count: "exact", head: true }),
-          supabase.from("attorneys").select("id", { count: "exact", head: true }),
+          supabase
+            .from("violations")
+            .select("id", { count: "exact", head: true })
+            .eq("status", "verified"),
+          supabase
+            .from("attorneys")
+            .select("id", { count: "exact", head: true })
+            .eq("is_verified", true),
           supabase.from("foia_requests").select("id", { count: "exact", head: true }),
         ]);
         setCounts({
@@ -47,8 +53,8 @@ export function ImpactCounter({ className, layout = "grid" }: ImpactCounterProps
   }, []);
 
   const items: CounterItem[] = [
-    { label: "Violations reported", value: counts.violations, loading },
-    { label: "Attorneys in directory", value: counts.attorneys, loading },
+    { label: "Verified incidents", value: counts.violations, loading },
+    { label: "Verified attorneys", value: counts.attorneys, loading },
     { label: "FOIAs tracked", value: counts.foiaRequests, loading },
     { label: "States covered", value: counts.statesCovered, suffix: "", loading: false },
   ];

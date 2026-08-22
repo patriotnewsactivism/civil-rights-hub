@@ -152,15 +152,21 @@ CREATE POLICY "Users can view verified or own violations"
   TO authenticated
   USING (status = 'verified' OR user_id = (SELECT auth.uid()));
 
--- Harden ownership updates. A user cannot turn a report into a verified record
--- because the provenance trigger below rejects that transition without a source.
+-- A submitter may edit their own pending record, or deliberately demote a
+-- verified record to pending before editing. They may never leave a user-edited
+-- row in verified state; a trusted verification workflow must re-check sources
+-- and promote it again. This prevents stale evidence from remaining attached to
+-- materially changed allegations.
 DROP POLICY IF EXISTS "Users can update their own violations" ON public.violations;
 CREATE POLICY "Users can update their own violations"
   ON public.violations
   FOR UPDATE
   TO authenticated
   USING (user_id = (SELECT auth.uid()))
-  WITH CHECK (user_id = (SELECT auth.uid()));
+  WITH CHECK (
+    user_id = (SELECT auth.uid())
+    AND status <> 'verified'
+  );
 
 -- Standalone agency/officer seed tables do not currently have per-row
 -- provenance. Remove direct public reads; public accountability views can derive

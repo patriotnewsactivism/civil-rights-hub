@@ -32,7 +32,8 @@ export default function AttorneyList({ searchQuery, selectedState, selectedSpeci
     try {
       let query = supabase
         .from("attorneys")
-        .select("*", { count: "exact" });
+        .select("*", { count: "exact" })
+        .eq("is_verified", true);
 
       if (selectedState && selectedState !== "All States") {
         query = query.eq("state", selectedState);
@@ -62,7 +63,7 @@ export default function AttorneyList({ searchQuery, selectedState, selectedSpeci
       setHasMore((count ?? 0) > to + 1);
     } catch (err) {
       console.error("Supabase Fetch Error:", err);
-      setError("Connection to Civil Rights Database failed. Please try again.");
+      setError("Connection to the source-verified Civil Rights Database failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -83,7 +84,7 @@ export default function AttorneyList({ searchQuery, selectedState, selectedSpeci
   if (loading) {
     return (
       <div className="p-6 text-center text-muted-foreground animate-pulse">
-        Searching the national database…
+        Searching the source-verified national directory…
       </div>
     );
   }
@@ -99,9 +100,9 @@ export default function AttorneyList({ searchQuery, selectedState, selectedSpeci
   if (attorneys.length === 0) {
     return (
       <div className="p-8 text-center bg-muted/50 rounded-lg border border-border">
-        <h3 className="text-lg font-medium text-foreground">No attorneys found</h3>
+        <h3 className="text-lg font-medium text-foreground">No source-verified attorneys found</h3>
         <p className="text-muted-foreground mt-1">
-          Try adjusting your search terms or selecting a broader region.
+          Try adjusting your filters. Legacy records without durable source evidence are intentionally hidden.
         </p>
       </div>
     );
@@ -112,7 +113,7 @@ export default function AttorneyList({ searchQuery, selectedState, selectedSpeci
       {/* Results count + pagination header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-sm text-muted-foreground">
         <span>
-          Showing {showingFrom}–{showingTo} of <strong className="text-gray-800">{totalCount.toLocaleString()}</strong> attorneys
+          Showing {showingFrom}–{showingTo} of <strong className="text-gray-800">{totalCount.toLocaleString()}</strong> verified attorneys
         </span>
         {totalPages > 1 && (
           <div className="flex items-center gap-2">
@@ -152,7 +153,7 @@ export default function AttorneyList({ searchQuery, selectedState, selectedSpeci
             <div className="flex gap-1.5">
               {lawyer.is_verified && (
                 <span className="bg-accent/15 text-accent text-xs px-2 py-1 rounded-full font-semibold">
-                  ✓ Verified
+                  ✓ Source Verified
                 </span>
               )}
               {lawyer.accepts_pro_bono && (

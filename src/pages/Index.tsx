@@ -1,6 +1,6 @@
 import { Suspense, lazy } from "react";
 import { Header } from "@/components/Header";
-import { Hero } from "@/components/Hero";
+import { HomeCommandHero } from "@/components/HomeCommandHero";
 import { KnowYourRights } from "@/components/KnowYourRights";
 import { Footer } from "@/components/Footer";
 import { SEO } from "@/components/SEO";
@@ -64,7 +64,10 @@ const legalServicesStructuredData = {
       areaServed: entry.state,
       keywords: keywords.join(", "),
     };
-    if (entry.website) { service.url = entry.website; service.sameAs = entry.website; }
+    if (entry.website) {
+      service.url = entry.website;
+      service.sameAs = entry.website;
+    }
     if (entry.phone) service.telephone = entry.phone;
     if (entry.email) service.email = entry.email;
     if (entry.organization) {
@@ -77,6 +80,17 @@ const legalServicesStructuredData = {
     return service;
   }),
 };
+
+const LoadingCards = () => (
+  <div className="container mx-auto px-4 py-10 space-y-4">
+    <Skeleton className="h-8 w-1/3" />
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {[...Array(6)].map((_, i) => (
+        <Skeleton key={i} className="h-28 rounded-xl" />
+      ))}
+    </div>
+  </div>
+);
 
 const Index = () => {
   return (
@@ -92,23 +106,36 @@ const Index = () => {
         structuredData={legalServicesStructuredData}
       />
       <Header />
-      <Hero />
-      <div className="container mx-auto px-4 py-6 space-y-4">
-        <StatePreferenceBanner />
-        <Suspense fallback={<Skeleton className="h-96 rounded-xl" />}>
-          <CrisisHUD />
+      <HomeCommandHero />
+
+      <main>
+        <div className="container mx-auto px-4 py-6 space-y-4">
+          <StatePreferenceBanner />
+          <Suspense fallback={<Skeleton className="h-96 rounded-xl" />}>
+            <CrisisHUD />
+          </Suspense>
+        </div>
+
+        <KnowYourRights />
+
+        <div className="container mx-auto px-4 py-3">
+          <FeaturedAttorney />
+        </div>
+
+        <Suspense fallback={<LoadingCards />}>
+          <OfficerAccountability />
         </Suspense>
-        <FeaturedAttorney />
-      </div>
-      <KnowYourRights />
-      <Suspense fallback={<div className="container mx-auto px-4 py-10 space-y-4"><Skeleton className="h-8 w-1/3" /><div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{[...Array(6)].map((_, i) => <Skeleton key={i} className="h-28 rounded-xl" />)}</div></div>}>
-        <OfficerAccountability />
-      </Suspense>
-      <Suspense fallback={<div className="container mx-auto px-4 py-10 space-y-4"><Skeleton className="h-8 w-1/3" /><div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{[...Array(6)].map((_, i) => <Skeleton key={i} className="h-28 rounded-xl" />)}</div></div>}>
-        <ResourceCommandCenter />
-      </Suspense>
-      <div className="container mx-auto px-4 py-8 max-w-2xl"><NewsletterSubscribe variant="compact" /></div>
-      <DonationBanner />
+
+        <Suspense fallback={<LoadingCards />}>
+          <ResourceCommandCenter />
+        </Suspense>
+
+        <div className="container mx-auto max-w-2xl px-4 py-8">
+          <NewsletterSubscribe variant="compact" />
+        </div>
+        <DonationBanner />
+      </main>
+
       <Footer />
       <EmergencyFAB />
     </div>

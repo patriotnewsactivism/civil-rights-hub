@@ -10,7 +10,6 @@ import { useJurisdiction } from "@/hooks/useJurisdiction";
 import { DEFAULT_JURISDICTION } from "@/data/usStates";
 import { Search, MapPin, Mail, Phone, Globe, Scale, Database } from "lucide-react";
 import { toast } from "sonner";
-import { ATTORNEY_FALLBACK_DATA } from "@/lib/attorneyFallback";
 import { AttorneyRecord } from "@/types/attorney";
 
 const US_STATES = [
@@ -45,7 +44,7 @@ export function LawyerFinder() {
   const [selectedState, setSelectedState] = useState<string>("all");
   const [selectedSpecialty, setSelectedSpecialty] = useState<string>("all");
   const [proBonoOnly, setProBonoOnly] = useState(false);
-  const [fallbackStatus, setFallbackStatus] = useState<"none" | "empty" | "error">("none");
+  const [directoryStatus, setDirectoryStatus] = useState<"none" | "empty" | "error">("none");
 
   const fetchAttorneys = useCallback(async () => {
     setLoading(true);
@@ -53,12 +52,12 @@ export function LawyerFinder() {
       const { data, error } = await supabase
         .from("attorneys")
         .select("id, name, firm, state, city, email, phone, website, specialties, practice_areas, accepts_pro_bono, bar_number, years_experience, bio, rating, is_verified")
+        .eq("is_verified", true)
         .order("name");
 
       if (error) throw error;
 
       if (data && data.length > 0) {
-        // Map database rows to AttorneyRecord type
         const mapped: AttorneyRecord[] = data.map((row) => ({
           id: row.id,
           name: row.name,
@@ -82,24 +81,23 @@ export function LawyerFinder() {
           professional_bio: null,
         }));
         setAttorneys(mapped);
-        setFallbackStatus("none");
+        setDirectoryStatus("none");
       } else {
-        setAttorneys(ATTORNEY_FALLBACK_DATA);
-        setFallbackStatus("empty");
+        setAttorneys([]);
+        setDirectoryStatus("empty");
       }
     } catch (error) {
-      console.error("Error fetching attorneys:", error);
-      setAttorneys(ATTORNEY_FALLBACK_DATA);
-      setFallbackStatus("error");
-      toast.error("Failed to load attorneys", {
-        description: "Showing verified fallback directory.",
+      console.error("Error fetching source-verified attorneys:", error);
+      setAttorneys([]);
+      setDirectoryStatus("error");
+      toast.error("Verified attorney directory unavailable", {
+        description: "Unverified fallback records are intentionally not being shown.",
       });
     } finally {
       setLoading(false);
     }
   }, []);
 
-  // Sync with jurisdiction context when it changes
   useEffect(() => {
     if (jurisdictionState && jurisdictionState !== DEFAULT_JURISDICTION) {
       setSelectedState(jurisdictionState);
@@ -117,7 +115,6 @@ export function LawyerFinder() {
     const NATIONAL_STATES = ["National", "Nationwide", "national", "nationwide"];
 
     return attorneys.filter((attorney) => {
-      // Always include nationally-scoped orgs when filtering by state
       if (selectedState !== "all" && attorney.state !== selectedState && !NATIONAL_STATES.includes(attorney.state)) {
         return false;
       }
@@ -160,7 +157,7 @@ export function LawyerFinder() {
           Civil Rights Attorney Directory
         </h2>
         <p className="text-muted-foreground">
-          Find experienced civil rights attorneys in your state, with emphasis on pro bono constitutional work
+          Find civil rights attorneys whose directory records have current source evidence. Always confirm representation, licensing, and availability directly before relying on a listing.
         </p>
       </div>
 
@@ -227,32 +224,30 @@ export function LawyerFinder() {
         </CardContent>
       </Card>
 
-      {fallbackStatus !== "none" && (
+      {directoryStatus !== "none" && (
         <Alert className="border-dashed">
           <Database className="h-4 w-4" />
           <AlertTitle>
-            {fallbackStatus === "error"
-              ? "Database offline — using verified directory"
-              : "Verified directory loaded while data syncs"}
+            {directoryStatus === "error"
+              ? "Verified attorney directory temporarily unavailable"
+              : "Verified attorney directory is being rebuilt"}
           </AlertTitle>
           <AlertDescription>
-            {fallbackStatus === "error"
-              ? "The database is unreachable. Showing the verified national and state attorney roster."
-              : "No attorney records yet. Showing the verified national and state roster until the live directory syncs."}
+            Civil Rights Hub is re-verifying attorney records against durable source evidence. Legacy seed records without that evidence are intentionally hidden rather than presented as verified.
           </AlertDescription>
         </Alert>
       )}
 
       {loading ? (
-        <div className="text-center py-12">Loading attorneys...</div>
+        <div className="text-center py-12">Loading source-verified attorneys...</div>
       ) : filteredAttorneys.length === 0 ? (
         <Card>
           <CardContent className="py-12 text-center space-y-4">
             <Scale className="h-10 w-10 text-muted-foreground/40 mx-auto" />
             <div>
-              <p className="font-semibold text-foreground">No attorneys match your current filters</p>
+              <p className="font-semibold text-foreground">No source-verified attorneys match your current filters</p>
               <p className="text-sm text-muted-foreground mt-1">
-                Try broadening your search — remove the state or specialty filter, or search by name.
+                Try broadening your search, or use an official legal-organization intake page while this directory is re-verified.
               </p>
             </div>
             <div className="flex gap-2 justify-center flex-wrap">
@@ -278,15 +273,14 @@ export function LawyerFinder() {
               )}
             </div>
             <p className="text-xs text-muted-foreground">
-              Need urgent help? Call the{" "}
-              <a href="https://www.aclu.org" target="_blank" rel="noopener noreferrer" className="text-primary underline">
-                ACLU
+              You can also use the official{" "}
+              <a href="https://www.aclu.org/about/contact-us" target="_blank" rel="noopener noreferrer" className="text-primary underline">
+                ACLU contact page
               </a>{" "}
-              at 212-549-2500 or the{" "}
-              <a href="https://www.nlg.org" target="_blank" rel="noopener noreferrer" className="text-primary underline">
-                National Lawyers Guild
-              </a>{" "}
-              at 212-679-5100.
+              or{" "}
+              <a href="https://www.nlg.org/contact/" target="_blank" rel="noopener noreferrer" className="text-primary underline">
+                National Lawyers Guild contact page
+              </a>.
             </p>
           </CardContent>
         </Card>
@@ -302,9 +296,12 @@ export function LawyerFinder() {
                       <p className="text-sm text-muted-foreground mt-1">{attorney.firm}</p>
                     )}
                   </div>
-                  {attorney.accepts_pro_bono && (
-                    <Badge variant="secondary">Pro Bono</Badge>
-                  )}
+                  <div className="flex gap-2">
+                    <Badge variant="outline">Source Verified</Badge>
+                    {attorney.accepts_pro_bono && (
+                      <Badge variant="secondary">Pro Bono</Badge>
+                    )}
+                  </div>
                 </div>
               </CardHeader>
               <CardContent className="space-y-3">

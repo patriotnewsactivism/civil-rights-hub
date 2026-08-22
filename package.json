@@ -9,7 +9,9 @@
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "vitest"
+    "test": "vitest",
+    "seed:verified": "node scripts/verified-seeder.js",
+    "seed:verified:dry-run": "node scripts/verified-seeder.js --dry-run"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

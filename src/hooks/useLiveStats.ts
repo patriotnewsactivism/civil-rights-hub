@@ -28,14 +28,25 @@ const EMPTY_STATS: LiveStats = {
 async function fetchLiveStats(): Promise<{ stats: LiveStats; recent: RecentViolation[] }> {
   const since24h = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
   const [v, vAll, a, sc, foia, recent] = await Promise.all([
-    supabase.from("violations").select("id", { count: "exact", head: true }).gte("created_at", since24h),
-    supabase.from("violations").select("id", { count: "exact", head: true }),
-    supabase.from("attorneys").select("id", { count: "exact", head: true }),
+    supabase
+      .from("violations")
+      .select("id", { count: "exact", head: true })
+      .eq("status", "verified")
+      .gte("created_at", since24h),
+    supabase
+      .from("violations")
+      .select("id", { count: "exact", head: true })
+      .eq("status", "verified"),
+    supabase
+      .from("attorneys")
+      .select("id", { count: "exact", head: true })
+      .eq("is_verified", true),
     supabase.from("scanner_links").select("id", { count: "exact", head: true }).eq("is_active", true),
     supabase.from("foia_requests").select("id", { count: "exact", head: true }),
     supabase
       .from("violations")
       .select("id, title, location_city, location_state, created_at")
+      .eq("status", "verified")
       .order("created_at", { ascending: false })
       .limit(5),
   ]);

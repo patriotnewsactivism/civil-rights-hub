@@ -1,10 +1,9 @@
 import { useState } from "react";
-import { AlertCircle, MapPin, Send, ChevronDown, ChevronUp } from "lucide-react";
+import { AlertCircle, MapPin, Send, ChevronUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { useGeolocation } from "@/hooks/useGeolocation";
@@ -33,7 +32,7 @@ export function QuickViolationReport({ userId }: { userId: string | null }) {
 
   const handleSubmit = async () => {
     if (!userId) {
-      toast.error("Sign in to report a violation");
+      toast.error("Sign in to submit an incident report");
       return;
     }
     if (!form.title.trim() || !form.description.trim()) {
@@ -61,11 +60,11 @@ export function QuickViolationReport({ userId }: { userId: string | null }) {
 
       if (error) throw error;
 
-      toast.success("Violation reported successfully. Stay safe.");
+      toast.success("Incident report submitted for review. Submission does not establish misconduct.");
       setForm({ title: "", description: "", state: "", city: "" });
       setExpanded(false);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to submit report");
+      toast.error(err instanceof Error ? err.message : "Failed to submit incident report");
     } finally {
       setSubmitting(false);
     }
@@ -79,7 +78,7 @@ export function QuickViolationReport({ userId }: { userId: string | null }) {
         className="gap-2 border-destructive/30 text-destructive hover:bg-destructive hover:text-destructive-foreground"
       >
         <AlertCircle className="h-4 w-4" />
-        Report Violation
+        Report Incident
       </Button>
     );
   }
@@ -90,12 +89,16 @@ export function QuickViolationReport({ userId }: { userId: string | null }) {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <AlertCircle className="h-4 w-4 text-destructive" />
-            <span className="font-semibold text-sm">Quick Violation Report</span>
+            <span className="font-semibold text-sm">Quick Incident Report</span>
           </div>
           <Button variant="ghost" size="icon" onClick={() => setExpanded(false)} className="h-7 w-7">
             <ChevronUp className="h-4 w-4" />
           </Button>
         </div>
+
+        <p className="text-xs text-muted-foreground">
+          Submit what you observed for review. A report is an allegation or account, not a verified finding.
+        </p>
 
         <Input
           placeholder="What happened? (brief title)"
@@ -105,7 +108,7 @@ export function QuickViolationReport({ userId }: { userId: string | null }) {
         />
 
         <Textarea
-          placeholder="Describe what you witnessed — include badge numbers, agency names, timestamps if possible..."
+          placeholder="Describe what you personally observed and identify sources or evidence when possible."
           value={form.description}
           onChange={(e) => setForm(prev => ({ ...prev, description: e.target.value }))}
           className="text-sm min-h-[80px]"

@@ -62,10 +62,11 @@ const STATE_COORDS: Record<string, { minLat: number; maxLat: number; minLon: num
   'Wyoming': { minLat: 41.0, maxLat: 45.0, minLon: -111.0, maxLon: -104.0 },
 };
 
+const US_STATE_NAMES = new Set([...Object.keys(STATE_COORDS), 'District of Columbia']);
+
 function getStateFromCoords(lat: number, lon: number): string | null {
   for (const [state, bounds] of Object.entries(STATE_COORDS)) {
-    if (lat >= bounds.minLat && lat <= bounds.maxLat && 
-        lon >= bounds.minLon && lon <= bounds.maxLon) {
+    if (lat >= bounds.minLat && lat <= bounds.maxLat && lon >= bounds.minLon && lon <= bounds.maxLon) {
       return state;
     }
   }
@@ -95,26 +96,31 @@ export const useGeolocation = () => {
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         const { latitude, longitude } = position.coords;
-        const state = getStateFromCoords(latitude, longitude);
-        
+        const boundedState = getStateFromCoords(latitude, longitude);
+
         try {
           const response = await fetch(
             `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
           );
           const data = await response.json();
-          const city = data.address?.city || data.address?.town || data.address?.village || null;
+          const countryCode = String(data.address?.country_code ?? '').toLowerCase();
+          const returnedState = String(data.address?.state ?? '');
+          const state = boundedState || (countryCode === 'us' && US_STATE_NAMES.has(returnedState) ? returnedState : null);
+          const city = countryCode === 'us'
+            ? data.address?.city || data.address?.town || data.address?.village || null
+            : null;
 
           setLocation({
-            state: state || data.address?.state || null,
+            state,
             city,
             latitude,
             longitude,
             loading: false,
             error: null,
           });
-        } catch (error) {
+        } catch {
           setLocation({
-            state,
+            state: boundedState,
             city: null,
             latitude,
             longitude,

@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -25,30 +25,18 @@ import {
   Scale,
 } from "lucide-react";
 import type { ReactNode } from "react";
-import { ViolationFeed } from "@/components/ViolationFeed";
-import { InteractiveMap } from "@/components/InteractiveMap";
 import { StateSelector } from "@/components/StateSelector";
 import { PoliceScanner } from "@/components/PoliceScanner";
-import { LawyerFinder } from "@/components/LawyerFinder";
-import { ActivistDirectory } from "@/components/ActivistDirectory";
-import { OfficerAccountability } from "@/components/OfficerAccountability";
 import { FOIABuilder } from "@/components/FOIABuilder";
-import { FOIATracker } from "@/components/FOIATracker";
 import { PublicRecordsTracker } from "@/components/PublicRecordsTracker";
 import { LegislativeActionCenter } from "@/components/LegislativeActionCenter";
 import { CaseSearch } from "@/components/CaseSearch";
 import { AITools } from "@/components/AITools";
 import { Resources } from "@/components/Resources";
-import { toast } from "sonner";
+import { VerifiedDataHold } from "@/components/VerifiedDataHold";
 import { useJurisdiction } from "@/hooks/useJurisdiction";
 import { DEFAULT_JURISDICTION } from "@/data/usStates";
 import { getResourceIdFromHash } from "@/components/resourceHash";
-
-const AttorneySeoContent = lazy(() =>
-  import("@/components/AttorneySeoContent").then((module) => ({
-    default: module.AttorneySeoContent,
-  }))
-);
 
 interface ResourceDefinition {
   id: string;
@@ -60,39 +48,33 @@ interface ResourceDefinition {
   render: () => ReactNode;
 }
 
+const heldResource = () => <VerifiedDataHold />;
+
 const createResourceDefinitions = (
   selectedState: string,
   onStateChange: (state: string) => void
 ): ResourceDefinition[] => [
   {
     id: "violation-feed",
-    title: "Live Violation Feed",
-    description: "Crowdsourced incident reports, body cam drop links, and agency trends in one rolling dashboard.",
+    title: "Incident Record Feed",
+    description: "Temporarily withheld while legacy incident records are re-verified against durable source evidence.",
     category: "Rapid Response",
     featured: true,
-    keywords: ["reports", "incidents", "alerts", "crowdsourced"],
-    render: () => <ViolationFeed />,
+    keywords: ["reports", "incidents", "verification"],
+    render: heldResource,
   },
   {
     id: "interactive-map",
-    title: "Interactive Accountability Map",
-    description: "Tap a state to load emergency contacts, case law, and mutual aid partners before you roll camera.",
+    title: "Accountability Map",
+    description: "Temporarily withheld while incident and accountability records are re-verified against durable source evidence.",
     category: "Rapid Response",
-    featured: true,
-    keywords: ["state", "map", "statutes", "travel"],
-    render: () => (
-      <InteractiveMap
-        onStateSelect={(state) => {
-          onStateChange(state);
-          toast.success(`Focused on ${state} resources`);
-        }}
-      />
-    ),
+    keywords: ["state", "map", "verification"],
+    render: heldResource,
   },
   {
     id: "state-selector",
     title: "State Statute Navigator",
-    description: "Search state-specific civil rights protections, stop-and-identify laws, and immunity standards.",
+    description: "Browse state-specific civil-rights guidance and jurisdiction resources.",
     category: "Rapid Response",
     keywords: ["state", "laws", "selector", "statute"],
     render: () => <StateSelector selectedState={selectedState} onStateChange={onStateChange} />,
@@ -100,54 +82,49 @@ const createResourceDefinitions = (
   {
     id: "police-scanner",
     title: "Police & EMS Scanner",
-    description: "Monitor active calls that may impact auditors or community cop watchers in the field.",
+    description: "Browse active public-safety scanner resources by location.",
     category: "Rapid Response",
+    featured: true,
     keywords: ["scanner", "radio", "ems"],
     render: () => <PoliceScanner />,
   },
   {
     id: "lawyer-finder",
-    title: "Lawyer Finder",
-    description: "Filter nationwide attorneys, legal collectives, and We The People News partners ready for protest defense.",
+    title: "Attorney Directory",
+    description: "Temporarily withheld while legacy attorney listings are re-verified against durable source evidence.",
     category: "Legal Support",
     featured: true,
-    keywords: ["attorney", "lawyer", "directory", "legal"],
-    render: () => <LawyerFinder />,
+    keywords: ["attorney", "lawyer", "directory", "verification"],
+    render: heldResource,
   },
   {
     id: "attorney-seo",
-    title: "Attorney Intelligence Profiles",
-    description: "See which firms collaborate with We The People News investigations and what cases they champion.",
+    title: "Attorney Profiles",
+    description: "Temporarily withheld while attorney identities, contact details, and practice information are re-verified.",
     category: "Legal Support",
-    keywords: ["seo", "attorney", "profiles"],
-    render: () => (
-      <Suspense
-        fallback={<div className="py-6 text-center text-muted-foreground">Loading attorney profiles…</div>}
-      >
-        <AttorneySeoContent />
-      </Suspense>
-    ),
+    keywords: ["attorney", "profiles", "verification"],
+    render: heldResource,
   },
   {
     id: "activist-directory",
     title: "Activist & Watchdog Directory",
-    description: "Connect with livestreamers, auditors, cop watchers, and local community observers.",
+    description: "Temporarily withheld while legacy directory records are re-verified against source evidence.",
     category: "Community",
-    keywords: ["activist", "directory", "community"],
-    render: () => <ActivistDirectory />,
+    keywords: ["activist", "directory", "community", "verification"],
+    render: heldResource,
   },
   {
     id: "officer-accountability",
     title: "Officer & Agency Accountability",
-    description: "Search misconduct histories, transparency scores, and discipline recommendations.",
+    description: "Temporarily withheld while incident-linked officer and agency references are re-verified.",
     category: "Accountability",
-    keywords: ["officer", "misconduct", "agency"],
-    render: () => <OfficerAccountability />,
+    keywords: ["officer", "agency", "verification"],
+    render: heldResource,
   },
   {
     id: "foia-builder",
     title: "FOIA Builder",
-    description: "Draft airtight requests, send them securely, and collaborate with other requesters.",
+    description: "Draft public-records requests and organize the information needed for submission.",
     category: "Records & Data",
     keywords: ["foia", "request", "builder"],
     render: () => <FOIABuilder />,
@@ -155,16 +132,16 @@ const createResourceDefinitions = (
   {
     id: "foia-tracker",
     title: "Public Records Tracker",
-    description: "File FOIA requests, send via secure email, track deadlines and see when agencies open your emails.",
+    description: "Track your public-records requests, dates, and status in one workspace.",
     category: "Records & Data",
     featured: true,
-    keywords: ["foia", "tracker", "deadlines", "public records", "email", "tracking"],
+    keywords: ["foia", "tracker", "deadlines", "public records"],
     render: () => <PublicRecordsTracker />,
   },
   {
     id: "legislative-action",
     title: "Legislative Action Center",
-    description: "Follow bills targeting auditors, transparency, and civil rights with scripts to testify.",
+    description: "Follow civil-rights and transparency legislation and organize advocacy work.",
     category: "Advocacy",
     keywords: ["legislation", "policy", "action"],
     render: () => <LegislativeActionCenter />,
@@ -172,7 +149,7 @@ const createResourceDefinitions = (
   {
     id: "case-search",
     title: "Case Search",
-    description: "Research civil rights litigation precedents and crowdsource filings.",
+    description: "Research civil-rights litigation and legal precedents.",
     category: "Legal Support",
     keywords: ["cases", "search", "precedent"],
     render: () => <CaseSearch />,
@@ -180,15 +157,15 @@ const createResourceDefinitions = (
   {
     id: "ai-tools",
     title: "AI Research Tools",
-    description: "Use AI copilots trained on civil rights pleadings and investigations.",
+    description: "Use research assistants to help organize civil-rights questions and source material.",
     category: "Records & Data",
-    keywords: ["ai", "assistant", "copilot"],
+    keywords: ["ai", "assistant", "research"],
     render: () => <AITools />,
   },
   {
     id: "resource-library",
     title: "Prevention & Resource Library",
-    description: "Download quick guides, hotline numbers, and prevention checklists.",
+    description: "Browse guides, reference material, and prevention checklists.",
     category: "Community",
     keywords: ["resources", "library", "prevention"],
     render: () => <Resources />,
@@ -217,9 +194,7 @@ export const ResourceCommandCenter = () => {
 
   const filteredResources = useMemo(() => {
     const normalized = searchQuery.trim().toLowerCase();
-    if (!normalized) {
-      return resourceDefinitions;
-    }
+    if (!normalized) return resourceDefinitions;
     return resourceDefinitions.filter((resource) =>
       `${resource.title} ${resource.description} ${resource.keywords.join(" ")}`
         .toLowerCase()
@@ -230,9 +205,7 @@ export const ResourceCommandCenter = () => {
   const categoryGroups = useMemo(() => {
     const grouped: Record<string, ResourceDefinition[]> = {};
     filteredResources.forEach((resource) => {
-      if (!grouped[resource.category]) {
-        grouped[resource.category] = [];
-      }
+      if (!grouped[resource.category]) grouped[resource.category] = [];
       grouped[resource.category]?.push(resource);
     });
     return Object.entries(grouped);
@@ -254,10 +227,7 @@ export const ResourceCommandCenter = () => {
 
     openResourceFromHash();
     window.addEventListener("hashchange", openResourceFromHash);
-
-    return () => {
-      window.removeEventListener("hashchange", openResourceFromHash);
-    };
+    return () => window.removeEventListener("hashchange", openResourceFromHash);
   }, []);
 
   const openResource = (id: string) => {
@@ -275,9 +245,9 @@ export const ResourceCommandCenter = () => {
             <Compass className="h-4 w-4" />
             Resource Command
           </div>
-          <h2 className="text-3xl md:text-4xl font-bold">Navigate every tool without endless scrolling</h2>
+          <h2 className="text-3xl md:text-4xl font-bold">Navigate civil-rights tools from one workspace</h2>
           <p className="text-muted-foreground">
-            Use the searchable menu to open scanners, FOIA copilots, attorney finders, and activist directories inside a focused command window.
+            Verified-data directories are temporarily on hold; rights, records, scanner, research, and advocacy tools remain available.
           </p>
         </div>
 
@@ -288,18 +258,11 @@ export const ResourceCommandCenter = () => {
                 <Sparkles className="h-6 w-6 text-primary" />
                 Featured essentials
               </CardTitle>
-              <CardDescription>
-                These resources stay pinned for quick launches. Tap one to open it in the command drawer without losing your place on the homepage.
-              </CardDescription>
+              <CardDescription>Open a resource in the command drawer without losing your place.</CardDescription>
             </CardHeader>
             <CardContent className="grid gap-4">
-              {resourceDefinitions
-                .filter((resource) => resource.featured)
-                .map((resource) => (
-                  <div
-                    key={resource.id}
-                    className="flex flex-col gap-3 rounded-2xl border border-border/60 bg-background/80 p-4"
-                  >
+              {resourceDefinitions.filter((resource) => resource.featured).map((resource) => (
+                <div key={resource.id} className="flex flex-col gap-3 rounded-2xl border border-border/60 bg-background/80 p-4">
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-muted-foreground">{resource.category}</p>
@@ -322,18 +285,11 @@ export const ResourceCommandCenter = () => {
                 <Filter className="h-6 w-6 text-primary" />
                 Search every resource
               </CardTitle>
-              <CardDescription>
-                Type any keyword ("scanner", "Florida", "AI") or browse by category. Results open in a slide-over workspace.
-              </CardDescription>
+              <CardDescription>Search by topic or browse by category.</CardDescription>
             </CardHeader>
             <CardContent>
               <Command>
-                <CommandInput
-                  value={searchQuery}
-                  onValueChange={setSearchQuery}
-                  placeholder="Find a resource, law, or tool"
-                  autoFocus={false}
-                />
+                <CommandInput value={searchQuery} onValueChange={setSearchQuery} placeholder="Find a resource, law, or tool" autoFocus={false} />
                 <CommandList>
                   <CommandEmpty>No resources matched that phrase.</CommandEmpty>
                   {categoryGroups.map(([category, resources]) => (
@@ -376,14 +332,12 @@ export const ResourceCommandCenter = () => {
               <div className="space-y-8">{selectedResource.render()}</div>
               {focusState && focusState !== DEFAULT_JURISDICTION && (
                 <div className="rounded-2xl border border-primary/40 bg-primary/5 p-4 text-sm text-muted-foreground">
-                  Focused on <span className="font-semibold text-primary">{focusState}</span>. Select a different state via the map or statute navigator to swap resources.
+                  Focused on <span className="font-semibold text-primary">{focusState}</span>.
                 </div>
               )}
             </div>
           ) : (
-            <div className="py-10 text-center text-sm text-muted-foreground">
-              Select a resource from the menu to load it here.
-            </div>
+            <div className="py-10 text-center text-sm text-muted-foreground">Select a resource from the menu to load it here.</div>
           )}
         </SheetContent>
       </Sheet>

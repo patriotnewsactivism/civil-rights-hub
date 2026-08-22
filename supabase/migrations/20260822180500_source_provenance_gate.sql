@@ -115,6 +115,86 @@ SET website = NULL
 WHERE website IS NOT NULL
   AND website ~* '(prior2\.prior2\.com|placeholder|example\.|fake\.|test\.)';
 
+-- ---------------------------------------------------------------------------
+-- Fail-closed Data API policies.
+-- ---------------------------------------------------------------------------
+-- Attorneys are public only after source-backed verification.
+ALTER TABLE public.attorneys ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Anyone can view attorneys" ON public.attorneys;
+DROP POLICY IF EXISTS "Public can view verified attorneys" ON public.attorneys;
+CREATE POLICY "Public can view verified attorneys"
+  ON public.attorneys
+  FOR SELECT
+  TO anon, authenticated
+  USING (COALESCE(is_verified, false) = true);
+
+-- Anonymous visitors see only source-verified incidents. Signed-in users may
+-- additionally see their own pending reports so they can manage submissions.
+ALTER TABLE public.violations ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Anyone can view violations" ON public.violations;
+DROP POLICY IF EXISTS "Public can view verified violations" ON public.violations;
+DROP POLICY IF EXISTS "Users can view verified or own violations" ON public.violations;
+CREATE POLICY "Public can view verified violations"
+  ON public.violations
+  FOR SELECT
+  TO anon
+  USING (status = 'verified');
+CREATE POLICY "Users can view verified or own violations"
+  ON public.violations
+  FOR SELECT
+  TO authenticated
+  USING (status = 'verified' OR user_id = (SELECT auth.uid()));
+
+-- Harden ownership updates. A user cannot turn a report into a verified record
+-- because the provenance trigger below rejects that transition without a source.
+DROP POLICY IF EXISTS "Users can update their own violations" ON public.violations;
+CREATE POLICY "Users can update their own violations"
+  ON public.violations
+  FOR UPDATE
+  TO authenticated
+  USING (user_id = (SELECT auth.uid()))
+  WITH CHECK (user_id = (SELECT auth.uid()));
+
+-- Standalone agency/officer seed tables do not currently have per-row
+-- provenance. Remove direct public reads; public accountability views can derive
+-- names from source-verified violations until these entities get their own
+-- verification workflow.
+ALTER TABLE public.agencies ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.officers ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Anyone can view agencies" ON public.agencies;
+DROP POLICY IF EXISTS "Anyone can view officers" ON public.officers;
+
+-- Junction-table reads are limited to links belonging to verified violations.
+DROP POLICY IF EXISTS "Anyone can view violation_officers links" ON public.violation_officers;
+DROP POLICY IF EXISTS "Public can view verified violation_officers links" ON public.violation_officers;
+CREATE POLICY "Public can view verified violation_officers links"
+  ON public.violation_officers
+  FOR SELECT
+  TO anon, authenticated
+  USING (
+    EXISTS (
+      SELECT 1
+      FROM public.violations v
+      WHERE v.id = violation_id
+        AND v.status = 'verified'
+    )
+  );
+
+DROP POLICY IF EXISTS "Anyone can view violation_agencies links" ON public.violation_agencies;
+DROP POLICY IF EXISTS "Public can view verified violation_agencies links" ON public.violation_agencies;
+CREATE POLICY "Public can view verified violation_agencies links"
+  ON public.violation_agencies
+  FOR SELECT
+  TO anon, authenticated
+  USING (
+    EXISTS (
+      SELECT 1
+      FROM public.violations v
+      WHERE v.id = violation_id
+        AND v.status = 'verified'
+    )
+  );
+
 CREATE OR REPLACE FUNCTION public.enforce_source_provenance()
 RETURNS trigger
 LANGUAGE plpgsql

@@ -30,6 +30,7 @@ export const ViolationFeed = () => {
       let query = supabase
         .from("violations")
         .select("*")
+        .eq("status", "verified")
         .order("created_at", { ascending: false })
         .limit(20);
 
@@ -42,7 +43,7 @@ export const ViolationFeed = () => {
       if (error) throw error;
       setViolations(data || []);
     } catch (error) {
-      console.error("Error fetching violations:", error);
+      console.error("Error fetching source-verified incidents:", error);
     } finally {
       setLoading(false);
     }
@@ -52,13 +53,14 @@ export const ViolationFeed = () => {
     void fetchViolations();
 
     const channel = supabase
-      .channel("violations-changes")
+      .channel("verified-violations-changes")
       .on(
         "postgres_changes",
         {
-          event: "INSERT",
+          event: "*",
           schema: "public",
           table: "violations",
+          filter: "status=eq.verified",
         },
         () => {
           void fetchViolations();
@@ -95,10 +97,10 @@ export const ViolationFeed = () => {
             <div>
               <div className="flex items-center gap-2 mb-2">
                 <AlertCircle className="h-6 w-6 text-destructive" />
-                <h2 className="text-3xl font-bold">Community Reports</h2>
+                <h2 className="text-3xl font-bold">Verified Incident Records</h2>
               </div>
               <p className="text-muted-foreground">
-                Recent violation reports from the community
+                Only records that have passed the source-provenance verification gate appear here.
               </p>
             </div>
             <Button variant="outline" onClick={() => { void fetchViolations(); }} disabled={loading}>
@@ -127,13 +129,14 @@ export const ViolationFeed = () => {
             {loading ? (
               <Card>
                 <CardContent className="pt-6 text-center text-muted-foreground">
-                  Loading reports...
+                  Loading verified records...
                 </CardContent>
               </Card>
             ) : violations.length === 0 ? (
               <Card>
-                <CardContent className="pt-6 text-center text-muted-foreground">
-                  No reports found. Be the first to report a violation.
+                <CardContent className="pt-6 text-center text-muted-foreground space-y-2">
+                  <p>No source-verified incident records are currently published for this filter.</p>
+                  <p className="text-xs">New submissions remain separate until their evidence is reviewed.</p>
                 </CardContent>
               </Card>
             ) : (
@@ -142,9 +145,7 @@ export const ViolationFeed = () => {
                   <CardHeader>
                     <div className="flex items-start justify-between gap-4">
                       <CardTitle className="text-lg">{violation.title}</CardTitle>
-                      <Badge variant={violation.status === "verified" ? "default" : "secondary"}>
-                        {violation.status}
-                      </Badge>
+                      <Badge variant="default">Source Verified</Badge>
                     </div>
                     <CardDescription className="flex flex-wrap gap-4 mt-2">
                       <span className="flex items-center gap-1">
@@ -161,7 +162,7 @@ export const ViolationFeed = () => {
                   <CardContent>
                     <p className="text-sm whitespace-pre-wrap">{violation.description}</p>
                     <p className="text-xs text-muted-foreground mt-4">
-                      Reported {formatDate(violation.created_at)}
+                      Record published {formatDate(violation.created_at)}
                     </p>
                   </CardContent>
                 </Card>

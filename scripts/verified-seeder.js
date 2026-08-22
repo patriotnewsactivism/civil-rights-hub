@@ -73,6 +73,12 @@ function normalizeSource(source, index) {
     throw new Error(`sources[${index}].source_url must be an HTTPS URL`);
   }
 
+  // The private review-notes table is intentionally outside the Data API.
+  // Do not silently discard or try to expose those notes through PostgREST.
+  if (Object.prototype.hasOwnProperty.call(source, 'verification_notes')) {
+    throw new Error('verification_notes are private and must be recorded through a trusted SQL/admin review workflow, not this JSON API seeder');
+  }
+
   const allowedTypes = new Set([
     'official', 'court_record', 'government', 'bar_directory', 'organization', 'news', 'other',
   ]);
@@ -87,7 +93,6 @@ function normalizeSource(source, index) {
     source_publisher: source.source_publisher ?? null,
     source_type: sourceType,
     is_primary_source: Boolean(source.is_primary_source),
-    verification_notes: source.verification_notes ?? null,
   };
 }
 
@@ -154,24 +159,10 @@ async function insertSources(config, entityId, sources) {
       is_active: true,
     };
 
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from('data_provenance')
-      .upsert(publicSource, { onConflict: 'entity_type,entity_id,source_url' })
-      .select('id')
-      .single();
+      .upsert(publicSource, { onConflict: 'entity_type,entity_id,source_url' });
     if (error) throw error;
-
-    if (source.verification_notes) {
-      const { error: reviewError } = await supabase
-        .schema('private')
-        .from('provenance_reviews')
-        .upsert({
-          provenance_id: data.id,
-          verification_notes: source.verification_notes,
-          reviewed_at: new Date().toISOString(),
-        }, { onConflict: 'provenance_id' });
-      if (reviewError) throw reviewError;
-    }
   }
 }
 

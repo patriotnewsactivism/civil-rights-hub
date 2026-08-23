@@ -1,4 +1,10 @@
 import { Button } from "@/components/ui/button";
+import {
+  CASHAPP_URL,
+  PRIMARY_DONATION_LABEL,
+  PRIMARY_DONATION_URL,
+  VENMO_URL,
+} from "@/config/paymentLinks";
 import { DollarSign, Shield, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -7,19 +13,12 @@ interface DonationCTAProps {
   className?: string;
 }
 
-const STRIPE_DONATION_URL = import.meta.env.VITE_STRIPE_DONATION_URL as string | undefined;
-const CASHAPP_URL = "https://cash.app/$WeThePeopleNews";
-const VENMO_URL = "https://venmo.com/WeThePeopleNews";
-
 export function DonationCTA({ variant = "banner", className }: DonationCTAProps) {
-  const primaryUrl = STRIPE_DONATION_URL ?? CASHAPP_URL;
-  const primaryLabel = STRIPE_DONATION_URL ? "Stripe" : "CashApp";
-
   if (variant === "inline") {
     return (
       <span className={className}>
         <a
-          href={primaryUrl}
+          href={PRIMARY_DONATION_URL}
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-1 text-primary hover:underline text-sm font-medium"
@@ -44,9 +43,9 @@ export function DonationCTA({ variant = "banner", className }: DonationCTAProps)
           represent a fixed allocation of any individual contribution.
         </p>
         <Button className="w-full gap-2" asChild>
-          <a href={primaryUrl} target="_blank" rel="noopener noreferrer">
+          <a href={PRIMARY_DONATION_URL} target="_blank" rel="noopener noreferrer">
             <DollarSign className="h-4 w-4" />
-            Continue via {primaryLabel}
+            Continue via {PRIMARY_DONATION_LABEL}
             <ExternalLink className="h-3 w-3 opacity-70" />
           </a>
         </Button>
@@ -83,7 +82,7 @@ export function DonationCTA({ variant = "banner", className }: DonationCTAProps)
               <a href={CASHAPP_URL} target="_blank" rel="noopener noreferrer">CashApp</a>
             </Button>
             <Button size="sm" className="gap-1.5" asChild>
-              <a href={primaryUrl} target="_blank" rel="noopener noreferrer">
+              <a href={PRIMARY_DONATION_URL} target="_blank" rel="noopener noreferrer">
                 <DollarSign className="h-3.5 w-3.5" />
                 Contribute
                 <ExternalLink className="h-3 w-3 opacity-70" />

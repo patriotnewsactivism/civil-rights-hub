@@ -85,6 +85,7 @@ jobs:
           20260822220000
           20260822220500
           20260822221000
+          20260822223000
           EOF
           sed -i 's/^[[:space:]]*//' /tmp/reviewed_pending_allowlist.txt
           sort -u -o /tmp/reviewed_pending_allowlist.txt /tmp/reviewed_pending_allowlist.txt

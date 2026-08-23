@@ -10,8 +10,6 @@ ALTER TABLE public.foia_response_documents ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.know_your_rights_cards ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.challenge_guides ENABLE ROW LEVEL SECURITY;
 
--- Explicitly remove any legacy browser policies if a prior environment created
--- them outside the migration history.
 DO $$
 DECLARE
   p RECORD;
@@ -60,9 +58,9 @@ USING (user_id = (SELECT auth.uid()));
 
 -- ---------------------------------------------------------------------------
 -- FOIA campaigns: public campaigns can be browsed; authenticated users can
--- create and manage only campaigns they own. Membership rows are private to
--- each participant. Aggregate counters are maintained server-side rather than
--- trusting arbitrary browser UPDATEs.
+-- create campaigns they own. Membership rows are private to each participant.
+-- Aggregate counters are maintained server-side rather than trusting browser
+-- UPDATEs. Campaign edits can be introduced later through a constrained RPC.
 -- ---------------------------------------------------------------------------
 ALTER TABLE public.foia_campaigns ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.foia_campaign_participants ENABLE ROW LEVEL SECURITY;
@@ -93,13 +91,16 @@ USING (
 CREATE POLICY "Authenticated users can create FOIA campaigns"
 ON public.foia_campaigns FOR INSERT
 TO authenticated
-WITH CHECK (created_by = (SELECT auth.uid()));
+WITH CHECK (
+  created_by = (SELECT auth.uid())
+  AND COALESCE(featured, false) = false
+  AND COALESCE(participant_count, 0) = 0
+  AND COALESCE(request_count, 0) = 0
+);
 
-CREATE POLICY "Campaign owners can update own FOIA campaigns"
-ON public.foia_campaigns FOR UPDATE
-TO authenticated
-USING (created_by = (SELECT auth.uid()))
-WITH CHECK (created_by = (SELECT auth.uid()));
+-- No direct browser UPDATE policy is intentionally created. This prevents a
+-- campaign owner or participant from forging participant/request totals through
+-- PostgREST. Aggregate changes happen only in the SECURITY DEFINER trigger below.
 
 CREATE POLICY "Campaign owners can delete own FOIA campaigns"
 ON public.foia_campaigns FOR DELETE
@@ -116,6 +117,7 @@ ON public.foia_campaign_participants FOR INSERT
 TO authenticated
 WITH CHECK (
   user_id = (SELECT auth.uid())
+  AND COALESCE(requests_filed, 0) BETWEEN 0 AND 1
   AND EXISTS (
     SELECT 1
     FROM public.foia_campaigns c
@@ -129,7 +131,10 @@ CREATE POLICY "Users can update own campaign participation"
 ON public.foia_campaign_participants FOR UPDATE
 TO authenticated
 USING (user_id = (SELECT auth.uid()))
-WITH CHECK (user_id = (SELECT auth.uid()));
+WITH CHECK (
+  user_id = (SELECT auth.uid())
+  AND COALESCE(requests_filed, 0) BETWEEN 0 AND 1
+);
 
 CREATE POLICY "Users can leave own campaign participation"
 ON public.foia_campaign_participants FOR DELETE

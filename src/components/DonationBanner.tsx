@@ -2,20 +2,21 @@ import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { CASHAPP_HANDLE, CASHAPP_URL, VENMO_HANDLE, VENMO_URL } from "@/config/paymentLinks";
 import { X, ExternalLink, DollarSign, Coffee, Users } from "lucide-react";
 
 const DONATION_LINKS = [
   {
     name: "CashApp",
-    url: "https://cash.app/$WeThePeopleNews",
+    url: CASHAPP_URL,
     icon: DollarSign,
-    description: "$WeThePeopleNews",
+    description: CASHAPP_HANDLE,
   },
   {
     name: "Venmo",
-    url: "https://venmo.com/WeThePeopleNews",
+    url: VENMO_URL,
     icon: Coffee,
-    description: "@WeThePeopleNews",
+    description: VENMO_HANDLE,
   },
 ];
 

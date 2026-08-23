@@ -134,3 +134,23 @@ jobs:
           set -euo pipefail
           supabase functions deploy case-search --project-ref "$PROJECT_REF"
           supabase functions deploy send-weekly-digest --project-ref "$PROJECT_REF"
+
+      - name: Run Supabase security and performance advisors
+        shell: bash
+        run: |
+          set -euo pipefail
+          for kind in security performance; do
+            echo "::group::Supabase ${kind} advisor"
+            status="$(curl -sS -o "/tmp/${kind}.json" -w '%{http_code}' \
+              -H "Authorization: Bearer ${SUPABASE_ACCESS_TOKEN}" \
+              -H 'Content-Type: application/json' \
+              "https://api.supabase.com/v1/projects/${PROJECT_REF}/advisors/${kind}")"
+            if [[ "$status" != "200" ]]; then
+              echo "::error::Supabase ${kind} advisor returned HTTP ${status}"
+              cat "/tmp/${kind}.json"
+              exit 1
+            fi
+            jq -r '(.lints // []) | group_by(.level) | map({level: .[0].level, count: length}) | .[] | "\(.level): \(.count)"' "/tmp/${kind}.json" || true
+            jq -r '(.lints // [])[] | [.level, .name, .title, .detail, .remediation] | @tsv' "/tmp/${kind}.json" | head -100 || true
+            echo "::endgroup::"
+          done

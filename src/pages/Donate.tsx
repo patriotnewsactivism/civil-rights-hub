@@ -3,17 +3,18 @@ import { Footer } from "@/components/Footer";
 import { SEO } from "@/components/SEO";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  CASHAPP_HANDLE,
+  CASHAPP_URL,
+  PRIMARY_DONATION_LABEL,
+  PRIMARY_DONATION_URL,
+  VENMO_HANDLE,
+  VENMO_URL,
+} from "@/config/paymentLinks";
 import { DollarSign, ExternalLink, Shield, ReceiptText } from "lucide-react";
 import { Link } from "react-router-dom";
 
-const STRIPE_DONATION_URL = import.meta.env.VITE_STRIPE_DONATION_URL as string | undefined;
-const CASHAPP_URL = "https://cash.app/$WeThePeopleNews";
-const VENMO_URL = "https://venmo.com/WeThePeopleNews";
-
 const Donate = () => {
-  const primaryUrl = STRIPE_DONATION_URL ?? CASHAPP_URL;
-  const primaryLabel = STRIPE_DONATION_URL ? "Stripe" : "CashApp";
-
   return (
     <div className="min-h-screen flex flex-col">
       <SEO
@@ -52,8 +53,8 @@ const Donate = () => {
                   The external payment provider controls the available amount, payment terms, receipts, and account identity shown at checkout.
                 </p>
                 <Button className="w-full gap-2" asChild>
-                  <a href={primaryUrl} target="_blank" rel="noopener noreferrer">
-                    Continue via {primaryLabel}
+                  <a href={PRIMARY_DONATION_URL} target="_blank" rel="noopener noreferrer">
+                    Continue via {PRIMARY_DONATION_LABEL}
                     <ExternalLink className="h-3.5 w-3.5" />
                   </a>
                 </Button>
@@ -69,12 +70,12 @@ const Donate = () => {
               <CardContent className="space-y-3">
                 <Button variant="outline" className="w-full justify-between" asChild>
                   <a href={CASHAPP_URL} target="_blank" rel="noopener noreferrer">
-                    CashApp — $WeThePeopleNews <ExternalLink className="h-3.5 w-3.5" />
+                    CashApp — {CASHAPP_HANDLE} <ExternalLink className="h-3.5 w-3.5" />
                   </a>
                 </Button>
                 <Button variant="outline" className="w-full justify-between" asChild>
                   <a href={VENMO_URL} target="_blank" rel="noopener noreferrer">
-                    Venmo — @WeThePeopleNews <ExternalLink className="h-3.5 w-3.5" />
+                    Venmo — {VENMO_HANDLE} <ExternalLink className="h-3.5 w-3.5" />
                   </a>
                 </Button>
                 <p className="text-xs text-muted-foreground">

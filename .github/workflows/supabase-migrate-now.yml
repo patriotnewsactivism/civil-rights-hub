@@ -96,6 +96,13 @@ jobs:
             exit 2
           fi
 
+      - name: Inspect remote-only migration ledger entries
+        shell: bash
+        run: |
+          set -euo pipefail
+          psql "$POOLER_URL" -v ON_ERROR_STOP=1 -Atc \
+            "select row_to_json(m) from supabase_migrations.schema_migrations m where version in ('20260803180000','20260803181500','20260803183000') order by version"
+
       - name: Show Supabase migration plan
         shell: bash
         run: |

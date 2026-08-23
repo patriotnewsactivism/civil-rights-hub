@@ -21,7 +21,7 @@ jobs:
   migrate:
     if: github.event_name != 'pull_request' || github.head_ref == 'ops/run-supabase-migrations'
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     env:
       PROJECT_REF: vrdnrbjnitptxrexdlao
       POOLER_URL: postgresql://postgres.vrdnrbjnitptxrexdlao@aws-0-us-west-2.pooler.supabase.com:5432/postgres
@@ -86,6 +86,7 @@ jobs:
           20260822220500
           20260822221000
           20260822223000
+          20260823010000
           EOF
           sed -i 's/^[[:space:]]*//' /tmp/reviewed_pending_allowlist.txt
           sort -u -o /tmp/reviewed_pending_allowlist.txt /tmp/reviewed_pending_allowlist.txt
@@ -123,6 +124,12 @@ jobs:
           set -euo pipefail
           psql "$POOLER_URL" -v ON_ERROR_STOP=1 -f supabase/tests/provenance_gate_smoke.sql
 
+      - name: Run rollback-only security hardening smoke tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          psql "$POOLER_URL" -v ON_ERROR_STOP=1 -f supabase/tests/security_hardening_smoke.sql
+
       - name: Verify migration history after push
         shell: bash
         run: |
@@ -135,6 +142,24 @@ jobs:
           set -euo pipefail
           supabase functions deploy case-search --project-ref "$PROJECT_REF"
           supabase functions deploy send-weekly-digest --project-ref "$PROJECT_REF"
+
+      - name: Enable leaked-password protection
+        shell: bash
+        run: |
+          set -euo pipefail
+          status="$(curl -sS -o /tmp/hibp-config.json -w '%{http_code}' \
+            -X PATCH \
+            -H "Authorization: Bearer ${SUPABASE_ACCESS_TOKEN}" \
+            -H 'Content-Type: application/json' \
+            -d '{"password_hibp_enabled":true}' \
+            "https://api.supabase.com/v1/projects/${PROJECT_REF}/config/auth")"
+
+          if [[ "$status" == "200" ]]; then
+            echo "Supabase leaked-password protection enabled."
+          else
+            echo "::warning::Could not enable leaked-password protection (HTTP ${status}). This feature can be plan-gated; preserving the exact response in the audit artifact."
+            cat /tmp/hibp-config.json
+          fi
 
       - name: Run Supabase security and performance advisors
         shell: bash
@@ -209,3 +234,4 @@ jobs:
             /tmp/function-security.tsv
             /tmp/rls-policies.tsv
             /tmp/public-schema-privileges.tsv
+            /tmp/hibp-config.json

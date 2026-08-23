@@ -4,6 +4,7 @@ import { SEO } from "@/components/SEO";
 import { DonationCTA } from "@/components/DonationCTA";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CASHAPP_HANDLE, CASHAPP_URL, VENMO_HANDLE, VENMO_URL } from "@/config/paymentLinks";
 import { Link } from "react-router-dom";
 import {
   AlertCircle,
@@ -16,8 +17,6 @@ import {
   ArrowRight,
 } from "lucide-react";
 
-const CASHAPP_URL = "https://cash.app/$WeThePeopleNews";
-const VENMO_URL = "https://venmo.com/WeThePeopleNews";
 const GITHUB_URL = "https://github.com/patriotnewsactivism/civil-rights-hub";
 const CONTACT_EMAIL = "info@civilrightshub.org";
 
@@ -163,13 +162,13 @@ const Contribute = () => (
             <a href={CASHAPP_URL} target="_blank" rel="noopener noreferrer" className="flex flex-col items-center gap-2 rounded-xl border p-5 hover:border-primary/50 hover:bg-accent transition-colors text-center group">
               <span className="text-2xl">💸</span>
               <span className="font-semibold text-sm">CashApp</span>
-              <span className="text-xs text-muted-foreground">$WeThePeopleNews</span>
+              <span className="text-xs text-muted-foreground">{CASHAPP_HANDLE}</span>
               <ExternalLink className="h-3 w-3 text-muted-foreground/50 group-hover:text-primary transition-colors" />
             </a>
             <a href={VENMO_URL} target="_blank" rel="noopener noreferrer" className="flex flex-col items-center gap-2 rounded-xl border p-5 hover:border-primary/50 hover:bg-accent transition-colors text-center group">
               <span className="text-2xl">💳</span>
               <span className="font-semibold text-sm">Venmo</span>
-              <span className="text-xs text-muted-foreground">@WeThePeopleNews</span>
+              <span className="text-xs text-muted-foreground">{VENMO_HANDLE}</span>
               <ExternalLink className="h-3 w-3 text-muted-foreground/50 group-hover:text-primary transition-colors" />
             </a>
           </div>

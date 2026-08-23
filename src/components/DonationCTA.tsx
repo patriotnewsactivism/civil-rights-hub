@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { CASHAPP_URL, STRIPE_DONATION_URL, VENMO_URL } from "@/config/paymentLinks";
 import { DollarSign, Shield, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -6,10 +7,6 @@ interface DonationCTAProps {
   variant?: "banner" | "card" | "inline";
   className?: string;
 }
-
-const STRIPE_DONATION_URL = import.meta.env.VITE_STRIPE_DONATION_URL as string | undefined;
-const CASHAPP_URL = "https://cash.app/$WeThePeopleNews";
-const VENMO_URL = "https://venmo.com/WeThePeopleNews";
 
 export function DonationCTA({ variant = "banner", className }: DonationCTAProps) {
   const primaryUrl = STRIPE_DONATION_URL ?? CASHAPP_URL;

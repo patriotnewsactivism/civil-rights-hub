@@ -19,14 +19,31 @@ VALUES
 -- ---------------------------------------------------------------------------
 -- Attorney: no provenance must never promote.
 -- ---------------------------------------------------------------------------
+-- Explicitly clear legacy defaults such as review_count=0, languages=['English'],
+-- total_cases_handled=0, and total_reviews=0. Those are populated factual claims
+-- under the current gate and this identity-only fixture intentionally makes none
+-- of them.
 INSERT INTO public.attorneys (
   id,
   name,
   state,
   practice_areas,
+  review_count,
+  languages,
+  total_cases_handled,
+  total_reviews,
   is_verified
 )
-SELECT id, 'Provenance Test Attorney', 'Texas', ARRAY[]::TEXT[], false
+SELECT
+  id,
+  'Provenance Test Attorney',
+  'Texas',
+  ARRAY[]::TEXT[],
+  NULL,
+  ARRAY[]::TEXT[],
+  NULL,
+  NULL,
+  false
 FROM provenance_test_ids
 WHERE key = 'attorney';
 

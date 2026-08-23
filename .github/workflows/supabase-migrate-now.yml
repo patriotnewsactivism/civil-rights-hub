@@ -5,6 +5,9 @@ on:
     branches: [main]
     paths:
       - .github/workflows/supabase-migrate-now.yml
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review]
   workflow_dispatch:
 
 permissions:
@@ -16,6 +19,7 @@ concurrency:
 
 jobs:
   migrate:
+    if: github.event_name != 'pull_request' || github.head_ref == 'ops/run-supabase-migrations'
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
@@ -28,6 +32,8 @@ jobs:
     steps:
       - name: Checkout merged main
         uses: actions/checkout@v4
+        with:
+          ref: main
 
       - name: Require production migration credentials
         shell: bash

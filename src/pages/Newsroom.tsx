@@ -1,37 +1,24 @@
-import { Suspense, lazy } from "react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SEO } from "@/components/SEO";
-
-const FeaturedNews = lazy(() =>
-  import("@/components/FeaturedNews").then((module) => ({ default: module.FeaturedNews }))
-);
+import { VerifiedDataHold } from "@/components/VerifiedDataHold";
 
 const Newsroom = () => (
   <div className="min-h-screen flex flex-col">
     <SEO
-      title="Newsroom | Civil Rights Hub"
-      description="Investigations, explainers, and document drops from the Civil Rights Hub newsroom — verified reporting on civil rights violations, police accountability, press freedom, and constitutional law."
-      ogTitle="Civil Rights Hub Newsroom"
-      ogDescription="Investigations, timelines, and document drops. Verified civil rights reporting."
+      title="Newsroom Verification Hold | Civil Rights Hub"
+      description="Civil Rights Hub is rebuilding its newsroom so every displayed article, date, source attribution, and update timestamp maps to a real published source."
       canonicalUrl="https://civilrightshub.org/newsroom"
+      robots="noindex, follow"
     />
     <Header />
     <main className="flex-1">
-      <div className="container mx-auto px-4 py-10 space-y-8">
-        <div className="max-w-3xl space-y-3">
-          <p className="text-sm uppercase tracking-wide text-primary font-semibold">Newsroom</p>
-          <h1 className="text-4xl font-bold">Investigations &amp; Explainers</h1>
-          <p className="text-lg text-muted-foreground">
-            Verified reporting, timelines, and document drops from We The People News. Articles with
-            clear sources and "last updated" dates live here, separate from opinion posts.
-          </p>
-        </div>
-        <Suspense
-          fallback={<div className="py-8 text-center text-muted-foreground">Loading newsroom…</div>}
-        >
-          <FeaturedNews />
-        </Suspense>
+      <div className="container mx-auto max-w-3xl px-4 py-12">
+        <VerifiedDataHold
+          title="Newsroom cards are temporarily withheld"
+          description="The legacy newsroom was a static demo dataset presented as a live news feed. It contained invented publication dates, unsupported summaries and urgency labels, and a timer that simulated a fresh 'updated' timestamp even when no reporting had changed."
+          detail="The newsroom will return only with real article records, durable source URLs, actual publication/update timestamps, and a clear distinction between reporting, analysis, opinion, and external reference material."
+        />
       </div>
     </main>
     <Footer />

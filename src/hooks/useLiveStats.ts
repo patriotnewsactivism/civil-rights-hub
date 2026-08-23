@@ -25,14 +25,13 @@ const EMPTY_STATS: LiveStats = {
   activeScanners: 0,
 };
 
-// Publication hold: legacy attorney and incident verification flags cannot be
-// trusted until the source-provenance migration has been applied and audited in
-// production. Keep those public counts at zero regardless of the old DB flags.
+// Publication hold: legacy attorney, incident, and scanner verification cannot
+// be trusted until the source-provenance migrations are applied and audited in
+// production. Keep those public counts at zero regardless of old DB flags.
 async function fetchLiveStats(): Promise<{ stats: LiveStats; recent: RecentViolation[] }> {
-  const [sc, foia] = await Promise.all([
-    supabase.from("scanner_links").select("id", { count: "exact", head: true }).eq("is_active", true),
-    supabase.from("foia_requests").select("id", { count: "exact", head: true }),
-  ]);
+  const foia = await supabase
+    .from("foia_requests")
+    .select("id", { count: "exact", head: true });
 
   return {
     stats: {
@@ -40,7 +39,7 @@ async function fetchLiveStats(): Promise<{ stats: LiveStats; recent: RecentViola
       violationsTotal: 0,
       activeFoias: foia.count ?? 0,
       totalAttorneys: 0,
-      activeScanners: sc.count ?? 0,
+      activeScanners: 0,
     },
     recent: [],
   };
@@ -53,7 +52,7 @@ interface LiveStatsResult {
 
 export const useLiveStats = (): UseQueryResult<LiveStatsResult> & { stats: LiveStats; recent: RecentViolation[] } => {
   const query = useQuery<LiveStatsResult>({
-    queryKey: ["live-stats-publication-hold"],
+    queryKey: ["live-stats-publication-hold-v2"],
     queryFn: fetchLiveStats,
     staleTime: 60_000,
     refetchInterval: 120_000,

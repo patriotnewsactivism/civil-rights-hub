@@ -23,20 +23,6 @@ function loadEnvFile(filePath) {
   );
 }
 
-const env = {
-  ...loadEnvFile(path.join(__dirname, '..', '.env')),
-  ...loadEnvFile(path.join(__dirname, '..', '.env.local')),
-  ...process.env,
-};
-
-const SUPABASE_URL = env.VITE_SUPABASE_URL || env.NEXT_PUBLIC_SUPABASE_URL || env.SUPABASE_URL;
-const SERVICE_KEY = env.SUPABASE_SERVICE_ROLE_KEY || env.SUPABASE_SERVICE_KEY;
-
-if (!SUPABASE_URL || !SERVICE_KEY) {
-  console.error('Missing Supabase URL or service-role key. Refusing to seed.');
-  process.exit(1);
-}
-
 const args = process.argv.slice(2);
 const dryRun = args.includes('--dry-run');
 const inputPath = args.find((arg) => !arg.startsWith('--'));
@@ -51,18 +37,46 @@ if (!fs.existsSync(absoluteInput)) {
   process.exit(1);
 }
 
+const env = {
+  ...loadEnvFile(path.join(__dirname, '..', '.env')),
+  ...loadEnvFile(path.join(__dirname, '..', '.env.local')),
+  ...process.env,
+};
+
+const SUPABASE_URL = env.VITE_SUPABASE_URL || env.NEXT_PUBLIC_SUPABASE_URL || env.SUPABASE_URL;
+const SERVICE_KEY = env.SUPABASE_SERVICE_ROLE_KEY || env.SUPABASE_SERVICE_KEY;
+
+if (!dryRun && (!SUPABASE_URL || !SERVICE_KEY)) {
+  console.error('Missing Supabase URL or service-role key. Refusing to seed.');
+  process.exit(1);
+}
+
 const payload = JSON.parse(fs.readFileSync(absoluteInput, 'utf8'));
-const supabase = createClient(SUPABASE_URL, SERVICE_KEY, {
+const supabase = dryRun ? null : createClient(SUPABASE_URL, SERVICE_KEY, {
   auth: { persistSession: false, autoRefreshToken: false },
 });
+
+const ALLOWED_SOURCE_TYPES = new Set([
+  'official', 'court_record', 'government', 'bar_directory', 'organization', 'news', 'other',
+]);
+const ALLOWED_REVIEW_STATUSES = new Set(['verified_primary', 'verified_secondary']);
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
 
 const CONFIG = {
   attorneys: {
     table: 'attorneys',
     entityType: 'attorney',
-    verifiedColumn: 'is_verified',
-    verifiedValue: true,
     required: ['name', 'state'],
+    claimFields: [
+      'name', 'state', 'firm', 'city', 'practice_areas', 'specialties', 'phone', 'email',
+      'website', 'bio', 'bar_number', 'years_experience', 'rating', 'review_count',
+      'accepts_pro_bono', 'languages', 'bar_association_status', 'bar_status_date',
+      'case_success_rate', 'total_cases_handled', 'client_reviews', 'average_rating',
+      'total_reviews', 'years_with_organization', 'notable_cases', 'professional_bio',
+    ],
+    primaryTypes: new Set(['bar_directory', 'government', 'official', 'organization']),
+    publicationTypes: new Set(['bar_directory', 'government', 'official']),
     reset: {
       firm: null,
       city: null,
@@ -89,14 +103,23 @@ const CONFIG = {
       years_with_organization: null,
       notable_cases: [],
       professional_bio: null,
+      is_verified: false,
     },
+    publish: () => ({
+      is_verified: true,
+      verified_date: new Date().toISOString().slice(0, 10),
+    }),
   },
   violations: {
     table: 'violations',
     entityType: 'violation',
-    verifiedColumn: 'status',
-    verifiedValue: 'verified',
     required: ['title', 'description', 'location_state', 'incident_date'],
+    claimFields: [
+      'title', 'description', 'location_state', 'incident_date', 'location_city', 'latitude',
+      'longitude', 'media_urls', 'officer_name', 'officer_badge', 'officer_rank', 'agency_name',
+    ],
+    primaryTypes: new Set(['court_record', 'government', 'official']),
+    publicationTypes: new Set(['court_record', 'government', 'official']),
     reset: {
       location_city: null,
       latitude: null,
@@ -106,14 +129,20 @@ const CONFIG = {
       officer_badge: null,
       officer_rank: null,
       agency_name: null,
+      status: 'pending',
     },
+    publish: () => ({ status: 'verified' }),
   },
   activists: {
     table: 'activists',
     entityType: 'activist',
-    verifiedColumn: 'verified',
-    verifiedValue: true,
     required: ['name'],
+    claimFields: [
+      'name', 'alias', 'primary_platform', 'channel_url', 'focus_areas', 'home_state',
+      'profile_image_url', 'bio',
+    ],
+    primaryTypes: new Set(['organization', 'government', 'official']),
+    publicationTypes: new Set(['organization', 'government', 'official']),
     reset: {
       alias: null,
       primary_platform: null,
@@ -122,7 +151,117 @@ const CONFIG = {
       home_state: null,
       profile_image_url: null,
       bio: null,
+      verified: false,
     },
+    publish: () => ({ verified: true }),
+  },
+  state_laws: {
+    table: 'state_laws',
+    entityType: 'state_law',
+    required: [
+      'state', 'state_code', 'recording_consent_type', 'recording_law_details',
+      'can_record_police', 'police_recording_details', 'has_shield_law',
+      'protest_permit_required',
+    ],
+    claimFields: [
+      'state', 'state_code', 'recording_consent_type', 'recording_law_details',
+      'recording_law_citation', 'can_record_police', 'police_recording_details',
+      'police_recording_restrictions', 'has_shield_law', 'shield_law_details',
+      'journalist_protections', 'assembly_rights_details', 'protest_permit_required',
+      'activist_protections', 'state_aclu_url', 'state_legal_aid_url', 'state_resources',
+    ],
+    primaryTypes: new Set(['government', 'official', 'court_record']),
+    publicationTypes: new Set(['government', 'official', 'court_record']),
+    reset: {
+      recording_law_citation: null,
+      police_recording_restrictions: null,
+      shield_law_details: null,
+      journalist_protections: null,
+      assembly_rights_details: null,
+      activist_protections: null,
+      state_aclu_url: null,
+      state_legal_aid_url: null,
+      state_resources: null,
+    },
+    publish: null,
+  },
+  federal_laws: {
+    table: 'federal_laws',
+    entityType: 'federal_law',
+    required: ['title', 'category', 'statute_citation', 'summary'],
+    claimFields: [
+      'title', 'short_name', 'category', 'statute_citation', 'year_enacted', 'summary',
+      'full_text', 'key_provisions', 'protected_classes', 'enforcing_agency',
+      'enforcement_details', 'amendments', 'related_laws', 'external_links',
+    ],
+    primaryTypes: new Set(['government', 'official', 'court_record']),
+    publicationTypes: new Set(['government', 'official', 'court_record']),
+    reset: {
+      short_name: null,
+      year_enacted: null,
+      full_text: null,
+      key_provisions: null,
+      protected_classes: null,
+      enforcing_agency: null,
+      enforcement_details: null,
+      amendments: null,
+      related_laws: null,
+      external_links: null,
+    },
+    publish: null,
+  },
+  scanners: {
+    table: 'scanner_links',
+    entityType: 'scanner',
+    required: ['state', 'state_code', 'scanner_name'],
+    claimFields: [
+      'state', 'state_code', 'city', 'county', 'scanner_name', 'description', 'frequency',
+      'broadcastify_url', 'scanner_radio_url', 'other_url', 'link_type', 'listener_count', 'notes',
+    ],
+    primaryTypes: new Set(['organization', 'official']),
+    publicationTypes: new Set(['organization', 'official']),
+    reset: {
+      city: null,
+      county: null,
+      description: null,
+      frequency: null,
+      broadcastify_url: null,
+      scanner_radio_url: null,
+      other_url: null,
+      link_type: null,
+      listener_count: 0,
+      is_active: false,
+      notes: null,
+    },
+    publish: () => ({ is_active: true }),
+  },
+  resources: {
+    table: 'resource_library',
+    entityType: 'resource',
+    required: ['title', 'resource_type', 'category'],
+    claimFields: [
+      'title', 'description', 'resource_type', 'category', 'file_url', 'external_url',
+      'author', 'source', 'language', 'tags',
+    ],
+    primaryTypes: new Set(['organization', 'government', 'official', 'court_record']),
+    publicationTypes: new Set(['organization', 'government', 'official', 'court_record']),
+    reset: {
+      description: null,
+      file_url: null,
+      file_size: null,
+      external_url: null,
+      author: null,
+      source: null,
+      language: 'en',
+      tags: [],
+      download_count: 0,
+      view_count: 0,
+      rating: null,
+      rating_count: 0,
+      is_approved: false,
+      approved_by: null,
+    },
+    publish: () => ({ is_approved: true }),
   },
 };
 
@@ -132,68 +271,161 @@ function assertPlainObject(value, label) {
   }
 }
 
-function normalizeSource(source, index) {
+function isMeaningfulValue(value) {
+  if (value == null) return false;
+  if (typeof value === 'string') return value.trim() !== '';
+  if (Array.isArray(value)) return value.length > 0;
+  if (typeof value === 'object') return Object.keys(value).length > 0;
+  return true;
+}
+
+function normalizeSource(kind, source, index) {
+  const config = CONFIG[kind];
   assertPlainObject(source, `sources[${index}]`);
+
   if (typeof source.source_url !== 'string' || !source.source_url.startsWith('https://')) {
     throw new Error(`sources[${index}].source_url must be an HTTPS URL`);
   }
-
-  // The private review-notes table is intentionally outside the Data API.
-  // Do not silently discard or try to expose those notes through PostgREST.
   if (Object.prototype.hasOwnProperty.call(source, 'verification_notes')) {
     throw new Error('verification_notes are private and must be recorded through a trusted SQL/admin review workflow, not this JSON API seeder');
   }
 
-  const allowedTypes = new Set([
-    'official', 'court_record', 'government', 'bar_directory', 'organization', 'news', 'other',
-  ]);
-  const sourceType = source.source_type || 'official';
-  if (!allowedTypes.has(sourceType)) {
-    throw new Error(`Unsupported source_type: ${sourceType}`);
+  const sourceType = source.source_type;
+  if (!ALLOWED_SOURCE_TYPES.has(sourceType)) {
+    throw new Error(`sources[${index}].source_type must be explicit and supported`);
+  }
+
+  const verificationStatus = source.verification_status;
+  if (!ALLOWED_REVIEW_STATUSES.has(verificationStatus)) {
+    throw new Error(`sources[${index}].verification_status must be verified_primary or verified_secondary`);
+  }
+
+  const isPrimary = source.is_primary_source === true;
+  if (verificationStatus === 'verified_primary' && !isPrimary) {
+    throw new Error(`sources[${index}] cannot be verified_primary unless is_primary_source=true`);
+  }
+  if (verificationStatus === 'verified_primary' && !config.primaryTypes.has(sourceType)) {
+    throw new Error(`sources[${index}] source_type ${sourceType} cannot be primary evidence for ${kind}`);
+  }
+  if (verificationStatus === 'verified_secondary' && isPrimary) {
+    throw new Error(`sources[${index}] marked primary must use verification_status=verified_primary`);
+  }
+
+  if (typeof source.source_title !== 'string' || !source.source_title.trim()) {
+    throw new Error(`sources[${index}].source_title is required`);
+  }
+  if (typeof source.source_publisher !== 'string' || !source.source_publisher.trim()) {
+    throw new Error(`sources[${index}].source_publisher is required`);
+  }
+  if (source.source_date != null && (typeof source.source_date !== 'string' || !DATE_RE.test(source.source_date))) {
+    throw new Error(`sources[${index}].source_date must be YYYY-MM-DD when supplied`);
+  }
+  if (!Array.isArray(source.supports) || source.supports.length === 0) {
+    throw new Error(`sources[${index}].supports must list the record fields this source proves`);
+  }
+
+  const supportedFields = [...new Set(source.supports.map((field) => String(field).trim()))];
+  if (supportedFields.some((field) => !field)) {
+    throw new Error(`sources[${index}].supports cannot contain blank field names`);
+  }
+  const allowedClaims = new Set(config.claimFields);
+  const unsupportedNames = supportedFields.filter((field) => !allowedClaims.has(field));
+  if (unsupportedNames.length > 0) {
+    throw new Error(`sources[${index}].supports contains unknown/non-public fields: ${unsupportedNames.join(', ')}`);
   }
 
   return {
     source_url: source.source_url,
-    source_title: source.source_title ?? null,
-    source_publisher: source.source_publisher ?? null,
+    source_title: source.source_title.trim(),
+    source_publisher: source.source_publisher.trim(),
     source_type: sourceType,
-    is_primary_source: Boolean(source.is_primary_source),
+    is_primary_source: isPrimary,
+    verification_status: verificationStatus,
+    source_date: source.source_date ?? null,
+    source_document_id: source.source_document_id ?? null,
+    source_fingerprint: source.source_fingerprint ?? null,
+    supported_fields: supportedFields,
   };
 }
 
 function validateEntry(kind, entry, index) {
+  const config = CONFIG[kind];
   assertPlainObject(entry, `${kind}[${index}]`);
   assertPlainObject(entry.record, `${kind}[${index}].record`);
 
-  if (!Array.isArray(entry.sources) || entry.sources.length === 0) {
-    throw new Error(`${kind}[${index}] must include at least one source`);
+  const allowedClaims = new Set(config.claimFields);
+  const unknownRecordFields = Object.keys(entry.record).filter((field) => !allowedClaims.has(field));
+  if (unknownRecordFields.length > 0) {
+    throw new Error(`${kind}[${index}].record contains non-public or unsupported fields: ${unknownRecordFields.join(', ')}`);
   }
 
-  const config = CONFIG[kind];
+  if (!Array.isArray(entry.sources) || entry.sources.length === 0) {
+    throw new Error(`${kind}[${index}] must include at least one reviewed source`);
+  }
+
   for (const field of config.required) {
     const value = entry.record[field];
-    if (value == null || (typeof value === 'string' && value.trim() === '')) {
-      throw new Error(`${kind}[${index}].record.${field} is required for source verification`);
+    if (!isMeaningfulValue(value)) {
+      throw new Error(`${kind}[${index}].record.${field} is required for verified publication`);
     }
   }
 
-  const sources = entry.sources.map(normalizeSource);
-  const record = { ...config.reset, ...structuredClone(entry.record) };
-
-  // Caller cannot smuggle verification through the entity write. The script
-  // always writes an unverified/scrubbed record, then evidence, then verification.
-  if (kind === 'violations') {
-    record.status = 'pending';
-  } else {
-    record[config.verifiedColumn] = false;
-    if (kind === 'attorneys') record.verified_date = null;
+  const sources = entry.sources.map((source, sourceIndex) => normalizeSource(kind, source, sourceIndex));
+  const primarySources = sources.filter((source) => source.verification_status === 'verified_primary');
+  const publicationAnchors = primarySources.filter((source) => config.publicationTypes.has(source.source_type));
+  if (publicationAnchors.length === 0) {
+    throw new Error(`${kind}[${index}] requires at least one reviewed primary publication source`);
   }
 
-  // Existing records must be addressed explicitly by UUID. We never fuzzy-match
-  // people or organizations because that can merge two real people incorrectly.
+  for (const [field, value] of Object.entries(entry.record)) {
+    if (!isMeaningfulValue(value)) continue;
+    if (!primarySources.some((source) => source.supported_fields.includes(field))) {
+      throw new Error(`${kind}[${index}].record.${field} lacks reviewed primary-source support`);
+    }
+  }
+
+  if (kind === 'scanners') {
+    const linkField = ['broadcastify_url', 'scanner_radio_url', 'other_url']
+      .find((field) => typeof entry.record[field] === 'string' && entry.record[field].startsWith('https://'));
+    if (!linkField) {
+      throw new Error(`${kind}[${index}] requires an HTTPS provider URL`);
+    }
+    const link = entry.record[linkField];
+    if (!primarySources.some((source) => source.source_url === link && source.supported_fields.includes(linkField))) {
+      throw new Error(`${kind}[${index}] provider URL must exactly match primary provenance supporting ${linkField}`);
+    }
+  }
+
+  const record = { ...config.reset, ...structuredClone(entry.record) };
+  if (kind === 'attorneys') {
+    record.is_verified = false;
+    record.verified_date = null;
+  }
+  if (kind === 'activists') record.verified = false;
+  if (kind === 'violations') record.status = 'pending';
+  if (kind === 'scanners') record.is_active = false;
+  if (kind === 'resources') {
+    record.is_approved = false;
+    record.approved_by = null;
+  }
+
   const existingId = typeof entry.entity_id === 'string' ? entry.entity_id : null;
+  if (existingId && !UUID_RE.test(existingId)) {
+    throw new Error(`${kind}[${index}].entity_id must be a UUID when updating an existing record`);
+  }
 
   return { record, sources, existingId };
+}
+
+async function retireExistingSources(config, entityId) {
+  if (!entityId) return;
+  const { error } = await supabase
+    .from('data_provenance')
+    .update({ is_active: false, verification_status: 'stale' })
+    .eq('entity_type', config.entityType)
+    .eq('entity_id', entityId)
+    .eq('is_active', true);
+  if (error) throw error;
 }
 
 async function upsertUnverifiedEntity(kind, entry) {
@@ -219,6 +451,7 @@ async function upsertUnverifiedEntity(kind, entry) {
 }
 
 async function insertSources(config, entityId, sources) {
+  const reviewedAt = new Date().toISOString();
   for (const source of sources) {
     const publicSource = {
       entity_type: config.entityType,
@@ -229,6 +462,13 @@ async function insertSources(config, entityId, sources) {
       source_type: source.source_type,
       is_primary_source: source.is_primary_source,
       is_active: true,
+      verification_status: source.verification_status,
+      source_date: source.source_date,
+      retrieved_at: reviewedAt,
+      last_verified_at: reviewedAt,
+      source_document_id: source.source_document_id,
+      source_fingerprint: source.source_fingerprint,
+      supported_fields: source.supported_fields,
     };
 
     const { error } = await supabase
@@ -238,14 +478,12 @@ async function insertSources(config, entityId, sources) {
   }
 }
 
-async function markVerified(kind, entityId) {
+async function publishEntity(kind, entityId) {
   const config = CONFIG[kind];
-  const update = { [config.verifiedColumn]: config.verifiedValue };
-  if (kind === 'attorneys') update.verified_date = new Date().toISOString().slice(0, 10);
-
+  if (!config.publish) return;
   const { error } = await supabase
     .from(config.table)
-    .update(update)
+    .update(config.publish())
     .eq('id', entityId);
   if (error) throw error;
 }
@@ -253,34 +491,33 @@ async function markVerified(kind, entityId) {
 async function processKind(kind) {
   const rows = Array.isArray(payload[kind]) ? payload[kind] : [];
   const validated = rows.map((entry, index) => validateEntry(kind, entry, index));
-  console.log(`${kind}: ${validated.length} source-backed record(s)`);
+  console.log(`${kind}: ${validated.length} reviewed source-backed record(s)`);
 
   for (let index = 0; index < validated.length; index += 1) {
     const entry = validated[index];
     const label = `${kind}[${index}]`;
 
     if (dryRun) {
-      console.log(`[DRY RUN] ${label}: ${entry.sources.length} source(s), ${entry.existingId ? `existing ${entry.existingId}` : 'new record'}`);
+      console.log(`[DRY RUN] ${label}: ${entry.sources.length} reviewed source(s), ${entry.existingId ? `existing ${entry.existingId}` : 'new record'}`);
       continue;
     }
 
-    // Failure mode is intentionally safe: the entity is written unverified first.
-    // It can only become verified after source rows exist, and the DB trigger
-    // independently enforces the same rule. Existing legacy claim fields are
-    // scrubbed unless the source-backed input explicitly repopulates them.
+    // Existing evidence is retired before the row is changed. If any later step
+    // fails, the record stays hidden/unverified rather than inheriting stale proof.
+    await retireExistingSources(CONFIG[kind], entry.existingId);
     const entityId = await upsertUnverifiedEntity(kind, entry);
     await insertSources(CONFIG[kind], entityId, entry.sources);
-    await markVerified(kind, entityId);
-    console.log(`Verified ${label} -> ${entityId}`);
+    await publishEntity(kind, entityId);
+    console.log(`Published reviewed ${label} -> ${entityId}`);
   }
 }
 
 async function main() {
-  console.log(dryRun ? 'Running verification seed validation only.' : 'Running source-provenance seeder.');
+  console.log(dryRun ? 'Running reviewed seed validation only.' : 'Running reviewed source-provenance seeder.');
   for (const kind of Object.keys(CONFIG)) {
     await processKind(kind);
   }
-  console.log(dryRun ? 'Dry run passed.' : 'Source-backed seed completed.');
+  console.log(dryRun ? 'Dry run passed.' : 'Reviewed source-backed seed completed.');
 }
 
 main().catch((error) => {

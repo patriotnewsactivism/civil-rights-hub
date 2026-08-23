@@ -1,18 +1,12 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { SEO } from "@/components/SEO";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { MapPin, Search, Scale, ChevronRight } from "lucide-react";
-
-interface StateCount {
-  state: string;
-  count: number;
-}
+import { MapPin, Search, ChevronRight, ShieldCheck } from "lucide-react";
 
 const STATES: { slug: string; name: string; abbr: string }[] = [
   { slug: "alabama", name: "Alabama", abbr: "AL" },
@@ -69,134 +63,80 @@ const STATES: { slug: string; name: string; abbr: string }[] = [
 ];
 
 export default function StatesDirectory() {
-  const [counts, setCounts] = useState<Map<string, number>>(new Map());
-  const [totalAttorneys, setTotalAttorneys] = useState(0);
   const [search, setSearch] = useState("");
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchCounts = async () => {
-      // Get all attorneys and count by state
-      const { data, count } = await supabase
-        .from("attorneys")
-        .select("state", { count: "exact" });
-
-      if (data) {
-        const map = new Map<string, number>();
-        data.forEach((row: { state: string }) => {
-          const st = row.state?.toUpperCase().trim();
-          if (st) map.set(st, (map.get(st) ?? 0) + 1);
-        });
-        setCounts(map);
-        setTotalAttorneys(count ?? data.length);
-      }
-      setLoading(false);
-    };
-    fetchCounts();
-  }, []);
 
   const filteredStates = search.trim()
     ? STATES.filter(
-        (s) =>
-          s.name.toLowerCase().includes(search.toLowerCase()) ||
-          s.abbr.toLowerCase().includes(search.toLowerCase())
+        (state) =>
+          state.name.toLowerCase().includes(search.toLowerCase()) ||
+          state.abbr.toLowerCase().includes(search.toLowerCase()),
       )
     : STATES;
 
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "CollectionPage",
-    "name": "Find Civil Rights Attorneys by State",
-    "description": `Browse ${totalAttorneys}+ civil rights attorneys across all 50 states. Free directory for police brutality, false arrest, and constitutional rights cases.`,
-    "url": "https://civilrightshub.org/states",
-  };
-
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <Header />
       <SEO
-        title="Find Civil Rights Attorneys by State | All 50 States | Civil Rights Hub"
-        description={`Browse ${totalAttorneys}+ civil rights attorneys across all 50 states. Free directory — police brutality, false arrest, excessive force, constitutional rights lawyers.`}
-        keywords="civil rights attorney by state, find civil rights lawyer, police brutality attorney, constitutional rights lawyer directory"
+        title="Browse U.S. Civil Rights Resources by State | Civil Rights Hub"
+        description="Browse state navigation while Civil Rights Hub re-verifies state-level attorney, incident, and legal-reference datasets against reviewed source evidence."
         canonicalUrl="https://civilrightshub.org/states"
         ogUrl="https://civilrightshub.org/states"
-        ogTitle="Civil Rights Attorneys in All 50 States"
-        ogDescription={`Free directory of ${totalAttorneys}+ civil rights lawyers across every state.`}
-        structuredData={structuredData}
       />
+      <Header />
 
       <main className="flex-1">
-        <section className="bg-gradient-to-br from-primary/10 via-background to-primary/5 border-b">
+        <section className="border-b bg-gradient-to-br from-primary/10 via-background to-primary/5">
           <div className="container mx-auto px-4 py-10 md:py-14">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
-              <Link to="/" className="hover:text-primary transition-colors">Home</Link>
+            <div className="mb-3 flex items-center gap-2 text-sm text-muted-foreground">
+              <Link to="/" className="transition-colors hover:text-primary">Home</Link>
               <ChevronRight className="h-3 w-3" />
-              <Link to="/attorneys" className="hover:text-primary transition-colors">Attorneys</Link>
-              <ChevronRight className="h-3 w-3" />
-              <span className="text-foreground font-medium">All States</span>
+              <span className="font-medium text-foreground">States</span>
             </div>
-            <h1 className="text-3xl md:text-4xl font-bold mb-3">
-              Civil Rights Attorneys by{" "}
-              <span className="bg-gradient-to-r from-primary to-blue-400 bg-clip-text text-transparent">
-                State
-              </span>
-            </h1>
-            <p className="text-muted-foreground max-w-2xl mb-6">
-              {loading
-                ? "Loading directory..."
-                : `${totalAttorneys} attorneys across ${counts.size} states. Find a civil rights lawyer near you — all consultations tracked are free.`}
+            <h1 className="mb-3 text-3xl font-bold md:text-4xl">Browse by state</h1>
+            <p className="mb-6 max-w-2xl text-muted-foreground">
+              State navigation remains available, but legacy attorney counts, incident totals, and legal conclusions are withheld until their underlying records are re-verified.
             </p>
+            <div className="mb-6 flex max-w-2xl items-start gap-2 rounded-lg border border-amber-500/30 bg-amber-500/5 p-3 text-sm text-muted-foreground">
+              <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" />
+              <span>State pages currently show the verification hold rather than unsupported directory or legal data.</span>
+            </div>
             <div className="relative max-w-lg">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 placeholder="Search states..."
                 value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="pl-10 h-11"
+                onChange={(event) => setSearch(event.target.value)}
+                className="h-11 pl-10"
               />
             </div>
           </div>
         </section>
 
         <div className="container mx-auto px-4 py-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
-            {filteredStates.map((state) => {
-              const count = counts.get(state.abbr) ?? 0;
-              return (
-                <Link key={state.slug} to={`/state/${state.slug}`}>
-                  <Card className="border-border/50 hover:border-primary/40 hover:bg-primary/5 transition-all cursor-pointer h-full">
-                    <CardContent className="p-4 flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="bg-primary/10 rounded-lg p-2">
-                          <MapPin className="h-4 w-4 text-primary" />
-                        </div>
-                        <div>
-                          <p className="font-semibold text-sm">{state.name}</p>
-                          <p className="text-xs text-muted-foreground">{state.abbr}</p>
-                        </div>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {filteredStates.map((state) => (
+              <Link key={state.slug} to={`/state/${state.slug}`}>
+                <Card className="h-full cursor-pointer border-border/50 transition-all hover:border-primary/40 hover:bg-primary/5">
+                  <CardContent className="flex items-center justify-between p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="rounded-lg bg-primary/10 p-2">
+                        <MapPin className="h-4 w-4 text-primary" />
                       </div>
-                      <div className="text-right">
-                        {loading ? (
-                          <div className="h-5 w-8 bg-muted animate-pulse rounded" />
-                        ) : count > 0 ? (
-                          <Badge variant="secondary" className="text-xs">
-                            <Scale className="h-3 w-3 mr-1" />
-                            {count}
-                          </Badge>
-                        ) : (
-                          <Badge variant="outline" className="text-xs text-muted-foreground">
-                            —
-                          </Badge>
-                        )}
+                      <div>
+                        <p className="text-sm font-semibold">{state.name}</p>
+                        <p className="text-xs text-muted-foreground">{state.abbr}</p>
                       </div>
-                    </CardContent>
-                  </Card>
-                </Link>
-              );
-            })}
+                    </div>
+                    <Badge variant="outline" className="text-[10px] text-muted-foreground">
+                      Re-verifying
+                    </Badge>
+                  </CardContent>
+                </Card>
+              </Link>
+            ))}
           </div>
         </div>
       </main>
+
       <Footer />
     </div>
   );

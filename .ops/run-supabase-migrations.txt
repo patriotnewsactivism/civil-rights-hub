@@ -1,3 +1,3 @@
 Trigger the reviewed Civil Rights Hub Supabase production migration workflow.
 Project: vrdnrbjnitptxrexdlao
-All reviewed migrations have been applied. Re-run with corrected rollback-only smoke fixture, verify final migration ledger, and deploy fail-closed Edge Functions.
+Post-migration validation pass: confirm no pending migrations, rerun rollback-only smoke tests, verify Edge Functions, and capture Supabase security/performance advisor output.

@@ -1,3 +1,3 @@
 Trigger the reviewed Civil Rights Hub Supabase production migration workflow.
 Project: vrdnrbjnitptxrexdlao
-No schema changes intended in this pass. Capture complete security/performance advisor JSON, public-function privilege metadata, RLS policy definitions, and public-schema privileges for the full hardening audit.
+Apply reviewed migration 20260823010400, rerun provenance and security smoke suites, enable leaked-password protection when supported, verify migration parity, redeploy fail-closed Edge Functions, and capture final security/performance advisors.

@@ -1,3 +1,3 @@
 Trigger the reviewed Civil Rights Hub Supabase production migration workflow.
 Project: vrdnrbjnitptxrexdlao
-Remote-only migration versions have now been restored on main; rerun dry-run, apply reviewed pending migrations, execute smoke tests, and deploy fail-closed functions.
+All reviewed migrations have been applied. Re-run with corrected rollback-only smoke fixture, verify final migration ledger, and deploy fail-closed Edge Functions.

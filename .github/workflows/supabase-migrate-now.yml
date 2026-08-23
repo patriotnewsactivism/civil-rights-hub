@@ -1,0 +1,123 @@
+name: Civil Rights Hub Supabase Migration
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/supabase-migrate-now.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: civil-rights-hub-supabase-production-migration
+  cancel-in-progress: false
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      PROJECT_REF: vrdnrbjnitptxrexdlao
+      POOLER_URL: postgresql://postgres.vrdnrbjnitptxrexdlao@aws-0-us-west-2.pooler.supabase.com:5432/postgres
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+      PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+
+    steps:
+      - name: Checkout merged main
+        uses: actions/checkout@v4
+
+      - name: Require production migration credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$SUPABASE_ACCESS_TOKEN" || { echo "::error::Missing SUPABASE_ACCESS_TOKEN repository secret"; exit 1; }
+          test -n "$SUPABASE_DB_PASSWORD" || { echo "::error::Missing SUPABASE_DB_PASSWORD repository secret"; exit 1; }
+
+      - name: Install Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Confirm project link
+        shell: bash
+        run: |
+          set -euo pipefail
+          supabase link --project-ref "$PROJECT_REF" --password "$SUPABASE_DB_PASSWORD"
+
+      - name: Compare migration history and enforce reviewed allowlist
+        shell: bash
+        run: |
+          set -euo pipefail
+          find supabase/migrations -maxdepth 1 -type f -name '*.sql' -printf '%f\n' \
+            | sed -E 's/^([0-9]{14}).*/\1/' \
+            | grep -E '^[0-9]{14}$' \
+            | sort -u > /tmp/local_versions.txt
+
+          psql "$POOLER_URL" -v ON_ERROR_STOP=1 -Atc \
+            "select version from supabase_migrations.schema_migrations order by version" \
+            | sort -u > /tmp/remote_versions.txt
+
+          comm -23 /tmp/local_versions.txt /tmp/remote_versions.txt > /tmp/pending_versions.txt
+
+          echo "Pending migration versions:"
+          cat /tmp/pending_versions.txt || true
+
+          cat > /tmp/reviewed_pending_allowlist.txt <<'EOF'
+          20260803000000
+          20260812190000
+          20260822180500
+          20260822210500
+          20260822212000
+          20260822213000
+          20260822213500
+          20260822214500
+          20260822215000
+          20260822215500
+          20260822220000
+          20260822220500
+          20260822221000
+          EOF
+          sed -i 's/^[[:space:]]*//' /tmp/reviewed_pending_allowlist.txt
+          sort -u -o /tmp/reviewed_pending_allowlist.txt /tmp/reviewed_pending_allowlist.txt
+
+          comm -23 /tmp/pending_versions.txt /tmp/reviewed_pending_allowlist.txt > /tmp/unexpected_pending.txt
+          if [[ -s /tmp/unexpected_pending.txt ]]; then
+            echo "::error::Unexpected historical migrations are missing from production history. Refusing to replay them automatically:"
+            cat /tmp/unexpected_pending.txt
+            exit 2
+          fi
+
+      - name: Show Supabase migration plan
+        shell: bash
+        run: |
+          set -euo pipefail
+          supabase migration list --linked --password "$SUPABASE_DB_PASSWORD"
+          supabase db push --linked --include-all --dry-run --password "$SUPABASE_DB_PASSWORD"
+
+      - name: Apply reviewed pending migrations
+        shell: bash
+        run: |
+          set -euo pipefail
+          supabase db push --linked --include-all --password "$SUPABASE_DB_PASSWORD"
+
+      - name: Run rollback-only provenance smoke tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          psql "$POOLER_URL" -v ON_ERROR_STOP=1 -f supabase/tests/provenance_gate_smoke.sql
+
+      - name: Verify migration history after push
+        shell: bash
+        run: |
+          set -euo pipefail
+          supabase migration list --linked --password "$SUPABASE_DB_PASSWORD"
+
+      - name: Deploy fail-closed Edge Functions
+        shell: bash
+        run: |
+          set -euo pipefail
+          supabase functions deploy case-search --project-ref "$PROJECT_REF"
+          supabase functions deploy send-weekly-digest --project-ref "$PROJECT_REF"

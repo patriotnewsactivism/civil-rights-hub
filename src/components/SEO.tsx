@@ -18,6 +18,7 @@ interface SEOProps {
 const DEFAULT_TITLE = "Civil Rights Hub | Rights · Records · Research · Response";
 const DEFAULT_DESCRIPTION = "Civil Rights Hub is a public-interest toolkit for rights references, emergency encounter tools, incident documentation, public-records work, legal research, scanner resources, and community collaboration.";
 const DEFAULT_KEYWORDS = "civil rights, constitutional rights, rights references, public records, FOIA request, incident documentation, civil liberties, legal research, government transparency";
+const DEFAULT_SOCIAL_IMAGE = "https://civilrightshub.org/civil-rights-hub-social.png";
 
 export const SEO = ({
   title = DEFAULT_TITLE,
@@ -25,11 +26,11 @@ export const SEO = ({
   keywords = DEFAULT_KEYWORDS,
   ogTitle,
   ogDescription,
-  ogImage = "https://civilrightshub.org/og-image.png",
+  ogImage = DEFAULT_SOCIAL_IMAGE,
   ogUrl,
   twitterTitle,
   twitterDescription,
-  twitterImage = "https://civilrightshub.org/twitter-image.png",
+  twitterImage = DEFAULT_SOCIAL_IMAGE,
   canonicalUrl = "https://civilrightshub.org/",
   structuredData
 }: SEOProps) => {
@@ -49,7 +50,10 @@ export const SEO = ({
       <meta property="og:title" content={ogTitle || title} />
       <meta property="og:description" content={ogDescription || description} />
       <meta property="og:image" content={ogImage} />
-      <meta property="og:image:alt" content="Civil Rights Hub" />
+      <meta property="og:image:type" content="image/png" />
+      <meta property="og:image:width" content="1200" />
+      <meta property="og:image:height" content="630" />
+      <meta property="og:image:alt" content="Civil Rights Hub — Rights, Records, Research, Response" />
 
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:site" content="@CivilRightsHub" />
@@ -57,7 +61,7 @@ export const SEO = ({
       <meta name="twitter:title" content={twitterTitle || ogTitle || title} />
       <meta name="twitter:description" content={twitterDescription || ogDescription || description} />
       <meta name="twitter:image" content={twitterImage} />
-      <meta name="twitter:image:alt" content="Civil Rights Hub" />
+      <meta name="twitter:image:alt" content="Civil Rights Hub — Rights, Records, Research, Response" />
 
       {structuredData && (
         <script type="application/ld+json">

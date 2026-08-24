@@ -1,40 +1,52 @@
 {
   "name": "Civil Rights Hub",
   "short_name": "CRH",
-  "description": "Know your rights. Report violations. Find attorneys. Everything you need when it matters most.",
+  "description": "Source-first civil-rights references, incident documentation, public-records tools, research, and response resources.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#030711",
-  "theme_color": "#3b82f6",
+  "theme_color": "#11285f",
   "orientation": "portrait-primary",
   "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
     {
       "src": "/favicon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "purpose": "any"
     }
   ],
-  "categories": ["news", "social", "education"],
+  "categories": ["news", "education", "utilities"],
   "screenshots": [],
   "shortcuts": [
     {
-      "name": "Report Violation",
+      "name": "Report an Incident",
       "short_name": "Report",
       "url": "/do-this-now#report",
-      "icons": [{ "src": "/favicon.svg", "sizes": "any" }]
-    },
-    {
-      "name": "Find Attorney",
-      "short_name": "Attorneys",
-      "url": "/attorneys",
-      "icons": [{ "src": "/favicon.svg", "sizes": "any" }]
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }]
     },
     {
       "name": "Know Your Rights",
       "short_name": "Rights",
       "url": "/rights",
-      "icons": [{ "src": "/favicon.svg", "sizes": "any" }]
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "Public Records Tools",
+      "short_name": "Records",
+      "url": "/help#tools",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }]
     }
   ]
 }

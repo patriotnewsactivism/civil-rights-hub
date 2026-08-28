@@ -39,21 +39,32 @@ jobs:
           set -euo pipefail
           sql_file="$(mktemp)"
           {
-            printf '%s\n' 'BEGIN;'
+            printf '%s\n' \
+              'BEGIN;' \
+              'CREATE TEMP TABLE community_recovery_pre_counts AS' \
+              "SELECT 'posts'::text AS source_table, count(*)::bigint AS rows FROM public.posts" \
+              "UNION ALL SELECT 'forum_threads', count(*) FROM public.forum_threads" \
+              "UNION ALL SELECT 'community_events', count(*) FROM public.community_events;"
             cat supabase/migrations/20260828220500_restore_clean_social_community.sql
             printf '%s\n' \
               '' \
               'DO $$' \
+              'DECLARE' \
+              '  expected_count bigint;' \
+              '  quarantine_count bigint;' \
               'BEGIN' \
               "  IF (SELECT count(*) FROM public.posts) <> 0 THEN RAISE EXCEPTION 'posts not empty after recovery'; END IF;" \
               "  IF (SELECT count(*) FROM public.forum_threads) <> 0 THEN RAISE EXCEPTION 'forum_threads not empty after recovery'; END IF;" \
               "  IF (SELECT count(*) FROM public.community_events) <> 0 THEN RAISE EXCEPTION 'community_events not empty after recovery'; END IF;" \
+              "  IF EXISTS (SELECT 1 FROM public.user_profiles WHERE coalesce(posts_created,0) <> 0 OR coalesce(posts_count,0) <> 0 OR coalesce(threads_created,0) <> 0 OR coalesce(helpful_answers,0) <> 0) THEN RAISE EXCEPTION 'legacy social-derived profile counters remain'; END IF;" \
               "  IF NOT EXISTS (SELECT 1 FROM storage.buckets WHERE id = 'posts' AND public) THEN RAISE EXCEPTION 'posts bucket missing'; END IF;" \
               "  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE schemaname='storage' AND tablename='objects' AND policyname='community_posts_media_insert') THEN RAISE EXCEPTION 'posts upload policy missing'; END IF;" \
               "  IF EXISTS (SELECT 1 FROM pg_policies WHERE schemaname='public' AND tablename IN ('forum_threads','forum_posts') AND roles::text LIKE '%anon%' AND cmd='INSERT') THEN RAISE EXCEPTION 'anonymous forum insert policy remains'; END IF;" \
               "  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE schemaname='public' AND tablename='posts' AND policyname='posts_public_select') THEN RAISE EXCEPTION 'posts select policy missing'; END IF;" \
+              "  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE schemaname='public' AND tablename='poll_votes' AND policyname='poll_votes_visible_select' AND coalesce(qual,'') LIKE '%poll_id%') THEN RAISE EXCEPTION 'poll vote visibility policy does not use live poll_id schema'; END IF;" \
               "  IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname='protect_user_profile_system_fields_trigger' AND NOT tgisinternal) THEN RAISE EXCEPTION 'profile protection trigger missing'; END IF;" \
               "  IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname='refresh_community_event_rsvp_count_trigger' AND NOT tgisinternal) THEN RAISE EXCEPTION 'RSVP count trigger missing'; END IF;" \
+              "  FOR expected_count, quarantine_count IN SELECT p.rows, count(q.id) FROM community_recovery_pre_counts p LEFT JOIN private.community_social_recovery_quarantine q ON q.source_table = p.source_table GROUP BY p.source_table, p.rows LOOP IF quarantine_count < expected_count THEN RAISE EXCEPTION 'quarantine snapshot count is lower than pre-migration count: expected %, found %', expected_count, quarantine_count; END IF; END LOOP;" \
               'END $$;' \
               '' \
               'ROLLBACK;'

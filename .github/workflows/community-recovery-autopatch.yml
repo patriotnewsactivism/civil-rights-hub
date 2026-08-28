@@ -1,4 +1,4 @@
-name: Civil Rights Hub Social Recovery Migration Patch
+name: Civil Rights Hub Social Migration File Patch
 
 on:
   push:
@@ -33,7 +33,7 @@ jobs:
           marker = "DELETE FROM public.community_events;\n"
           reset = (
               "\n-- Reset social-derived profile counters contaminated by the quarantined corpus.\n"
-              "-- Keep actual relationship counts derived from the surviving follows table.\n"
+              "-- Keep relationship counts derived from surviving genuine follows rows.\n"
               "UPDATE public.user_profiles AS profile\n"
               "SET posts_created = 0,\n"
               "    posts_count = 0,\n"
@@ -50,17 +50,8 @@ jobs:
               if marker not in text:
                   raise SystemExit('Unable to locate social cleanup delete marker')
               text = text.replace(marker, marker + reset, 1)
-          migration.write_text(text)
 
-          workflow = Path('.github/workflows/supabase-migrate-now.yml')
-          text = workflow.read_text()
-          version = '          20260828220500\n'
-          if version not in text:
-              allowlist_marker = '          20260823010400\n'
-              if allowlist_marker not in text:
-                  raise SystemExit('Unable to locate migration allowlist marker')
-              text = text.replace(allowlist_marker, allowlist_marker + version, 1)
-          workflow.write_text(text)
+          migration.write_text(text)
           PY
 
       - name: Verify patch shape
@@ -70,14 +61,13 @@ jobs:
           grep -q "poll_votes.poll_id" supabase/migrations/20260828220500_restore_clean_social_community.sql
           ! grep -q "poll_votes.post_id" supabase/migrations/20260828220500_restore_clean_social_community.sql
           grep -q "posts_created = 0" supabase/migrations/20260828220500_restore_clean_social_community.sql
-          grep -q "20260828220500" .github/workflows/supabase-migrate-now.yml
 
-      - name: Commit reviewed migration corrections
+      - name: Commit migration correction
         shell: bash
         run: |
           set -euo pipefail
           git config user.name "Civil Rights Hub Recovery Bot"
           git config user.email "actions@users.noreply.github.com"
-          git add supabase/migrations/20260828220500_restore_clean_social_community.sql .github/workflows/supabase-migrate-now.yml
+          git add supabase/migrations/20260828220500_restore_clean_social_community.sql
           git commit -m "Harden clean social recovery migration"
           git push origin HEAD:fix/community-social-recovery

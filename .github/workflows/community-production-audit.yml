@@ -34,6 +34,21 @@ permissions:
   contents: read
 
 jobs:
+  build:
+    if: github.event_name != 'pull_request' || github.head_ref == 'fix/community-social-relaunch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Production build
+        run: npm run build
+
   audit:
     if: github.event_name != 'pull_request' || github.head_ref == 'fix/community-social-relaunch'
     runs-on: ubuntu-latest
@@ -86,11 +101,7 @@ jobs:
           WHERE conrelid IN ('public.poll_votes'::regclass, 'public.post_polls'::regclass)
           ORDER BY table_name, conname;
 
-          \echo '=== Poll table row counts ==='
-          SELECT 'post_polls' AS table_name, count(*) FROM public.post_polls
-          UNION ALL SELECT 'poll_votes', count(*) FROM public.poll_votes;
-
-          \echo '=== User profile grants ==='
+          \echo '=== User profile browser grants ==='
           SELECT grantee, privilege_type, column_name
           FROM information_schema.column_privileges
           WHERE table_schema='public' AND table_name='user_profiles'
@@ -105,3 +116,44 @@ jobs:
             AND (coalesce(qual,'') ~ 'posts|avatars' OR coalesce(with_check,'') ~ 'posts|avatars')
           ORDER BY policyname;
           SQL
+
+      - name: Rollback-test social runtime reconciliation
+        shell: bash
+        run: |
+          set -euo pipefail
+          sql_file="$(mktemp)"
+          {
+            printf '%s\n' 'BEGIN;'
+            cat supabase/migrations/20260828233500_reconcile_social_runtime_contract.sql
+            cat <<'SQL'
+
+          DO $$
+          BEGIN
+            IF NOT EXISTS (
+              SELECT 1 FROM pg_constraint
+              WHERE conrelid = 'public.poll_votes'::regclass
+                AND conname = 'poll_votes_poll_id_fkey'
+                AND pg_get_constraintdef(oid) LIKE '%REFERENCES posts(id)%'
+            ) THEN
+              RAISE EXCEPTION 'poll_votes FK does not reference posts(id)';
+            END IF;
+
+            IF NOT EXISTS (
+              SELECT 1 FROM pg_trigger
+              WHERE tgname = 'refresh_story_view_count_trigger' AND NOT tgisinternal
+            ) THEN
+              RAISE EXCEPTION 'story view count trigger missing';
+            END IF;
+
+            IF EXISTS (
+              SELECT 1 FROM pg_policies
+              WHERE schemaname='storage' AND tablename='objects' AND policyname='avatars_auth_update'
+            ) THEN
+              RAISE EXCEPTION 'legacy avatar update policy remains';
+            END IF;
+          END $$;
+
+          ROLLBACK;
+          SQL
+          } > "$sql_file"
+          psql "$POOLER_URL" -v ON_ERROR_STOP=1 -P pager=off -f "$sql_file"

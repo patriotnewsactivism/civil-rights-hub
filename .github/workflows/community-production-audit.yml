@@ -35,7 +35,8 @@ permissions:
 
 jobs:
   audit:
-    if: github.event_name != 'pull_request' || github.head_ref == 'fix/social-recovery-final'
+    # Same-repository PRs may use the production audit secret; fork PRs are intentionally skipped.
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:

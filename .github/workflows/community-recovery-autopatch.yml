@@ -31,27 +31,22 @@ jobs:
           text = text.replace('poll_votes.post_id', 'poll_votes.poll_id')
 
           marker = "DELETE FROM public.community_events;\n"
-          reset = """
-
--- Reset social-derived profile counters contaminated by the quarantined corpus.
--- Keep actual relationship counts derived from the surviving follows table.
-UPDATE public.user_profiles AS profile
-SET posts_created = 0,
-    posts_count = 0,
-    threads_created = 0,
-    helpful_answers = 0,
-    followers_count = (
-      SELECT COUNT(*)::integer
-      FROM public.follows f
-      WHERE f.following_id = profile.user_id
-    ),
-    following_count = (
-      SELECT COUNT(*)::integer
-      FROM public.follows f
-      WHERE f.follower_id = profile.user_id
-    );
-"""
-          if reset.strip() not in text:
+          reset = (
+              "\n-- Reset social-derived profile counters contaminated by the quarantined corpus.\n"
+              "-- Keep actual relationship counts derived from the surviving follows table.\n"
+              "UPDATE public.user_profiles AS profile\n"
+              "SET posts_created = 0,\n"
+              "    posts_count = 0,\n"
+              "    threads_created = 0,\n"
+              "    helpful_answers = 0,\n"
+              "    followers_count = (\n"
+              "      SELECT COUNT(*)::integer FROM public.follows f WHERE f.following_id = profile.user_id\n"
+              "    ),\n"
+              "    following_count = (\n"
+              "      SELECT COUNT(*)::integer FROM public.follows f WHERE f.follower_id = profile.user_id\n"
+              "    );\n"
+          )
+          if 'posts_created = 0' not in text:
               if marker not in text:
                   raise SystemExit('Unable to locate social cleanup delete marker')
               text = text.replace(marker, marker + reset, 1)
@@ -61,10 +56,10 @@ SET posts_created = 0,
           text = workflow.read_text()
           version = '          20260828220500\n'
           if version not in text:
-              marker = '          20260823010400\n'
-              if marker not in text:
+              allowlist_marker = '          20260823010400\n'
+              if allowlist_marker not in text:
                   raise SystemExit('Unable to locate migration allowlist marker')
-              text = text.replace(marker, marker + version, 1)
+              text = text.replace(allowlist_marker, allowlist_marker + version, 1)
           workflow.write_text(text)
           PY
 

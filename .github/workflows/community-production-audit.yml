@@ -35,7 +35,7 @@ permissions:
 
 jobs:
   audit:
-    if: github.event_name != 'pull_request' || github.head_ref == 'fix/community-social-recovery'
+    if: github.event_name != 'pull_request' || github.head_ref == 'fix/social-recovery-final'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
@@ -71,28 +71,10 @@ jobs:
           UNION ALL SELECT 'follows', count(*) FROM public.follows
           ORDER BY table_name;
 
-          \echo '=== Account-backed vs legacy social content ==='
-          SELECT 'posts' AS table_name,
-                 count(*) FILTER (WHERE user_id IS NULL) AS null_owner,
-                 count(*) FILTER (WHERE user_id IS NOT NULL) AS account_owned,
-                 count(DISTINCT user_id) FILTER (WHERE user_id IS NOT NULL) AS distinct_owners,
-                 min(created_at) AS oldest,
-                 max(created_at) AS newest
-          FROM public.posts
-          UNION ALL
-          SELECT 'forum_threads',
-                 count(*) FILTER (WHERE user_id IS NULL),
-                 count(*) FILTER (WHERE user_id IS NOT NULL),
-                 count(DISTINCT user_id) FILTER (WHERE user_id IS NOT NULL),
-                 min(created_at), max(created_at)
-          FROM public.forum_threads
-          UNION ALL
-          SELECT 'community_events',
-                 count(*) FILTER (WHERE organizer_id IS NULL),
-                 count(*) FILTER (WHERE organizer_id IS NOT NULL),
-                 count(DISTINCT organizer_id) FILTER (WHERE organizer_id IS NOT NULL),
-                 min(created_at), max(created_at)
-          FROM public.community_events;
+          \echo '=== Recovery migration ledger ==='
+          SELECT version, name
+          FROM supabase_migrations.schema_migrations
+          WHERE version = '20260828220500';
 
           \echo '=== RLS policy definitions for public social tables ==='
           SELECT tablename, policyname, cmd, roles::text, qual, with_check

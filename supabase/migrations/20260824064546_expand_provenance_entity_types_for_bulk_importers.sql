@@ -1,0 +1,2 @@
+alter table public.data_provenance drop constraint if exists data_provenance_entity_type_check;
+alter table public.data_provenance add constraint data_provenance_entity_type_check check (entity_type = any (array['attorney'::text,'violation'::text,'activist'::text,'state_law'::text,'federal_law'::text,'scanner'::text,'scanner_frequency'::text,'resource'::text,'foia_agency'::text,'agency'::text,'press_incident'::text]));

@@ -1,4 +1,4 @@
-name: Civil Rights Hub Sentry Dependency Bootstrap
+name: Civil Rights Hub Legacy Profile Audit
 
 on:
   push:
@@ -7,44 +7,74 @@ on:
       - .github/workflows/community-recovery-autopatch.yml
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
-  install:
+  audit:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
+    env:
+      PROJECT_REF: vrdnrbjnitptxrexdlao
+      POOLER_URL: postgresql://postgres.vrdnrbjnitptxrexdlao@aws-0-us-west-2.pooler.supabase.com:5432/postgres
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+      PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
     steps:
-      - name: Checkout recovery branch
-        uses: actions/checkout@v4
-        with:
-          ref: fix/community-social-recovery
-          fetch-depth: 0
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-
-      - name: Install existing dependencies
-        run: npm ci
-
-      - name: Add Sentry React SDK
-        run: npm install @sentry/react@latest --save
-
-      - name: Verify dependency graph
-        run: npm ls @sentry/react
-
-      - name: Commit lockfile update
+      - name: Verify target
         shell: bash
         run: |
           set -euo pipefail
-          git config user.name "Civil Rights Hub Recovery Bot"
-          git config user.email "actions@users.noreply.github.com"
-          git add package.json package-lock.json
-          if git diff --cached --quiet; then
-            echo "Sentry dependency already current"
-            exit 0
-          fi
-          git commit -m "Add Sentry React observability dependency"
-          git push origin HEAD:fix/community-social-recovery
+          test -n "$SUPABASE_DB_PASSWORD" || { echo "::error::Missing SUPABASE_DB_PASSWORD"; exit 1; }
+          test "$PROJECT_REF" = "vrdnrbjnitptxrexdlao" || { echo "::error::Unexpected Supabase project"; exit 1; }
+
+      - name: Audit aggregate profile and verification state
+        shell: bash
+        run: |
+          set -euo pipefail
+          psql "$POOLER_URL" -v ON_ERROR_STOP=1 -P pager=off <<'SQL'
+          \echo '=== User profile roles and legacy verification flags ==='
+          SELECT role, is_verified, count(*) AS profiles
+          FROM public.user_profiles
+          GROUP BY role, is_verified
+          ORDER BY role, is_verified;
+
+          \echo '=== Social-derived profile counters ==='
+          SELECT
+            count(*) AS profiles,
+            sum(coalesce(reputation_points,0)) AS reputation_points,
+            sum(coalesce(helper_score,0)) AS helper_score,
+            sum(coalesce(threads_created,0)) AS threads_created,
+            sum(coalesce(posts_created,0)) AS posts_created,
+            sum(coalesce(helpful_answers,0)) AS helpful_answers,
+            sum(coalesce(followers_count,0)) AS followers_count,
+            sum(coalesce(following_count,0)) AS following_count,
+            sum(coalesce(posts_count,0)) AS posts_count
+          FROM public.user_profiles;
+
+          \echo '=== Verification table availability ==='
+          SELECT to_regclass('public.user_verification') AS user_verification_table;
+
+          \echo '=== Verification aggregate state ==='
+          DO $$
+          DECLARE result jsonb;
+          BEGIN
+            IF to_regclass('public.user_verification') IS NOT NULL THEN
+              EXECUTE $q$
+                SELECT coalesce(jsonb_agg(x), '[]'::jsonb)
+                FROM (
+                  SELECT status, verification_type, count(*) AS requests
+                  FROM public.user_verification
+                  GROUP BY status, verification_type
+                  ORDER BY status, verification_type
+                ) x
+              $q$ INTO result;
+              RAISE NOTICE 'verification aggregates: %', result;
+            ELSE
+              RAISE NOTICE 'user_verification table absent';
+            END IF;
+          END $$;
+
+          \echo '=== Popular tags aggregate state ==='
+          SELECT count(*) AS tags,
+                 sum(coalesce(use_count,0)) AS total_use_count
+          FROM public.popular_tags;
+          SQL

@@ -1,4 +1,4 @@
-name: Civil Rights Hub Legacy Profile Audit
+name: Civil Rights Hub Legacy Civic Score Audit
 
 on:
   push:
@@ -26,55 +26,35 @@ jobs:
           test -n "$SUPABASE_DB_PASSWORD" || { echo "::error::Missing SUPABASE_DB_PASSWORD"; exit 1; }
           test "$PROJECT_REF" = "vrdnrbjnitptxrexdlao" || { echo "::error::Unexpected Supabase project"; exit 1; }
 
-      - name: Audit aggregate profile and verification state
+      - name: Audit social-derived counters only
         shell: bash
         run: |
           set -euo pipefail
           psql "$POOLER_URL" -v ON_ERROR_STOP=1 -P pager=off <<'SQL'
-          \echo '=== User profile roles and legacy verification flags ==='
-          SELECT role, is_verified, count(*) AS profiles
-          FROM public.user_profiles
-          GROUP BY role, is_verified
-          ORDER BY role, is_verified;
-
-          \echo '=== Social-derived profile counters ==='
           SELECT
             count(*) AS profiles,
-            sum(coalesce(reputation_points,0)) AS reputation_points,
-            sum(coalesce(helper_score,0)) AS helper_score,
-            sum(coalesce(threads_created,0)) AS threads_created,
-            sum(coalesce(posts_created,0)) AS posts_created,
-            sum(coalesce(helpful_answers,0)) AS helpful_answers,
-            sum(coalesce(followers_count,0)) AS followers_count,
-            sum(coalesce(following_count,0)) AS following_count,
-            sum(coalesce(posts_count,0)) AS posts_count
+            sum(coalesce(posts_created,0)) AS profile_posts_created,
+            sum(coalesce(posts_count,0)) AS profile_posts_count,
+            sum(coalesce(threads_created,0)) AS profile_threads_created,
+            sum(coalesce(followers_count,0)) AS profile_followers_count,
+            sum(coalesce(following_count,0)) AS profile_following_count
           FROM public.user_profiles;
 
-          \echo '=== Verification table availability ==='
-          SELECT to_regclass('public.user_verification') AS user_verification_table;
-
-          \echo '=== Verification aggregate state ==='
           DO $$
           DECLARE result jsonb;
           BEGIN
-            IF to_regclass('public.user_verification') IS NOT NULL THEN
+            IF to_regclass('public.civic_scores') IS NOT NULL THEN
               EXECUTE $q$
-                SELECT coalesce(jsonb_agg(x), '[]'::jsonb)
-                FROM (
-                  SELECT status, verification_type, count(*) AS requests
-                  FROM public.user_verification
-                  GROUP BY status, verification_type
-                  ORDER BY status, verification_type
-                ) x
+                SELECT jsonb_build_object(
+                  'rows', count(*),
+                  'score', coalesce(sum(score),0),
+                  'posts_count', coalesce(sum(posts_count),0),
+                  'connections_count', coalesce(sum(connections_count),0)
+                ) FROM public.civic_scores
               $q$ INTO result;
-              RAISE NOTICE 'verification aggregates: %', result;
+              RAISE NOTICE 'civic score aggregates: %', result;
             ELSE
-              RAISE NOTICE 'user_verification table absent';
+              RAISE NOTICE 'civic_scores table absent';
             END IF;
           END $$;
-
-          \echo '=== Popular tags aggregate state ==='
-          SELECT count(*) AS tags,
-                 sum(coalesce(use_count,0)) AS total_use_count
-          FROM public.popular_tags;
           SQL

@@ -1,4 +1,4 @@
-name: Civil Rights Hub Legacy Civic Score Audit
+name: Civil Rights Hub Social Recovery Migration Patch
 
 on:
   push:
@@ -7,54 +7,82 @@ on:
       - .github/workflows/community-recovery-autopatch.yml
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
-  audit:
+  patch:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    env:
-      PROJECT_REF: vrdnrbjnitptxrexdlao
-      POOLER_URL: postgresql://postgres.vrdnrbjnitptxrexdlao@aws-0-us-west-2.pooler.supabase.com:5432/postgres
-      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
-      PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
     steps:
-      - name: Verify target
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/community-social-recovery
+          fetch-depth: 0
+
+      - name: Apply reviewed migration corrections
         shell: bash
         run: |
           set -euo pipefail
-          test -n "$SUPABASE_DB_PASSWORD" || { echo "::error::Missing SUPABASE_DB_PASSWORD"; exit 1; }
-          test "$PROJECT_REF" = "vrdnrbjnitptxrexdlao" || { echo "::error::Unexpected Supabase project"; exit 1; }
+          python3 - <<'PY'
+          from pathlib import Path
 
-      - name: Audit social-derived counters only
+          migration = Path('supabase/migrations/20260828220500_restore_clean_social_community.sql')
+          text = migration.read_text()
+          text = text.replace('poll_votes.post_id', 'poll_votes.poll_id')
+
+          marker = "DELETE FROM public.community_events;\n"
+          reset = """
+
+-- Reset social-derived profile counters contaminated by the quarantined corpus.
+-- Keep actual relationship counts derived from the surviving follows table.
+UPDATE public.user_profiles AS profile
+SET posts_created = 0,
+    posts_count = 0,
+    threads_created = 0,
+    helpful_answers = 0,
+    followers_count = (
+      SELECT COUNT(*)::integer
+      FROM public.follows f
+      WHERE f.following_id = profile.user_id
+    ),
+    following_count = (
+      SELECT COUNT(*)::integer
+      FROM public.follows f
+      WHERE f.follower_id = profile.user_id
+    );
+"""
+          if reset.strip() not in text:
+              if marker not in text:
+                  raise SystemExit('Unable to locate social cleanup delete marker')
+              text = text.replace(marker, marker + reset, 1)
+          migration.write_text(text)
+
+          workflow = Path('.github/workflows/supabase-migrate-now.yml')
+          text = workflow.read_text()
+          version = '          20260828220500\n'
+          if version not in text:
+              marker = '          20260823010400\n'
+              if marker not in text:
+                  raise SystemExit('Unable to locate migration allowlist marker')
+              text = text.replace(marker, marker + version, 1)
+          workflow.write_text(text)
+          PY
+
+      - name: Verify patch shape
         shell: bash
         run: |
           set -euo pipefail
-          psql "$POOLER_URL" -v ON_ERROR_STOP=1 -P pager=off <<'SQL'
-          SELECT
-            count(*) AS profiles,
-            sum(coalesce(posts_created,0)) AS profile_posts_created,
-            sum(coalesce(posts_count,0)) AS profile_posts_count,
-            sum(coalesce(threads_created,0)) AS profile_threads_created,
-            sum(coalesce(followers_count,0)) AS profile_followers_count,
-            sum(coalesce(following_count,0)) AS profile_following_count
-          FROM public.user_profiles;
+          grep -q "poll_votes.poll_id" supabase/migrations/20260828220500_restore_clean_social_community.sql
+          ! grep -q "poll_votes.post_id" supabase/migrations/20260828220500_restore_clean_social_community.sql
+          grep -q "posts_created = 0" supabase/migrations/20260828220500_restore_clean_social_community.sql
+          grep -q "20260828220500" .github/workflows/supabase-migrate-now.yml
 
-          DO $$
-          DECLARE result jsonb;
-          BEGIN
-            IF to_regclass('public.civic_scores') IS NOT NULL THEN
-              EXECUTE $q$
-                SELECT jsonb_build_object(
-                  'rows', count(*),
-                  'score', coalesce(sum(score),0),
-                  'posts_count', coalesce(sum(posts_count),0),
-                  'connections_count', coalesce(sum(connections_count),0)
-                ) FROM public.civic_scores
-              $q$ INTO result;
-              RAISE NOTICE 'civic score aggregates: %', result;
-            ELSE
-              RAISE NOTICE 'civic_scores table absent';
-            END IF;
-          END $$;
-          SQL
+      - name: Commit reviewed migration corrections
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "Civil Rights Hub Recovery Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add supabase/migrations/20260828220500_restore_clean_social_community.sql .github/workflows/supabase-migrate-now.yml
+          git commit -m "Harden clean social recovery migration"
+          git push origin HEAD:fix/community-social-recovery

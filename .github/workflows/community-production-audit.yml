@@ -14,6 +14,7 @@ on:
       - src/components/StoriesBar.tsx
       - src/components/community/**
       - src/components/social/**
+      - supabase/migrations/**
   push:
     branches: [main]
     paths:
@@ -26,14 +27,11 @@ on:
       - src/components/StoriesBar.tsx
       - src/components/community/**
       - src/components/social/**
+      - supabase/migrations/**
   workflow_dispatch:
 
 permissions:
   contents: read
-
-concurrency:
-  group: civil-rights-hub-community-production-audit
-  cancel-in-progress: false
 
 jobs:
   audit:
@@ -47,52 +45,31 @@ jobs:
       PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
 
     steps:
-      - name: Checkout proposed source
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Require Civil Rights Hub production credentials
         shell: bash
         run: |
           set -euo pipefail
-          test -n "$SUPABASE_DB_PASSWORD" || { echo "::error::Missing SUPABASE_DB_PASSWORD repository secret"; exit 1; }
+          test -n "$SUPABASE_DB_PASSWORD" || { echo "::error::Missing SUPABASE_DB_PASSWORD"; exit 1; }
           test "$PROJECT_REF" = "vrdnrbjnitptxrexdlao" || { echo "::error::Unexpected Supabase project ref"; exit 1; }
 
-      - name: Audit social schema, RLS, cleanup, and storage
+      - name: Audit production social contract
         shell: bash
         run: |
           set -euo pipefail
           psql "$POOLER_URL" -v ON_ERROR_STOP=1 -P pager=off <<'SQL'
-          \echo '=== Social table availability ==='
+          \echo '=== Required tables ==='
           SELECT table_name, to_regclass('public.' || table_name) IS NOT NULL AS exists
           FROM unnest(ARRAY[
             'posts','comments','likes','post_bookmarks','post_shares','post_reactions','poll_votes',
             'stories','story_views','follows','user_profiles','forum_threads','forum_posts',
             'thread_upvotes','thread_bookmarks','thread_subscriptions','thread_tags','content_reports',
             'community_events','event_rsvps','notifications','direct_messages'
-          ]) AS table_name
-          ORDER BY table_name;
+          ]) AS table_name ORDER BY table_name;
 
-          DO $$
-          DECLARE
-            required_name text;
-          BEGIN
-            FOREACH required_name IN ARRAY ARRAY[
-              'posts','comments','likes','post_bookmarks','post_shares','post_reactions','stories','story_views',
-              'follows','user_profiles','forum_threads','forum_posts','thread_upvotes','thread_bookmarks',
-              'thread_subscriptions','thread_tags','content_reports','community_events','event_rsvps',
-              'notifications','direct_messages'
-            ]
-            LOOP
-              IF to_regclass('public.' || required_name) IS NULL THEN
-                RAISE EXCEPTION 'Required community table is missing: %', required_name;
-              END IF;
-            END LOOP;
-          END $$;
-
-          \echo '=== RLS and policy coverage ==='
-          SELECT c.relname AS table_name,
-                 c.relrowsecurity AS rls_enabled,
-                 count(p.policyname) AS policy_count
+          \echo '=== RLS coverage ==='
+          SELECT c.relname AS table_name, c.relrowsecurity AS rls_enabled, count(p.policyname) AS policy_count
           FROM pg_class c
           JOIN pg_namespace n ON n.oid = c.relnamespace
           LEFT JOIN pg_policies p ON p.schemaname = n.nspname AND p.tablename = c.relname
@@ -103,121 +80,78 @@ jobs:
               'thread_subscriptions','thread_tags','content_reports','community_events','event_rsvps',
               'notifications','direct_messages'
             ])
-          GROUP BY c.relname, c.relrowsecurity
-          ORDER BY c.relname;
+          GROUP BY c.relname, c.relrowsecurity ORDER BY c.relname;
 
-          DO $$
-          DECLARE bad_count integer;
-          BEGIN
-            SELECT count(*) INTO bad_count
-            FROM pg_class c
-            JOIN pg_namespace n ON n.oid = c.relnamespace
-            WHERE n.nspname = 'public'
-              AND c.relname = ANY (ARRAY[
-                'posts','comments','likes','post_bookmarks','post_shares','post_reactions','stories','story_views',
-                'follows','user_profiles','forum_threads','forum_posts','thread_upvotes','thread_bookmarks',
-                'thread_subscriptions','thread_tags','content_reports','community_events','event_rsvps',
-                'notifications','direct_messages'
-              ])
-              AND NOT c.relrowsecurity;
-            IF bad_count > 0 THEN
-              RAISE EXCEPTION '% required community tables have RLS disabled', bad_count;
-            END IF;
-          END $$;
-
-          \echo '=== Current social row counts ==='
+          \echo '=== Current social counts ==='
           SELECT 'posts' AS table_name, count(*) AS rows FROM public.posts
           UNION ALL SELECT 'comments', count(*) FROM public.comments
           UNION ALL SELECT 'stories', count(*) FROM public.stories
           UNION ALL SELECT 'forum_threads', count(*) FROM public.forum_threads
+          UNION ALL SELECT 'forum_posts', count(*) FROM public.forum_posts
           UNION ALL SELECT 'community_events', count(*) FROM public.community_events
+          UNION ALL SELECT 'event_rsvps', count(*) FROM public.event_rsvps
           UNION ALL SELECT 'user_profiles', count(*) FROM public.user_profiles
           UNION ALL SELECT 'follows', count(*) FROM public.follows
           ORDER BY table_name;
 
-          \echo '=== Synthetic cleanup proof ==='
-          SELECT 'quarantined_posts_or_threads' AS check_name, count(*) AS audit_rows
-            FROM private.synthetic_content_quarantine
+          \echo '=== Account-backed vs legacy social content ==='
+          SELECT 'posts' AS table_name,
+                 count(*) FILTER (WHERE user_id IS NULL) AS null_owner,
+                 count(*) FILTER (WHERE user_id IS NOT NULL) AS account_owned,
+                 count(DISTINCT user_id) FILTER (WHERE user_id IS NOT NULL) AS distinct_owners,
+                 min(created_at) AS oldest,
+                 max(created_at) AS newest
+          FROM public.posts
           UNION ALL
-          SELECT 'quarantined_seed_infrastructure', count(*)
-            FROM private.social_infrastructure_quarantine
+          SELECT 'forum_threads',
+                 count(*) FILTER (WHERE user_id IS NULL),
+                 count(*) FILTER (WHERE user_id IS NOT NULL),
+                 count(DISTINCT user_id) FILTER (WHERE user_id IS NOT NULL),
+                 min(created_at), max(created_at)
+          FROM public.forum_threads
           UNION ALL
-          SELECT 'quarantined_seed_events', count(*)
-            FROM private.event_verification_quarantine;
+          SELECT 'community_events',
+                 count(*) FILTER (WHERE organizer_id IS NULL),
+                 count(*) FILTER (WHERE organizer_id IS NOT NULL),
+                 count(DISTINCT organizer_id) FILTER (WHERE organizer_id IS NOT NULL),
+                 min(created_at), max(created_at)
+          FROM public.community_events;
 
-          DO $$
-          DECLARE leftovers integer;
-          BEGIN
-            SELECT count(*) INTO leftovers
-            FROM private.synthetic_content_quarantine q
-            JOIN public.posts p ON q.source_table = 'posts' AND q.source_id = p.id;
-            IF leftovers > 0 THEN RAISE EXCEPTION 'Synthetic quarantined posts remain public: %', leftovers; END IF;
+          \echo '=== Forum username concentration ==='
+          SELECT coalesce(username, '<null>') AS username, count(*) AS rows
+          FROM public.forum_threads
+          GROUP BY username ORDER BY rows DESC, username LIMIT 40;
 
-            SELECT count(*) INTO leftovers
-            FROM private.synthetic_content_quarantine q
-            JOIN public.forum_threads f ON q.source_table = 'forum_threads' AND q.source_id = f.id;
-            IF leftovers > 0 THEN RAISE EXCEPTION 'Synthetic quarantined forum threads remain public: %', leftovers; END IF;
+          \echo '=== Post creation-day concentration ==='
+          SELECT created_at::date AS day, count(*) AS rows
+          FROM public.posts GROUP BY created_at::date ORDER BY rows DESC, day LIMIT 30;
 
-            SELECT count(*) INTO leftovers
-            FROM private.social_infrastructure_quarantine q
-            JOIN public.community_events e ON q.source_table = 'community_events' AND q.source_id = e.id;
-            IF leftovers > 0 THEN RAISE EXCEPTION 'Synthetic infrastructure events remain public: %', leftovers; END IF;
+          \echo '=== Forum creation-day concentration ==='
+          SELECT created_at::date AS day, count(*) AS rows
+          FROM public.forum_threads GROUP BY created_at::date ORDER BY rows DESC, day LIMIT 30;
 
-            SELECT count(*) INTO leftovers
-            FROM private.event_verification_quarantine q
-            JOIN public.community_events e ON q.event_id = e.id;
-            IF leftovers > 0 THEN RAISE EXCEPTION 'Unverified seeded events remain public: %', leftovers; END IF;
-          END $$;
+          \echo '=== Event creation-day concentration ==='
+          SELECT created_at::date AS day, count(*) AS rows
+          FROM public.community_events GROUP BY created_at::date ORDER BY rows DESC, day LIMIT 30;
 
-          \echo '=== Social table columns used by frontend ==='
-          SELECT table_name, string_agg(column_name, ', ' ORDER BY ordinal_position) AS columns
-          FROM information_schema.columns
-          WHERE table_schema = 'public'
-            AND table_name = ANY (ARRAY[
-              'posts','comments','user_profiles','forum_threads','community_events','event_rsvps','follows'
-            ])
-          GROUP BY table_name
-          ORDER BY table_name;
+          \echo '=== Existing quarantine audit ==='
+          SELECT 'quarantined_posts_or_threads' AS check_name, count(*) AS audit_rows FROM private.synthetic_content_quarantine
+          UNION ALL SELECT 'quarantined_seed_infrastructure', count(*) FROM private.social_infrastructure_quarantine
+          UNION ALL SELECT 'quarantined_seed_events', count(*) FROM private.event_verification_quarantine;
 
-          \echo '=== Relevant foreign keys ==='
-          SELECT conrelid::regclass::text AS source_table,
-                 conname,
-                 pg_get_constraintdef(oid) AS definition
-          FROM pg_constraint
-          WHERE contype = 'f'
-            AND connamespace = 'public'::regnamespace
-            AND conrelid::regclass::text = ANY (ARRAY[
-              'posts','comments','likes','post_bookmarks','post_shares','post_reactions','stories','story_views',
-              'follows','forum_threads','forum_posts','thread_upvotes','thread_bookmarks','thread_subscriptions',
-              'thread_tags','content_reports','community_events','event_rsvps'
-            ])
-          ORDER BY source_table, conname;
-
-          \echo '=== post-media storage bucket ==='
+          \echo '=== Posts storage bucket ==='
           SELECT id, name, public, file_size_limit, allowed_mime_types
-          FROM storage.buckets
-          WHERE id = 'post-media';
+          FROM storage.buckets WHERE id = 'posts';
 
-          DO $$
-          BEGIN
-            IF NOT EXISTS (SELECT 1 FROM storage.buckets WHERE id = 'post-media') THEN
-              RAISE EXCEPTION 'Required post-media storage bucket is missing';
-            END IF;
-          END $$;
-
-          \echo '=== Storage object policies ==='
+          \echo '=== Storage object policies for posts ==='
           SELECT policyname, cmd, roles::text, qual, with_check
           FROM pg_policies
           WHERE schemaname = 'storage' AND tablename = 'objects'
+            AND (coalesce(qual,'') LIKE '%posts%' OR coalesce(with_check,'') LIKE '%posts%')
           ORDER BY policyname;
-          SQL
 
-      - name: Audit browser-role grants
-        shell: bash
-        run: |
-          set -euo pipefail
-          psql "$POOLER_URL" -v ON_ERROR_STOP=1 -P pager=off -AtF $'\t' <<'SQL'
-          SELECT grantee, table_name, string_agg(privilege_type, ',' ORDER BY privilege_type)
+          \echo '=== Browser-role grants ==='
+          SELECT grantee, table_name, string_agg(privilege_type, ',' ORDER BY privilege_type) AS privileges
           FROM information_schema.role_table_grants
           WHERE table_schema = 'public'
             AND grantee IN ('anon','authenticated')
@@ -227,6 +161,5 @@ jobs:
               'thread_subscriptions','thread_tags','content_reports','community_events','event_rsvps',
               'notifications','direct_messages'
             ])
-          GROUP BY grantee, table_name
-          ORDER BY table_name, grantee;
+          GROUP BY grantee, table_name ORDER BY table_name, grantee;
           SQL

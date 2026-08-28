@@ -1,6 +1,6 @@
 -- Reconcile the cleaned community schema with the production React client.
 -- The 2026-08-28 recovery migration removed synthetic social content and restored
--- restrictive RLS. This follow-up fixes two runtime-contract drifts discovered by
+-- restrictive RLS. This follow-up fixes runtime-contract drifts discovered by
 -- the live production audit before the community UI is reopened.
 
 -- Polls are stored by the current client in posts.poll_data and identify a poll by
@@ -13,7 +13,8 @@ ALTER TABLE public.poll_votes
   ADD CONSTRAINT poll_votes_poll_id_fkey
   FOREIGN KEY (poll_id) REFERENCES public.posts(id) ON DELETE CASCADE;
 
--- Ensure votes can only target posts that actually contain poll data.
+-- Votes may only target an existing poll post. The individual vote ledger is private
+-- to the voter; aggregate results are maintained in posts.poll_data by a trigger below.
 DROP POLICY IF EXISTS poll_votes_owner_insert ON public.poll_votes;
 CREATE POLICY poll_votes_owner_insert
   ON public.poll_votes FOR INSERT TO authenticated
@@ -24,20 +25,91 @@ CREATE POLICY poll_votes_owner_insert
       FROM public.posts p
       WHERE p.id = poll_votes.poll_id
         AND p.poll_data IS NOT NULL
+        AND (
+          NULLIF(p.poll_data->>'endsAt', '') IS NULL
+          OR (p.poll_data->>'endsAt')::timestamptz > NOW()
+        )
     )
   );
 
 DROP POLICY IF EXISTS poll_votes_visible_select ON public.poll_votes;
-CREATE POLICY poll_votes_visible_select
-  ON public.poll_votes FOR SELECT TO anon, authenticated
+DROP POLICY IF EXISTS poll_votes_owner_select ON public.poll_votes;
+CREATE POLICY poll_votes_owner_select
+  ON public.poll_votes FOR SELECT TO authenticated
   USING (
-    EXISTS (
-      SELECT 1
-      FROM public.posts p
+    auth.uid() = user_id
+    AND EXISTS (
+      SELECT 1 FROM public.posts p
       WHERE p.id = poll_votes.poll_id
         AND p.poll_data IS NOT NULL
     )
   );
+
+REVOKE SELECT ON public.poll_votes FROM anon;
+GRANT SELECT ON public.poll_votes TO authenticated;
+
+-- The cleaned post policy correctly prevents a voter from updating somebody else's
+-- post. Therefore poll totals cannot be browser-maintained. Rebuild aggregate totals
+-- after vote-ledger changes under a narrowly scoped SECURITY DEFINER trigger.
+CREATE OR REPLACE FUNCTION public.refresh_post_poll_counts()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public, pg_temp
+AS $$
+DECLARE
+  target_poll UUID;
+  rebuilt_options JSONB;
+  voter_count INTEGER;
+BEGIN
+  target_poll := COALESCE(NEW.poll_id, OLD.poll_id);
+
+  SELECT COALESCE(COUNT(DISTINCT v.user_id), 0)::integer
+    INTO voter_count
+  FROM public.poll_votes v
+  WHERE v.poll_id = target_poll;
+
+  SELECT COALESCE(
+    jsonb_agg(
+      jsonb_set(
+        option_value,
+        '{voteCount}',
+        to_jsonb((
+          SELECT COUNT(*)::integer
+          FROM public.poll_votes v
+          WHERE v.poll_id = target_poll
+            AND v.option_id::text = option_value->>'id'
+        )),
+        true
+      )
+      ORDER BY option_ordinality
+    ),
+    '[]'::jsonb
+  )
+  INTO rebuilt_options
+  FROM public.posts p,
+       LATERAL jsonb_array_elements(COALESCE(p.poll_data->'options', '[]'::jsonb))
+         WITH ORDINALITY AS options(option_value, option_ordinality)
+  WHERE p.id = target_poll;
+
+  UPDATE public.posts p
+  SET poll_data = jsonb_set(
+      jsonb_set(p.poll_data, '{options}', rebuilt_options, true),
+      '{totalVotes}', to_jsonb(voter_count), true
+    )
+  WHERE p.id = target_poll
+    AND p.poll_data IS NOT NULL;
+
+  RETURN COALESCE(NEW, OLD);
+END;
+$$;
+
+REVOKE ALL ON FUNCTION public.refresh_post_poll_counts() FROM PUBLIC, anon, authenticated;
+
+DROP TRIGGER IF EXISTS refresh_post_poll_counts_trigger ON public.poll_votes;
+CREATE TRIGGER refresh_post_poll_counts_trigger
+AFTER INSERT OR UPDATE OR DELETE ON public.poll_votes
+FOR EACH ROW EXECUTE FUNCTION public.refresh_post_poll_counts();
 
 -- Story view_count is system-derived. The browser may insert its own story_views row,
 -- but must not need UPDATE permission on another user's story merely to increment it.

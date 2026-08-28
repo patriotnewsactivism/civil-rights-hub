@@ -59,29 +59,6 @@ jobs:
         run: |
           set -euo pipefail
           psql "$POOLER_URL" -v ON_ERROR_STOP=1 -P pager=off <<'SQL'
-          \echo '=== Required tables ==='
-          SELECT table_name, to_regclass('public.' || table_name) IS NOT NULL AS exists
-          FROM unnest(ARRAY[
-            'posts','comments','likes','post_bookmarks','post_shares','post_reactions','poll_votes',
-            'stories','story_views','follows','user_profiles','forum_threads','forum_posts',
-            'thread_upvotes','thread_bookmarks','thread_subscriptions','thread_tags','content_reports',
-            'community_events','event_rsvps','notifications','direct_messages'
-          ]) AS table_name ORDER BY table_name;
-
-          \echo '=== RLS coverage ==='
-          SELECT c.relname AS table_name, c.relrowsecurity AS rls_enabled, count(p.policyname) AS policy_count
-          FROM pg_class c
-          JOIN pg_namespace n ON n.oid = c.relnamespace
-          LEFT JOIN pg_policies p ON p.schemaname = n.nspname AND p.tablename = c.relname
-          WHERE n.nspname = 'public'
-            AND c.relname = ANY (ARRAY[
-              'posts','comments','likes','post_bookmarks','post_shares','post_reactions','stories','story_views',
-              'follows','user_profiles','forum_threads','forum_posts','thread_upvotes','thread_bookmarks',
-              'thread_subscriptions','thread_tags','content_reports','community_events','event_rsvps',
-              'notifications','direct_messages'
-            ])
-          GROUP BY c.relname, c.relrowsecurity ORDER BY c.relname;
-
           \echo '=== Current social counts ==='
           SELECT 'posts' AS table_name, count(*) AS rows FROM public.posts
           UNION ALL SELECT 'comments', count(*) FROM public.comments
@@ -117,27 +94,17 @@ jobs:
                  min(created_at), max(created_at)
           FROM public.community_events;
 
-          \echo '=== Forum username concentration ==='
-          SELECT coalesce(username, '<null>') AS username, count(*) AS rows
-          FROM public.forum_threads
-          GROUP BY username ORDER BY rows DESC, username LIMIT 40;
-
-          \echo '=== Post creation-day concentration ==='
-          SELECT created_at::date AS day, count(*) AS rows
-          FROM public.posts GROUP BY created_at::date ORDER BY rows DESC, day LIMIT 30;
-
-          \echo '=== Forum creation-day concentration ==='
-          SELECT created_at::date AS day, count(*) AS rows
-          FROM public.forum_threads GROUP BY created_at::date ORDER BY rows DESC, day LIMIT 30;
-
-          \echo '=== Event creation-day concentration ==='
-          SELECT created_at::date AS day, count(*) AS rows
-          FROM public.community_events GROUP BY created_at::date ORDER BY rows DESC, day LIMIT 30;
-
-          \echo '=== Existing quarantine audit ==='
-          SELECT 'quarantined_posts_or_threads' AS check_name, count(*) AS audit_rows FROM private.synthetic_content_quarantine
-          UNION ALL SELECT 'quarantined_seed_infrastructure', count(*) FROM private.social_infrastructure_quarantine
-          UNION ALL SELECT 'quarantined_seed_events', count(*) FROM private.event_verification_quarantine;
+          \echo '=== RLS policy definitions for public social tables ==='
+          SELECT tablename, policyname, cmd, roles::text, qual, with_check
+          FROM pg_policies
+          WHERE schemaname = 'public'
+            AND tablename = ANY (ARRAY[
+              'posts','comments','likes','post_bookmarks','post_shares','post_reactions','poll_votes',
+              'stories','story_views','follows','user_profiles','forum_threads','forum_posts',
+              'thread_upvotes','thread_bookmarks','thread_subscriptions','thread_tags','content_reports',
+              'community_events','event_rsvps','notifications','direct_messages'
+            ])
+          ORDER BY tablename, policyname;
 
           \echo '=== Posts storage bucket ==='
           SELECT id, name, public, file_size_limit, allowed_mime_types
@@ -150,16 +117,10 @@ jobs:
             AND (coalesce(qual,'') LIKE '%posts%' OR coalesce(with_check,'') LIKE '%posts%')
           ORDER BY policyname;
 
-          \echo '=== Browser-role grants ==='
-          SELECT grantee, table_name, string_agg(privilege_type, ',' ORDER BY privilege_type) AS privileges
-          FROM information_schema.role_table_grants
-          WHERE table_schema = 'public'
-            AND grantee IN ('anon','authenticated')
-            AND table_name = ANY (ARRAY[
-              'posts','comments','likes','post_bookmarks','post_shares','post_reactions','stories','story_views',
-              'follows','user_profiles','forum_threads','forum_posts','thread_upvotes','thread_bookmarks',
-              'thread_subscriptions','thread_tags','content_reports','community_events','event_rsvps',
-              'notifications','direct_messages'
-            ])
-          GROUP BY grantee, table_name ORDER BY table_name, grantee;
+          \echo '=== Legacy content concentration ==='
+          SELECT 'posts 2026-04-25' AS fingerprint, count(*) FROM public.posts WHERE created_at::date = DATE '2026-04-25'
+          UNION ALL SELECT 'threads 2026-04-25', count(*) FROM public.forum_threads WHERE created_at::date = DATE '2026-04-25'
+          UNION ALL SELECT 'events 2026-04-25', count(*) FROM public.community_events WHERE created_at::date = DATE '2026-04-25'
+          UNION ALL SELECT 'null-owner threads', count(*) FROM public.forum_threads WHERE user_id IS NULL
+          UNION ALL SELECT 'null-organizer events', count(*) FROM public.community_events WHERE organizer_id IS NULL;
           SQL

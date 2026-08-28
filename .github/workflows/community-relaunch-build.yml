@@ -1,0 +1,33 @@
+name: Civil Rights Hub Community Relaunch Build
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+    paths:
+      - src/pages/Community.tsx
+      - src/components/SocialFeed.tsx
+      - src/components/DiscussionBoard.tsx
+      - src/components/StoriesBar.tsx
+      - src/components/community/**
+      - supabase/migrations/20260828233500_reconcile_social_runtime_contract.sql
+      - .github/workflows/community-relaunch-build.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Production build
+        run: npm run build

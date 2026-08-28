@@ -37,29 +37,25 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          sql_file="$(mktemp)"
           {
-            echo 'BEGIN;'
+            printf '%s\n' 'BEGIN;'
             cat supabase/migrations/20260828220500_restore_clean_social_community.sql
-            cat <<'SQL'
-
-            DO $$
-            BEGIN
-              IF (SELECT count(*) FROM public.posts) <> 0 THEN RAISE EXCEPTION 'posts not empty after recovery'; END IF;
-              IF (SELECT count(*) FROM public.forum_threads) <> 0 THEN RAISE EXCEPTION 'forum_threads not empty after recovery'; END IF;
-              IF (SELECT count(*) FROM public.community_events) <> 0 THEN RAISE EXCEPTION 'community_events not empty after recovery'; END IF;
-              IF NOT EXISTS (SELECT 1 FROM storage.buckets WHERE id = 'posts' AND public) THEN RAISE EXCEPTION 'posts bucket missing'; END IF;
-              IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE schemaname='storage' AND tablename='objects' AND policyname='community_posts_media_insert') THEN RAISE EXCEPTION 'posts upload policy missing'; END IF;
-              IF EXISTS (
-                SELECT 1 FROM pg_policies
-                WHERE schemaname='public' AND tablename IN ('forum_threads','forum_posts')
-                  AND roles::text LIKE '%anon%'
-                  AND cmd='INSERT'
-              ) THEN RAISE EXCEPTION 'anonymous forum insert policy remains'; END IF;
-              IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE schemaname='public' AND tablename='posts' AND policyname='posts_public_select') THEN RAISE EXCEPTION 'posts select policy missing'; END IF;
-              IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname='protect_user_profile_system_fields_trigger' AND NOT tgisinternal) THEN RAISE EXCEPTION 'profile protection trigger missing'; END IF;
-              IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname='refresh_community_event_rsvp_count_trigger' AND NOT tgisinternal) THEN RAISE EXCEPTION 'RSVP count trigger missing'; END IF;
-            END $$;
-
-            ROLLBACK;
-            SQL
-          } | psql "$POOLER_URL" -v ON_ERROR_STOP=1 -P pager=off
+            printf '%s\n' \
+              '' \
+              'DO $$' \
+              'BEGIN' \
+              "  IF (SELECT count(*) FROM public.posts) <> 0 THEN RAISE EXCEPTION 'posts not empty after recovery'; END IF;" \
+              "  IF (SELECT count(*) FROM public.forum_threads) <> 0 THEN RAISE EXCEPTION 'forum_threads not empty after recovery'; END IF;" \
+              "  IF (SELECT count(*) FROM public.community_events) <> 0 THEN RAISE EXCEPTION 'community_events not empty after recovery'; END IF;" \
+              "  IF NOT EXISTS (SELECT 1 FROM storage.buckets WHERE id = 'posts' AND public) THEN RAISE EXCEPTION 'posts bucket missing'; END IF;" \
+              "  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE schemaname='storage' AND tablename='objects' AND policyname='community_posts_media_insert') THEN RAISE EXCEPTION 'posts upload policy missing'; END IF;" \
+              "  IF EXISTS (SELECT 1 FROM pg_policies WHERE schemaname='public' AND tablename IN ('forum_threads','forum_posts') AND roles::text LIKE '%anon%' AND cmd='INSERT') THEN RAISE EXCEPTION 'anonymous forum insert policy remains'; END IF;" \
+              "  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE schemaname='public' AND tablename='posts' AND policyname='posts_public_select') THEN RAISE EXCEPTION 'posts select policy missing'; END IF;" \
+              "  IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname='protect_user_profile_system_fields_trigger' AND NOT tgisinternal) THEN RAISE EXCEPTION 'profile protection trigger missing'; END IF;" \
+              "  IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname='refresh_community_event_rsvp_count_trigger' AND NOT tgisinternal) THEN RAISE EXCEPTION 'RSVP count trigger missing'; END IF;" \
+              'END $$;' \
+              '' \
+              'ROLLBACK;'
+          } > "$sql_file"
+          psql "$POOLER_URL" -v ON_ERROR_STOP=1 -P pager=off -f "$sql_file"

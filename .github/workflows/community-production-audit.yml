@@ -59,56 +59,49 @@ jobs:
         run: |
           set -euo pipefail
           psql "$POOLER_URL" -v ON_ERROR_STOP=1 -P pager=off <<'SQL'
-          \echo '=== Recovery migration ledger ==='
-          SELECT version, name FROM supabase_migrations.schema_migrations
-          WHERE version = '20260828220500';
-
-          \echo '=== Current social counts ==='
+          \echo '=== Recovery migration ledger and current counts ==='
+          SELECT version, name FROM supabase_migrations.schema_migrations WHERE version = '20260828220500';
           SELECT 'posts' AS table_name, count(*) AS rows FROM public.posts
-          UNION ALL SELECT 'comments', count(*) FROM public.comments
-          UNION ALL SELECT 'stories', count(*) FROM public.stories
+          UNION ALL SELECT 'poll_votes', count(*) FROM public.poll_votes
           UNION ALL SELECT 'forum_threads', count(*) FROM public.forum_threads
           UNION ALL SELECT 'forum_posts', count(*) FROM public.forum_posts
           UNION ALL SELECT 'community_events', count(*) FROM public.community_events
           UNION ALL SELECT 'event_rsvps', count(*) FROM public.event_rsvps
           UNION ALL SELECT 'user_profiles', count(*) FROM public.user_profiles
-          UNION ALL SELECT 'follows', count(*) FROM public.follows
-          ORDER BY table_name;
+          UNION ALL SELECT 'follows', count(*) FROM public.follows ORDER BY table_name;
 
           \echo '=== Exact live columns used by recovery SQL and UI ==='
           SELECT table_name, string_agg(column_name, ', ' ORDER BY ordinal_position) AS columns
           FROM information_schema.columns
           WHERE table_schema = 'public'
             AND table_name = ANY (ARRAY[
-              'poll_votes','thread_tags','forum_threads','forum_posts','community_events',
+              'poll_votes','post_polls','thread_tags','forum_threads','forum_posts','community_events',
               'event_rsvps','user_profiles','posts','stories','story_views','content_reports'
             ])
           GROUP BY table_name ORDER BY table_name;
 
-          \echo '=== Poll vote foreign keys ==='
-          SELECT conname, pg_get_constraintdef(oid)
+          \echo '=== Poll constraints ==='
+          SELECT conrelid::regclass::text AS table_name, conname, pg_get_constraintdef(oid)
           FROM pg_constraint
-          WHERE conrelid = 'public.poll_votes'::regclass AND contype = 'f'
-          ORDER BY conname;
+          WHERE conrelid IN ('public.poll_votes'::regclass, 'public.post_polls'::regclass)
+          ORDER BY table_name, conname;
 
-          \echo '=== Posts and avatars buckets ==='
-          SELECT id, name, public, file_size_limit, allowed_mime_types
-          FROM storage.buckets WHERE id IN ('posts','avatars') ORDER BY id;
+          \echo '=== Poll table row counts ==='
+          SELECT 'post_polls' AS table_name, count(*) FROM public.post_polls
+          UNION ALL SELECT 'poll_votes', count(*) FROM public.poll_votes;
 
-          \echo '=== Matching storage policies ==='
-          SELECT policyname, cmd, roles::text, qual, with_check
-          FROM pg_policies
+          \echo '=== User profile grants ==='
+          SELECT grantee, privilege_type, column_name
+          FROM information_schema.column_privileges
+          WHERE table_schema='public' AND table_name='user_profiles'
+            AND grantee IN ('anon','authenticated')
+          ORDER BY grantee, privilege_type, column_name;
+
+          \echo '=== Posts and avatars buckets / policies ==='
+          SELECT id, name, public, file_size_limit, allowed_mime_types FROM storage.buckets
+          WHERE id IN ('posts','avatars') ORDER BY id;
+          SELECT policyname, cmd, roles::text, qual, with_check FROM pg_policies
           WHERE schemaname = 'storage' AND tablename = 'objects'
-            AND (
-              coalesce(qual,'') LIKE '%posts%' OR coalesce(with_check,'') LIKE '%posts%'
-              OR coalesce(qual,'') LIKE '%avatars%' OR coalesce(with_check,'') LIKE '%avatars%'
-            )
+            AND (coalesce(qual,'') ~ 'posts|avatars' OR coalesce(with_check,'') ~ 'posts|avatars')
           ORDER BY policyname;
-
-          \echo '=== Legacy content concentration ==='
-          SELECT 'posts 2026-04-25' AS fingerprint, count(*) FROM public.posts WHERE created_at::date = DATE '2026-04-25'
-          UNION ALL SELECT 'threads 2026-04-25', count(*) FROM public.forum_threads WHERE created_at::date = DATE '2026-04-25'
-          UNION ALL SELECT 'events 2026-04-25', count(*) FROM public.community_events WHERE created_at::date = DATE '2026-04-25'
-          UNION ALL SELECT 'null-owner threads', count(*) FROM public.forum_threads WHERE user_id IS NULL
-          UNION ALL SELECT 'null-organizer events', count(*) FROM public.community_events WHERE organizer_id IS NULL;
           SQL

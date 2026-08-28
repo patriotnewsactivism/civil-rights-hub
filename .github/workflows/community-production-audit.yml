@@ -64,6 +64,8 @@ jobs:
           SELECT 'posts' AS table_name, count(*) AS rows FROM public.posts
           UNION ALL SELECT 'comments', count(*) FROM public.comments
           UNION ALL SELECT 'stories', count(*) FROM public.stories
+          UNION ALL SELECT 'story_views', count(*) FROM public.story_views
+          UNION ALL SELECT 'poll_votes', count(*) FROM public.poll_votes
           UNION ALL SELECT 'forum_threads', count(*) FROM public.forum_threads
           UNION ALL SELECT 'forum_posts', count(*) FROM public.forum_posts
           UNION ALL SELECT 'community_events', count(*) FROM public.community_events
@@ -88,6 +90,32 @@ jobs:
               'community_events','event_rsvps','notifications','direct_messages'
             ])
           ORDER BY tablename, policyname;
+
+          \echo '=== Counter-sensitive table columns ==='
+          SELECT table_name, column_name, data_type, is_nullable, column_default
+          FROM information_schema.columns
+          WHERE table_schema = 'public'
+            AND table_name = ANY (ARRAY['posts','poll_votes','stories','story_views','forum_threads','community_events'])
+          ORDER BY table_name, ordinal_position;
+
+          \echo '=== Counter-sensitive constraints ==='
+          SELECT conrelid::regclass AS table_name, conname, contype, pg_get_constraintdef(oid) AS definition
+          FROM pg_constraint
+          WHERE conrelid = ANY (ARRAY[
+            'public.posts'::regclass,
+            'public.poll_votes'::regclass,
+            'public.stories'::regclass,
+            'public.story_views'::regclass,
+            'public.forum_threads'::regclass,
+            'public.community_events'::regclass
+          ])
+          ORDER BY conrelid::regclass::text, conname;
+
+          \echo '=== Surviving profile trust flags ==='
+          SELECT coalesce(role,'<null>') AS role, coalesce(is_verified,false) AS is_verified, count(*) AS profiles
+          FROM public.user_profiles
+          GROUP BY coalesce(role,'<null>'), coalesce(is_verified,false)
+          ORDER BY role, is_verified;
 
           \echo '=== Posts storage bucket ==='
           SELECT id, name, public, file_size_limit, allowed_mime_types

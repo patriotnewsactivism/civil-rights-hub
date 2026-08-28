@@ -1,4 +1,4 @@
-name: Civil Rights Hub Community Recovery Autopatch
+name: Civil Rights Hub Sentry Dependency Bootstrap
 
 on:
   push:
@@ -10,9 +10,9 @@ permissions:
   contents: write
 
 jobs:
-  patch-and-test:
+  install:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 15
     steps:
       - name: Checkout recovery branch
         uses: actions/checkout@v4
@@ -29,318 +29,22 @@ jobs:
       - name: Install existing dependencies
         run: npm ci
 
-      - name: Install Sentry React SDK
+      - name: Add Sentry React SDK
         run: npm install @sentry/react@latest --save
 
-      - name: Apply recovery patches
-        shell: bash
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          import re
+      - name: Verify dependency graph
+        run: npm ls @sentry/react
 
-          def read(path):
-              return Path(path).read_text()
-
-          def write(path, text):
-              Path(path).parent.mkdir(parents=True, exist_ok=True)
-              Path(path).write_text(text)
-
-          def replace_once(path, old, new):
-              text = read(path)
-              if old not in text:
-                  raise SystemExit(f"Expected text not found in {path}: {old[:100]!r}")
-              write(path, text.replace(old, new, 1))
-
-          # Production schema uses poll_votes.poll_id.
-          migration = 'supabase/migrations/20260828220500_restore_clean_social_community.sql'
-          text = read(migration)
-          text = text.replace('poll_votes.post_id', 'poll_votes.poll_id')
-          write(migration, text)
-
-          # All browser user_profiles reads must avoid the private email column.
-          safe_profile_columns = 'id,user_id,username,display_name,bio,avatar_url,location_state,location_city,is_public,show_location,show_email,reputation_points,helper_score,threads_created,posts_created,helpful_answers,website_url,twitter_handle,created_at,updated_at,role,is_verified,last_seen_at,location,followers_count,following_count,posts_count,violations_count,messages_sent_count'
-          profile_read_pattern = re.compile(r'(\.from\(["\']user_profiles["\']\)\s*\n\s*\.select\()["\']\*["\'](\))')
-          for path in list(Path('src').rglob('*.ts')) + list(Path('src').rglob('*.tsx')):
-              src = path.read_text()
-              updated, count = profile_read_pattern.subn(rf'\1"{safe_profile_columns}"\2', src)
-              if count:
-                  path.write_text(updated)
-
-          # Fix profile lookup/update key: auth user id lives in user_profiles.user_id, not row id.
-          p = 'src/components/UserProfile.tsx'
-          text = read(p)
-          text = text.replace('.eq("id", user.id)', '.eq("user_id", user.id)')
-          text = text.replace('.eq("id", user?.id)', '.eq("user_id", user?.id)')
-          text = text.replace(
-              '{profile.role && profile.role !== "user" && (\n                    <Badge variant="secondary" className="capitalize">{profile.role}</Badge>\n                  )}',
-              '{verificationStatus.verified && profile.role && profile.role !== "user" && (\n                    <Badge variant="secondary" className="capitalize">Verified {profile.role}</Badge>\n                  )}'
-          )
-          write(p, text)
-
-          # Discussion cards need the fields they filter/render.
-          p = 'src/components/DiscussionBoard.tsx'
-          text = read(p)
-          text = text.replace(
-              'last_post_at, view_count, user_id, username,\n         thread_tags',
-              'last_post_at, view_count, user_id, username, is_pinned, is_locked,\n         thread_tags'
-          )
-          write(p, text)
-
-          # Events: RSVP details are private; use the aggregate count on the event row.
-          p = 'src/components/EventsCalendar.tsx'
-          text = read(p)
-          start = text.find('    // Fetch RSVP counts for all events')
-          end = text.find('    if (user?.id) {', start)
-          if start == -1 or end == -1:
-              raise SystemExit('Unable to locate EventsCalendar RSVP aggregate block')
-          text = text[:start] + '    setRsvpCounts(new Map(typedEvents.map((event) => [event.id, event.rsvp_count ?? 0])));\n\n' + text[end:]
-          text = text.replace('description: "Only verified members can publish community events."', 'description: "Sign in to publish a community event."')
-          text = text.replace('      is_published: true,\n      organizer_id: user.id,', '      is_published: true,\n      is_public: true,\n      organizer_id: user.id,')
-          text = text.replace('description: "Your event is live! Attendees can RSVP and receive updates."', 'description: "Your community-submitted event is live. Keep its details current and accurate."')
-          text = text.replace(
-              '<p className="text-sm text-muted-foreground">Find mutual aid meetups, court support, and national rapid response calls.</p>',
-              '<p className="text-sm text-muted-foreground">Community-submitted events and trainings. Verify time, location, and organizer details before relying on a listing.</p>'
-          )
-          write(p, text)
-
-          # Network: use safe public columns, handle follow failures, and never show a fake verified icon.
-          p = 'src/components/UserNetwork.tsx'
-          text = read(p)
-          text = text.replace('if (!currentUser) return;\n\n    setLoading(true);', 'if (!currentUser) {\n      setUsers([]);\n      setLoading(false);\n      return;\n    }\n\n    setLoading(true);')
-          text = text.replace(
-              '<Award className="h-4 w-4 text-primary" aria-label="Verified" />',
-              '{user.is_verified && <Award className="h-4 w-4 text-primary" aria-label="Verified profile" />}'
-          )
-          text = text.replace('label: "Civil Rights Attorney"', 'label: "Attorney profile"')
-          text = text.replace('label: "Journalist"', 'label: "Journalist profile"')
-          text = text.replace('label: "Activist"', 'label: "Activist profile"')
-          text = text.replace(
-              '        await supabase\n          .from("follows")\n          .delete()\n          .eq("follower_id", currentUser.id)\n          .eq("following_id", userId);',
-              '        const { error } = await supabase\n          .from("follows")\n          .delete()\n          .eq("follower_id", currentUser.id)\n          .eq("following_id", userId);\n        if (error) throw error;'
-          )
-          text = text.replace(
-              '        await supabase.from("follows").insert({ follower_id: currentUser.id, following_id: userId });',
-              '        const { error } = await supabase.from("follows").insert({ follower_id: currentUser.id, following_id: userId });\n        if (error) throw error;'
-          )
-          write(p, text)
-
-          # Restore the real community surfaces now that the contaminated corpus is being quarantined.
-          community = '''import { useEffect, useMemo, useState } from "react";
-          import { useAuth } from "@/hooks/useAuth";
-          import { Navigate, useSearchParams } from "react-router-dom";
-          import { supabase } from "@/integrations/supabase/client";
-          import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-          import { UserProfile } from "@/components/UserProfile";
-          import { User, Bell, Globe, Newspaper, CalendarDays, MessageCircle, MessageSquare } from "lucide-react";
-          import { SEO } from "@/components/SEO";
-          import MessagingPanel from "@/components/MessagingPanel";
-          import NotificationsCenter from "@/components/NotificationsCenter";
-          import { SocialFeed } from "@/components/SocialFeed";
-          import { DiscussionBoard } from "@/components/DiscussionBoard";
-          import { EventsCalendar } from "@/components/EventsCalendar";
-          import UserNetwork from "@/components/UserNetwork";
-          import { CommunitySidebar } from "@/components/community/CommunitySidebar";
-          import { CommunityMobileNav } from "@/components/community/CommunityMobileNav";
-          import { Header } from "@/components/Header";
-          import { Footer } from "@/components/Footer";
-
-          type CommunityTab = "feed" | "discuss" | "events" | "messages" | "notifications" | "network" | "profile";
-          const COMMUNITY_TABS: CommunityTab[] = ["feed", "discuss", "events", "messages", "notifications", "network", "profile"];
-
-          export default function Community() {
-            const { user, loading } = useAuth();
-            const [searchParams, setSearchParams] = useSearchParams();
-            const [unreadNotifications, setUnreadNotifications] = useState(0);
-            const [currentUserRole, setCurrentUserRole] = useState<string | null>(null);
-
-            const initialTab = useMemo(() => {
-              const paramTab = searchParams.get("tab") as CommunityTab | null;
-              return paramTab && COMMUNITY_TABS.includes(paramTab) ? paramTab : "feed";
-            }, [searchParams]);
-            const [activeTab, setActiveTab] = useState<CommunityTab>(initialTab);
-
-            useEffect(() => {
-              const paramTab = searchParams.get("tab") as CommunityTab | null;
-              if (paramTab && COMMUNITY_TABS.includes(paramTab) && paramTab !== activeTab) setActiveTab(paramTab);
-            }, [activeTab, searchParams]);
-
-            useEffect(() => {
-              if (!user?.id) return;
-              supabase.from("notifications").select("id", { count: "exact", head: true }).eq("user_id", user.id).eq("is_read", false)
-                .then(({ count, error }) => { if (!error) setUnreadNotifications(count ?? 0); });
-              supabase.from("user_profiles").select("role").eq("user_id", user.id).single()
-                .then(({ data }) => setCurrentUserRole(data?.role ?? null));
-            }, [user?.id]);
-
-            const handleTabChange = (value: string) => {
-              if (!COMMUNITY_TABS.includes(value as CommunityTab)) return;
-              setActiveTab(value as CommunityTab);
-              if (value === "notifications") setUnreadNotifications(0);
-              const params = new URLSearchParams(searchParams);
-              params.set("tab", value);
-              setSearchParams(params, { replace: true });
-            };
-
-            if (loading) return <div className="flex min-h-screen items-center justify-center"><div className="h-8 w-8 animate-spin rounded-full border-b-2 border-primary" /></div>;
-            if (!user) return <Navigate to="/auth" />;
-
-            return (
-              <div className="min-h-screen flex flex-col bg-background">
-                <Header />
-                <SEO
-                  title="Community | Civil Rights Hub"
-                  description="A member community for civil-rights discussion, user-submitted events, direct messages, and accountable public conversation."
-                  canonicalUrl="https://civilrightshub.org/community"
-                  ogUrl="https://civilrightshub.org/community"
-                />
-                <main className="flex-1 pb-20 lg:pb-0">
-                  <div className="container mx-auto px-4 py-6">
-                    <div className="mb-6 flex items-start justify-between">
-                      <div>
-                        <h1 className="text-3xl font-bold">Community</h1>
-                        <p className="mt-1 text-sm text-muted-foreground">Share, discuss, organize, and connect. Community content is user-submitted unless explicitly marked as verified.</p>
-                      </div>
-                      <button onClick={() => handleTabChange("notifications")} className="relative mt-1 rounded-full p-2 transition-colors hover:bg-muted" aria-label="Notifications">
-                        <Bell className="h-6 w-6 text-muted-foreground" />
-                        {unreadNotifications > 0 && <span className="absolute -right-0.5 -top-0.5 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-bold text-white">{unreadNotifications > 99 ? "99+" : unreadNotifications}</span>}
-                      </button>
-                    </div>
-                    <Tabs value={activeTab} onValueChange={handleTabChange}>
-                      <TabsList className="hidden h-auto w-full flex-nowrap justify-start gap-0 overflow-x-auto rounded-none border-b border-border bg-transparent p-0 lg:flex">
-                        {[
-                          { value: "feed", icon: Newspaper, label: "Feed" },
-                          { value: "discuss", icon: MessageCircle, label: "Discuss" },
-                          { value: "events", icon: CalendarDays, label: "Events" },
-                          { value: "messages", icon: MessageSquare, label: "Messages" },
-                          { value: "notifications", icon: Bell, label: "Alerts" },
-                          { value: "network", icon: Globe, label: "Network" },
-                          { value: "profile", icon: User, label: "Profile" },
-                        ].map(({ value, icon: Icon, label }) => (
-                          <TabsTrigger key={value} value={value} className="rounded-none border-b-2 border-transparent px-4 py-3 text-sm font-medium data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none">
-                            <Icon className="mr-1.5 h-4 w-4" />{label}
-                          </TabsTrigger>
-                        ))}
-                      </TabsList>
-                      <CommunityMobileNav activeTab={activeTab} onTabChange={handleTabChange} />
-                      <div className="mt-6">
-                        <TabsContent value="feed" className="mt-0"><div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_300px]"><SocialFeed /><aside className="hidden lg:block"><div className="sticky top-24"><CommunitySidebar currentUserRole={currentUserRole} /></div></aside></div></TabsContent>
-                        <TabsContent value="discuss" className="mt-0"><DiscussionBoard /></TabsContent>
-                        <TabsContent value="events" className="mt-0"><EventsCalendar /></TabsContent>
-                        <TabsContent value="messages" className="mt-0"><MessagingPanel /></TabsContent>
-                        <TabsContent value="notifications" className="mt-0"><NotificationsCenter /></TabsContent>
-                        <TabsContent value="network" className="mt-0"><UserNetwork /></TabsContent>
-                        <TabsContent value="profile" className="mt-0"><UserProfile /></TabsContent>
-                      </div>
-                    </Tabs>
-                  </div>
-                </main>
-                <Footer />
-              </div>
-            );
-          }
-          '''
-          # Remove indentation introduced by Python source formatting.
-          import textwrap
-          write('src/pages/Community.tsx', textwrap.dedent(community))
-
-          # Sidebar: replace stale cleanup hold with transparent user-generated-content warning.
-          p = 'src/components/community/CommunitySidebar.tsx'
-          text = read(p)
-          old = '''      <Card className="border-amber-500/30 bg-amber-500/5">
-                <CardContent className="p-4">
-                  <p className="text-sm font-semibold">Community public-data cleanup</p>
-                  <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-                    Activity totals, trending counters, suggested verified profiles, incident feeds, and seeded public posts are temporarily withheld while synthetic/demo records are removed and verification rules are rebuilt.
-                  </p>
-                </CardContent>
-              </Card>'''
-          if old not in text:
-              # tolerate source indentation exactly as checked in
-              old = old.replace('      ', '')
-          replacement = '''<Card className="border-amber-500/30 bg-amber-500/5">
-            <CardContent className="p-4">
-              <p className="text-sm font-semibold">Community content safety</p>
-              <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-                Posts, discussions, profiles, and events are user-submitted unless explicitly marked verified. Independently confirm legal claims, event details, identities, and urgent alerts before relying on them.
-              </p>
-            </CardContent>
-          </Card>'''
-          # More reliable targeted replacement.
-          text = re.sub(
-              r'<Card className="border-amber-500/30 bg-amber-500/5">.*?</Card>',
-              replacement,
-              text,
-              count=1,
-              flags=re.S,
-          )
-          write(p, text)
-
-          # Sentry SDK initialization: no PII by default, opt-in through Vite env.
-          write('src/lib/sentry.ts', '''import * as Sentry from "@sentry/react";
-
-          const asRate = (value: string | undefined, fallback: number) => {
-            const parsed = Number(value);
-            return Number.isFinite(parsed) && parsed >= 0 && parsed <= 1 ? parsed : fallback;
-          };
-
-          export function initSentry() {
-            const dsn = import.meta.env.VITE_SENTRY_DSN?.trim();
-            if (!dsn) return;
-
-            Sentry.init({
-              dsn,
-              environment: import.meta.env.VITE_SENTRY_ENVIRONMENT || import.meta.env.MODE,
-              release: import.meta.env.VITE_SENTRY_RELEASE || undefined,
-              sendDefaultPii: false,
-              tracesSampleRate: asRate(import.meta.env.VITE_SENTRY_TRACES_SAMPLE_RATE, 0.1),
-            });
-          }
-
-          export { Sentry };
-          '''.replace('          ', ''))
-
-          p = 'src/main.tsx'
-          text = read(p)
-          if 'initSentry' not in text:
-              text = text.replace('import EnvironmentCheck from "./components/EnvironmentCheck";\n', 'import EnvironmentCheck from "./components/EnvironmentCheck";\nimport { initSentry } from "./lib/sentry";\n')
-              text = text.replace('import "./index.css";\n\n', 'import "./index.css";\n\ninitSentry();\n\n')
-          write(p, text)
-
-          p = 'src/components/ErrorBoundary.tsx'
-          text = read(p)
-          if '@/lib/sentry' not in text:
-              text = text.replace('import { AlertTriangle } from "lucide-react";\n', 'import { AlertTriangle } from "lucide-react";\nimport { Sentry } from "@/lib/sentry";\n')
-          text = text.replace(
-              '    console.error("Uncaught error:", error, errorInfo);',
-              '    console.error("Uncaught error:", error, errorInfo);\n    Sentry.captureException(error, { contexts: { react: { componentStack: errorInfo.componentStack ?? "" } } });'
-          )
-          write(p, text)
-
-          p = '.env.example'
-          text = read(p)
-          text = text.replace('VITE_SUPABASE_ANON_KEY=', 'VITE_SUPABASE_PUBLISHABLE_KEY=')
-          if 'VITE_SENTRY_DSN=' not in text:
-              text += '''\n# --- SENTRY CLIENT OBSERVABILITY ---\nVITE_SENTRY_DSN=\nVITE_SENTRY_ENVIRONMENT=production\nVITE_SENTRY_RELEASE=\nVITE_SENTRY_TRACES_SAMPLE_RATE=0.1\n'''
-          write(p, text)
-          PY
-
-      - name: Build production bundle
-        run: npm run build
-
-      - name: Run tests
-        run: npx vitest run
-
-      - name: Commit tested recovery patch
+      - name: Commit lockfile update
         shell: bash
         run: |
           set -euo pipefail
           git config user.name "Civil Rights Hub Recovery Bot"
           git config user.email "actions@users.noreply.github.com"
-          git add package.json package-lock.json .env.example src supabase/migrations/20260828220500_restore_clean_social_community.sql
+          git add package.json package-lock.json
           if git diff --cached --quiet; then
-            echo "No patch changes to commit"
+            echo "Sentry dependency already current"
             exit 0
           fi
-          git commit -m "Restore social community and add Sentry observability"
+          git commit -m "Add Sentry React observability dependency"
           git push origin HEAD:fix/community-social-recovery

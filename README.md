@@ -1,57 +1,69 @@
 # Civil Rights Hub
 
-Civil Rights Hub is a public-interest web application maintained by We The People News. It brings together rights-reference material, emergency encounter tools, incident documentation, public-records workflows, scanner resources, legal research tools, and community features.
+Civil Rights Hub is a public-interest web application maintained by We The People News. It combines rights-reference material, incident documentation, public-records workflows, accountability resources, emergency tools, and a community platform.
 
 Production: https://civilrightshub.org
 
-## Current integrity status
+## Operating principle
 
-The project is operating under a **fail-closed publication policy** for legacy public datasets.
+**Truth before volume. Fail closed before publishing unsupported claims.**
 
-Public attorney, activist, incident, officer, agency, and related accountability records are temporarily withheld while old data is re-verified against durable source evidence. Legacy `verified` flags are not treated as proof by themselves.
+This repository previously accumulated synthetic, bulk-generated, stale, and weakly sourced records. Current code and migrations intentionally treat legacy `verified` flags, seed comments, generated copy, and old documentation as insufficient evidence by themselves.
 
-The repository includes a provenance-gate migration designed to:
+Public factual data should be traceable to durable evidence appropriate to the claim. If that evidence is missing, the record stays unpublished, unverified, quarantined, or clearly labeled as user-generated content.
 
-- preserve legacy verification decisions in a private quarantine table;
-- demote unsupported legacy verification states;
-- require active source provenance before covered records can be promoted to verified again;
-- limit public reads to records that satisfy the verification policy;
-- keep internal reviewer notes separate from public evidence metadata.
+## Documentation map
 
-The application layer also fails closed so contaminated legacy rows are not republished if the database migration has not yet been confirmed in production.
+The following files define the current operating model:
 
-## Data policy
+- [`AGENTS.md`](AGENTS.md) — mandatory instructions for coding agents and autonomous tools.
+- [`CONTRIBUTING.md`](CONTRIBUTING.md) — contribution and review requirements.
+- [`SECURITY.md`](SECURITY.md) — security, secrets, RLS, privileged-function, and incident-response rules.
+- [`docs/DATA_INTEGRITY.md`](docs/DATA_INTEGRITY.md) — provenance, verification, seeding, and publication policy.
+- [`docs/OPERATIONS.md`](docs/OPERATIONS.md) — production architecture, migrations, deployment, rollback, and verification procedures.
+- [`docs/COMMUNITY_INTEGRITY.md`](docs/COMMUNITY_INTEGRITY.md) — social/community data rules and recovery requirements.
 
-Do not add synthetic people, attorneys, activists, agencies, officers, incidents, complaints, ratings, bar numbers, contact information, or legal findings to make the application appear populated.
+If older planning or audit documents conflict with these files, the hierarchy is:
 
-A public factual record should be traceable to evidence appropriate to the claim, such as:
+1. verified live production behavior and current database schema;
+2. current migrations, tests, and deployed application code;
+3. the operating documents listed above;
+4. older audit, seeding, planning, generated, or historical documentation.
 
-- official government records;
-- court records;
-- bar-directory records;
-- organization-owned pages for organization-controlled facts;
-- other reputable sources where primary authority is unavailable.
+## Production architecture
 
-User submissions are intake records, not automatically verified facts.
-
-Legal summaries should prefer current statutes, controlling cases, regulations, and other primary authority. State-law labels that do not yet have per-entry provenance should remain disabled rather than presented as verified law.
-
-## Legacy seed warning
-
-Historical versions of this repository contained synthetic-data generators and bulk seed files. Those records and old seed-time verification flags must **not** be assumed accurate.
-
-The legacy random-data seeding path has been disabled. Use the provenance-aware workflow for any future verified seeding.
-
-## Application stack
-
-- React 18
-- TypeScript
-- Vite
-- Tailwind CSS
-- Supabase
+- React 18 + TypeScript + Vite
+- React Router
+- Tailwind CSS + Radix/shadcn-style components
 - TanStack Query
-- Radix / shadcn-style UI components
-- Vercel deployment
+- Supabase PostgreSQL, Auth, Storage, Realtime, and Edge Functions
+- Vercel frontend deployment
+
+Expected production Supabase project ref: `vrdnrbjnitptxrexdlao`.
+
+Any production database workflow must positively verify that project before writing. Never infer the target project from a local default, cached CLI link, copied credential, or environment from another repository.
+
+## Current integrity model
+
+Covered public datasets use a provenance gate. Depending on entity type, publication requires current, reviewed evidence such as official government records, court records, bar directories, or organization-controlled primary sources. Field-level claims may require explicit source support.
+
+Legacy data that cannot meet the current standard is intentionally withheld. User submissions are intake/user-generated records and are not automatically converted into verified factual findings.
+
+### Social/community content
+
+Community activity must represent genuine account activity unless the content is explicitly identified as first-party editorial/system material.
+
+Do **not** seed:
+
+- fake users or usernames;
+- fake posts, comments, forum discussions, stories, RSVPs, followers, reactions, views, likes, shares, or engagement counters;
+- events without a durable organizer/venue source;
+- synthetic first-person experiences;
+- posts attributed to a real account merely to make the platform appear active.
+
+Source-backed educational/editorial material may be published only through a clearly identified official/system identity and must not simulate organic community participation or fabricated engagement.
+
+See [`docs/COMMUNITY_INTEGRITY.md`](docs/COMMUNITY_INTEGRITY.md).
 
 ## Local development
 
@@ -60,56 +72,67 @@ npm install
 npm run dev
 ```
 
-Build:
-
-```bash
-npm run build
-```
-
-Tests:
-
-```bash
-npm test
-```
-
-Lint:
+Quality checks:
 
 ```bash
 npm run lint
+npm run test -- --run
+npm run build
 ```
+
+`npm run build` also runs the repository's payment-link and branding integrity checks through `prebuild`.
+
+## Environment
+
+The browser client requires:
+
+```text
+VITE_SUPABASE_URL
+VITE_SUPABASE_PUBLISHABLE_KEY
+```
+
+Use `.env.example` as the template. Never commit production secrets. Browser variables prefixed with `VITE_` are public by design and must never contain service-role keys, database passwords, provider secrets, or management tokens.
 
 ## Verified seeding
 
-The repository includes a provenance-aware seeder for records that are ready to be reviewed against source evidence.
-
-Validate an input file without writing:
+The only approved general-purpose data seeding path is the provenance-aware seeder:
 
 ```bash
-npm run seed:verified:dry -- path/to/verified-seed.json
-```
-
-Run a verified seed only after the production provenance schema is confirmed:
-
-```bash
+npm run seed:verified:dry-run -- path/to/verified-seed.json
 npm run seed:verified -- path/to/verified-seed.json
 ```
 
-Do not use legacy bulk/random seeding scripts as a substitute for evidence collection.
+Before write mode:
+
+1. verify the production project ref;
+2. verify migration parity and the provenance gate;
+3. review every source and supported field;
+4. dry-run the payload;
+5. write;
+6. verify the resulting public visibility and provenance rows.
+
+Historical random/bulk seed scripts are evidence of past state, not approved production tooling.
 
 ## Database migrations
 
-Migration files live in `supabase/migrations/`.
+Migration files live in `supabase/migrations/` and are append-only once applied to production. Never edit or reuse an already-applied migration version to change production behavior. Use a forward migration.
 
-Before enabling held public datasets, production should be checked for migration parity and the provenance/RLS behavior should be tested for anonymous, authenticated, and trusted service-role paths.
+Production migration workflows must compare local/remote history before applying SQL and must run the relevant smoke tests afterward.
+
+See [`docs/OPERATIONS.md`](docs/OPERATIONS.md).
+
+## Security
+
+Supabase RLS is a primary security boundary, but grants, Storage policies, RPC execution privileges, Edge Function authorization, and service-role usage are separate controls and must also be reviewed.
+
+Do not expose service-role credentials to the browser. Do not solve an RLS error by broadening a policy to `USING (true)` or granting blanket write access unless that behavior is explicitly required and reviewed.
+
+See [`SECURITY.md`](SECURITY.md).
 
 ## Public source and licensing
 
-The source repository is publicly viewable on GitHub. **There is currently no `LICENSE` file in this repository.** Public visibility does not by itself grant general rights to copy, modify, redistribute, or relicense the code. A software license should be added deliberately if the owner chooses to grant those rights.
+The repository is publicly viewable. There is currently no `LICENSE` file. Public visibility alone does not grant general permission to copy, modify, redistribute, or relicense the code.
 
-## Corrections
+## Corrections and stale documents
 
-Source-backed corrections, broken-link reports, and reproducible bug reports are welcome. The project should not promise a fixed correction deadline unless a real operational process exists to support that promise.
-
-## Legacy documentation caution
-
-Some older planning, seeding, SEO, or model-generated documents in the repository may contain stale assumptions, generated examples, projected figures, or pre-integrity architecture notes. Treat current application code, tested migrations, live deployment behavior, and cited primary sources as higher-authority evidence. Legacy planning documents should be audited before reuse.
+Source-backed corrections and reproducible bug reports are welcome. Older files such as database audits, historical seeding reports, generated feature plans, and prior architecture notes may describe superseded behavior. Do not treat a document's confident wording, a migration comment such as `REAL DATA`, or an old row count as proof of current production truth.

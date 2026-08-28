@@ -1,147 +1,234 @@
-# Repository Guidelines
+# AGENTS.md — Civil Rights Hub Operating Rules
 
-## Build, Test, and Development Commands
+This file is the primary instruction set for AI coding agents, autonomous repository tools, and human maintainers making changes to Civil Rights Hub.
 
-- `npm install` or `bun install` - install dependencies (don't commit lockfile unless switching package managers)
-- `npm run dev` - starts Vite dev server on http://localhost:8080
-- `npm run build` - production build to `dist/`
-- `npm run build:dev` - development mode build with dev-mode env vars
-- `npm run lint` - runs ESLint flat config across TS/TSX files
-- `npm run preview` - serves the last build for acceptance demos
-- `npm run test` - runs all Vitest tests in watch mode
-- `npm run test -- path/to/file.test.ts` - runs a single test file
-- `npm run test -- --run` - runs tests once without watch mode
+If a generated plan, old document, code comment, migration comment, prior chat, or automated suggestion conflicts with this file, stop and verify current production reality before proceeding.
 
-## Project Structure
+## 1. Mission and non-negotiable standard
 
-```
-src/                          # Core client code
-  components/                 # React components
-    ui/                       # shadcn UI building blocks
-    __tests__/                # Co-located test files
-    foia/                     # FOIA-related components
-  pages/                      # React Router route views
-  hooks/                      # Custom React hooks for shared logic
-  lib/                        # Utility functions (cn, seoData, etc.)
-  integrations/               # External service clients
-    supabase/                 # Supabase client and types
-  types/                      # TypeScript type definitions
-  data/                       # Static JSON data files
-public/                       # Static assets
-dist/                         # Build output (gitignored)
-supabase/                     # Supabase configuration
-  functions/                  # Edge functions (Deno runtime)
-    case-search/              # Legal case search function
-    legal-assistant/          # AI legal assistant function
-    check-foia-deadlines/     # FOIA deadline checker
-  migrations/                 # SQL migration files
-  config.toml                 # Supabase CLI configuration
-```
+Civil Rights Hub is a public-interest civil-rights platform. Accuracy, traceability, privacy, and safe failure matter more than appearing complete or populated.
 
-## Coding Style & Naming Conventions
+Never fabricate or infer real-world facts to fill gaps.
 
-- TypeScript everywhere with 2-space indentation
-- Prefer small, pure React function components
-- File naming: `PascalCase.tsx` for components, `useSomething.ts` for hooks
-- Import shared modules via `@/` alias (e.g., `import { cn } from "@/lib/utils"`)
-- Use Tailwind utility classes with `clsx`/`class-variance-authority` helpers
-- Use the `cn()` function from `@/lib/utils` for conditional class merging
-- Keep data fetching inside `src/hooks/` with React Query (`@tanstack/react-query`)
-- Use shadcn/ui components from `@/components/ui/` for consistent UI
+Never create synthetic people, attorneys, activists, agencies, officers, incidents, complaints, cases, events, ratings, statistics, engagement, reviews, phone numbers, bar numbers, outcomes, or legal findings for production.
 
-## Import Order
+Never describe unsupported data as verified because a row, migration, comment, seed file, or earlier model labeled it that way.
 
-1. React/React-related imports (react, react-dom, react-router-dom)
-2. Third-party libraries (@tanstack/react-query, lucide-react, etc.)
-3. Internal aliases (`@/components/`, `@/hooks/`, `@/lib/`, `@/types/`)
-4. Relative imports (./, ../)
-5. Type imports (use `import type` for type-only imports)
+When evidence is inadequate, fail closed.
 
-Example:
-```typescript
-import { useState, useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { useGeolocation } from "@/hooks/useGeolocation";
-import type { ScannerLinkRecord } from "@/types/scanner";
+## 2. Production identity
+
+Repository: `patriotnewsactivism/civil-rights-hub`
+
+Production frontend: `https://civilrightshub.org`
+
+Expected production Supabase project ref: `vrdnrbjnitptxrexdlao`
+
+Before any production database write, migration, Edge Function deployment, or schema operation:
+
+1. positively verify the target project ref is exactly `vrdnrbjnitptxrexdlao`;
+2. verify the credential belongs to that project/account;
+3. inspect current migration history/schema if the operation depends on it;
+4. stop if the target cannot be positively identified.
+
+Do not rely on a cached Supabase CLI link, remembered environment, or another repository's credentials.
+
+## 3. Source-of-truth hierarchy
+
+When sources disagree, use this order:
+
+1. verified live production behavior and current production schema;
+2. current migrations, tests, and deployed application code;
+3. `README.md`, this file, `SECURITY.md`, `CONTRIBUTING.md`, and `docs/` operating runbooks;
+4. older audit reports, seeding reports, feature plans, generated documentation, and historical code comments.
+
+Historical documentation is useful evidence of what happened, not proof of what is true now.
+
+## 4. Data integrity and provenance
+
+Read `docs/DATA_INTEGRITY.md` before changing public factual datasets.
+
+Publication rules:
+
+- Prefer primary/official sources.
+- Every public factual claim must be supportable at the appropriate field level.
+- A secondary source may supplement but must not silently replace a required primary anchor.
+- User submissions are user-generated/intake records, not verified findings.
+- AI may summarize supplied evidence; it may not invent missing evidence.
+- A URL alone is not proof that every field in a row is supported.
+- Source age/freshness matters for changing facts such as attorney status, contacts, laws, scanner endpoints, and events.
+
+Approved general-purpose seeding path:
+
+```bash
+npm run seed:verified:dry-run -- path/to/verified-seed.json
+npm run seed:verified -- path/to/verified-seed.json
 ```
 
-## TypeScript Guidelines
+Do not reactivate random/bulk legacy seeders.
 
-- Use explicit return types for exported functions
-- Prefer interfaces for object types that might be extended
-- Use `type` for unions, intersections, and mapped types
-- Avoid `any`; use `unknown` when type is truly unknown
-- Type file location: co-locate with code or in `src/types/`
-- Use Zod schemas for runtime validation (`zod` package available)
+## 5. Community/social integrity
 
-## Error Handling
+Read `docs/COMMUNITY_INTEGRITY.md` before changing Feed, Discuss, Events, Network, Stories, engagement, or related seed data.
 
-- Use `ErrorBoundary` component from `@/components/ErrorBoundary` for React error boundaries
-- Log errors with `console.error()` for debugging
-- Provide user-friendly error messages in UI
-- Graceful degradation for missing environment variables (see Supabase client pattern)
-- Async operations should return `{ data, error }` pattern matching Supabase conventions
-- Check for `error` property before using `data` in async operations
+Never seed fake organic activity. Specifically prohibited:
 
-## Testing Guidelines
+- fake accounts or display identities;
+- fake first-person posts or forum threads;
+- fake comments, reactions, follows, likes, views, shares, votes, RSVPs, or popularity counts;
+- attaching generated content to an existing real user's ID;
+- invented events or organizer details;
+- generated usernames that create the appearance of a populated community.
 
-- Test files named `Component.test.tsx` or `hook.test.ts`
-- Co-locate tests with code OR use `__tests__` folders
-- Use Vitest with Testing Library (`@testing-library/react`, `@testing-library/jest-dom`)
-- Mock external dependencies (Supabase, geolocation, etc.) using `vi.mock()`
-- Use `afterEach` for cleanup: `cleanup()`, `vi.clearAllMocks()`
-- Run `npm run lint && npm run build` before PR review
+Source-backed editorial content must be clearly published by a real official/system identity and must not imitate community participation or include fabricated engagement.
 
-Example mock pattern:
-```typescript
-vi.mock("@/integrations/supabase/client", () => ({
-  supabase: {
-    from: () => ({
-      select: () => builder,
-      eq: () => builder,
-      order: () => builder,
-      then: promise.then.bind(promise),
-    }),
-  },
-}));
+Do not reopen a held social surface merely because the UI compiles. Verify schema, RLS, Storage, cleanup state, and production row provenance first.
+
+## 6. Legal and high-stakes content
+
+For legal summaries, rights guidance, deadlines, statutes, case holdings, hotline/contact claims, or state-specific law:
+
+- prefer official statutes, regulations, court opinions, court/government sites, and authoritative organization pages;
+- distinguish federal baseline from state/local variation;
+- avoid categorical legal advice where exceptions or jurisdiction matter;
+- do not generate case citations or holdings from an LLM without source retrieval/verification;
+- do not publish a generated deadline as statutory truth unless the governing law and calculation are verified;
+- use explicit caveats when a feature is educational rather than legal advice.
+
+If a legal feature cannot ground its answer in verified sources, hold or fail-close it rather than hallucinate.
+
+## 7. Database migration discipline
+
+Migration files under `supabase/migrations/` are append-only after production application.
+
+Rules:
+
+- Never rewrite an applied migration to change live behavior.
+- Use a new forward migration for corrections.
+- Compare local and remote migration history before applying.
+- Do not replay historical synthetic seed migrations simply because the remote/local ledger differs.
+- Preserve audit/quarantine records when removing contaminated public data.
+- Prefer reversible or snapshot-before-delete cleanup for uncertain legacy data.
+- Run relevant rollback-only smoke tests after migration.
+- Re-run Supabase security/performance advisors after security/schema changes when available.
+
+RLS, SQL grants, function execution privileges, Storage policies, and Edge Function authorization are separate controls. Review all relevant layers.
+
+## 8. Supabase security rules
+
+Never put service-role keys, database passwords, management tokens, Stripe secret keys, provider keys, or other privileged secrets in browser code or `VITE_*` variables.
+
+For RLS:
+
+- enable RLS on exposed tables;
+- make policies least-privilege and role-specific;
+- use ownership checks for user-owned writes;
+- avoid broad `USING (true)` write policies;
+- preserve recursion-safe helper functions where needed;
+- treat `SECURITY DEFINER` as privileged code and restrict execution/search path;
+- do not assume RLS protects service-role operations.
+
+For Storage:
+
+- bucket existence is not enough; verify object policies;
+- user uploads should be constrained to authenticated, user-owned paths;
+- validate size/type at both product and Storage-policy/config layers where practical.
+
+## 9. Frontend failure behavior
+
+Do not silently replace unavailable production factual data with synthetic fallback data.
+
+For high-stakes datasets, empty/held/error states are preferable to invented or stale content.
+
+When the Supabase browser configuration is absent, the app may degrade gracefully, but production builds must have the required environment configured.
+
+User-facing errors should be useful without exposing secrets, tokens, raw SQL, or sensitive personal data.
+
+## 10. Observability and privacy
+
+Production errors should be observable through the approved monitoring stack when configured.
+
+Do not send secrets, authorization headers, full message bodies, private legal records, precise sensitive locations, or unnecessary personal information to logs/telemetry.
+
+When adding Sentry or another observability provider:
+
+- scrub sensitive fields;
+- avoid session replay on sensitive/legal form content unless explicitly reviewed;
+- tag release/environment and route/component context;
+- capture errors at application boundaries and important backend operations;
+- preserve user privacy over debugging convenience.
+
+## 11. Payment and brand integrity
+
+Payment destinations are centralized and protected by build-time checks. Do not hardcode alternate Cash App/Venmo/payment identities in components.
+
+Current approved public payment identities must be read from the canonical payment configuration. Changes require explicit review because an incorrect handle can divert donations.
+
+Do not reintroduce retired builder/vendor branding, stale favicons, broken social preview assets, or metadata fallbacks. `npm run build` runs branding/payment integrity checks.
+
+## 12. Development commands
+
+Install and run:
+
+```bash
+npm install
+npm run dev
 ```
 
-## Supabase Edge Functions
+Required quality checks before merge unless the change is documentation-only:
 
-- Located in `supabase/functions/`
-- Use Deno runtime with ES modules
-- Import from `https://deno.land/std@0.168.0/http/server.ts`
-- Include CORS headers in all responses
-- Store secrets in environment variables, access via `Deno.env.get("SECRET_NAME")`
-- Use `supabase start` locally to validate against local instance
-- Return errors as `{ error: string }` JSON with appropriate status codes
+```bash
+npm run lint
+npm run test -- --run
+npm run build
+```
 
-## Commit & PR Guidelines
+Useful commands:
 
-- Write imperative, descriptive commit subjects (e.g., "Add FOIA deadline tracking")
-- Link relevant Linear/GitHub issues in PRs
-- Describe UX impact and list tested commands
-- Attach screenshots for UI changes
-- Rebase on `main` before requesting review
-- Ensure `npm run lint && npm run build` passes before requesting review
+```bash
+npm run build:dev
+npm run preview
+npm run seed:verified:dry-run -- path/to/verified-seed.json
+```
 
-## Security
+Use the existing npm lockfile/package manager unless there is an explicit migration decision. Do not introduce a second lockfile casually.
 
-- Never commit `.env` files or secrets
-- Use `.env.local` for local development secrets
-- Required env vars: `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`
-- Regenerate Supabase tokens through the Supabase dashboard
-- Store edge function secrets per-function in their own `.env` files
+## 13. Code conventions
 
-## Key Dependencies
+- TypeScript/React with 2-space indentation.
+- Components: `PascalCase.tsx`; hooks: `useSomething.ts`.
+- Prefer `@/` imports for internal modules.
+- Use existing shadcn/Radix components and `cn()` conventions.
+- Avoid `any` in new code where a concrete/unknown type is practical.
+- Do not globally tighten TypeScript compiler settings as a drive-by change.
+- Keep side effects and data access explicit and testable.
+- Treat generated Supabase types as generated artifacts; regenerate after schema changes when appropriate.
 
-- `@tanstack/react-query` - Server state management
-- `@supabase/supabase-js` - Backend and auth
-- `react-router-dom` - Client-side routing
-- `lucide-react` - Icon library
-- `class-variance-authority` + `clsx` + `tailwind-merge` - Styling utilities
-- `zod` - Schema validation
-- `date-fns` - Date manipulation
-- `recharts` - Charts and data visualization
+## 14. Pull requests and autonomous changes
+
+Every meaningful PR should state:
+
+- what changed;
+- why it is safe;
+- production/data impact;
+- migrations involved;
+- validation performed;
+- any remaining blocker or intentionally held feature.
+
+Autonomous agents must not merge around a failing integrity/security check merely to make CI green. Fix the underlying issue or document a genuine false-positive with evidence.
+
+For production-affecting database work, distinguish clearly between:
+
+- code committed;
+- migration merged;
+- migration actually applied;
+- smoke tests passed;
+- deployment verified.
+
+Never collapse those into a single claim unless each step is observed.
+
+## 15. Documentation maintenance
+
+When architecture, production project identity, data policy, deployment path, or feature safety status materially changes, update the relevant operating document in the same PR.
+
+Do not allow generated planning documents to become de facto policy. If an old root-level report is retained for history, label it historical/stale or supersede it with a current runbook.

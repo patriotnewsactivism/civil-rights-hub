@@ -1,95 +1,69 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Claude Code and any other coding agent working in this repository must read and follow [`AGENTS.md`](AGENTS.md) first.
 
-## Commands
+`AGENTS.md` is the authoritative agent instruction set. Do not treat this file, old generated plans, seed comments, or historical audit documents as permission to bypass the data-integrity, security, migration, or community rules defined there.
+
+Also read when relevant:
+
+- [`SECURITY.md`](SECURITY.md)
+- [`CONTRIBUTING.md`](CONTRIBUTING.md)
+- [`docs/DATA_INTEGRITY.md`](docs/DATA_INTEGRITY.md)
+- [`docs/OPERATIONS.md`](docs/OPERATIONS.md)
+- [`docs/COMMUNITY_INTEGRITY.md`](docs/COMMUNITY_INTEGRITY.md)
+
+## Stable commands
 
 ```bash
-npm run dev          # Start dev server on port 8080
-npm run build        # Production build
-npm run build:dev    # Development mode build
-npm run lint         # Run ESLint
-npm run preview      # Preview production build
-npm run test         # Run Vitest unit tests
+npm install
+npm run dev
+npm run lint
+npm run test -- --run
+npm run build
 ```
 
-Run a single test file:
+Verified seeding:
+
 ```bash
-npx vitest run src/hooks/useJurisdiction.test.tsx
+npm run seed:verified:dry-run -- path/to/verified-seed.json
+npm run seed:verified -- path/to/verified-seed.json
 ```
 
-## Stack
+Never use legacy random/bulk seed paths to populate production.
 
-- **Frontend**: React 18 + TypeScript + Vite (SWC) — SPA, no SSR
-- **Routing**: React Router v6 (client-side only)
-- **UI**: shadcn/ui (Radix UI + Tailwind CSS), Lucide icons
-- **Server state**: TanStack Query v5
-- **Forms**: React Hook Form + Zod
-- **Backend**: Supabase (PostgreSQL + Auth + Realtime)
-- **Deployment**: Vercel; analytics via `@vercel/analytics`
-- **SEO**: `react-helmet-async` via `<SEO>` component
+## Stable architecture
 
-## Architecture
+- React 18 + TypeScript + Vite
+- React Router
+- Tailwind + Radix/shadcn-style components
+- TanStack Query
+- Supabase PostgreSQL/Auth/Storage/Realtime/Edge Functions
+- Vercel frontend deployment
 
-### Routing (`src/App.tsx`)
-27 routes defined with React Router v6. Heavy pages (`CityPage`, `StatePage`, `StatesDirectory`, `Sitemap`) use `React.lazy()` + `Suspense`. Redirects for `/notifications`, `/messages`, `/network` all point to `/community?tab=<tab>`. The `ScrollToTop` component (exported from `App.tsx`) fires on every navigation and uses a polling interval to counteract focus-stealing by lazy-loaded components.
+Expected production Supabase project ref: `vrdnrbjnitptxrexdlao`.
 
-### Component structure
-- `src/components/ui/` — shadcn/ui primitives; do not edit these directly
-- `src/components/community/` — Community page sub-components: `SocialFeed`, `CommunitySidebar`, `CommunityActionBar`, `CommunityMobileNav`, `GoLiveRecorder`, `ViolationFeed`, `QuickViolationReport`, `UserMentions`
-- `src/components/social/` — Reusable social primitives: `PollCreator`, `PollDisplay`, `ThreadedComments`, `ReactionPicker`, `MentionInput`, `ExternalShareButtons`
-- `src/components/foia/` — FOIA sub-components: `FOIAAgencySelector`, `FOIARequestDashboard`, `FOIARequestDetail`
-- Top-level components in `src/components/` include `Header`, `Footer`, `Hero`, `SEO`, `SocialFeed`, `StoriesBar`, `MessagingPanel`, `UserProfile`, `UserNetwork`, and many feature-specific components
+Verify that ref before production database or Edge Function operations.
 
-### Community page (`src/pages/Community.tsx`)
-Tab-driven page with tabs: `feed`, `discuss`, `events`, `messages`, `notifications`, `network`, `profile`. Active tab is synced to `?tab=` URL param so deep-linking works. Unauthenticated users are redirected to `/auth`.
+## Supabase browser client
 
-### Social platform features
-`SocialFeed` (`src/components/SocialFeed.tsx`) is the main community feed — posts support text, images, polls (stored as JSON in `poll_data`), hashtags, and visibility levels. `StoriesBar` renders ephemeral 24-hour stories. `GoLiveRecorder` (`src/components/community/GoLiveRecorder.tsx`) wraps `useEmergencyRecorder` + `useGeolocation` to record dual-camera video, then uploads to Supabase Storage and posts to the feed.
+`src/integrations/supabase/client.ts` expects:
 
-### Supabase Integration (`src/integrations/supabase/`)
-- Client initialized in `client.ts` from `VITE_SUPABASE_URL` + `VITE_SUPABASE_PUBLISHABLE_KEY`
-- **When env vars are missing** the module exports a no-op dummy client so the app runs without crashing; all queries resolve to `{ data: null, error: Error("Supabase not configured") }`
-- Generated TypeScript types are in `src/integrations/supabase/types.ts` — regenerate with `supabase gen types typescript --project-id vrdnrbjnitptxrexdlao` after schema changes
-- Real-time subscriptions used in `Header` (unread DM count) and community feed (new violation reports)
-
-### Key database tables
-`activists`, `attorneys` (~1700 rows), `violations` + `violation_comments`, `state_laws`, `federal_laws`, `scanner_links`, `forum_threads` + `forum_posts`, `user_profiles`, `notifications`, `direct_messages`, `foia_templates`, `foia_agencies`, `popular_tags`
-
-### Fallback data
-`src/data/attorneyFallbackData.json` and `scannerFallbackData.json` are loaded when Supabase is unavailable. The pattern is: try Supabase query → on error, fall back to static JSON (see `src/lib/attorneyFallback.ts` and `src/lib/scannerFallback.ts`).
-
-### Auth (`src/hooks/useAuth.ts`)
-Thin wrapper around `supabase.auth` that exposes `{ user, loading, isAuthenticated, signIn, signUp, signOut }`. Sign-up calls `buildSignupMetadata` (`src/lib/auth.ts`) to derive a unique `username` from the email prefix. Pages that require auth check `useAuth()` and redirect to `/auth`.
-
-### State management pattern
-- Global jurisdiction state: `useJurisdiction` hook + React Context (`src/hooks/useJurisdiction.tsx`); persisted to `localStorage`; supports manual selection, GPS, and IP geolocation fallback
-- Server/async state: TanStack Query (no Redux/Zustand)
-- Local UI state: `useState` / `useReducer`
-
-### Utility hooks
-- `useEmergencyRecorder` — dual-camera `MediaRecorder` abstraction for the Go Live / panic-button features
-- `useGeolocation` — browser Geolocation API wrapper
-- `useEmergencyContacts` — manages locally-stored emergency contact list
-
-### Edge Functions (`supabase/functions/`)
-Six Deno-based edge functions: `case-search`, `legal-assistant`, `send-foia-request`, `send-weekly-digest`, `track-foia-open`, `check-foia-deadlines`.
-
-### Path aliases
-`@/*` maps to `src/*`. Use this for all internal imports.
-
-## TypeScript config
-Intentionally loose: `noImplicitAny: false`, `strictNullChecks: false`. Do not tighten these globally.
-
-## Environment variables
-```
-VITE_SUPABASE_PROJECT_ID
+```text
 VITE_SUPABASE_URL
 VITE_SUPABASE_PUBLISHABLE_KEY
 ```
-All must be prefixed `VITE_` to be available in the browser bundle.
 
-## Testing
-- Vitest + Testing Library; setup file at `src/setupTests.ts`
-- Test files colocated with source or in `__tests__/` subdirectories
-- Existing tests: `useJurisdiction.test.tsx`, `JurisdictionSelector.test.tsx`, `NavigationPages.test.tsx`, `useEmergencyRecorder.test.ts`, `PoliceScanner.test.tsx`, `SectionQuickNav.test.tsx`, community component tests (`CommunityMobileNav`, `CommunityActionBar`)
+`VITE_*` values are browser-visible and must not contain privileged secrets.
+
+Generated database types live in `src/integrations/supabase/types.ts`. Regenerate/review them after schema changes when appropriate.
+
+## Critical cautions
+
+- Do not restore synthetic fallback data for high-stakes public datasets.
+- Do not publish legal/factual claims merely because an old seed or document calls them real/verified.
+- Do not manufacture community users, posts, threads, events, engagement, or counts.
+- Do not rewrite migrations already applied to production; use forward fixes.
+- Do not assume a Vercel deploy also deployed Supabase migrations/functions.
+- Do not weaken RLS/security/integrity checks to make CI green.
+
+For all other operational and coding rules, defer to `AGENTS.md`.

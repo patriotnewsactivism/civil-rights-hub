@@ -1,0 +1,61 @@
+name: Civil Rights Hub Community Migration Smoke
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+    paths:
+      - supabase/migrations/20260828220500_restore_clean_social_community.sql
+      - .github/workflows/community-migration-smoke.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  rollback-smoke:
+    if: github.event_name != 'pull_request' || github.head_ref == 'fix/community-social-recovery'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      PROJECT_REF: vrdnrbjnitptxrexdlao
+      POOLER_URL: postgresql://postgres.vrdnrbjnitptxrexdlao@aws-0-us-west-2.pooler.supabase.com:5432/postgres
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+      PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Require Civil Rights Hub production credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$SUPABASE_DB_PASSWORD" || { echo "::error::Missing SUPABASE_DB_PASSWORD"; exit 1; }
+          test "$PROJECT_REF" = "vrdnrbjnitptxrexdlao" || { echo "::error::Unexpected Supabase project ref"; exit 1; }
+
+      - name: Apply migration inside rollback-only transaction
+        shell: bash
+        run: |
+          set -euo pipefail
+          sql_file="$(mktemp)"
+          {
+            printf '%s\n' 'BEGIN;'
+            cat supabase/migrations/20260828220500_restore_clean_social_community.sql
+            printf '%s\n' \
+              '' \
+              'DO $$' \
+              'BEGIN' \
+              "  IF (SELECT count(*) FROM public.posts) <> 0 THEN RAISE EXCEPTION 'posts not empty after recovery'; END IF;" \
+              "  IF (SELECT count(*) FROM public.forum_threads) <> 0 THEN RAISE EXCEPTION 'forum_threads not empty after recovery'; END IF;" \
+              "  IF (SELECT count(*) FROM public.community_events) <> 0 THEN RAISE EXCEPTION 'community_events not empty after recovery'; END IF;" \
+              "  IF NOT EXISTS (SELECT 1 FROM storage.buckets WHERE id = 'posts' AND public) THEN RAISE EXCEPTION 'posts bucket missing'; END IF;" \
+              "  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE schemaname='storage' AND tablename='objects' AND policyname='community_posts_media_insert') THEN RAISE EXCEPTION 'posts upload policy missing'; END IF;" \
+              "  IF EXISTS (SELECT 1 FROM pg_policies WHERE schemaname='public' AND tablename IN ('forum_threads','forum_posts') AND roles::text LIKE '%anon%' AND cmd='INSERT') THEN RAISE EXCEPTION 'anonymous forum insert policy remains'; END IF;" \
+              "  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE schemaname='public' AND tablename='posts' AND policyname='posts_public_select') THEN RAISE EXCEPTION 'posts select policy missing'; END IF;" \
+              "  IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname='protect_user_profile_system_fields_trigger' AND NOT tgisinternal) THEN RAISE EXCEPTION 'profile protection trigger missing'; END IF;" \
+              "  IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname='refresh_community_event_rsvp_count_trigger' AND NOT tgisinternal) THEN RAISE EXCEPTION 'RSVP count trigger missing'; END IF;" \
+              'END $$;' \
+              '' \
+              'ROLLBACK;'
+          } > "$sql_file"
+          psql "$POOLER_URL" -v ON_ERROR_STOP=1 -P pager=off -f "$sql_file"

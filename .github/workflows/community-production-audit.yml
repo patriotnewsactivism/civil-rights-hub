@@ -1,0 +1,126 @@
+name: Civil Rights Hub Community Production Audit
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths:
+      - .github/workflows/community-production-audit.yml
+      - src/pages/Community.tsx
+      - src/components/SocialFeed.tsx
+      - src/components/DiscussionBoard.tsx
+      - src/components/EventsCalendar.tsx
+      - src/components/UserNetwork.tsx
+      - src/components/StoriesBar.tsx
+      - src/components/community/**
+      - src/components/social/**
+      - supabase/migrations/**
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/community-production-audit.yml
+      - src/pages/Community.tsx
+      - src/components/SocialFeed.tsx
+      - src/components/DiscussionBoard.tsx
+      - src/components/EventsCalendar.tsx
+      - src/components/UserNetwork.tsx
+      - src/components/StoriesBar.tsx
+      - src/components/community/**
+      - src/components/social/**
+      - supabase/migrations/**
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    if: github.event_name != 'pull_request' || github.head_ref == 'fix/community-social-recovery'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      PROJECT_REF: vrdnrbjnitptxrexdlao
+      POOLER_URL: postgresql://postgres.vrdnrbjnitptxrexdlao@aws-0-us-west-2.pooler.supabase.com:5432/postgres
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+      PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Require Civil Rights Hub production credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$SUPABASE_DB_PASSWORD" || { echo "::error::Missing SUPABASE_DB_PASSWORD"; exit 1; }
+          test "$PROJECT_REF" = "vrdnrbjnitptxrexdlao" || { echo "::error::Unexpected Supabase project ref"; exit 1; }
+
+      - name: Audit production social contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          psql "$POOLER_URL" -v ON_ERROR_STOP=1 -P pager=off <<'SQL'
+          \echo '=== Current social counts ==='
+          SELECT 'posts' AS table_name, count(*) AS rows FROM public.posts
+          UNION ALL SELECT 'comments', count(*) FROM public.comments
+          UNION ALL SELECT 'stories', count(*) FROM public.stories
+          UNION ALL SELECT 'forum_threads', count(*) FROM public.forum_threads
+          UNION ALL SELECT 'forum_posts', count(*) FROM public.forum_posts
+          UNION ALL SELECT 'community_events', count(*) FROM public.community_events
+          UNION ALL SELECT 'event_rsvps', count(*) FROM public.event_rsvps
+          UNION ALL SELECT 'user_profiles', count(*) FROM public.user_profiles
+          UNION ALL SELECT 'follows', count(*) FROM public.follows
+          ORDER BY table_name;
+
+          \echo '=== Account-backed vs legacy social content ==='
+          SELECT 'posts' AS table_name,
+                 count(*) FILTER (WHERE user_id IS NULL) AS null_owner,
+                 count(*) FILTER (WHERE user_id IS NOT NULL) AS account_owned,
+                 count(DISTINCT user_id) FILTER (WHERE user_id IS NOT NULL) AS distinct_owners,
+                 min(created_at) AS oldest,
+                 max(created_at) AS newest
+          FROM public.posts
+          UNION ALL
+          SELECT 'forum_threads',
+                 count(*) FILTER (WHERE user_id IS NULL),
+                 count(*) FILTER (WHERE user_id IS NOT NULL),
+                 count(DISTINCT user_id) FILTER (WHERE user_id IS NOT NULL),
+                 min(created_at), max(created_at)
+          FROM public.forum_threads
+          UNION ALL
+          SELECT 'community_events',
+                 count(*) FILTER (WHERE organizer_id IS NULL),
+                 count(*) FILTER (WHERE organizer_id IS NOT NULL),
+                 count(DISTINCT organizer_id) FILTER (WHERE organizer_id IS NOT NULL),
+                 min(created_at), max(created_at)
+          FROM public.community_events;
+
+          \echo '=== RLS policy definitions for public social tables ==='
+          SELECT tablename, policyname, cmd, roles::text, qual, with_check
+          FROM pg_policies
+          WHERE schemaname = 'public'
+            AND tablename = ANY (ARRAY[
+              'posts','comments','likes','post_bookmarks','post_shares','post_reactions','poll_votes',
+              'stories','story_views','follows','user_profiles','forum_threads','forum_posts',
+              'thread_upvotes','thread_bookmarks','thread_subscriptions','thread_tags','content_reports',
+              'community_events','event_rsvps','notifications','direct_messages'
+            ])
+          ORDER BY tablename, policyname;
+
+          \echo '=== Posts storage bucket ==='
+          SELECT id, name, public, file_size_limit, allowed_mime_types
+          FROM storage.buckets WHERE id = 'posts';
+
+          \echo '=== Storage object policies for posts ==='
+          SELECT policyname, cmd, roles::text, qual, with_check
+          FROM pg_policies
+          WHERE schemaname = 'storage' AND tablename = 'objects'
+            AND (coalesce(qual,'') LIKE '%posts%' OR coalesce(with_check,'') LIKE '%posts%')
+          ORDER BY policyname;
+
+          \echo '=== Legacy content concentration ==='
+          SELECT 'posts 2026-04-25' AS fingerprint, count(*) FROM public.posts WHERE created_at::date = DATE '2026-04-25'
+          UNION ALL SELECT 'threads 2026-04-25', count(*) FROM public.forum_threads WHERE created_at::date = DATE '2026-04-25'
+          UNION ALL SELECT 'events 2026-04-25', count(*) FROM public.community_events WHERE created_at::date = DATE '2026-04-25'
+          UNION ALL SELECT 'null-owner threads', count(*) FROM public.forum_threads WHERE user_id IS NULL
+          UNION ALL SELECT 'null-organizer events', count(*) FROM public.community_events WHERE organizer_id IS NULL;
+          SQL

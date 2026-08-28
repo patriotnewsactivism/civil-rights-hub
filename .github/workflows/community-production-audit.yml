@@ -35,7 +35,7 @@ permissions:
 
 jobs:
   audit:
-    if: github.event_name != 'pull_request' || github.head_ref == 'fix/social-recovery-final'
+    if: github.event_name != 'pull_request' || github.head_ref == 'fix/community-social-relaunch'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
@@ -59,6 +59,10 @@ jobs:
         run: |
           set -euo pipefail
           psql "$POOLER_URL" -v ON_ERROR_STOP=1 -P pager=off <<'SQL'
+          \echo '=== Recovery migration ledger ==='
+          SELECT version, name FROM supabase_migrations.schema_migrations
+          WHERE version = '20260828220500';
+
           \echo '=== Current social counts ==='
           SELECT 'posts' AS table_name, count(*) AS rows FROM public.posts
           UNION ALL SELECT 'comments', count(*) FROM public.comments
@@ -71,32 +75,34 @@ jobs:
           UNION ALL SELECT 'follows', count(*) FROM public.follows
           ORDER BY table_name;
 
-          \echo '=== Recovery migration ledger ==='
-          SELECT version, name
-          FROM supabase_migrations.schema_migrations
-          WHERE version = '20260828220500';
-
-          \echo '=== RLS policy definitions for public social tables ==='
-          SELECT tablename, policyname, cmd, roles::text, qual, with_check
-          FROM pg_policies
-          WHERE schemaname = 'public'
-            AND tablename = ANY (ARRAY[
-              'posts','comments','likes','post_bookmarks','post_shares','post_reactions','poll_votes',
-              'stories','story_views','follows','user_profiles','forum_threads','forum_posts',
-              'thread_upvotes','thread_bookmarks','thread_subscriptions','thread_tags','content_reports',
-              'community_events','event_rsvps','notifications','direct_messages'
+          \echo '=== Exact live columns used by recovery SQL and UI ==='
+          SELECT table_name, string_agg(column_name, ', ' ORDER BY ordinal_position) AS columns
+          FROM information_schema.columns
+          WHERE table_schema = 'public'
+            AND table_name = ANY (ARRAY[
+              'poll_votes','thread_tags','forum_threads','forum_posts','community_events',
+              'event_rsvps','user_profiles','posts','stories','story_views','content_reports'
             ])
-          ORDER BY tablename, policyname;
+          GROUP BY table_name ORDER BY table_name;
 
-          \echo '=== Posts storage bucket ==='
+          \echo '=== Poll vote foreign keys ==='
+          SELECT conname, pg_get_constraintdef(oid)
+          FROM pg_constraint
+          WHERE conrelid = 'public.poll_votes'::regclass AND contype = 'f'
+          ORDER BY conname;
+
+          \echo '=== Posts and avatars buckets ==='
           SELECT id, name, public, file_size_limit, allowed_mime_types
-          FROM storage.buckets WHERE id = 'posts';
+          FROM storage.buckets WHERE id IN ('posts','avatars') ORDER BY id;
 
-          \echo '=== Storage object policies for posts ==='
+          \echo '=== Matching storage policies ==='
           SELECT policyname, cmd, roles::text, qual, with_check
           FROM pg_policies
           WHERE schemaname = 'storage' AND tablename = 'objects'
-            AND (coalesce(qual,'') LIKE '%posts%' OR coalesce(with_check,'') LIKE '%posts%')
+            AND (
+              coalesce(qual,'') LIKE '%posts%' OR coalesce(with_check,'') LIKE '%posts%'
+              OR coalesce(qual,'') LIKE '%avatars%' OR coalesce(with_check,'') LIKE '%avatars%'
+            )
           ORDER BY policyname;
 
           \echo '=== Legacy content concentration ==='

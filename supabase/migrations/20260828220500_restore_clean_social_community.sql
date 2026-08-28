@@ -95,6 +95,20 @@ DELETE FROM public.posts;
 DELETE FROM public.forum_threads;
 DELETE FROM public.community_events;
 
+-- Reset social-derived profile counters contaminated by the quarantined corpus.
+-- Keep relationship counts derived from surviving genuine follows rows.
+UPDATE public.user_profiles AS profile
+SET posts_created = 0,
+    posts_count = 0,
+    threads_created = 0,
+    helpful_answers = 0,
+    followers_count = (
+      SELECT COUNT(*)::integer FROM public.follows f WHERE f.following_id = profile.user_id
+    ),
+    following_count = (
+      SELECT COUNT(*)::integer FROM public.follows f WHERE f.follower_id = profile.user_id
+    );
+
 -- Restore media buckets and explicit object policies used by the social/profile UI.
 INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 VALUES (
@@ -261,9 +275,9 @@ CREATE POLICY bookmarks_owner_insert ON public.post_bookmarks FOR INSERT TO auth
 CREATE POLICY bookmarks_owner_delete ON public.post_bookmarks FOR DELETE TO authenticated USING (auth.uid() = user_id);
 
 CREATE POLICY poll_votes_visible_select ON public.poll_votes FOR SELECT TO anon, authenticated
-USING (EXISTS (SELECT 1 FROM public.posts p WHERE p.id = poll_votes.post_id));
+USING (EXISTS (SELECT 1 FROM public.posts p WHERE p.id = poll_votes.poll_id));
 CREATE POLICY poll_votes_owner_insert ON public.poll_votes FOR INSERT TO authenticated
-WITH CHECK (auth.uid() = user_id AND EXISTS (SELECT 1 FROM public.posts p WHERE p.id = poll_votes.post_id));
+WITH CHECK (auth.uid() = user_id AND EXISTS (SELECT 1 FROM public.posts p WHERE p.id = poll_votes.poll_id));
 CREATE POLICY poll_votes_owner_delete ON public.poll_votes FOR DELETE TO authenticated USING (auth.uid() = user_id);
 
 -- Stories: signed-in users may only create/change/delete their own stories.

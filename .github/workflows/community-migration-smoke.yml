@@ -14,7 +14,7 @@ permissions:
 
 jobs:
   rollback-smoke:
-    if: github.event_name != 'pull_request' || github.head_ref == 'fix/community-social-recovery'
+    if: github.event_name != 'pull_request' || github.head_ref == 'fix/social-recovery-final'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
@@ -52,6 +52,7 @@ jobs:
               "  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE schemaname='storage' AND tablename='objects' AND policyname='community_posts_media_insert') THEN RAISE EXCEPTION 'posts upload policy missing'; END IF;" \
               "  IF EXISTS (SELECT 1 FROM pg_policies WHERE schemaname='public' AND tablename IN ('forum_threads','forum_posts') AND roles::text LIKE '%anon%' AND cmd='INSERT') THEN RAISE EXCEPTION 'anonymous forum insert policy remains'; END IF;" \
               "  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE schemaname='public' AND tablename='posts' AND policyname='posts_public_select') THEN RAISE EXCEPTION 'posts select policy missing'; END IF;" \
+              "  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='poll_votes' AND column_name='poll_id') THEN RAISE EXCEPTION 'production poll_id column missing'; END IF;" \
               "  IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname='protect_user_profile_system_fields_trigger' AND NOT tgisinternal) THEN RAISE EXCEPTION 'profile protection trigger missing'; END IF;" \
               "  IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname='refresh_community_event_rsvp_count_trigger' AND NOT tgisinternal) THEN RAISE EXCEPTION 'RSVP count trigger missing'; END IF;" \
               'END $$;' \

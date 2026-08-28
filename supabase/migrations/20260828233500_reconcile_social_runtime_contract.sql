@@ -25,10 +25,6 @@ CREATE POLICY poll_votes_owner_insert
       FROM public.posts p
       WHERE p.id = poll_votes.poll_id
         AND p.poll_data IS NOT NULL
-        AND (
-          NULLIF(p.poll_data->>'endsAt', '') IS NULL
-          OR (p.poll_data->>'endsAt')::timestamptz > NOW()
-        )
     )
   );
 
@@ -47,6 +43,64 @@ CREATE POLICY poll_votes_owner_select
 
 REVOKE SELECT ON public.poll_votes FROM anon;
 GRANT SELECT ON public.poll_votes TO authenticated;
+
+-- Validate the embedded option list and poll rules before a row can enter the vote ledger.
+-- This prevents hand-crafted API calls from voting for nonexistent options, expired polls,
+-- or multiple choices on a single-choice poll.
+CREATE OR REPLACE FUNCTION public.enforce_post_poll_vote()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public, pg_temp
+AS $$
+DECLARE
+  poll JSONB;
+  ends_at_text TEXT;
+  allow_multiple BOOLEAN;
+BEGIN
+  SELECT p.poll_data
+    INTO poll
+  FROM public.posts p
+  WHERE p.id = NEW.poll_id;
+
+  IF poll IS NULL THEN
+    RAISE EXCEPTION 'Poll does not exist';
+  END IF;
+
+  IF NOT EXISTS (
+    SELECT 1
+    FROM jsonb_array_elements(COALESCE(poll->'options', '[]'::jsonb)) AS option_value
+    WHERE option_value->>'id' = NEW.option_id::text
+  ) THEN
+    RAISE EXCEPTION 'Poll option does not exist';
+  END IF;
+
+  ends_at_text := NULLIF(poll->>'endsAt', '');
+  IF ends_at_text IS NOT NULL AND ends_at_text::timestamptz <= NOW() THEN
+    RAISE EXCEPTION 'Poll has expired';
+  END IF;
+
+  allow_multiple := COALESCE((poll->>'allowMultiple')::boolean, false);
+  IF NOT allow_multiple AND EXISTS (
+    SELECT 1
+    FROM public.poll_votes v
+    WHERE v.poll_id = NEW.poll_id
+      AND v.user_id = NEW.user_id
+      AND v.option_id <> NEW.option_id
+  ) THEN
+    RAISE EXCEPTION 'Poll allows only one choice';
+  END IF;
+
+  RETURN NEW;
+END;
+$$;
+
+REVOKE ALL ON FUNCTION public.enforce_post_poll_vote() FROM PUBLIC, anon, authenticated;
+
+DROP TRIGGER IF EXISTS enforce_post_poll_vote_trigger ON public.poll_votes;
+CREATE TRIGGER enforce_post_poll_vote_trigger
+BEFORE INSERT OR UPDATE ON public.poll_votes
+FOR EACH ROW EXECUTE FUNCTION public.enforce_post_poll_vote();
 
 -- The cleaned post policy correctly prevents a voter from updating somebody else's
 -- post. Therefore poll totals cannot be browser-maintained. Rebuild aggregate totals
@@ -108,7 +162,7 @@ REVOKE ALL ON FUNCTION public.refresh_post_poll_counts() FROM PUBLIC, anon, auth
 
 DROP TRIGGER IF EXISTS refresh_post_poll_counts_trigger ON public.poll_votes;
 CREATE TRIGGER refresh_post_poll_counts_trigger
-AFTER INSERT OR UPDATE OR DELETE ON public.poll_votes
+AFTER INSERT OR DELETE ON public.poll_votes
 FOR EACH ROW EXECUTE FUNCTION public.refresh_post_poll_counts();
 
 -- Story view_count is system-derived. The browser may insert its own story_views row,

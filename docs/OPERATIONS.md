@@ -8,27 +8,41 @@ Repository: `patriotnewsactivism/civil-rights-hub`
 
 Frontend: `https://civilrightshub.org`
 
+Canonical Netlify project: `civilrightshub-org`
+
+Canonical Netlify site ID: `169435f2-2b9c-46ad-b4f3-3f7753178451`
+
 Expected Supabase project ref: `vrdnrbjnitptxrexdlao`
 
 Do not perform a production database/Edge Function operation unless the project ref is positively verified.
 
 ## Architecture ownership
 
-### Vercel
+### Netlify
 
 Owns the public React/Vite frontend deployment.
 
-A successful Vercel deployment does **not** imply that Supabase migrations or Edge Functions were deployed.
+A successful Netlify deployment does **not** imply that Supabase migrations or Edge Functions were deployed.
+
+Vercel is not an approved deployment/recovery path for this repository. Do not re-enable or relink historical Vercel projects. See `docs/HOSTING.md`.
 
 ### Supabase
 
 Owns PostgreSQL, Auth, Storage, Realtime, and Edge Functions.
 
-Database and Edge Function changes have separate deployment lifecycles from Vercel.
+Database and Edge Function changes have separate deployment lifecycles from Netlify.
+
+### Cloudflare
+
+May provide DNS, CDN/proxy, WAF, Turnstile, or other edge services. Cloudflare is not a substitute for the canonical Netlify application deployment unless the hosting policy is explicitly changed.
+
+### Google Cloud Run
+
+Reserved for long-running workers, APIs, scheduled workloads, or other services that should not run in the browser or Supabase Edge Functions.
 
 ### GitHub Actions
 
-Repository workflows provide guarded production checks/deployments. Current workflows include migration, community production audit/recovery checks, and selected Edge Function deployment.
+Repository workflows provide guarded production checks/deployments. Current workflows include migration, community production audit/recovery checks, selected Edge Function deployment, and the frontend hosting-policy guard.
 
 Inspect `.github/workflows/` rather than assuming a workflow exists for a particular change.
 
@@ -40,6 +54,19 @@ Production workflows may use repository secrets such as:
 - `SUPABASE_DB_PASSWORD`
 
 Never print or copy their values into logs, issues, documentation, or chat.
+
+Netlify browser configuration belongs in the Netlify production environment, not in GitHub source files.
+
+## Frontend deployment procedure
+
+1. Ensure `npm run hosting:check` passes.
+2. Ensure `npm run build` succeeds.
+3. Deploy the expected `main` commit to Netlify site `169435f2-2b9c-46ad-b4f3-3f7753178451`.
+4. Confirm required production browser environment variables are present.
+5. Confirm `civilrightshub.org` is attached to the Netlify production site.
+6. Verify `/`, `/community`, `/donate`, and a deep SPA route return HTTP 200 application HTML.
+7. Verify Sentry initializes when `VITE_SENTRY_DSN` is configured.
+8. Separately verify required Supabase migrations/functions.
 
 ## Migration procedure
 
@@ -114,7 +141,7 @@ Use precise language:
 
 - **Committed** — code exists on a branch.
 - **Merged** — code is on `main`.
-- **Frontend deployed** — Vercel deployed the expected commit.
+- **Frontend deployed** — Netlify deployed the expected commit.
 - **Migration applied** — Supabase production ledger confirms it.
 - **Edge Function deployed** — Supabase function deployment confirmed.
 - **Validated** — relevant smoke tests/live behavior passed.
@@ -123,7 +150,7 @@ Do not claim “live” if only some required layers reached production.
 
 ## Rollback and forward fix
 
-For frontend regressions, revert/roll forward using Git/Vercel as appropriate.
+For frontend regressions, revert or redeploy the appropriate Git commit through Netlify.
 
 For database migrations, prefer a forward corrective migration. Do not rewrite migration history after application.
 
@@ -133,7 +160,7 @@ For contaminated data, preserve quarantine/audit evidence.
 
 When production breaks:
 
-1. identify whether the failure is frontend, database, RLS/grant, Storage, Edge Function, environment, or external provider;
+1. identify whether the failure is frontend host, DNS/CDN, database, RLS/grant, Storage, Edge Function, environment, or external provider;
 2. inspect live logs/monitoring and the deployed commit;
 3. verify production project identity;
 4. reproduce with the least-privileged relevant role;
@@ -153,6 +180,7 @@ Monitoring should make it possible to distinguish client crashes, failed Supabas
 Periodically:
 
 - verify payment destinations and branding checks;
+- verify the Netlify hosting contract and production domain;
 - check migration parity;
 - run security/performance advisors;
 - inspect stale provenance;

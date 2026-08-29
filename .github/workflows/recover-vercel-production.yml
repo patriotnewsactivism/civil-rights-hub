@@ -1,5 +1,6 @@
 name: Recover Civil Rights Hub Vercel Production
 
+# Recovery retriggered 2026-08-29 after DEPLOYMENT_DISABLED was confirmed on civilrightshub.org.
 on:
   push:
     branches: [main]

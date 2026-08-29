@@ -1,0 +1,36 @@
+name: Civil Rights Hub Hosting Policy
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - netlify.toml
+      - package.json
+      - src/**
+      - scripts/check-hosting-provider.mjs
+      - .github/workflows/**
+      - docs/HOSTING.md
+  push:
+    branches: [main]
+    paths:
+      - netlify.toml
+      - package.json
+      - src/**
+      - scripts/check-hosting-provider.mjs
+      - .github/workflows/**
+      - docs/HOSTING.md
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  enforce:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Enforce canonical frontend host
+        run: node scripts/check-hosting-provider.mjs

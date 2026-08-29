@@ -1,324 +1,135 @@
-import { useState, useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { format } from "date-fns";
+import { Download, FileText, Info, Save, Send } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Skeleton } from "@/components/ui/skeleton";
-import { FileText, Send, Download, Save, Calendar, Info, Building, Search } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { addBusinessDays, format } from "date-fns";
 
-const AGENCY_TYPES = ["Federal", "State", "County", "Municipal"] as const;
-
-interface FOIAAgency {
-  id: string;
-  name: string;
-  agency_type: string;
-  state: string | null;
-  city: string | null;
-  foia_email: string | null;
-  foia_phone: string | null;
-  foia_online_portal_url: string | null;
-  mailing_address: string | null;
-  standard_response_days: number | null;
-}
-
-interface FOIATemplate {
-  id: string;
-  title: string;
-  template_type: string | null;
-  subject_line: string;
-  template_body: string;
-  instructions: string;
-  agency_type: string | null;
-  is_popular: boolean | null;
-  use_count: number | null;
-}
+const AGENCY_TYPES = ["Federal", "State", "County", "Municipal", "Other"] as const;
+type AgencyType = (typeof AGENCY_TYPES)[number];
 
 interface FOIARequestFormProps {
   onRequestCreated?: () => void;
 }
 
+const STARTER_TEXT = `I request access to the following public records:\n\n[Describe the records with enough detail to help the agency locate them.]\n\nPlease let me know what submission process, fees, or identification requirements apply before processing. If any records or portions are withheld, please identify the authority relied upon when an explanation is required or available under the applicable public-records law.\n\nPlease contact me if clarification would help identify the records I am seeking.`;
+
 export function FOIARequestForm({ onRequestCreated }: FOIARequestFormProps) {
   const { user } = useAuth();
-
-  // Database data
-  const [agencies, setAgencies] = useState<FOIAAgency[]>([]);
-  const [templates, setTemplates] = useState<FOIATemplate[]>([]);
-  const [loadingAgencies, setLoadingAgencies] = useState(true);
-  const [loadingTemplates, setLoadingTemplates] = useState(true);
-
-  // Form state
-  const [agencyType, setAgencyType] = useState<typeof AGENCY_TYPES[number]>("Federal");
-  const [selectedAgencyId, setSelectedAgencyId] = useState<string>("");
-  const [customAgencyName, setCustomAgencyName] = useState("");
-  const [agencySearch, setAgencySearch] = useState("");
-  const [selectedTemplateId, setSelectedTemplateId] = useState<string>("");
-  
-  // Request details
+  const [agencyType, setAgencyType] = useState<AgencyType>("Federal");
+  const [agencyName, setAgencyName] = useState("");
+  const [jurisdiction, setJurisdiction] = useState("Federal");
   const [subject, setSubject] = useState("");
-  const [requestBody, setRequestBody] = useState("");
+  const [requestBody, setRequestBody] = useState(STARTER_TEXT);
   const [requesterName, setRequesterName] = useState("");
   const [requesterEmail, setRequesterEmail] = useState("");
   const [requesterAddress, setRequesterAddress] = useState("");
-  
-  // Form state
   const [submitting, setSubmitting] = useState(false);
-  const [calculatedDeadline, setCalculatedDeadline] = useState<Date | null>(null);
 
-  // Fetch agencies from database
   useEffect(() => {
-    const fetchAgencies = async () => {
-      setLoadingAgencies(true);
-      const { data, error } = await supabase
-        .from("foia_agencies")
-        .select("*")
-        .eq("is_active", true)
-        .order("name");
-      
-      if (error) {
-        console.error("Error fetching agencies:", error);
-        toast.error("Failed to load agencies");
-      } else {
-        setAgencies(data ?? []);
-      }
-      setLoadingAgencies(false);
-    };
-
-    fetchAgencies();
-  }, []);
-
-  // Fetch templates from database
-  useEffect(() => {
-    const fetchTemplates = async () => {
-      setLoadingTemplates(true);
-      const { data, error } = await supabase
-        .from("foia_templates")
-        .select("*")
-        .order("is_popular", { ascending: false })
-        .order("use_count", { ascending: false });
-      
-      if (error) {
-        console.error("Error fetching templates:", error);
-        toast.error("Failed to load templates");
-      } else {
-        setTemplates(data ?? []);
-      }
-      setLoadingTemplates(false);
-    };
-
-    fetchTemplates();
-  }, []);
-
-  // Load user info
-  useEffect(() => {
-    if (user) {
-      setRequesterName(user.user_metadata?.full_name || "");
-      setRequesterEmail(user.email || "");
-    }
+    if (!user) return;
+    setRequesterName(user.user_metadata?.full_name || "");
+    setRequesterEmail(user.email || "");
   }, [user]);
 
-  // Filter agencies based on type and search
-  const filteredAgencies = agencies.filter(agency => {
-    const matchesType = agency.agency_type === agencyType;
-    const matchesSearch = !agencySearch || 
-      agency.name.toLowerCase().includes(agencySearch.toLowerCase()) ||
-      (agency.state?.toLowerCase().includes(agencySearch.toLowerCase())) ||
-      (agency.city?.toLowerCase().includes(agencySearch.toLowerCase()));
-    return matchesType && matchesSearch;
-  });
-
-  // Filter templates based on agency type
-  const filteredTemplates = templates.filter(template => {
-    if (!template.agency_type) return true;
-    return template.agency_type === agencyType;
-  });
-
-  // Get selected agency details
-  const selectedAgency = agencies.find(a => a.id === selectedAgencyId);
-
-  // Calculate deadline based on selected agency
   useEffect(() => {
-    const responseDays = selectedAgency?.standard_response_days ?? (agencyType === "Federal" ? 20 : null);
-    
-    if (responseDays && responseDays > 0) {
-      const deadline = addBusinessDays(new Date(), responseDays);
-      setCalculatedDeadline(deadline);
-    } else {
-      setCalculatedDeadline(null);
-    }
-  }, [selectedAgency, agencyType]);
+    if (agencyType === "Federal") setJurisdiction("Federal");
+    else if (jurisdiction === "Federal") setJurisdiction("");
+  }, [agencyType, jurisdiction]);
 
-  // Apply template
-  const handleTemplateSelect = async (templateId: string) => {
-    setSelectedTemplateId(templateId);
-    const template = templates.find(t => t.id === templateId);
-    if (template) {
-      setSubject(template.subject_line);
-      setRequestBody(template.template_body);
-      
-      // Increment usage count
-      await supabase
-        .from("foia_templates")
-        .update({ use_count: (template.use_count ?? 0) + 1 })
-        .eq("id", templateId);
-    }
-  };
-
-  // Get agency name for form
-  const getAgencyName = () => {
-    if (selectedAgency) return selectedAgency.name;
-    return customAgencyName;
-  };
-
-  // Generate full request letter
   const generateRequestLetter = useCallback(() => {
     const today = format(new Date(), "MMMM d, yyyy");
-    const agencyName = getAgencyName();
-    
-    let letter = `${today}\n\n`;
-    letter += `${agencyName || "[Agency Name]"}\n`;
-    if (selectedAgency?.mailing_address) {
-      letter += `${selectedAgency.mailing_address}\n`;
-    } else {
-      letter += `[Agency Address]\n`;
-    }
-    letter += `\nFREEDOM OF INFORMATION ACT REQUEST\n\n`;
-    letter += `Dear FOIA Officer:\n\n`;
-
-    let body = requestBody;
-    body = body.replace(/\[YOUR_NAME\]/g, requesterName);
-    body = body.replace(/\[YOUR_EMAIL\]/g, requesterEmail);
-    body = body.replace(/\[YOUR_ADDRESS\]/g, requesterAddress || "");
-    body = body.replace(/\[SUBJECT\]/g, subject);
-    body = body.replace(/\[AGENCY_NAME\]/g, agencyName);
-
-    letter += body;
-    letter += `\n\nSincerely,\n\n`;
-    letter += `${requesterName}\n`;
-    letter += `${requesterEmail}\n`;
-    if (requesterAddress) {
-      letter += `${requesterAddress}\n`;
-    }
-
-    return letter;
-  }, [selectedAgency, customAgencyName, requestBody, requesterName, requesterEmail, requesterAddress, subject]);
+    const lines = [
+      today,
+      "",
+      agencyName || "[Agency name]",
+      jurisdiction ? `${jurisdiction} jurisdiction` : "[Jurisdiction]",
+      "",
+      "PUBLIC RECORDS REQUEST",
+      "",
+      `Subject: ${subject || "[Request subject]"}`,
+      "",
+      requestBody,
+      "",
+      "Sincerely,",
+      requesterName || "[Requester name]",
+      requesterEmail || "[Requester email]",
+    ];
+    if (requesterAddress) lines.push(requesterAddress);
+    return lines.join("\n");
+  }, [agencyName, jurisdiction, requestBody, requesterAddress, requesterEmail, requesterName, subject]);
 
   const handleDownload = () => {
-    const letter = generateRequestLetter();
-    const blob = new Blob([letter], { type: "text/plain" });
+    const blob = new Blob([generateRequestLetter()], { type: "text/plain;charset=utf-8" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `FOIA-Request-${format(new Date(), "yyyy-MM-dd")}.txt`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = `public-records-request-${format(new Date(), "yyyy-MM-dd")}.txt`;
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
     URL.revokeObjectURL(url);
-    toast.success("FOIA request letter downloaded!");
+    toast.success("Draft downloaded");
   };
 
-  const handleSaveDraft = async () => {
+  const validate = () => {
+    if (!agencyName.trim() || !subject.trim() || !requestBody.trim()) {
+      toast.error("Agency, subject, and request description are required");
+      return false;
+    }
+    if (!jurisdiction.trim()) {
+      toast.error("Enter the agency jurisdiction");
+      return false;
+    }
+    return true;
+  };
+
+  const saveRequest = async (markSubmitted: boolean) => {
     if (!user) {
       toast.error("Please sign in to save requests");
       return;
     }
-
-    const agencyName = getAgencyName();
-    if (!agencyName || !subject || !requestBody) {
-      toast.error("Please fill in agency name and request details");
-      return;
-    }
+    if (!validate()) return;
 
     setSubmitting(true);
     try {
-      const selectedTemplate = templates.find(t => t.id === selectedTemplateId);
-      
+      const now = new Date().toISOString();
       const { error } = await supabase.from("foia_requests").insert({
         user_id: user.id,
-        agency_name: agencyName,
+        agency_name: agencyName.trim(),
         agency_type: agencyType,
-        state: selectedAgency?.state ?? (agencyType === "Federal" ? "Federal" : ""),
-        request_subject: subject,
-        request_body: requestBody,
-        contact_name: requesterName,
-        contact_email: requesterEmail,
-        notes: requesterAddress ? `Mailing address: ${requesterAddress}` : null,
-        status: "draft",
-      });
+        state: jurisdiction.trim(),
+        request_subject: subject.trim(),
+        request_body: requestBody.trim(),
+        contact_name: requesterName.trim() || null,
+        contact_email: requesterEmail.trim() || null,
+        notes: requesterAddress.trim() ? `Requester mailing address: ${requesterAddress.trim()}` : null,
+        status: markSubmitted ? "submitted" : "draft",
+        submitted_date: markSubmitted ? now : null,
+        response_deadline: null,
+        submission_method: markSubmitted ? "other" : "draft",
+      } as any);
 
       if (error) throw error;
-
-      toast.success("Request saved as draft!");
+      toast.success(markSubmitted ? "Saved as submitted" : "Draft saved");
       onRequestCreated?.();
-      resetForm();
+      setAgencyName("");
+      setSubject("");
+      setRequestBody(STARTER_TEXT);
+      setRequesterAddress("");
     } catch (error) {
-      console.error("Error saving request:", error);
-      toast.error("Failed to save request");
+      console.error("Unable to save public-records request", error);
+      toast.error("Unable to save request");
     } finally {
       setSubmitting(false);
     }
-  };
-
-  const handleSubmitRequest = async () => {
-    if (!user) {
-      toast.error("Please sign in to submit requests");
-      return;
-    }
-
-    const agencyName = getAgencyName();
-    if (!agencyName || !subject || !requestBody || !requesterName || !requesterEmail) {
-      toast.error("Please complete all required fields");
-      return;
-    }
-
-    setSubmitting(true);
-    try {
-      const submittedAt = new Date().toISOString();
-      const deadline = calculatedDeadline ? calculatedDeadline.toISOString() : null;
-
-      const { error } = await supabase.from("foia_requests").insert({
-        user_id: user.id,
-        agency_name: agencyName,
-        agency_type: agencyType,
-        state: selectedAgency?.state ?? (agencyType === "Federal" ? "Federal" : ""),
-        request_subject: subject,
-        request_body: requestBody,
-        contact_name: requesterName,
-        contact_email: requesterEmail,
-        notes: requesterAddress ? `Mailing address: ${requesterAddress}` : null,
-        status: "submitted",
-        submitted_date: submittedAt,
-        response_deadline: deadline,
-      });
-
-      if (error) throw error;
-
-      toast.success("Request submitted and tracking started!");
-      onRequestCreated?.();
-      resetForm();
-    } catch (error) {
-      console.error("Error submitting request:", error);
-      toast.error("Failed to submit request");
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  const resetForm = () => {
-    setSelectedAgencyId("");
-    setCustomAgencyName("");
-    setAgencySearch("");
-    setSelectedTemplateId("");
-    setSubject("");
-    setRequestBody("");
-    setRequesterAddress("");
   };
 
   if (!user) {
@@ -327,298 +138,82 @@ export function FOIARequestForm({ onRequestCreated }: FOIARequestFormProps) {
         <CardContent className="py-12 text-center">
           <FileText className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
           <h3 className="mb-2 text-xl font-semibold">Sign in required</h3>
-          <p className="text-muted-foreground">Please sign in to create and track FOIA requests.</p>
+          <p className="text-muted-foreground">Sign in to draft and track your own public-records requests.</p>
         </CardContent>
       </Card>
     );
   }
 
-  const responseDays = selectedAgency?.standard_response_days ?? (agencyType === "Federal" ? 20 : null);
-
   return (
     <div className="space-y-6">
-      {/* Agency Selection */}
+      <Alert>
+        <Info className="h-4 w-4" />
+        <AlertDescription>
+          Civil Rights Hub does not currently auto-select agency contacts or calculate statutory deadlines. Public-records laws and submission rules vary by jurisdiction. Verify the correct recipient, governing law, and any deadline directly from an official source before relying on them.
+        </AlertDescription>
+      </Alert>
+
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Building className="h-5 w-5" />
-            Select Agency
-          </CardTitle>
-          <CardDescription>
-            Choose from our database of {agencies.length} agencies or enter a custom agency
-          </CardDescription>
+          <CardTitle>Agency and jurisdiction</CardTitle>
+          <CardDescription>Enter the recipient from an official agency source. No unverified directory data is auto-filled.</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="agency-type">Agency Type</Label>
-              <Select value={agencyType} onValueChange={(value) => {
-                setAgencyType(value as typeof AGENCY_TYPES[number]);
-                setSelectedAgencyId("");
-                setAgencySearch("");
-              }}>
-                <SelectTrigger id="agency-type">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {AGENCY_TYPES.map((type) => (
-                    <SelectItem key={type} value={type}>
-                      {type} Agency
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="agency-search">Search Agencies</Label>
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  id="agency-search"
-                  value={agencySearch}
-                  onChange={(e) => setAgencySearch(e.target.value)}
-                  placeholder="Search by name, state, or city..."
-                  className="pl-9"
-                />
-              </div>
-            </div>
-          </div>
-
-          {loadingAgencies ? (
-            <div className="space-y-2">
-              <Skeleton className="h-10 w-full" />
-              <Skeleton className="h-10 w-full" />
-            </div>
-          ) : filteredAgencies.length > 0 ? (
-            <div className="space-y-2">
-              <Label>Select from Database</Label>
-              <Select value={selectedAgencyId} onValueChange={setSelectedAgencyId}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Choose an agency..." />
-                </SelectTrigger>
-                <SelectContent className="max-h-64">
-                  {filteredAgencies.map((agency) => (
-                    <SelectItem key={agency.id} value={agency.id}>
-                      <div className="flex flex-col items-start">
-                        <span>{agency.name}</span>
-                        {agency.state && (
-                          <span className="text-xs text-muted-foreground">
-                            {agency.city ? `${agency.city}, ` : ""}{agency.state}
-                          </span>
-                        )}
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          ) : (
-            <Alert>
-              <Info className="h-4 w-4" />
-              <AlertDescription>
-                No agencies found for this type. Enter a custom agency name below.
-              </AlertDescription>
-            </Alert>
-          )}
-
-          {!selectedAgencyId && (
-            <div className="space-y-2">
-              <Label htmlFor="custom-agency">Or Enter Custom Agency Name</Label>
-              <Input
-                id="custom-agency"
-                value={customAgencyName}
-                onChange={(e) => setCustomAgencyName(e.target.value)}
-                placeholder="e.g., Los Angeles Police Department"
-              />
-            </div>
-          )}
-
-          {selectedAgency && (
-            <div className="rounded-lg bg-muted p-4 space-y-2">
-              <h4 className="font-medium">{selectedAgency.name}</h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-muted-foreground">
-                {selectedAgency.foia_email && (
-                  <p><span className="font-medium">Email:</span> {selectedAgency.foia_email}</p>
-                )}
-                {selectedAgency.foia_phone && (
-                  <p><span className="font-medium">Phone:</span> {selectedAgency.foia_phone}</p>
-                )}
-                {selectedAgency.foia_online_portal_url && (
-                  <p>
-                    <span className="font-medium">Website:</span>{" "}
-                    <a href={selectedAgency.foia_online_portal_url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-                      FOIA Portal
-                    </a>
-                  </p>
-                )}
-                {selectedAgency.standard_response_days && (
-                  <p><span className="font-medium">Response Time:</span> {selectedAgency.standard_response_days} business days</p>
-                )}
-              </div>
-            </div>
-          )}
-
-          {responseDays !== null && calculatedDeadline && (
-            <Alert>
-              <Calendar className="h-4 w-4" />
-              <AlertDescription>
-                <strong>Estimated Response Deadline:</strong>{" "}
-                {format(calculatedDeadline, "MMMM d, yyyy")} ({responseDays} business days)
-              </AlertDescription>
-            </Alert>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Template Selection */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <FileText className="h-5 w-5" />
-            Request Template
-          </CardTitle>
-          <CardDescription>
-            Choose from {filteredTemplates.length} professional templates or write your own
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {loadingTemplates ? (
-            <div className="grid gap-2">
-              <Skeleton className="h-20 w-full" />
-              <Skeleton className="h-20 w-full" />
-              <Skeleton className="h-20 w-full" />
-            </div>
-          ) : (
-            <div className="grid gap-2 max-h-80 overflow-y-auto">
-              {filteredTemplates.map((template) => (
-                <button
-                  key={template.id}
-                  onClick={() => handleTemplateSelect(template.id)}
-                  className={`w-full text-left p-4 rounded-lg border transition-colors ${
-                    selectedTemplateId === template.id
-                      ? "border-primary bg-primary/5"
-                      : "border-border hover:border-primary/50"
-                  }`}
-                >
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <h4 className="font-semibold">{template.title}</h4>
-                        {template.is_popular && (
-                          <Badge variant="default" className="text-xs">Featured</Badge>
-                        )}
-                      </div>
-                      <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
-                        {template.instructions || template.subject_line}
-                      </p>
-                    </div>
-                    <Badge variant="secondary" className="shrink-0">
-                      {template.template_type}
-                    </Badge>
-                  </div>
-                </button>
-              ))}
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Request Details */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Request Details</CardTitle>
-          <CardDescription>
-            Customize your request with specific information
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="grid gap-4 md:grid-cols-2">
           <div className="space-y-2">
-            <Label htmlFor="subject">Subject / Request Title *</Label>
-            <Input
-              id="subject"
-              value={subject}
-              onChange={(e) => setSubject(e.target.value)}
-              placeholder="e.g., Body camera footage from incident on Main St, January 15, 2026"
-            />
+            <Label htmlFor="agency-type">Agency type</Label>
+            <Select value={agencyType} onValueChange={(value) => setAgencyType(value as AgencyType)}>
+              <SelectTrigger id="agency-type"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {AGENCY_TYPES.map((type) => <SelectItem key={type} value={type}>{type}</SelectItem>)}
+              </SelectContent>
+            </Select>
           </div>
-
           <div className="space-y-2">
-            <Label htmlFor="request-body">Request Letter *</Label>
-            <Textarea
-              id="request-body"
-              value={requestBody}
-              onChange={(e) => setRequestBody(e.target.value)}
-              rows={12}
-              placeholder="Enter your request letter or select a template above..."
-              className="font-mono text-sm"
-            />
+            <Label htmlFor="jurisdiction">Jurisdiction</Label>
+            <Input id="jurisdiction" value={jurisdiction} onChange={(e) => setJurisdiction(e.target.value)} placeholder="e.g., Texas, City of Houston, Federal" />
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="requester-name">Your Name *</Label>
-              <Input
-                id="requester-name"
-                value={requesterName}
-                onChange={(e) => setRequesterName(e.target.value)}
-                placeholder="Full legal name"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="requester-email">Your Email *</Label>
-              <Input
-                id="requester-email"
-                type="email"
-                value={requesterEmail}
-                onChange={(e) => setRequesterEmail(e.target.value)}
-                placeholder="email@example.com"
-              />
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="requester-address">Mailing Address (Optional)</Label>
-            <Textarea
-              id="requester-address"
-              value={requesterAddress}
-              onChange={(e) => setRequesterAddress(e.target.value)}
-              rows={2}
-              placeholder="Your mailing address for receiving physical documents"
-            />
+          <div className="space-y-2 md:col-span-2">
+            <Label htmlFor="agency-name">Agency name</Label>
+            <Input id="agency-name" value={agencyName} onChange={(e) => setAgencyName(e.target.value)} placeholder="Enter the official agency name" />
           </div>
         </CardContent>
       </Card>
 
-      {/* Actions */}
-      <div className="flex flex-wrap gap-4">
-        <Button
-          variant="outline"
-          onClick={handleDownload}
-          disabled={!subject || !requestBody}
-        >
-          <Download className="mr-2 h-4 w-4" />
-          Download Letter
-        </Button>
-        
-        <Button
-          variant="secondary"
-          onClick={handleSaveDraft}
-          disabled={submitting || (!getAgencyName() || !subject)}
-        >
-          <Save className="mr-2 h-4 w-4" />
-          Save Draft
-        </Button>
-        
-        <Button
-          onClick={handleSubmitRequest}
-          disabled={submitting || !getAgencyName() || !subject || !requestBody || !requesterName || !requesterEmail}
-        >
-          <Send className="mr-2 h-4 w-4" />
-          Submit & Track
-        </Button>
+      <Card>
+        <CardHeader>
+          <CardTitle>Request</CardTitle>
+          <CardDescription>Use the neutral starter language or replace it with your own wording after checking the applicable law.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="request-subject">Subject</Label>
+            <Input id="request-subject" value={subject} onChange={(e) => setSubject(e.target.value)} placeholder="Describe the records sought" />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="request-body">Request text</Label>
+            <Textarea id="request-body" value={requestBody} onChange={(e) => setRequestBody(e.target.value)} rows={12} />
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader><CardTitle>Requester information</CardTitle></CardHeader>
+        <CardContent className="grid gap-4 md:grid-cols-2">
+          <div className="space-y-2"><Label htmlFor="requester-name">Name</Label><Input id="requester-name" value={requesterName} onChange={(e) => setRequesterName(e.target.value)} /></div>
+          <div className="space-y-2"><Label htmlFor="requester-email">Email</Label><Input id="requester-email" type="email" value={requesterEmail} onChange={(e) => setRequesterEmail(e.target.value)} /></div>
+          <div className="space-y-2 md:col-span-2"><Label htmlFor="requester-address">Mailing address (optional)</Label><Input id="requester-address" value={requesterAddress} onChange={(e) => setRequesterAddress(e.target.value)} /></div>
+        </CardContent>
+      </Card>
+
+      <div className="flex flex-wrap gap-3">
+        <Button type="button" variant="outline" onClick={handleDownload}><Download className="mr-2 h-4 w-4" />Download draft</Button>
+        <Button type="button" variant="secondary" disabled={submitting} onClick={() => void saveRequest(false)}><Save className="mr-2 h-4 w-4" />Save draft</Button>
+        <Button type="button" disabled={submitting} onClick={() => void saveRequest(true)}><Send className="mr-2 h-4 w-4" />Mark as submitted</Button>
       </div>
+
+      <p className="text-xs text-muted-foreground">
+        “Mark as submitted” records your status and current date only. It does not transmit the request to the agency and does not create a legal deadline.
+      </p>
     </div>
   );
 }

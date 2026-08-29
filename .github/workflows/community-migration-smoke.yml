@@ -44,6 +44,8 @@ jobs:
             cat <<'SQL'
 
           DO $$
+          DECLARE
+            vote_function TEXT;
           BEGIN
             IF NOT EXISTS (
               SELECT 1
@@ -55,11 +57,63 @@ jobs:
               RAISE EXCEPTION 'poll_votes FK does not reference posts(id)';
             END IF;
 
+            SELECT pg_get_functiondef('public.enforce_post_poll_vote()'::regprocedure)
+              INTO vote_function;
+            IF position('FOR UPDATE' IN vote_function) = 0 THEN
+              RAISE EXCEPTION 'poll vote validator does not serialize concurrent votes';
+            END IF;
+
+            IF NOT EXISTS (
+              SELECT 1 FROM pg_trigger
+              WHERE tgname = 'protect_post_poll_data_trigger' AND NOT tgisinternal
+            ) THEN
+              RAISE EXCEPTION 'post poll_data protection trigger missing';
+            END IF;
+
             IF NOT EXISTS (
               SELECT 1 FROM pg_trigger
               WHERE tgname = 'refresh_story_view_count_trigger' AND NOT tgisinternal
             ) THEN
               RAISE EXCEPTION 'story view count trigger missing';
+            END IF;
+
+            IF NOT EXISTS (
+              SELECT 1 FROM pg_trigger
+              WHERE tgname = 'protect_community_event_system_fields_trigger' AND NOT tgisinternal
+            ) THEN
+              RAISE EXCEPTION 'event counter protection trigger missing';
+            END IF;
+
+            IF NOT EXISTS (
+              SELECT 1 FROM pg_trigger
+              WHERE tgname = 'refresh_forum_thread_upvote_count_trigger' AND NOT tgisinternal
+            ) THEN
+              RAISE EXCEPTION 'discussion upvote counter trigger missing';
+            END IF;
+
+            IF NOT EXISTS (
+              SELECT 1 FROM pg_trigger
+              WHERE tgname = 'refresh_forum_thread_reply_stats_trigger' AND NOT tgisinternal
+            ) THEN
+              RAISE EXCEPTION 'discussion reply counter trigger missing';
+            END IF;
+
+            IF NOT EXISTS (
+              SELECT 1 FROM pg_trigger
+              WHERE tgname = 'protect_forum_thread_system_fields_trigger' AND NOT tgisinternal
+            ) THEN
+              RAISE EXCEPTION 'discussion system-field protection trigger missing';
+            END IF;
+
+            IF has_function_privilege('anon', 'public.enforce_post_poll_vote()', 'EXECUTE')
+               OR has_function_privilege('authenticated', 'public.enforce_post_poll_vote()', 'EXECUTE')
+               OR has_function_privilege('anon', 'public.refresh_post_poll_counts()', 'EXECUTE')
+               OR has_function_privilege('authenticated', 'public.refresh_post_poll_counts()', 'EXECUTE')
+               OR has_function_privilege('anon', 'public.refresh_forum_thread_upvote_count()', 'EXECUTE')
+               OR has_function_privilege('authenticated', 'public.refresh_forum_thread_upvote_count()', 'EXECUTE')
+               OR has_function_privilege('anon', 'public.refresh_forum_thread_reply_stats()', 'EXECUTE')
+               OR has_function_privilege('authenticated', 'public.refresh_forum_thread_reply_stats()', 'EXECUTE') THEN
+              RAISE EXCEPTION 'server-maintained community helper is browser-executable';
             END IF;
 
             IF EXISTS (

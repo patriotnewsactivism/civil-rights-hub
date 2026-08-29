@@ -4,9 +4,13 @@ Civil Rights Hub handles public-interest, legal-adjacent, account, messaging, lo
 
 ## Production systems
 
-- Frontend: Vercel
+- Frontend: Netlify (`civilrightshub-org`, site ID `169435f2-2b9c-46ad-b4f3-3f7753178451`)
 - Database/Auth/Storage/Realtime/Edge Functions: Supabase
 - Expected production Supabase project ref: `vrdnrbjnitptxrexdlao`
+- Cloudflare may provide DNS/CDN/WAF/edge protection
+- Google Cloud Run may host future server/worker workloads
+
+Vercel is not an approved production or recovery target for this repository.
 
 Before any privileged production action, verify the target project/environment explicitly.
 
@@ -87,9 +91,13 @@ When instrumenting:
 - do not enable broad session replay over legal/intake/private-message surfaces without explicit review;
 - use telemetry to diagnose product failures, not to collect unrelated personal data.
 
+The Netlify production environment may contain the browser-safe Sentry DSN. Do not place Sentry auth tokens or other privileged credentials in `VITE_*` variables.
+
 ## Dependency and supply-chain changes
 
 New dependencies should have a clear need and should not duplicate existing capabilities unnecessarily. Avoid adding abandoned packages for critical auth/security behavior. Lockfile changes should be reviewed.
+
+Vercel-specific runtime/deployment dependencies are prohibited unless the hosting policy is explicitly changed by the user.
 
 ## Security-sensitive change checklist
 

@@ -2,7 +2,7 @@
 
 Claude Code and any other coding agent working in this repository must read and follow [`AGENTS.md`](AGENTS.md) first.
 
-`AGENTS.md` is the authoritative agent instruction set. Do not treat this file, old generated plans, seed comments, or historical audit documents as permission to bypass the data-integrity, security, migration, or community rules defined there.
+`AGENTS.md` is the authoritative agent instruction set. Do not treat this file, old generated plans, seed comments, or historical audit documents as permission to bypass the data-integrity, security, migration, community, or hosting rules defined there.
 
 Also read when relevant:
 
@@ -11,6 +11,7 @@ Also read when relevant:
 - [`docs/DATA_INTEGRITY.md`](docs/DATA_INTEGRITY.md)
 - [`docs/OPERATIONS.md`](docs/OPERATIONS.md)
 - [`docs/COMMUNITY_INTEGRITY.md`](docs/COMMUNITY_INTEGRITY.md)
+- [`docs/HOSTING.md`](docs/HOSTING.md)
 
 ## Stable commands
 
@@ -38,11 +39,21 @@ Never use legacy random/bulk seed paths to populate production.
 - Tailwind + Radix/shadcn-style components
 - TanStack Query
 - Supabase PostgreSQL/Auth/Storage/Realtime/Edge Functions
-- Vercel frontend deployment
+- **Netlify frontend deployment**
+- Cloudflare may provide DNS/CDN/WAF/edge services
+- Google Cloud Run is reserved for long-running workers/APIs when needed
 
 Expected production Supabase project ref: `vrdnrbjnitptxrexdlao`.
+Expected Netlify project: `civilrightshub-org`.
+Expected Netlify site ID: `169435f2-2b9c-46ad-b4f3-3f7753178451`.
 
-Verify that ref before production database or Edge Function operations.
+Verify the Supabase ref before production database or Edge Function operations.
+
+### Hosting invariant
+
+Vercel is not an approved deployment target for this repository. Do not add or restore Vercel deployment workflows, Vercel CLI/API deployment commands, Vercel project IDs, or Vercel-specific runtime dependencies. Historical Vercel deployments are not a recovery path.
+
+`netlify.toml` and `docs/HOSTING.md` define the canonical frontend deployment contract. `npm run hosting:check` must pass before release.
 
 ## Supabase browser client
 
@@ -63,7 +74,8 @@ Generated database types live in `src/integrations/supabase/types.ts`. Regenerat
 - Do not publish legal/factual claims merely because an old seed or document calls them real/verified.
 - Do not manufacture community users, posts, threads, events, engagement, or counts.
 - Do not rewrite migrations already applied to production; use forward fixes.
-- Do not assume a Vercel deploy also deployed Supabase migrations/functions.
+- Do not assume a frontend deploy also deployed Supabase migrations/functions.
 - Do not weaken RLS/security/integrity checks to make CI green.
+- Do not switch the production frontend away from Netlify without an explicit new user instruction.
 
 For all other operational and coding rules, defer to `AGENTS.md`.

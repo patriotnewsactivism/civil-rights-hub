@@ -1,0 +1,118 @@
+name: Civil Rights Hub Netlify Production
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - src/**
+      - public/**
+      - package.json
+      - package-lock.json
+      - netlify.toml
+      - scripts/**
+      - .github/workflows/netlify-production.yml
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: civil-rights-hub-netlify-production
+  cancel-in-progress: false
+
+env:
+  NETLIFY_SITE_ID: 169435f2-2b9c-46ad-b4f3-3f7753178451
+  SUPABASE_PROJECT_REF: vrdnrbjnitptxrexdlao
+  VITE_SUPABASE_URL: https://vrdnrbjnitptxrexdlao.supabase.co
+  VITE_APP_URL: https://civilrightshub.org
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Validate hosting contract
+        run: npm run hosting:check
+      - name: Build without production secrets
+        run: npm run build
+
+  deploy:
+    if: github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      NETLIFY_AUTH_TOKEN_PRIMARY: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+      NETLIFY_AUTH_TOKEN_ALT: ${{ secrets.NETLIFY_TOKEN }}
+      VITE_SENTRY_DSN: ${{ secrets.VITE_SENTRY_DSN }}
+      VITE_SENTRY_ENVIRONMENT: production
+      VITE_SENTRY_RELEASE: ${{ github.sha }}
+      VITE_SENTRY_TRACES_SAMPLE_RATE: "0.1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+
+      - name: Resolve browser-safe Supabase publishable key
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${SUPABASE_ACCESS_TOKEN:-}" || { echo "::error::Missing SUPABASE_ACCESS_TOKEN"; exit 2; }
+          response="$(curl -fsS \
+            -H "Authorization: Bearer ${SUPABASE_ACCESS_TOKEN}" \
+            "https://api.supabase.com/v1/projects/${SUPABASE_PROJECT_REF}/api-keys?reveal=true")"
+          publishable="$(printf '%s' "$response" | jq -r '([.[] | select(.type == "publishable")][0].api_key // [.[] | select(.name == "anon")][0].api_key // empty)')"
+          test -n "$publishable" || { echo "::error::No enabled publishable/anon Supabase key returned"; exit 3; }
+          echo "::add-mask::$publishable"
+          echo "VITE_SUPABASE_PUBLISHABLE_KEY=$publishable" >> "$GITHUB_ENV"
+
+      - name: Build production frontend
+        run: npm run build
+
+      - name: Resolve Netlify credential
+        shell: bash
+        run: |
+          set -euo pipefail
+          token="${NETLIFY_AUTH_TOKEN_PRIMARY:-}"
+          if [[ -z "$token" ]]; then token="${NETLIFY_AUTH_TOKEN_ALT:-}"; fi
+          test -n "$token" || { echo "::error::Missing NETLIFY_AUTH_TOKEN (or NETLIFY_TOKEN) repository secret"; exit 4; }
+          echo "::add-mask::$token"
+          echo "NETLIFY_AUTH_TOKEN=$token" >> "$GITHUB_ENV"
+
+      - name: Deploy exact main build to Netlify production
+        shell: bash
+        run: |
+          set -euo pipefail
+          npx --yes netlify-cli@latest deploy \
+            --dir=dist \
+            --prod \
+            --site="$NETLIFY_SITE_ID" \
+            --auth="$NETLIFY_AUTH_TOKEN" \
+            --message="Civil Rights Hub ${GITHUB_SHA}"
+
+      - name: Verify Netlify origin
+        shell: bash
+        run: |
+          set -euo pipefail
+          for attempt in {1..12}; do
+            status="$(curl -sS -L -o /tmp/netlify-home.html -w '%{http_code}' 'https://civilrightshub-org.netlify.app/')"
+            if [[ "$status" == "200" ]] && grep -qi '<div id="root"' /tmp/netlify-home.html; then
+              echo "Netlify origin is serving the Civil Rights Hub application."
+              exit 0
+            fi
+            echo "Attempt ${attempt}: HTTP ${status}; waiting for deployment propagation..."
+            sleep 5
+          done
+          echo "::error::Netlify origin did not become healthy within the verification window."
+          head -80 /tmp/netlify-home.html || true
+          exit 5

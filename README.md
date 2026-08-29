@@ -22,6 +22,7 @@ The following files define the current operating model:
 - [`docs/DATA_INTEGRITY.md`](docs/DATA_INTEGRITY.md) — provenance, verification, seeding, and publication policy.
 - [`docs/OPERATIONS.md`](docs/OPERATIONS.md) — production architecture, migrations, deployment, rollback, and verification procedures.
 - [`docs/COMMUNITY_INTEGRITY.md`](docs/COMMUNITY_INTEGRITY.md) — social/community data rules and recovery requirements.
+- [`docs/HOSTING.md`](docs/HOSTING.md) — authoritative frontend hosting policy.
 
 If older planning or audit documents conflict with these files, the hierarchy is:
 
@@ -37,11 +38,17 @@ If older planning or audit documents conflict with these files, the hierarchy is
 - Tailwind CSS + Radix/shadcn-style components
 - TanStack Query
 - Supabase PostgreSQL, Auth, Storage, Realtime, and Edge Functions
-- Vercel frontend deployment
+- Netlify frontend deployment
+- Cloudflare permitted for DNS/CDN/WAF/edge services
+- Google Cloud Run reserved for long-running workers/APIs when needed
+
+Canonical Netlify project: `civilrightshub-org` (`169435f2-2b9c-46ad-b4f3-3f7753178451`).
 
 Expected production Supabase project ref: `vrdnrbjnitptxrexdlao`.
 
-Any production database workflow must positively verify that project before writing. Never infer the target project from a local default, cached CLI link, copied credential, or environment from another repository.
+Vercel is not an approved deployment target for this repository. Historical Vercel deployments are not a recovery path. See [`docs/HOSTING.md`](docs/HOSTING.md).
+
+Any production database workflow must positively verify the Supabase project before writing. Never infer the target project from a local default, cached CLI link, copied credential, or environment from another repository.
 
 ## Current integrity model
 
@@ -75,12 +82,13 @@ npm run dev
 Quality checks:
 
 ```bash
+npm run hosting:check
 npm run lint
 npm run test -- --run
 npm run build
 ```
 
-`npm run build` also runs the repository's payment-link and branding integrity checks through `prebuild`.
+`npm run build` also runs the repository's hosting, payment-link, and branding integrity checks through `prebuild`.
 
 ## Environment
 

@@ -1,0 +1,89 @@
+name: Civil Rights Hub Public Records Integrity Smoke
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+    paths:
+      - supabase/migrations/20260829030500_fail_close_unverified_foia_reference_data.sql
+      - supabase/functions/check-foia-deadlines/**
+      - supabase/functions/send-foia-request/**
+      - supabase/functions/track-foia-open/**
+      - src/components/FOIABuilder.tsx
+      - src/components/PublicRecordsTracker.tsx
+      - src/components/foia/**
+      - .github/workflows/foia-integrity-smoke.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    if: github.event_name != 'pull_request' || github.head_ref == 'integrity/foia-tracking-safety'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      PROJECT_REF: vrdnrbjnitptxrexdlao
+      POOLER_URL: postgresql://postgres.vrdnrbjnitptxrexdlao@aws-0-us-west-2.pooler.supabase.com:5432/postgres
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+      PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Require Civil Rights Hub production credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$SUPABASE_DB_PASSWORD" || { echo "::error::Missing SUPABASE_DB_PASSWORD"; exit 1; }
+          test "$PROJECT_REF" = "vrdnrbjnitptxrexdlao" || { echo "::error::Unexpected Supabase project ref"; exit 1; }
+
+      - name: Rollback-test reference data hold
+        shell: bash
+        run: |
+          set -euo pipefail
+          sql_file="$(mktemp)"
+          {
+            printf '%s\n' 'BEGIN;'
+            cat supabase/migrations/20260829030500_fail_close_unverified_foia_reference_data.sql
+            cat <<'SQL'
+
+          DO $$
+          BEGIN
+            IF to_regclass('public.foia_requests') IS NULL THEN
+              RAISE EXCEPTION 'user-owned foia_requests table missing';
+            END IF;
+
+            IF to_regclass('public.foia_agencies') IS NOT NULL AND (
+              has_table_privilege('anon', 'public.foia_agencies', 'SELECT')
+              OR has_table_privilege('authenticated', 'public.foia_agencies', 'SELECT')
+            ) THEN
+              RAISE EXCEPTION 'foia_agencies remains browser-readable';
+            END IF;
+
+            IF to_regclass('public.foia_templates') IS NOT NULL AND (
+              has_table_privilege('anon', 'public.foia_templates', 'SELECT')
+              OR has_table_privilege('authenticated', 'public.foia_templates', 'SELECT')
+            ) THEN
+              RAISE EXCEPTION 'foia_templates remains browser-readable';
+            END IF;
+
+            IF NOT has_table_privilege('authenticated', 'public.foia_requests', 'SELECT') THEN
+              RAISE EXCEPTION 'user-owned request access was accidentally revoked';
+            END IF;
+          END $$;
+
+          ROLLBACK;
+          SQL
+          } > "$sql_file"
+          psql "$POOLER_URL" -v ON_ERROR_STOP=1 -P pager=off -f "$sql_file"
+
+      - name: Verify fail-closed function sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -q 'status: 503' supabase/functions/check-foia-deadlines/index.ts
+          grep -q 'status: 503' supabase/functions/send-foia-request/index.ts
+          grep -q 'status: 503' supabase/functions/track-foia-open/index.ts
+          ! grep -R -q 'STATE_RESPONSE_DAYS' src/components/FOIABuilder.tsx src/components/PublicRecordsTracker.tsx src/components/foia supabase/functions/check-foia-deadlines

@@ -93,6 +93,7 @@ jobs:
           20260823010400
           20260828220500
           20260828233500
+          20260829030500
           EOF
           sed -i 's/^[[:space:]]*//' /tmp/reviewed_pending_allowlist.txt
           sort -u -o /tmp/reviewed_pending_allowlist.txt /tmp/reviewed_pending_allowlist.txt
@@ -154,6 +155,34 @@ jobs:
           END $$;
           SQL
 
+      - name: Verify public-records reference hold
+        shell: bash
+        run: |
+          set -euo pipefail
+          psql "$POOLER_URL" -v ON_ERROR_STOP=1 -P pager=off <<'SQL'
+          DO $$
+          BEGIN
+            IF NOT EXISTS (
+              SELECT 1 FROM supabase_migrations.schema_migrations
+              WHERE version = '20260829030500'
+            ) THEN
+              RAISE EXCEPTION 'public-records integrity migration missing from ledger';
+            END IF;
+            IF to_regclass('public.foia_agencies') IS NOT NULL THEN
+              IF has_table_privilege('anon', 'public.foia_agencies', 'SELECT')
+                 OR has_table_privilege('authenticated', 'public.foia_agencies', 'SELECT') THEN
+                RAISE EXCEPTION 'unverified foia_agencies is browser-readable';
+              END IF;
+            END IF;
+            IF to_regclass('public.foia_templates') IS NOT NULL THEN
+              IF has_table_privilege('anon', 'public.foia_templates', 'SELECT')
+                 OR has_table_privilege('authenticated', 'public.foia_templates', 'SELECT') THEN
+                RAISE EXCEPTION 'unverified foia_templates is browser-readable';
+              END IF;
+            END IF;
+          END $$;
+          SQL
+
       - name: Run rollback-only provenance smoke tests
         shell: bash
         run: |
@@ -178,6 +207,9 @@ jobs:
           set -euo pipefail
           supabase functions deploy case-search --project-ref "$PROJECT_REF"
           supabase functions deploy send-weekly-digest --project-ref "$PROJECT_REF"
+          supabase functions deploy check-foia-deadlines --project-ref "$PROJECT_REF"
+          supabase functions deploy send-foia-request --project-ref "$PROJECT_REF"
+          supabase functions deploy track-foia-open --project-ref "$PROJECT_REF"
 
       - name: Enable leaked-password protection
         shell: bash

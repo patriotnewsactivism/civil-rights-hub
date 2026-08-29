@@ -1,34 +1,20 @@
 import { useCallback, useEffect, useState } from "react";
+import { format } from "date-fns";
+import { ArrowLeft, Building2, Calendar, FileText, Info, MapPin, Save, User } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
-import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import {
-  FileText,
-  Clock,
-  Building2,
-  Calendar,
-  User,
-  MapPin,
-  MessageSquare,
-  AlertCircle,
-  ArrowLeft,
-  Edit,
-  Save,
-  X,
-} from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { format, differenceInDays, addBusinessDays } from "date-fns";
 import type { Database } from "@/integrations/supabase/types";
 
 type FOIARequest = Database["public"]["Tables"]["foia_requests"]["Row"];
-
 type StatusKey = "draft" | "submitted" | "acknowledged" | "processing" | "completed" | "denied" | "appealed";
 
 const STATUS_OPTIONS: { value: StatusKey; label: string }[] = [
@@ -41,61 +27,6 @@ const STATUS_OPTIONS: { value: StatusKey; label: string }[] = [
   { value: "appealed", label: "Appealed" },
 ];
 
-// State-specific response deadlines (in business days)
-const STATE_RESPONSE_DAYS: Record<string, number> = {
-  "Federal": 20,
-  "California": 10,
-  "New York": 5,
-  "Texas": 10,
-  "Florida": 10,
-  "Illinois": 5,
-  "Pennsylvania": 5,
-  "Ohio": 10,
-  "Georgia": 3,
-  "North Carolina": 10,
-  "Michigan": 5,
-  "New Jersey": 7,
-  "Virginia": 5,
-  "Washington": 5,
-  "Arizona": 5,
-  "Massachusetts": 10,
-  "Tennessee": 7,
-  "Indiana": 7,
-  "Missouri": 3,
-  "Maryland": 10,
-  "Wisconsin": 10,
-  "Colorado": 3,
-  "Minnesota": 10,
-  "South Carolina": 15,
-  "Alabama": 10,
-  "Louisiana": 3,
-  "Kentucky": 3,
-  "Oregon": 5,
-  "Oklahoma": 3,
-  "Connecticut": 4,
-  "Utah": 10,
-  "Iowa": 10,
-  "Nevada": 5,
-  "Arkansas": 3,
-  "Mississippi": 7,
-  "Kansas": 3,
-  "New Mexico": 15,
-  "Nebraska": 4,
-  "West Virginia": 5,
-  "Idaho": 3,
-  "Hawaii": 10,
-  "New Hampshire": 5,
-  "Maine": 5,
-  "Montana": 5,
-  "Rhode Island": 10,
-  "Delaware": 15,
-  "South Dakota": 5,
-  "North Dakota": 5,
-  "Alaska": 10,
-  "Vermont": 3,
-  "Wyoming": 5,
-};
-
 interface FOIARequestDetailProps {
   requestId: string;
   onBack?: () => void;
@@ -105,336 +36,127 @@ export function FOIARequestDetail({ requestId, onBack }: FOIARequestDetailProps)
   const { user } = useAuth();
   const [request, setRequest] = useState<FOIARequest | null>(null);
   const [loading, setLoading] = useState(true);
-
-  // Edit mode
   const [editMode, setEditMode] = useState(false);
   const [newStatus, setNewStatus] = useState<StatusKey>("submitted");
   const [updateNote, setUpdateNote] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   const fetchRequestDetails = useCallback(async () => {
-    if (!user) return;
-
-    setLoading(true);
-    try {
-      const { data: requestData, error: requestError } = await supabase
-        .from("foia_requests")
-        .select("*")
-        .eq("id", requestId)
-        .eq("user_id", user.id)
-        .single();
-
-      if (requestError) throw requestError;
-      setRequest(requestData);
-    } catch (error) {
-      console.error("Error fetching request details:", error);
-      toast.error("Failed to load request details");
-    } finally {
+    if (!user) {
       setLoading(false);
+      return;
     }
-  }, [user, requestId]);
+    setLoading(true);
+    const { data, error } = await supabase
+      .from("foia_requests")
+      .select("*")
+      .eq("id", requestId)
+      .eq("user_id", user.id)
+      .single();
+
+    if (error) {
+      console.error("Unable to load request details", error);
+      toast.error("Unable to load request details");
+      setRequest(null);
+    } else {
+      setRequest(data);
+      setNewStatus((data.status as StatusKey) || "draft");
+    }
+    setLoading(false);
+  }, [requestId, user]);
 
   useEffect(() => {
     void fetchRequestDetails();
   }, [fetchRequestDetails]);
 
   const handleUpdateStatus = async () => {
-    if (!user || !request) {
-      toast.error("Please enter an update note");
-      return;
-    }
-
+    if (!user || !request) return;
     setSubmitting(true);
     try {
-      const { error: requestError } = await supabase
+      const updates: Record<string, unknown> = { status: newStatus, updated_at: new Date().toISOString() };
+      if (newStatus === "submitted" && !request.submitted_date) updates.submitted_date = new Date().toISOString();
+      const note = updateNote.trim();
+      if (note) updates.notes = request.notes ? `${request.notes}\n${note}` : note;
+
+      const { error } = await supabase
         .from("foia_requests")
-        .update({ status: newStatus })
-        .eq("id", requestId);
+        .update(updates as any)
+        .eq("id", requestId)
+        .eq("user_id", user.id);
+      if (error) throw error;
 
-      if (requestError) throw requestError;
-
-      toast.success("Status updated successfully");
+      toast.success("Tracking status updated");
       setUpdateNote("");
       setEditMode(false);
       await fetchRequestDetails();
     } catch (error) {
-      console.error("Error updating status:", error);
-      toast.error("Failed to update status");
+      console.error("Unable to update request", error);
+      toast.error("Unable to update request");
     } finally {
       setSubmitting(false);
     }
   };
 
-  const getDeadlineInfo = () => {
-    if (!request?.response_deadline) {
-      // Calculate deadline based on state
-      if (request?.submitted_date) {
-        const stateDays = STATE_RESPONSE_DAYS[request.state] || STATE_RESPONSE_DAYS["Federal"];
-        const deadline = addBusinessDays(new Date(request.submitted_date!), stateDays);
-        const daysRemaining = differenceInDays(deadline, new Date());
-        
-        return {
-          deadline,
-          daysRemaining,
-          isOverdue: daysRemaining < 0,
-          isApproaching: daysRemaining >= 0 && daysRemaining <= 5,
-          isCalculated: true,
-        };
-      }
-      return null;
-    }
-
-    const deadline = new Date(request.response_deadline!);
-    const daysRemaining = differenceInDays(deadline, new Date());
-
-    return {
-      deadline,
-      daysRemaining,
-      isOverdue: daysRemaining < 0,
-      isApproaching: daysRemaining >= 0 && daysRemaining <= 5,
-      isCalculated: false,
-    };
-  };
-
-  const deadlineInfo = getDeadlineInfo();
-
   if (loading) {
-    return (
-      <Card>
-        <CardContent className="py-12 text-center">
-          <p className="text-muted-foreground">Loading request details...</p>
-        </CardContent>
-      </Card>
-    );
+    return <Card><CardContent className="py-12 text-center text-sm text-muted-foreground">Loading request details…</CardContent></Card>;
   }
 
   if (!request) {
     return (
-      <Card>
-        <CardContent className="py-12 text-center">
-          <FileText className="mx-auto mb-4 h-12 w-12 text-muted-foreground opacity-50" />
-          <p className="text-lg font-semibold mb-1">Request not found</p>
-          <p className="text-sm text-muted-foreground mb-4">This request doesn't exist or you don't have access to it</p>
-          {onBack && (
-            <Button onClick={onBack} variant="outline">
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Dashboard
-            </Button>
-          )}
-        </CardContent>
-      </Card>
+      <Card><CardContent className="py-12 text-center"><FileText className="mx-auto mb-4 h-12 w-12 text-muted-foreground" /><p className="mb-4 font-semibold">Request not found or not accessible.</p>{onBack && <Button variant="outline" onClick={onBack}><ArrowLeft className="mr-2 h-4 w-4" />Back</Button>}</CardContent></Card>
     );
   }
 
+  const statusLabel = STATUS_OPTIONS.find((option) => option.value === request.status)?.label || request.status || "Draft";
+
   return (
     <div className="space-y-6">
-      {onBack && (
-        <Button onClick={onBack} variant="ghost" size="sm">
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Back to Dashboard
-        </Button>
-      )}
+      {onBack && <Button variant="ghost" size="sm" onClick={onBack}><ArrowLeft className="mr-2 h-4 w-4" />Back to requests</Button>}
 
-      {deadlineInfo?.isOverdue && (
-        <Alert variant="destructive">
-          <AlertCircle className="h-4 w-4" />
-          <AlertDescription>
-            <strong>Response Overdue:</strong> This agency is {Math.abs(deadlineInfo.daysRemaining)} days past their
-            response deadline. You may consider filing a follow-up request, appeal, or legal action.
-          </AlertDescription>
-        </Alert>
-      )}
+      <Alert>
+        <Info className="h-4 w-4" />
+        <AlertDescription>
+          Civil Rights Hub is not calculating a statutory response deadline for this request. Any legacy response-deadline value stored on an older record is intentionally not displayed as a legal conclusion. Check the governing law and official agency guidance for deadlines, extensions, appeals, and remedies.
+        </AlertDescription>
+      </Alert>
 
       <Card>
         <CardHeader>
-          <div className="flex items-start justify-between">
-            <div className="flex-1">
-              <CardTitle className="text-2xl mb-2">{request.request_subject}</CardTitle>
-              <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
-                <div className="flex items-center gap-1">
-                  <Building2 className="h-4 w-4" />
-                  {request.agency_name}
-                </div>
-                {request.state && (
-                  <div className="flex items-center gap-1">
-                    <MapPin className="h-4 w-4" />
-                    {request.state}
-                  </div>
-                )}
-                {request.submitted_date && (
-                  <div className="flex items-center gap-1">
-                    <Calendar className="h-4 w-4" />
-                    Submitted {format(new Date(request.submitted_date!), "MMM d, yyyy")}
-                  </div>
-                )}
-              </div>
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <CardTitle className="text-2xl">{request.request_subject || "Untitled request"}</CardTitle>
+              <CardDescription className="mt-2 flex flex-wrap gap-3">
+                <span className="flex items-center gap-1"><Building2 className="h-4 w-4" />{request.agency_name}</span>
+                {request.state && <span className="flex items-center gap-1"><MapPin className="h-4 w-4" />{request.state}</span>}
+                {request.submitted_date && <span className="flex items-center gap-1"><Calendar className="h-4 w-4" />Recorded submitted {format(new Date(request.submitted_date), "MMM d, yyyy")}</span>}
+              </CardDescription>
             </div>
-            <Badge variant="outline" className="text-lg px-3 py-1">
-              {STATUS_OPTIONS.find((s) => s.value === request.status)?.label || request.status || "Draft"}
-            </Badge>
+            <Badge variant="outline">{statusLabel}</Badge>
           </div>
         </CardHeader>
         <CardContent className="space-y-6">
-          {deadlineInfo && (
-            <div
-              className={`rounded-lg border p-4 ${
-                deadlineInfo.isOverdue
-                  ? "border-red-500 bg-red-50 dark:bg-red-950/20"
-                  : deadlineInfo.isApproaching
-                  ? "border-yellow-500 bg-yellow-50 dark:bg-yellow-950/20"
-                  : "border-border bg-muted/50"
-              }`}
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Clock className="h-5 w-5" />
-                  <div>
-                    <p className="font-semibold">
-                      Response Deadline {deadlineInfo.isCalculated && "(Estimated)"}
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      {format(deadlineInfo.deadline, "MMMM d, yyyy")}
-                      {deadlineInfo.isCalculated && (
-                        <span className="ml-2">
-                          ({STATE_RESPONSE_DAYS[request.state] || 20} business days for {request.state || "Federal"})
-                        </span>
-                      )}
-                    </p>
-                  </div>
-                </div>
-                <Badge
-                  variant={deadlineInfo.isOverdue ? "destructive" : deadlineInfo.isApproaching ? "default" : "secondary"}
-                  className="text-base px-3 py-1"
-                >
-                  {deadlineInfo.isOverdue
-                    ? `${Math.abs(deadlineInfo.daysRemaining)} days overdue`
-                    : `${deadlineInfo.daysRemaining} days remaining`}
-                </Badge>
-              </div>
-            </div>
-          )}
-
+          <div><h3 className="mb-2 font-semibold">Request text</h3><div className="whitespace-pre-wrap rounded-lg bg-muted/50 p-4 text-sm">{request.request_body}</div></div>
           <Separator />
-
-          <div className="space-y-3">
-            <h3 className="font-semibold">Request Details</h3>
-            <div className="bg-muted/50 rounded-lg p-4 text-sm whitespace-pre-line">{request.request_body}</div>
+          <div className="grid gap-4 md:grid-cols-2">
+            {request.contact_name && <div><p className="text-xs text-muted-foreground">Requester</p><p className="flex items-center gap-1 text-sm"><User className="h-3.5 w-3.5" />{request.contact_name}</p></div>}
+            {request.contact_email && <div><p className="text-xs text-muted-foreground">Contact email</p><p className="text-sm">{request.contact_email}</p></div>}
+            {request.tracking_number && <div><p className="text-xs text-muted-foreground">Tracking number you recorded</p><p className="text-sm">{request.tracking_number}</p></div>}
+            {request.submission_method && <div><p className="text-xs text-muted-foreground">Submission method you recorded</p><p className="text-sm capitalize">{request.submission_method.replaceAll("_", " ")}</p></div>}
           </div>
-
-          {request.contact_name && (
-            <div className="space-y-3">
-              <h3 className="font-semibold flex items-center gap-2">
-                <User className="h-4 w-4" />
-                Requester Information
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
-                <div>
-                  <p className="text-muted-foreground">Name</p>
-                  <p>{request.contact_name}</p>
-                </div>
-                {request.contact_email && (
-                  <div>
-                    <p className="text-muted-foreground">Email</p>
-                    <p>{request.contact_email}</p>
-                  </div>
-                )}
-                {request.notes && (
-                  <div className="md:col-span-2">
-                    <p className="text-muted-foreground">Notes</p>
-                    <p>{request.notes}</p>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
+          {request.notes && <div><h3 className="mb-2 font-semibold">Your notes</h3><div className="whitespace-pre-wrap rounded-lg border p-3 text-sm">{request.notes}</div></div>}
         </CardContent>
       </Card>
 
       <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-2">
-              <MessageSquare className="h-5 w-5" />
-              Update Status
-            </CardTitle>
-            <Button
-              size="sm"
-              variant={editMode ? "ghost" : "outline"}
-              onClick={() => {
-                setEditMode(!editMode);
-                if (editMode) {
-                  setUpdateNote("");
-                  setNewStatus((request.status as StatusKey) || "submitted");
-                }
-              }}
-            >
-              {editMode ? (
-                <>
-                  <X className="h-4 w-4 mr-2" />
-                  Cancel
-                </>
-              ) : (
-                <>
-                  <Edit className="h-4 w-4 mr-2" />
-                  Update Status
-                </>
-              )}
-            </Button>
-          </div>
-          <CardDescription>Track the progress of your FOIA request</CardDescription>
-        </CardHeader>
+        <CardHeader><CardTitle>Update your tracking status</CardTitle><CardDescription>Status labels reflect what you record; they are not independently verified by Civil Rights Hub.</CardDescription></CardHeader>
         <CardContent className="space-y-4">
-          {editMode && (
-            <div className="space-y-4 p-4 border rounded-lg bg-muted/50">
-              <div className="space-y-2">
-                <Label htmlFor="update-status">New Status</Label>
-                <Select value={newStatus} onValueChange={(value) => setNewStatus(value as StatusKey)}>
-                  <SelectTrigger id="update-status">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {STATUS_OPTIONS.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        {option.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="update-note">Notes (optional)</Label>
-                <Textarea
-                  id="update-note"
-                  value={updateNote}
-                  onChange={(e) => setUpdateNote(e.target.value)}
-                  placeholder="Add any notes about this status change..."
-                  rows={3}
-                />
-              </div>
-
-              <div className="flex gap-2">
-                <Button onClick={handleUpdateStatus} disabled={submitting}>
-                  <Save className="h-4 w-4 mr-2" />
-                  {submitting ? "Saving..." : "Save Status"}
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    setEditMode(false);
-                    setUpdateNote("");
-                  }}
-                >
-                  Cancel
-                </Button>
-              </div>
-            </div>
-          )}
-
-          {!editMode && (
-            <div className="text-center py-8 text-sm text-muted-foreground">
-              <p>Current status: <strong>{STATUS_OPTIONS.find((s) => s.value === request.status)?.label || "Draft"}</strong></p>
-              <p className="mt-2">Click "Update Status" to track changes to your request.</p>
+          {!editMode ? (
+            <div className="flex items-center justify-between gap-4"><p className="text-sm">Current status: <strong>{statusLabel}</strong></p><Button variant="outline" onClick={() => setEditMode(true)}>Update status</Button></div>
+          ) : (
+            <div className="space-y-4">
+              <div className="space-y-2"><Label>Status</Label><Select value={newStatus} onValueChange={(value) => setNewStatus(value as StatusKey)}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{STATUS_OPTIONS.map((option) => <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>)}</SelectContent></Select></div>
+              <div className="space-y-2"><Label htmlFor="tracking-note">Optional note</Label><Textarea id="tracking-note" value={updateNote} onChange={(event) => setUpdateNote(event.target.value)} placeholder="Record correspondence, a reference number, or what you plan to do next." /></div>
+              <div className="flex gap-2"><Button disabled={submitting} onClick={() => void handleUpdateStatus()}><Save className="mr-2 h-4 w-4" />Save</Button><Button variant="outline" onClick={() => { setEditMode(false); setUpdateNote(""); }}>Cancel</Button></div>
             </div>
           )}
         </CardContent>

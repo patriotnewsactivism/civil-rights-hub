@@ -334,7 +334,7 @@ FOR EACH ROW EXECUTE FUNCTION public.refresh_forum_thread_reply_stats();
 
 -- like_count, post_count, last_post_at and moderator pin state are not author-controlled facts.
 -- Normalize them on browser INSERT and reject browser UPDATE attempts. There is no durable
--- thread-view ledger yet, so view_count is held at zero and the UI no longer publishes it.
+-- thread-view ledger yet, so view_count is NULL and the existing UI suppresses the view label.
 CREATE OR REPLACE FUNCTION public.protect_forum_thread_system_fields()
 RETURNS TRIGGER
 LANGUAGE plpgsql
@@ -346,7 +346,7 @@ BEGIN
     IF TG_OP = 'INSERT' THEN
       NEW.like_count := 0;
       NEW.post_count := 0;
-      NEW.view_count := 0;
+      NEW.view_count := NULL;
       NEW.is_pinned := false;
       NEW.last_post_at := COALESCE(NEW.created_at, NOW());
     ELSIF NEW.like_count IS DISTINCT FROM OLD.like_count

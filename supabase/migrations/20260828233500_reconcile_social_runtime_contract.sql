@@ -45,8 +45,8 @@ REVOKE SELECT ON public.poll_votes FROM anon;
 GRANT SELECT ON public.poll_votes TO authenticated;
 
 -- Validate the embedded option list and poll rules before a row can enter the vote ledger.
--- This prevents hand-crafted API calls from voting for nonexistent options, expired polls,
--- or multiple choices on a single-choice poll.
+-- Locking the owning post serializes votes for a poll, closing the race where two concurrent
+-- inserts from the same voter could otherwise choose two different options on a single-choice poll.
 CREATE OR REPLACE FUNCTION public.enforce_post_poll_vote()
 RETURNS TRIGGER
 LANGUAGE plpgsql
@@ -61,7 +61,8 @@ BEGIN
   SELECT p.poll_data
     INTO poll
   FROM public.posts p
-  WHERE p.id = NEW.poll_id;
+  WHERE p.id = NEW.poll_id
+  FOR UPDATE;
 
   IF poll IS NULL THEN
     RAISE EXCEPTION 'Poll does not exist';
@@ -99,7 +100,7 @@ REVOKE ALL ON FUNCTION public.enforce_post_poll_vote() FROM PUBLIC, anon, authen
 
 DROP TRIGGER IF EXISTS enforce_post_poll_vote_trigger ON public.poll_votes;
 CREATE TRIGGER enforce_post_poll_vote_trigger
-BEFORE INSERT OR UPDATE ON public.poll_votes
+BEFORE INSERT ON public.poll_votes
 FOR EACH ROW EXECUTE FUNCTION public.enforce_post_poll_vote();
 
 -- The cleaned post policy correctly prevents a voter from updating somebody else's
@@ -165,6 +166,31 @@ CREATE TRIGGER refresh_post_poll_counts_trigger
 AFTER INSERT OR DELETE ON public.poll_votes
 FOR EACH ROW EXECUTE FUNCTION public.refresh_post_poll_counts();
 
+-- Poll result fields are server-derived once a post exists. A post owner may create a poll,
+-- but cannot later rewrite poll_data directly to fabricate vote totals or options. Future poll
+-- editing should go through a purpose-built, validated server operation instead of broad UPDATE.
+CREATE OR REPLACE FUNCTION public.protect_post_poll_data()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY INVOKER
+SET search_path = public, pg_temp
+AS $$
+BEGIN
+  IF current_user IN ('anon', 'authenticated')
+     AND NEW.poll_data IS DISTINCT FROM OLD.poll_data THEN
+    RAISE EXCEPTION 'poll_data is server-managed after publication';
+  END IF;
+  RETURN NEW;
+END;
+$$;
+
+REVOKE ALL ON FUNCTION public.protect_post_poll_data() FROM PUBLIC, anon, authenticated;
+
+DROP TRIGGER IF EXISTS protect_post_poll_data_trigger ON public.posts;
+CREATE TRIGGER protect_post_poll_data_trigger
+BEFORE UPDATE OF poll_data ON public.posts
+FOR EACH ROW EXECUTE FUNCTION public.protect_post_poll_data();
+
 -- Story view_count is system-derived. The browser may insert its own story_views row,
 -- but must not need UPDATE permission on another user's story merely to increment it.
 CREATE OR REPLACE FUNCTION public.refresh_story_view_count()
@@ -191,6 +217,156 @@ DROP TRIGGER IF EXISTS refresh_story_view_count_trigger ON public.story_views;
 CREATE TRIGGER refresh_story_view_count_trigger
 AFTER INSERT ON public.story_views
 FOR EACH ROW EXECUTE FUNCTION public.refresh_story_view_count();
+
+-- RSVP counts are maintained by refresh_community_event_rsvp_count() from the recovery
+-- migration. Prevent organizers from spoofing those public totals with direct table writes.
+CREATE OR REPLACE FUNCTION public.protect_community_event_system_fields()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY INVOKER
+SET search_path = public, pg_temp
+AS $$
+BEGIN
+  IF current_user IN ('anon', 'authenticated') THEN
+    IF TG_OP = 'INSERT' THEN
+      NEW.rsvp_count := 0;
+      NEW.attendee_count := 0;
+    ELSIF NEW.rsvp_count IS DISTINCT FROM OLD.rsvp_count
+       OR NEW.attendee_count IS DISTINCT FROM OLD.attendee_count THEN
+      RAISE EXCEPTION 'event attendance counters are server-managed';
+    END IF;
+  END IF;
+  RETURN NEW;
+END;
+$$;
+
+REVOKE ALL ON FUNCTION public.protect_community_event_system_fields() FROM PUBLIC, anon, authenticated;
+
+DROP TRIGGER IF EXISTS protect_community_event_system_fields_trigger ON public.community_events;
+CREATE TRIGGER protect_community_event_system_fields_trigger
+BEFORE INSERT OR UPDATE OF rsvp_count, attendee_count ON public.community_events
+FOR EACH ROW EXECUTE FUNCTION public.protect_community_event_system_fields();
+
+-- Discussion upvote totals are derived exclusively from thread_upvotes.
+CREATE OR REPLACE FUNCTION public.refresh_forum_thread_upvote_count()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public, pg_temp
+AS $$
+DECLARE
+  target_thread UUID;
+BEGIN
+  target_thread := COALESCE(NEW.thread_id, OLD.thread_id);
+  UPDATE public.forum_threads t
+  SET like_count = (
+    SELECT COUNT(*)::integer
+    FROM public.thread_upvotes u
+    WHERE u.thread_id = target_thread
+  )
+  WHERE t.id = target_thread;
+  RETURN COALESCE(NEW, OLD);
+END;
+$$;
+
+REVOKE ALL ON FUNCTION public.refresh_forum_thread_upvote_count() FROM PUBLIC, anon, authenticated;
+
+DROP TRIGGER IF EXISTS refresh_forum_thread_upvote_count_trigger ON public.thread_upvotes;
+CREATE TRIGGER refresh_forum_thread_upvote_count_trigger
+AFTER INSERT OR DELETE ON public.thread_upvotes
+FOR EACH ROW EXECUTE FUNCTION public.refresh_forum_thread_upvote_count();
+
+-- Reply totals and last activity are derived from non-deleted forum_posts. Handle UPDATE
+-- as well so moderation/deletion state or a moved legacy row cannot leave stale counters.
+CREATE OR REPLACE FUNCTION public.refresh_forum_thread_reply_stats()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public, pg_temp
+AS $$
+DECLARE
+  old_thread UUID;
+  new_thread UUID;
+BEGIN
+  old_thread := CASE WHEN TG_OP IN ('UPDATE', 'DELETE') THEN OLD.thread_id ELSE NULL END;
+  new_thread := CASE WHEN TG_OP IN ('INSERT', 'UPDATE') THEN NEW.thread_id ELSE NULL END;
+
+  IF old_thread IS NOT NULL THEN
+    UPDATE public.forum_threads t
+    SET post_count = (
+          SELECT COUNT(*)::integer
+          FROM public.forum_posts p
+          WHERE p.thread_id = old_thread AND NOT COALESCE(p.is_deleted, false)
+        ),
+        last_post_at = COALESCE((
+          SELECT MAX(p.created_at)
+          FROM public.forum_posts p
+          WHERE p.thread_id = old_thread AND NOT COALESCE(p.is_deleted, false)
+        ), t.created_at)
+    WHERE t.id = old_thread;
+  END IF;
+
+  IF new_thread IS NOT NULL AND new_thread IS DISTINCT FROM old_thread THEN
+    UPDATE public.forum_threads t
+    SET post_count = (
+          SELECT COUNT(*)::integer
+          FROM public.forum_posts p
+          WHERE p.thread_id = new_thread AND NOT COALESCE(p.is_deleted, false)
+        ),
+        last_post_at = COALESCE((
+          SELECT MAX(p.created_at)
+          FROM public.forum_posts p
+          WHERE p.thread_id = new_thread AND NOT COALESCE(p.is_deleted, false)
+        ), t.created_at)
+    WHERE t.id = new_thread;
+  END IF;
+
+  RETURN COALESCE(NEW, OLD);
+END;
+$$;
+
+REVOKE ALL ON FUNCTION public.refresh_forum_thread_reply_stats() FROM PUBLIC, anon, authenticated;
+
+DROP TRIGGER IF EXISTS refresh_forum_thread_reply_stats_trigger ON public.forum_posts;
+CREATE TRIGGER refresh_forum_thread_reply_stats_trigger
+AFTER INSERT OR UPDATE OR DELETE ON public.forum_posts
+FOR EACH ROW EXECUTE FUNCTION public.refresh_forum_thread_reply_stats();
+
+-- like_count, post_count, last_post_at and moderator pin state are not author-controlled facts.
+-- Normalize them on browser INSERT and reject browser UPDATE attempts. There is no durable
+-- thread-view ledger yet, so view_count is held at zero and the UI no longer publishes it.
+CREATE OR REPLACE FUNCTION public.protect_forum_thread_system_fields()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY INVOKER
+SET search_path = public, pg_temp
+AS $$
+BEGIN
+  IF current_user IN ('anon', 'authenticated') THEN
+    IF TG_OP = 'INSERT' THEN
+      NEW.like_count := 0;
+      NEW.post_count := 0;
+      NEW.view_count := 0;
+      NEW.is_pinned := false;
+      NEW.last_post_at := COALESCE(NEW.created_at, NOW());
+    ELSIF NEW.like_count IS DISTINCT FROM OLD.like_count
+       OR NEW.post_count IS DISTINCT FROM OLD.post_count
+       OR NEW.view_count IS DISTINCT FROM OLD.view_count
+       OR NEW.last_post_at IS DISTINCT FROM OLD.last_post_at
+       OR NEW.is_pinned IS DISTINCT FROM OLD.is_pinned THEN
+      RAISE EXCEPTION 'discussion counters and moderator pin state are server-managed';
+    END IF;
+  END IF;
+  RETURN NEW;
+END;
+$$;
+
+REVOKE ALL ON FUNCTION public.protect_forum_thread_system_fields() FROM PUBLIC, anon, authenticated;
+
+DROP TRIGGER IF EXISTS protect_forum_thread_system_fields_trigger ON public.forum_threads;
+CREATE TRIGGER protect_forum_thread_system_fields_trigger
+BEFORE INSERT OR UPDATE OF like_count, post_count, view_count, last_post_at, is_pinned ON public.forum_threads
+FOR EACH ROW EXECUTE FUNCTION public.protect_forum_thread_system_fields();
 
 -- Remove a legacy avatar UPDATE policy that predates the explicit per-user folder
 -- contract installed by the recovery migration.

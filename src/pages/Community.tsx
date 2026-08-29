@@ -1,18 +1,21 @@
 import { useEffect, useMemo, useState } from "react";
-import { useAuth } from "@/hooks/useAuth";
 import { Navigate, useSearchParams } from "react-router-dom";
+import { Bell, CalendarDays, Globe, MessageCircle, MessageSquare, Newspaper, User } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UserProfile } from "@/components/UserProfile";
-import { User, Bell, Globe, Newspaper, CalendarDays, MessageCircle, MessageSquare } from "lucide-react";
 import { SEO } from "@/components/SEO";
 import MessagingPanel from "@/components/MessagingPanel";
 import NotificationsCenter from "@/components/NotificationsCenter";
+import { SocialFeed } from "@/components/SocialFeed";
 import { CommunitySidebar } from "@/components/community/CommunitySidebar";
 import { CommunityMobileNav } from "@/components/community/CommunityMobileNav";
+import { CommunityDiscussionWorkspace } from "@/components/community/CommunityDiscussionWorkspace";
+import { CommunityEventsWorkspace } from "@/components/community/CommunityEventsWorkspace";
+import { CommunityNetwork } from "@/components/community/CommunityNetwork";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { VerifiedDataHold } from "@/components/VerifiedDataHold";
 
 type CommunityTab = "feed" | "discuss" | "events" | "messages" | "notifications" | "network" | "profile";
 const COMMUNITY_TABS: CommunityTab[] = ["feed", "discuss", "events", "messages", "notifications", "network", "profile"];
@@ -31,13 +34,12 @@ export default function Community() {
 
   useEffect(() => {
     const paramTab = searchParams.get("tab") as CommunityTab | null;
-    if (paramTab && COMMUNITY_TABS.includes(paramTab) && paramTab !== activeTab) {
-      setActiveTab(paramTab);
-    }
+    if (paramTab && COMMUNITY_TABS.includes(paramTab) && paramTab !== activeTab) setActiveTab(paramTab);
   }, [activeTab, searchParams]);
 
   useEffect(() => {
     if (!user?.id) return;
+
     supabase
       .from("notifications")
       .select("id", { count: "exact", head: true })
@@ -51,7 +53,7 @@ export default function Community() {
       .from("user_profiles")
       .select("role")
       .eq("user_id", user.id)
-      .single()
+      .maybeSingle()
       .then(({ data }) => setCurrentUserRole(data?.role ?? null));
   }, [user?.id]);
 
@@ -78,19 +80,19 @@ export default function Community() {
     <div className="min-h-screen flex flex-col bg-background">
       <Header />
       <SEO
-        title="Community Account Workspace | Civil Rights Hub"
-        description="Use private messaging, notifications, and your account profile while Civil Rights Hub removes synthetic community seed content and rebuilds public community verification."
+        title="Community | Civil Rights Hub"
+        description="Post updates, start discussions, publish community events, message other members, and discover public profiles on Civil Rights Hub."
         canonicalUrl="https://civilrightshub.org/community"
         ogUrl="https://civilrightshub.org/community"
       />
 
       <main className="flex-1 pb-20 lg:pb-0">
         <div className="container mx-auto px-4 py-6">
-          <div className="mb-6 flex items-start justify-between">
+          <div className="mb-6 flex items-start justify-between gap-4">
             <div>
               <h1 className="text-3xl font-bold">Community</h1>
-              <p className="mt-1 text-sm text-muted-foreground">
-                Messaging and account tools remain available while public social content is cleaned and re-verified.
+              <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
+                The legacy synthetic social corpus has been removed. New public content is user-submitted and starts from a clean slate.
               </p>
             </div>
             <button
@@ -134,11 +136,7 @@ export default function Community() {
             <div className="mt-6">
               <TabsContent value="feed" className="mt-0">
                 <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_300px]">
-                  <VerifiedDataHold
-                    title="Public social feed is temporarily withheld"
-                    description="Known demo migrations inserted synthetic legal/news posts under a real user's account. Those records are being quarantined and removed before the public feed is restored."
-                    detail="No activity totals, trending counters, seeded posts, or public incident feed are shown while the cleanup migration remains unapplied."
-                  />
+                  <SocialFeed />
                   <aside className="hidden lg:block">
                     <div className="sticky top-24">
                       <CommunitySidebar currentUserRole={currentUserRole} />
@@ -148,19 +146,11 @@ export default function Community() {
               </TabsContent>
 
               <TabsContent value="discuss" className="mt-0">
-                <VerifiedDataHold
-                  title="Public discussions are temporarily withheld"
-                  description="A legacy seed created synthetic forum threads, fabricated view counts, and first-person claims under a real user's account. The known seeded threads are being quarantined before discussions reopen."
-                  detail="Private messaging and your own account profile remain available during the cleanup."
-                />
+                <CommunityDiscussionWorkspace />
               </TabsContent>
 
               <TabsContent value="events" className="mt-0">
-                <VerifiedDataHold
-                  title="Community events are temporarily withheld"
-                  description="The legacy events dataset contains published dates, organizer identities, contacts, locations, and registration links without durable per-event provenance. Events will return only after each listing is checked against an authoritative organizer or venue source."
-                  detail="Do not rely on a previously displayed Civil Rights Hub event date or registration link unless you independently confirm it with the organizer."
-                />
+                <CommunityEventsWorkspace />
               </TabsContent>
 
               <TabsContent value="messages" className="mt-0">
@@ -172,11 +162,7 @@ export default function Community() {
               </TabsContent>
 
               <TabsContent value="network" className="mt-0">
-                <VerifiedDataHold
-                  title="Public profile discovery is temporarily withheld"
-                  description="Legacy community profile verification flags have not yet been tied to the same source-provenance standard used for public directories."
-                  detail="Your own profile remains available, but Civil Rights Hub is not presenting other accounts as verified journalists, attorneys, or activists until that workflow is audited."
-                />
+                <CommunityNetwork />
               </TabsContent>
 
               <TabsContent value="profile" className="mt-0">

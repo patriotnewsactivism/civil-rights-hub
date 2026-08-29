@@ -34,6 +34,22 @@ permissions:
   contents: read
 
 jobs:
+  build:
+    # Same-repository PRs may run the build; fork PRs are intentionally skipped.
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Production build
+        run: npm run build
+
   audit:
     # Same-repository PRs may use the production audit secret; fork PRs are intentionally skipped.
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
@@ -60,6 +76,11 @@ jobs:
         run: |
           set -euo pipefail
           psql "$POOLER_URL" -v ON_ERROR_STOP=1 -P pager=off <<'SQL'
+          \echo '=== Recovery migration ledger ==='
+          SELECT version, name
+          FROM supabase_migrations.schema_migrations
+          WHERE version = '20260828220500';
+
           \echo '=== Current social counts ==='
           SELECT 'posts' AS table_name, count(*) AS rows FROM public.posts
           UNION ALL SELECT 'comments', count(*) FROM public.comments
@@ -74,11 +95,6 @@ jobs:
           UNION ALL SELECT 'follows', count(*) FROM public.follows
           ORDER BY table_name;
 
-          \echo '=== Recovery migration ledger ==='
-          SELECT version, name
-          FROM supabase_migrations.schema_migrations
-          WHERE version = '20260828220500';
-
           \echo '=== RLS policy definitions for public social tables ==='
           SELECT tablename, policyname, cmd, roles::text, qual, with_check
           FROM pg_policies
@@ -91,7 +107,18 @@ jobs:
             ])
           ORDER BY tablename, policyname;
 
-          \echo '=== Counter-sensitive table columns ==='
+          \echo '=== Exact live columns used by recovery SQL and UI ==='
+          SELECT table_name, string_agg(column_name, ', ' ORDER BY ordinal_position) AS columns
+          FROM information_schema.columns
+          WHERE table_schema = 'public'
+            AND table_name = ANY (ARRAY[
+              'poll_votes','post_polls','thread_tags','forum_threads','forum_posts','community_events',
+              'event_rsvps','user_profiles','posts','stories','story_views','content_reports'
+            ])
+          GROUP BY table_name
+          ORDER BY table_name;
+
+          \echo '=== Counter-sensitive columns ==='
           SELECT table_name, column_name, data_type, is_nullable, column_default
           FROM information_schema.columns
           WHERE table_schema = 'public'
@@ -117,15 +144,26 @@ jobs:
           GROUP BY coalesce(role,'<null>'), coalesce(is_verified,false)
           ORDER BY role, is_verified;
 
-          \echo '=== Posts storage bucket ==='
-          SELECT id, name, public, file_size_limit, allowed_mime_types
-          FROM storage.buckets WHERE id = 'posts';
+          \echo '=== User profile browser grants ==='
+          SELECT grantee, privilege_type, column_name
+          FROM information_schema.column_privileges
+          WHERE table_schema = 'public'
+            AND table_name = 'user_profiles'
+            AND grantee IN ('anon','authenticated')
+          ORDER BY grantee, privilege_type, column_name;
 
-          \echo '=== Storage object policies for posts ==='
+          \echo '=== Posts and avatars buckets ==='
+          SELECT id, name, public, file_size_limit, allowed_mime_types
+          FROM storage.buckets
+          WHERE id IN ('posts','avatars')
+          ORDER BY id;
+
+          \echo '=== Storage object policies for posts and avatars ==='
           SELECT policyname, cmd, roles::text, qual, with_check
           FROM pg_policies
-          WHERE schemaname = 'storage' AND tablename = 'objects'
-            AND (coalesce(qual,'') LIKE '%posts%' OR coalesce(with_check,'') LIKE '%posts%')
+          WHERE schemaname = 'storage'
+            AND tablename = 'objects'
+            AND (coalesce(qual,'') ~ 'posts|avatars' OR coalesce(with_check,'') ~ 'posts|avatars')
           ORDER BY policyname;
 
           \echo '=== Legacy content concentration ==='
@@ -135,3 +173,59 @@ jobs:
           UNION ALL SELECT 'null-owner threads', count(*) FROM public.forum_threads WHERE user_id IS NULL
           UNION ALL SELECT 'null-organizer events', count(*) FROM public.community_events WHERE organizer_id IS NULL;
           SQL
+
+      - name: Rollback-test social runtime reconciliation
+        shell: bash
+        run: |
+          set -euo pipefail
+          sql_file="$(mktemp)"
+          {
+            printf '%s\n' 'BEGIN;'
+            cat supabase/migrations/20260828233500_reconcile_social_runtime_contract.sql
+            cat <<'SQL'
+
+          DO $$
+          BEGIN
+            IF NOT EXISTS (
+              SELECT 1
+              FROM pg_constraint
+              WHERE conrelid = 'public.poll_votes'::regclass
+                AND conname = 'poll_votes_poll_id_fkey'
+                AND pg_get_constraintdef(oid) LIKE '%REFERENCES posts(id)%'
+            ) THEN
+              RAISE EXCEPTION 'poll_votes FK does not reference posts(id)';
+            END IF;
+
+            IF NOT EXISTS (
+              SELECT 1 FROM pg_trigger
+              WHERE tgname = 'enforce_post_poll_vote_trigger' AND NOT tgisinternal
+            ) THEN
+              RAISE EXCEPTION 'poll vote validation trigger missing';
+            END IF;
+
+            IF NOT EXISTS (
+              SELECT 1 FROM pg_trigger
+              WHERE tgname = 'refresh_story_view_count_trigger' AND NOT tgisinternal
+            ) THEN
+              RAISE EXCEPTION 'story view count trigger missing';
+            END IF;
+
+            IF EXISTS (
+              SELECT 1 FROM pg_policies
+              WHERE schemaname = 'storage'
+                AND tablename = 'objects'
+                AND policyname = 'avatars_auth_update'
+            ) THEN
+              RAISE EXCEPTION 'legacy avatar update policy remains';
+            END IF;
+
+            IF has_function_privilege('anon', 'public.enforce_post_poll_vote()', 'EXECUTE')
+               OR has_function_privilege('authenticated', 'public.enforce_post_poll_vote()', 'EXECUTE') THEN
+              RAISE EXCEPTION 'poll vote trigger function is browser-executable';
+            END IF;
+          END $$;
+
+          ROLLBACK;
+          SQL
+          } > "$sql_file"
+          psql "$POOLER_URL" -v ON_ERROR_STOP=1 -P pager=off -f "$sql_file"

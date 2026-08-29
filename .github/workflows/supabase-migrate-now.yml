@@ -92,6 +92,7 @@ jobs:
           20260823010300
           20260823010400
           20260828220500
+          20260828233500
           EOF
           sed -i 's/^[[:space:]]*//' /tmp/reviewed_pending_allowlist.txt
           sort -u -o /tmp/reviewed_pending_allowlist.txt /tmp/reviewed_pending_allowlist.txt
@@ -122,6 +123,36 @@ jobs:
         run: |
           set -euo pipefail
           supabase db push --linked --include-all --password "$SUPABASE_DB_PASSWORD"
+
+      - name: Verify social runtime contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          psql "$POOLER_URL" -v ON_ERROR_STOP=1 -P pager=off <<'SQL'
+          DO $$
+          BEGIN
+            IF NOT EXISTS (
+              SELECT 1 FROM supabase_migrations.schema_migrations
+              WHERE version = '20260828233500'
+            ) THEN
+              RAISE EXCEPTION 'social runtime migration missing from ledger';
+            END IF;
+            IF NOT EXISTS (
+              SELECT 1 FROM pg_constraint
+              WHERE conrelid = 'public.poll_votes'::regclass
+                AND conname = 'poll_votes_poll_id_fkey'
+                AND pg_get_constraintdef(oid) LIKE '%REFERENCES posts(id)%'
+            ) THEN
+              RAISE EXCEPTION 'poll_votes FK not reconciled';
+            END IF;
+            IF NOT EXISTS (
+              SELECT 1 FROM pg_trigger
+              WHERE tgname = 'refresh_story_view_count_trigger' AND NOT tgisinternal
+            ) THEN
+              RAISE EXCEPTION 'story view trigger missing';
+            END IF;
+          END $$;
+          SQL
 
       - name: Run rollback-only provenance smoke tests
         shell: bash

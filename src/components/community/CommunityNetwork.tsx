@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
+import { captureSocialError } from "@/lib/socialTelemetry";
 import { toast } from "sonner";
 
 type PublicProfile = {
@@ -42,13 +43,28 @@ export function CommunityNetwork() {
     ]);
 
     if (profilesResult.error) {
+      captureSocialError(profilesResult.error, {
+        surface: "network",
+        operation: "load_public_profiles",
+        table: "user_profiles",
+      });
       toast.error("Unable to load the member network");
       setProfiles([]);
     } else {
       setProfiles((profilesResult.data ?? []) as PublicProfile[]);
     }
 
-    setFollowing(new Set((followsResult.data ?? []).map((row) => row.following_id)));
+    if (followsResult.error) {
+      captureSocialError(followsResult.error, {
+        surface: "network",
+        operation: "load_follows",
+        table: "follows",
+      });
+      setFollowing(new Set());
+    } else {
+      setFollowing(new Set((followsResult.data ?? []).map((row) => row.following_id)));
+    }
+
     setLoading(false);
   }, [user?.id]);
 
@@ -74,6 +90,11 @@ export function CommunityNetwork() {
       : await supabase.from("follows").insert({ follower_id: user.id, following_id: targetId });
 
     if (result.error) {
+      captureSocialError(result.error, {
+        surface: "network",
+        operation: isFollowing ? "unfollow" : "follow",
+        table: "follows",
+      });
       toast.error("Unable to update follow status");
       return;
     }

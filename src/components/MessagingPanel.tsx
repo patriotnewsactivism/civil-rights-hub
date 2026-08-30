@@ -119,7 +119,7 @@ export default function MessagingPanel() {
         const ti = payload.new as { user_id: string };
         if (ti.user_id === currentUser.id) return;
         const { data: p } = await supabase.from("user_profiles").select("display_name").eq("user_id", ti.user_id).single();
-        const name = (p as any)?.display_name || "Someone";
+        const name = (p as { display_name: string | null } | null)?.display_name || "Someone";
         setTypingUsers((prev) => prev.includes(name) ? prev : [...prev, name]);
         setTimeout(() => setTypingUsers((prev) => prev.filter((n) => n !== name)), 3000);
       })

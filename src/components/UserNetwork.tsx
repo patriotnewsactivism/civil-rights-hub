@@ -24,7 +24,7 @@ const ROLE_OPTIONS: { value: RoleFilter; label: string }[] = [
 ];
 
 export default function UserNetwork() {
-  const [users, setUsers] = useState<any[]>([]);
+  const [users, setUsers] = useState<Database["public"]["Tables"]["user_profiles"]["Row"][]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterRole, setFilterRole] = useState<RoleFilter>("all");
   const [currentUser, setCurrentUser] = useState<SupabaseUser | null>(null);
@@ -57,18 +57,16 @@ export default function UserNetwork() {
 
     setLoading(true);
     try {
-      let query = supabase
+      const baseQuery = supabase
         .from("user_profiles")
         .select("*")
         .neq("user_id", currentUser.id)
         .order("created_at", { ascending: false })
         .limit(50);
 
-      if (filterRole !== "all") {
-        query = (query as any).eq("role", filterRole);
-      }
-
-      const { data, error } = await query;
+      const { data, error } = filterRole !== "all"
+        ? await baseQuery.eq("role", filterRole)
+        : await baseQuery;
       if (error) throw error;
       setUsers(data ?? []);
     } catch (error) {
@@ -132,7 +130,7 @@ export default function UserNetwork() {
     );
   };
 
-  const getContributorLevel = (userProfile: any): ContributorLevel => {
+  const getContributorLevel = (userProfile: Database["public"]["Tables"]["user_profiles"]["Row"]): ContributorLevel => {
     // Since we don't have activity stats in the profiles table, use a simple default
     return { level: "Member", color: "text-gray-600", icon: "🌱" };
   };

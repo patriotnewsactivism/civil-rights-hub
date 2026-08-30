@@ -115,7 +115,7 @@ export function FOIARequestForm({ onRequestCreated }: FOIARequestFormProps) {
         submitted_date: markSubmitted ? now : null,
         response_deadline: null,
         submission_method: markSubmitted ? "other" : "draft",
-      } as any);
+      });
 
       if (error) throw error;
       toast.success(markSubmitted ? "Saved as submitted" : "Draft saved");

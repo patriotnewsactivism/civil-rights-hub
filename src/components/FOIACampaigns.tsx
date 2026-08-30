@@ -133,8 +133,8 @@ export default function FOIACampaigns() {
         duration: 5000,
       });
       load();
-    } catch (err: any) {
-      toast.error(err.message || "Failed to join campaign");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to join campaign");
     } finally {
       setFiling(false);
     }
@@ -166,8 +166,8 @@ export default function FOIACampaigns() {
       setView("browse");
       setNewTitle(""); setNewDesc(""); setNewHashtag(""); setNewSubject(""); setNewBody(""); setNewAgencies("");
       load();
-    } catch (err: any) {
-      toast.error(err.message || "Failed to create campaign");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to create campaign");
     } finally {
       setCreating(false);
     }

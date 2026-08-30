@@ -117,7 +117,7 @@ export function CommunityEventsWorkspace() {
       is_public: true,
       is_published: true,
       is_cancelled: false,
-    } as any);
+    });
 
     if (error) {
       captureSocialError(error, {

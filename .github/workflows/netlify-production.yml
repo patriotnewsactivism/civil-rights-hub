@@ -63,21 +63,47 @@ jobs:
           cache: npm
       - run: npm ci
 
+      - name: Require production observability configuration
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${VITE_SENTRY_DSN:-}" || { echo "::error::Missing VITE_SENTRY_DSN repository secret; refusing an unmonitored production deploy"; exit 2; }
+          node <<'NODE'
+          const value = process.env.VITE_SENTRY_DSN;
+          const parsed = new URL(value);
+          if (parsed.protocol !== 'https:' || !parsed.hostname || !parsed.username) {
+            throw new Error('VITE_SENTRY_DSN is not a valid HTTPS Sentry client DSN');
+          }
+          console.log('Sentry production DSN is configured and syntactically valid.');
+          NODE
+
       - name: Resolve browser-safe Supabase publishable key
         shell: bash
         run: |
           set -euo pipefail
-          test -n "${SUPABASE_ACCESS_TOKEN:-}" || { echo "::error::Missing SUPABASE_ACCESS_TOKEN"; exit 2; }
+          test -n "${SUPABASE_ACCESS_TOKEN:-}" || { echo "::error::Missing SUPABASE_ACCESS_TOKEN"; exit 3; }
           response="$(curl -fsS \
             -H "Authorization: Bearer ${SUPABASE_ACCESS_TOKEN}" \
             "https://api.supabase.com/v1/projects/${SUPABASE_PROJECT_REF}/api-keys?reveal=true")"
           publishable="$(printf '%s' "$response" | jq -r '([.[] | select(.type == "publishable")][0].api_key // [.[] | select(.name == "anon")][0].api_key // empty)')"
-          test -n "$publishable" || { echo "::error::No enabled publishable/anon Supabase key returned"; exit 3; }
+          test -n "$publishable" || { echo "::error::No enabled publishable/anon Supabase key returned"; exit 4; }
           echo "::add-mask::$publishable"
           echo "VITE_SUPABASE_PUBLISHABLE_KEY=$publishable" >> "$GITHUB_ENV"
 
       - name: Build production frontend
         run: npm run build
+
+      - name: Verify Sentry is compiled into production bundle
+        shell: bash
+        run: |
+          set -euo pipefail
+          sentry_host="$(node -e "process.stdout.write(new URL(process.env.VITE_SENTRY_DSN).host)")"
+          test -n "$sentry_host" || { echo "::error::Could not resolve Sentry DSN host"; exit 5; }
+          if ! grep -RqaF "$sentry_host" dist; then
+            echo "::error::Sentry DSN host was not found in the production bundle"
+            exit 6
+          fi
+          echo "Sentry client endpoint is present in the production bundle."
 
       - name: Resolve Netlify credential
         shell: bash
@@ -85,7 +111,7 @@ jobs:
           set -euo pipefail
           token="${NETLIFY_AUTH_TOKEN_PRIMARY:-}"
           if [[ -z "$token" ]]; then token="${NETLIFY_AUTH_TOKEN_ALT:-}"; fi
-          test -n "$token" || { echo "::error::Missing NETLIFY_AUTH_TOKEN (or NETLIFY_TOKEN) repository secret"; exit 4; }
+          test -n "$token" || { echo "::error::Missing NETLIFY_AUTH_TOKEN (or NETLIFY_TOKEN) repository secret"; exit 7; }
           echo "::add-mask::$token"
           echo "NETLIFY_AUTH_TOKEN=$token" >> "$GITHUB_ENV"
 
@@ -115,4 +141,4 @@ jobs:
           done
           echo "::error::Netlify origin did not become healthy within the verification window."
           head -80 /tmp/netlify-home.html || true
-          exit 5
+          exit 8

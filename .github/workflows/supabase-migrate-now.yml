@@ -4,56 +4,63 @@ on:
   push:
     branches: [main]
     paths:
+      - supabase/migrations/**
+      - supabase/tests/**
+      - supabase/functions/**
       - .github/workflows/supabase-migrate-now.yml
   pull_request:
     branches: [main]
     types: [opened, synchronize, reopened, ready_for_review]
+    paths:
+      - supabase/migrations/**
+      - supabase/tests/**
+      - .github/workflows/supabase-migrate-now.yml
   workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: civil-rights-hub-supabase-production-migration
+  group: civil-rights-hub-supabase-${{ github.event_name == 'pull_request' && github.event.pull_request.number || 'production' }}
   cancel-in-progress: false
 
+env:
+  PROJECT_REF: vrdnrbjnitptxrexdlao
+  POOLER_URL: postgresql://postgres.vrdnrbjnitptxrexdlao@aws-0-us-west-2.pooler.supabase.com:5432/postgres
+
 jobs:
-  migrate:
-    if: github.event_name != 'pull_request' || github.head_ref == 'ops/run-supabase-migrations'
+  validate-pr:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 20
     env:
-      PROJECT_REF: vrdnrbjnitptxrexdlao
-      POOLER_URL: postgresql://postgres.vrdnrbjnitptxrexdlao@aws-0-us-west-2.pooler.supabase.com:5432/postgres
       SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
       SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
       PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
-
     steps:
-      - name: Checkout merged main
+      - name: Checkout pull request
         uses: actions/checkout@v4
-        with:
-          ref: main
 
-      - name: Require production migration credentials
+      - name: Require production validation credentials
         shell: bash
         run: |
           set -euo pipefail
           test -n "$SUPABASE_ACCESS_TOKEN" || { echo "::error::Missing SUPABASE_ACCESS_TOKEN repository secret"; exit 1; }
           test -n "$SUPABASE_DB_PASSWORD" || { echo "::error::Missing SUPABASE_DB_PASSWORD repository secret"; exit 1; }
+          test "$PROJECT_REF" = "vrdnrbjnitptxrexdlao" || { echo "::error::Unexpected Supabase project ref"; exit 1; }
 
       - name: Install Supabase CLI
         uses: supabase/setup-cli@v1
         with:
           version: latest
 
-      - name: Confirm project link
+      - name: Confirm production project link
         shell: bash
         run: |
           set -euo pipefail
           supabase link --project-ref "$PROJECT_REF" --password "$SUPABASE_DB_PASSWORD"
 
-      - name: Compare migration history and enforce reviewed allowlist
+      - name: Validate migration history and pending allowlist
         shell: bash
         run: |
           set -euo pipefail
@@ -67,7 +74,6 @@ jobs:
             | sort -u > /tmp/remote_versions.txt
 
           comm -23 /tmp/local_versions.txt /tmp/remote_versions.txt > /tmp/pending_versions.txt
-
           echo "Pending migration versions:"
           cat /tmp/pending_versions.txt || true
 
@@ -94,23 +100,184 @@ jobs:
           20260828220500
           20260828233500
           20260829030500
+          20260830182000
+          20260830182500
+          20260830183000
+          20260830183500
           EOF
           sed -i 's/^[[:space:]]*//' /tmp/reviewed_pending_allowlist.txt
           sort -u -o /tmp/reviewed_pending_allowlist.txt /tmp/reviewed_pending_allowlist.txt
 
           comm -23 /tmp/pending_versions.txt /tmp/reviewed_pending_allowlist.txt > /tmp/unexpected_pending.txt
           if [[ -s /tmp/unexpected_pending.txt ]]; then
-            echo "::error::Unexpected historical migrations are missing from production history. Refusing to replay them automatically:"
+            echo "::error::Unreviewed historical migrations are missing from production history:"
             cat /tmp/unexpected_pending.txt
             exit 2
           fi
 
-      - name: Inspect remote-only migration ledger entries
+          for version in 20260830182000 20260830182500 20260830183000 20260830183500; do
+            grep -qx "$version" /tmp/pending_versions.txt || {
+              echo "::error::Expected community production migration $version is not pending against production"
+              exit 3
+            }
+          done
+
+      - name: Show linked migration dry-run
+        shell: bash
+        run: |
+          set -euo pipefail
+          supabase migration list --linked --password "$SUPABASE_DB_PASSWORD"
+          supabase db push --linked --include-all --dry-run --password "$SUPABASE_DB_PASSWORD"
+
+      - name: Execute community migrations against production schema and roll back
         shell: bash
         run: |
           set -euo pipefail
           psql "$POOLER_URL" -v ON_ERROR_STOP=1 -Atc \
-            "select row_to_json(m) from supabase_migrations.schema_migrations m where version in ('20260803180000','20260803181500','20260803183000') order by version"
+            "select 1 from supabase_migrations.schema_migrations where version = '20260828233500'" \
+            | grep -qx 1 || { echo "::error::Required clean-social migration 20260828233500 is not deployed"; exit 4; }
+
+          preflight="$(mktemp)"
+          printf '%s\n' 'BEGIN;' > "$preflight"
+          for migration in \
+            supabase/migrations/20260830182000_community_privacy_messaging_notifications.sql \
+            supabase/migrations/20260830182500_messaging_query_helpers.sql \
+            supabase/migrations/20260830183000_split_anonymous_block_aware_policies.sql \
+            supabase/migrations/20260830183500_keep_community_privacy_settings_private.sql; do
+            sed -E '/^[[:space:]]*(BEGIN|COMMIT);[[:space:]]*$/Id' "$migration" >> "$preflight"
+          done
+          cat >> "$preflight" <<'SQL'
+
+          DO $$
+          BEGIN
+            IF to_regclass('public.user_blocks') IS NULL
+               OR to_regclass('public.user_mutes') IS NULL
+               OR to_regclass('public.notification_preferences') IS NULL THEN
+              RAISE EXCEPTION 'community privacy tables missing during migration preflight';
+            END IF;
+            IF to_regprocedure('public.get_or_create_direct_conversation(uuid)') IS NULL
+               OR to_regprocedure('public.create_group_conversation(text,uuid[])') IS NULL
+               OR to_regprocedure('public.send_conversation_message(uuid,text)') IS NULL
+               OR to_regprocedure('public.list_my_conversations(integer)') IS NULL
+               OR to_regprocedure('public.get_conversation_messages(uuid,integer,timestamp with time zone,uuid)') IS NULL THEN
+              RAISE EXCEPTION 'community messaging RPC contract incomplete';
+            END IF;
+            IF has_table_privilege('anon', 'public.user_blocks', 'SELECT')
+               OR has_table_privilege('anon', 'public.user_mutes', 'SELECT')
+               OR has_table_privilege('anon', 'public.notification_preferences', 'SELECT') THEN
+              RAISE EXCEPTION 'private relationship/preferences table leaked to anonymous role';
+            END IF;
+            IF has_table_privilege('authenticated', 'public.conversation_messages', 'INSERT') THEN
+              RAISE EXCEPTION 'conversation_messages still permits direct browser inserts';
+            END IF;
+            IF NOT has_function_privilege('authenticated', 'public.send_conversation_message(uuid,text)', 'EXECUTE') THEN
+              RAISE EXCEPTION 'authenticated role cannot execute message RPC';
+            END IF;
+            IF has_column_privilege('anon', 'public.user_profiles', 'message_permission', 'SELECT')
+               OR has_column_privilege('authenticated', 'public.user_profiles', 'message_permission', 'SELECT') THEN
+              RAISE EXCEPTION 'community privacy preference is browser-readable';
+            END IF;
+            IF NOT EXISTS (
+              SELECT 1 FROM pg_policies
+              WHERE schemaname='public' AND tablename='conversation_messages'
+                AND policyname='conversation_messages_member_select'
+            ) THEN
+              RAISE EXCEPTION 'hardened conversation message policy missing';
+            END IF;
+          END $$;
+
+          ROLLBACK;
+          SQL
+
+          psql "$POOLER_URL" -v ON_ERROR_STOP=1 -P pager=off -f "$preflight"
+
+      - name: Verify rollback left production unchanged
+        shell: bash
+        run: |
+          set -euo pipefail
+          psql "$POOLER_URL" -v ON_ERROR_STOP=1 -Atc \
+            "select case when to_regclass('public.user_blocks') is null then 'clean' else 'already-deployed' end"
+
+  migrate-production:
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+      PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+    steps:
+      - name: Checkout deployment commit
+        uses: actions/checkout@v4
+
+      - name: Require production migration credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$SUPABASE_ACCESS_TOKEN" || { echo "::error::Missing SUPABASE_ACCESS_TOKEN repository secret"; exit 1; }
+          test -n "$SUPABASE_DB_PASSWORD" || { echo "::error::Missing SUPABASE_DB_PASSWORD repository secret"; exit 1; }
+          test "$PROJECT_REF" = "vrdnrbjnitptxrexdlao" || { echo "::error::Unexpected Supabase project ref"; exit 1; }
+
+      - name: Install Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Confirm project link
+        shell: bash
+        run: |
+          set -euo pipefail
+          supabase link --project-ref "$PROJECT_REF" --password "$SUPABASE_DB_PASSWORD"
+
+      - name: Compare migration history and enforce reviewed allowlist
+        shell: bash
+        run: |
+          set -euo pipefail
+          find supabase/migrations -maxdepth 1 -type f -name '*.sql' -printf '%f\n' \
+            | sed -E 's/^([0-9]{14}).*/\1/' \
+            | grep -E '^[0-9]{14}$' \
+            | sort -u > /tmp/local_versions.txt
+          psql "$POOLER_URL" -v ON_ERROR_STOP=1 -Atc \
+            "select version from supabase_migrations.schema_migrations order by version" \
+            | sort -u > /tmp/remote_versions.txt
+          comm -23 /tmp/local_versions.txt /tmp/remote_versions.txt > /tmp/pending_versions.txt
+
+          cat > /tmp/reviewed_pending_allowlist.txt <<'EOF'
+          20260803000000
+          20260812190000
+          20260822180500
+          20260822210500
+          20260822212000
+          20260822213000
+          20260822213500
+          20260822214500
+          20260822215000
+          20260822215500
+          20260822220000
+          20260822220500
+          20260822221000
+          20260822223000
+          20260823010000
+          20260823010100
+          20260823010200
+          20260823010300
+          20260823010400
+          20260828220500
+          20260828233500
+          20260829030500
+          20260830182000
+          20260830182500
+          20260830183000
+          20260830183500
+          EOF
+          sed -i 's/^[[:space:]]*//' /tmp/reviewed_pending_allowlist.txt
+          sort -u -o /tmp/reviewed_pending_allowlist.txt /tmp/reviewed_pending_allowlist.txt
+          comm -23 /tmp/pending_versions.txt /tmp/reviewed_pending_allowlist.txt > /tmp/unexpected_pending.txt
+          if [[ -s /tmp/unexpected_pending.txt ]]; then
+            echo "::error::Unexpected historical migrations are missing from production history:"
+            cat /tmp/unexpected_pending.txt
+            exit 2
+          fi
 
       - name: Show Supabase migration plan
         shell: bash
@@ -125,7 +292,7 @@ jobs:
           set -euo pipefail
           supabase db push --linked --include-all --password "$SUPABASE_DB_PASSWORD"
 
-      - name: Verify social runtime contract
+      - name: Verify community production foundation
         shell: bash
         run: |
           set -euo pipefail
@@ -134,84 +301,47 @@ jobs:
           BEGIN
             IF NOT EXISTS (
               SELECT 1 FROM supabase_migrations.schema_migrations
-              WHERE version = '20260828233500'
+              WHERE version IN ('20260830182000','20260830182500','20260830183000','20260830183500')
+              GROUP BY true HAVING COUNT(*) = 4
             ) THEN
-              RAISE EXCEPTION 'social runtime migration missing from ledger';
+              RAISE EXCEPTION 'community production migrations missing from ledger';
             END IF;
-            IF NOT EXISTS (
-              SELECT 1 FROM pg_constraint
-              WHERE conrelid = 'public.poll_votes'::regclass
-                AND conname = 'poll_votes_poll_id_fkey'
-                AND pg_get_constraintdef(oid) LIKE '%REFERENCES posts(id)%'
-            ) THEN
-              RAISE EXCEPTION 'poll_votes FK not reconciled';
+            IF to_regclass('public.user_blocks') IS NULL
+               OR to_regclass('public.user_mutes') IS NULL
+               OR to_regclass('public.notification_preferences') IS NULL THEN
+              RAISE EXCEPTION 'community privacy tables missing';
             END IF;
-            IF NOT EXISTS (
-              SELECT 1 FROM pg_trigger
-              WHERE tgname = 'refresh_story_view_count_trigger' AND NOT tgisinternal
-            ) THEN
-              RAISE EXCEPTION 'story view trigger missing';
+            IF has_table_privilege('anon', 'public.user_blocks', 'SELECT')
+               OR has_table_privilege('anon', 'public.notification_preferences', 'SELECT') THEN
+              RAISE EXCEPTION 'private community data is anonymous-readable';
+            END IF;
+            IF has_table_privilege('authenticated', 'public.conversation_messages', 'INSERT') THEN
+              RAISE EXCEPTION 'direct browser message inserts remain enabled';
+            END IF;
+            IF NOT has_function_privilege('authenticated', 'public.send_conversation_message(uuid,text)', 'EXECUTE') THEN
+              RAISE EXCEPTION 'message RPC unavailable';
             END IF;
           END $$;
           SQL
 
-      - name: Verify public-records reference hold
-        shell: bash
-        run: |
-          set -euo pipefail
-          psql "$POOLER_URL" -v ON_ERROR_STOP=1 -P pager=off <<'SQL'
-          DO $$
-          BEGIN
-            IF NOT EXISTS (
-              SELECT 1 FROM supabase_migrations.schema_migrations
-              WHERE version = '20260829030500'
-            ) THEN
-              RAISE EXCEPTION 'public-records integrity migration missing from ledger';
-            END IF;
-            IF to_regclass('public.foia_agencies') IS NOT NULL THEN
-              IF has_table_privilege('anon', 'public.foia_agencies', 'SELECT')
-                 OR has_table_privilege('authenticated', 'public.foia_agencies', 'SELECT') THEN
-                RAISE EXCEPTION 'unverified foia_agencies is browser-readable';
-              END IF;
-            END IF;
-            IF to_regclass('public.foia_templates') IS NOT NULL THEN
-              IF has_table_privilege('anon', 'public.foia_templates', 'SELECT')
-                 OR has_table_privilege('authenticated', 'public.foia_templates', 'SELECT') THEN
-                RAISE EXCEPTION 'unverified foia_templates is browser-readable';
-              END IF;
-            END IF;
-          END $$;
-          SQL
-
-      - name: Run rollback-only provenance smoke tests
+      - name: Run rollback-only security smoke tests
         shell: bash
         run: |
           set -euo pipefail
           psql "$POOLER_URL" -v ON_ERROR_STOP=1 -f supabase/tests/provenance_gate_smoke.sql
-
-      - name: Run rollback-only security hardening smoke tests
-        shell: bash
-        run: |
-          set -euo pipefail
           psql "$POOLER_URL" -v ON_ERROR_STOP=1 -f supabase/tests/security_hardening_smoke.sql
-
-      - name: Verify migration history after push
-        shell: bash
-        run: |
-          set -euo pipefail
-          supabase migration list --linked --password "$SUPABASE_DB_PASSWORD"
 
       - name: Deploy fail-closed Edge Functions
         shell: bash
         run: |
           set -euo pipefail
-          supabase functions deploy case-search --project-ref "$PROJECT_REF"
-          supabase functions deploy send-weekly-digest --project-ref "$PROJECT_REF"
-          supabase functions deploy check-foia-deadlines --project-ref "$PROJECT_REF"
-          supabase functions deploy send-foia-request --project-ref "$PROJECT_REF"
-          supabase functions deploy track-foia-open --project-ref "$PROJECT_REF"
+          for fn in case-search send-weekly-digest check-foia-deadlines send-foia-request track-foia-open legal-assistant; do
+            if [[ -d "supabase/functions/$fn" ]]; then
+              supabase functions deploy "$fn" --project-ref "$PROJECT_REF"
+            fi
+          done
 
-      - name: Enable leaked-password protection
+      - name: Enable leaked-password protection when supported
         shell: bash
         run: |
           set -euo pipefail
@@ -221,11 +351,10 @@ jobs:
             -H 'Content-Type: application/json' \
             -d '{"password_hibp_enabled":true}' \
             "https://api.supabase.com/v1/projects/${PROJECT_REF}/config/auth")"
-
           if [[ "$status" == "200" ]]; then
             echo "Supabase leaked-password protection enabled."
           else
-            echo "::warning::Could not enable leaked-password protection (HTTP ${status}). This feature can be plan-gated; preserving the exact response in the audit artifact."
+            echo "::warning::Could not enable leaked-password protection (HTTP ${status}); it may be plan-gated."
             cat /tmp/hibp-config.json
           fi
 
@@ -234,7 +363,6 @@ jobs:
         run: |
           set -euo pipefail
           for kind in security performance; do
-            echo "::group::Supabase ${kind} advisor"
             status="$(curl -sS -o "/tmp/${kind}.json" -w '%{http_code}' \
               -H "Authorization: Bearer ${SUPABASE_ACCESS_TOKEN}" \
               -H 'Content-Type: application/json' \
@@ -245,9 +373,6 @@ jobs:
               exit 1
             fi
             jq -r '(.lints // []) | group_by(.level) | map({level: .[0].level, count: length}) | .[] | "\(.level): \(.count)"' "/tmp/${kind}.json" || true
-            jq -r '(.lints // []) | group_by(.name) | map({name: .[0].name, count: length}) | sort_by(-.count) | .[] | "\(.count)\t\(.name)"' "/tmp/${kind}.json" || true
-            jq -r '(.lints // [])[] | [.level, .name, .title, .detail, .remediation] | @tsv' "/tmp/${kind}.json" | head -100 || true
-            echo "::endgroup::"
           done
 
       - name: Capture database security metadata
@@ -255,42 +380,22 @@ jobs:
         run: |
           set -euo pipefail
           psql "$POOLER_URL" -v ON_ERROR_STOP=1 -P pager=off -F $'\t' -Atc "
-            select
-              p.oid::regprocedure::text,
-              p.prosecdef,
-              coalesce(array_to_string(p.proconfig, ','), ''),
-              has_function_privilege('anon', p.oid, 'EXECUTE'),
-              has_function_privilege('authenticated', p.oid, 'EXECUTE'),
-              has_function_privilege('service_role', p.oid, 'EXECUTE')
-            from pg_proc p
-            join pg_namespace n on n.oid = p.pronamespace
-            where n.nspname = 'public'
-            order by p.proname, p.oid;
+            select p.oid::regprocedure::text, p.prosecdef,
+                   coalesce(array_to_string(p.proconfig, ','), ''),
+                   has_function_privilege('anon', p.oid, 'EXECUTE'),
+                   has_function_privilege('authenticated', p.oid, 'EXECUTE'),
+                   has_function_privilege('service_role', p.oid, 'EXECUTE')
+            from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+            where n.nspname = 'public' order by p.proname, p.oid;
           " > /tmp/function-security.tsv
-
           psql "$POOLER_URL" -v ON_ERROR_STOP=1 -P pager=off -F $'\t' -Atc "
-            select
-              schemaname,
-              tablename,
-              policyname,
-              permissive,
-              roles::text,
-              cmd,
-              coalesce(qual, ''),
-              coalesce(with_check, '')
-            from pg_policies
-            where schemaname = 'public'
+            select schemaname, tablename, policyname, permissive, roles::text, cmd,
+                   coalesce(qual, ''), coalesce(with_check, '')
+            from pg_policies where schemaname = 'public'
             order by tablename, policyname;
           " > /tmp/rls-policies.tsv
 
-          psql "$POOLER_URL" -v ON_ERROR_STOP=1 -P pager=off -F $'\t' -Atc "
-            select r,
-                   has_schema_privilege(r, 'public', 'USAGE'),
-                   has_schema_privilege(r, 'public', 'CREATE')
-            from unnest(array['anon','authenticated','service_role']) r;
-          " > /tmp/public-schema-privileges.tsv
-
-      - name: Upload full advisor and database audit artifacts
+      - name: Upload advisor and database audit artifacts
         uses: actions/upload-artifact@v4
         with:
           name: supabase-advisor-audit
@@ -301,5 +406,4 @@ jobs:
             /tmp/performance.json
             /tmp/function-security.tsv
             /tmp/rls-policies.tsv
-            /tmp/public-schema-privileges.tsv
             /tmp/hibp-config.json

@@ -8,9 +8,11 @@ Repository: `patriotnewsactivism/civil-rights-hub`
 
 Frontend: `https://civilrightshub.org`
 
-Canonical Netlify project: `civilrightshub-org`
+Canonical Netlify team: `WTPNews` (`don-hpu0r1e`)
 
-Canonical Netlify site ID: `169435f2-2b9c-46ad-b4f3-3f7753178451`
+Canonical Netlify project: `civilrightshub-wtpnews`
+
+Canonical Netlify site ID: `75fe4acb-fbc2-4bf2-bc0c-51156d9ad24c`
 
 Expected Supabase project ref: `vrdnrbjnitptxrexdlao`
 
@@ -61,7 +63,7 @@ Netlify browser configuration belongs in the Netlify production environment, not
 
 1. Ensure `npm run hosting:check` passes.
 2. Ensure `npm run build` succeeds.
-3. Deploy the expected `main` commit to Netlify site `169435f2-2b9c-46ad-b4f3-3f7753178451`.
+3. Deploy the expected `main` commit to Netlify site `75fe4acb-fbc2-4bf2-bc0c-51156d9ad24c`.
 4. Confirm required production browser environment variables are present.
 5. Confirm `civilrightshub.org` is attached to the Netlify production site.
 6. Verify `/`, `/community`, `/donate`, and a deep SPA route return HTTP 200 application HTML.

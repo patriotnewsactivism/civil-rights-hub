@@ -44,8 +44,9 @@ Never use legacy random/bulk seed paths to populate production.
 - Google Cloud Run is reserved for long-running workers/APIs when needed
 
 Expected production Supabase project ref: `vrdnrbjnitptxrexdlao`.
-Expected Netlify project: `civilrightshub-org`.
-Expected Netlify site ID: `169435f2-2b9c-46ad-b4f3-3f7753178451`.
+Expected Netlify team: `WTPNews` (`don-hpu0r1e`).
+Expected Netlify project: `civilrightshub-wtpnews`.
+Expected Netlify site ID: `75fe4acb-fbc2-4bf2-bc0c-51156d9ad24c`.
 
 Verify the Supabase ref before production database or Edge Function operations.
 

@@ -42,7 +42,8 @@ If older planning or audit documents conflict with these files, the hierarchy is
 - Cloudflare permitted for DNS/CDN/WAF/edge services
 - Google Cloud Run reserved for long-running workers/APIs when needed
 
-Canonical Netlify project: `civilrightshub-org` (`169435f2-2b9c-46ad-b4f3-3f7753178451`).
+Canonical Netlify team: `WTPNews` (`don-hpu0r1e`).
+Canonical Netlify project: `civilrightshub-wtpnews` (`75fe4acb-fbc2-4bf2-bc0c-51156d9ad24c`).
 
 Expected production Supabase project ref: `vrdnrbjnitptxrexdlao`.
 

@@ -23,7 +23,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  NETLIFY_SITE_ID: 169435f2-2b9c-46ad-b4f3-3f7753178451
+  NETLIFY_SITE_ID: 75fe4acb-fbc2-4bf2-bc0c-51156d9ad24c
   SUPABASE_PROJECT_REF: vrdnrbjnitptxrexdlao
   VITE_SUPABASE_URL: https://vrdnrbjnitptxrexdlao.supabase.co
   VITE_APP_URL: https://civilrightshub.org
@@ -105,7 +105,7 @@ jobs:
         run: |
           set -euo pipefail
           for attempt in {1..12}; do
-            status="$(curl -sS -L -o /tmp/netlify-home.html -w '%{http_code}' 'https://civilrightshub-org.netlify.app/')"
+            status="$(curl -sS -L -o /tmp/netlify-home.html -w '%{http_code}' 'https://civilrightshub-wtpnews.netlify.app/')"
             if [[ "$status" == "200" ]] && grep -qi '<div id="root"' /tmp/netlify-home.html; then
               echo "Netlify origin is serving the Civil Rights Hub application."
               exit 0

@@ -1,54 +1,75 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { buildSignupMetadata } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
-import type { User } from "@supabase/supabase-js";
+import type { AuthChangeEvent, User } from "@supabase/supabase-js";
+
+function recoveryLinkPresent() {
+  if (typeof window === "undefined") return false;
+  const search = new URLSearchParams(window.location.search);
+  const hash = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+  return search.get("type") === "recovery" || hash.get("type") === "recovery";
+}
 
 export const useAuth = () => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isPasswordRecovery, setIsPasswordRecovery] = useState(recoveryLinkPresent);
 
   useEffect(() => {
-    // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    let active = true;
+
+    void supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!active) return;
       setUser(session?.user ?? null);
       setLoading(false);
     });
 
-    // Listen for auth changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    } = supabase.auth.onAuthStateChange((event: AuthChangeEvent, session) => {
+      if (!active) return;
       setUser(session?.user ?? null);
+      setIsPasswordRecovery(event === "PASSWORD_RECOVERY" || recoveryLinkPresent());
+      setLoading(false);
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      active = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   const signIn = async (email: string, password: string) => {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    return { data, error };
+    return supabase.auth.signInWithPassword({ email, password });
   };
 
   const signUp = async (email: string, password: string, displayName?: string) => {
     const metadata = buildSignupMetadata(email, displayName);
-
-    const { data, error } = await supabase.auth.signUp({
+    return supabase.auth.signUp({
       email,
       password,
       options: {
-        emailRedirectTo: `${window.location.origin}/`,
+        emailRedirectTo: `${window.location.origin}/auth`,
         data: metadata,
       },
     });
+  };
 
-    return { data, error };
+  const requestPasswordReset = async (email: string) => {
+    return supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/auth?mode=reset`,
+    });
+  };
+
+  const updatePassword = async (password: string) => {
+    const result = await supabase.auth.updateUser({ password });
+    if (!result.error) setIsPasswordRecovery(false);
+    return result;
   };
 
   const signOut = async () => {
-    const { error } = await supabase.auth.signOut();
+    const { error } = await supabase.auth.signOut({ scope: "local" });
+    setIsPasswordRecovery(false);
     return { error };
   };
 
@@ -58,6 +79,9 @@ export const useAuth = () => {
     signIn,
     signUp,
     signOut,
+    requestPasswordReset,
+    updatePassword,
+    isPasswordRecovery,
     isAuthenticated: !!user,
   };
 };

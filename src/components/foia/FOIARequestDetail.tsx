@@ -80,7 +80,7 @@ export function FOIARequestDetail({ requestId, onBack }: FOIARequestDetailProps)
 
       const { error } = await supabase
         .from("foia_requests")
-        .update(updates as any)
+        .update(updates as Database["public"]["Tables"]["foia_requests"]["Update"])
         .eq("id", requestId)
         .eq("user_id", user.id);
       if (error) throw error;

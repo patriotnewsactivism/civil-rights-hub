@@ -54,7 +54,7 @@ export function CommunityDiscussionWorkspace() {
       is_locked: false,
       is_pinned: false,
       last_post_at: new Date().toISOString(),
-    } as any);
+    });
 
     setSubmitting(false);
     if (error) {

@@ -8,6 +8,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
+import type { Database } from "@/integrations/supabase/types";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -167,9 +168,14 @@ export default function SocialContentStudio() {
   const [generated, setGenerated] = useState<GeneratedContent | null>(null);
   const [editedText, setEditedText] = useState("");
   const [generating, setGenerating] = useState(false);
-  const [saved, setSaved] = useState<any[]>([]);
+  const [saved, setSaved] = useState<Database["public"]["Tables"]["social_content_studio"]["Row"][]>([]);
   const [customContext, setCustomContext] = useState("");
-  const [agencyStats, setAgencyStats] = useState<any>(null);
+  const [agencyStats, setAgencyStats] = useState<{
+    denial_rate: number;
+    avg_response_days: number;
+    total_requests: number;
+    transparency_score: number;
+  } | null>(null);
   const [activeTab, setActiveTab] = useState<"create" | "saved">("create");
   const [copiedIdx, setCopiedIdx] = useState<number | null>(null);
 

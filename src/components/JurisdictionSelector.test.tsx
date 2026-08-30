@@ -44,7 +44,7 @@ describe("JurisdictionSelector", () => {
       </Wrapper>
     );
 
-    expect(screen.getByTestId("selected-state").textContent).toBe("none");
+    expect(screen.getByTestId("selected-state").textContent).toBe("Nationwide");
 
     await user.click(screen.getByRole("combobox"));
     await user.click(await screen.findByText("California"));

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { captureSocialError } from "@/lib/socialTelemetry";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
@@ -56,30 +57,45 @@ export function StoriesBar({ currentUserId }: { currentUserId: string | null }) 
   async function loadStories() {
     setLoading(true);
     const now = new Date().toISOString();
-    const { data: stories } = await supabase
+    const { data: stories, error: storiesError } = await supabase
       .from("stories")
       .select("*")
       .gt("expires_at", now)
       .order("created_at", { ascending: false });
 
-    if (!stories?.length) { setLoading(false); return; }
+    if (storiesError) {
+      captureSocialError(storiesError, { surface: "stories", operation: "load_stories", table: "stories" });
+      setStoryGroups([]);
+      setLoading(false);
+      return;
+    }
+
+    if (!stories?.length) { setStoryGroups([]); setLoading(false); return; }
 
     const userIds = [...new Set(stories.map((s) => s.user_id))];
-    const { data: profiles } = await supabase
+    const { data: profiles, error: profilesError } = await supabase
       .from("user_profiles")
       .select("user_id, display_name, avatar_url, role")
       .in("user_id", userIds);
+
+    if (profilesError) {
+      captureSocialError(profilesError, { surface: "stories", operation: "load_story_profiles", table: "user_profiles" });
+    }
 
     const profileMap = new Map(profiles?.map((p) => [p.user_id, p]));
 
     let viewedSet = new Set<string>();
     if (currentUserId) {
-      const { data: views } = await supabase
+      const { data: views, error: viewsError } = await supabase
         .from("story_views")
         .select("story_id")
         .eq("viewer_id", currentUserId)
         .in("story_id", stories.map((s) => s.id));
-      viewedSet = new Set(views?.map((v) => v.story_id));
+      if (viewsError) {
+        captureSocialError(viewsError, { surface: "stories", operation: "load_story_views", table: "story_views" });
+      } else {
+        viewedSet = new Set(views?.map((v) => v.story_id));
+      }
     }
 
     const enriched = stories.map((s) => ({
@@ -129,16 +145,32 @@ export function StoriesBar({ currentUserId }: { currentUserId: string | null }) 
     if (!viewerOpen || !currentStory) return;
 
     if (currentUserId && !currentStory.viewed) {
-      supabase.from("story_views").insert({ story_id: currentStory.id, viewer_id: currentUserId })
-        .then(() => {
-          setStoryGroups((prev) => prev.map((g, gi) => gi !== activeGroupIdx ? g : {
-            ...g,
-            stories: g.stories.map((s) => s.id === currentStory.id ? { ...s, viewed: true } : s),
-            hasUnviewed: g.stories.filter((s) => s.id !== currentStory.id).some((s) => !s.viewed),
-          }));
-          supabase.from("stories").update({ view_count: (currentStory.view_count || 0) + 1 })
-            .eq("id", currentStory.id);
-        });
+      void (async () => {
+        const { error } = await supabase
+          .from("story_views")
+          .insert({ story_id: currentStory.id, viewer_id: currentUserId });
+
+        if (error) {
+          // A duplicate view is harmless and can happen if the local viewer state
+          // races a second render. Other failures are useful operational signals.
+          if (error.code !== "23505") {
+            captureSocialError(error, {
+              surface: "stories",
+              operation: "record_story_view",
+              table: "story_views",
+            });
+          }
+          return;
+        }
+
+        setStoryGroups((prev) => prev.map((group, groupIndex) => groupIndex !== activeGroupIdx ? group : {
+          ...group,
+          stories: group.stories.map((story) => story.id === currentStory.id
+            ? { ...story, viewed: true, view_count: (story.view_count || 0) + 1 }
+            : story),
+          hasUnviewed: group.stories.filter((story) => story.id !== currentStory.id).some((story) => !story.viewed),
+        }));
+      })();
     }
 
     setProgress(0);
@@ -197,7 +229,11 @@ export function StoriesBar({ currentUserId }: { currentUserId: string | null }) 
       hashtags: hashtags.length ? hashtags : null,
     });
 
-    if (error) { toast.error("Failed to post story"); return; }
+    if (error) {
+      captureSocialError(error, { surface: "stories", operation: "create_story", table: "stories" });
+      toast.error("Failed to post story");
+      return;
+    }
     toast.success("Story posted — visible for 24 hours");
     setComposerOpen(false);
     setComposing({ content: "", bg: BG_COLORS[0], textColor: "#ffffff" });

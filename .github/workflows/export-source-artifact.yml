@@ -1,0 +1,25 @@
+name: Export Civil Rights Hub Source Artifact
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+    paths:
+      - .github/workflows/export-source-artifact.yml
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    if: github.head_ref == 'ops/netlify-social-recovery'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Package exact source
+        run: tar --exclude=.git -czf /tmp/civil-rights-hub-source.tgz .
+      - uses: actions/upload-artifact@v4
+        with:
+          name: civil-rights-hub-source
+          path: /tmp/civil-rights-hub-source.tgz
+          retention-days: 1

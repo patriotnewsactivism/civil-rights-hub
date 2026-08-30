@@ -3,6 +3,7 @@ import { ExternalShareButtons } from "@/components/social/ExternalShareButtons";
 import { StoriesBar } from "@/components/StoriesBar";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { captureSocialError } from "@/lib/socialTelemetry";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -132,7 +133,7 @@ interface PostCardProps {
   onReact: (postId: string, reactionType: string) => Promise<void>;
   onRemoveReaction: (postId: string) => Promise<void>;
   onShare: (postId: string) => void;
-  onPollVote: (optionIds: string[]) => void;
+  onPollVote: (optionIds: string[]) => Promise<boolean>;
   onHashtagClick: (tag: string) => void;
   isBookmarked: boolean;
   onToggleBookmark: (postId: string) => Promise<void>;
@@ -257,7 +258,8 @@ export function SocialFeed() {
       .limit(100);
 
     if (postsError) {
-      toast.error("Unable to load posts — please refresh the page"); console.error("fetchPosts error:", postsError);
+      captureSocialError(postsError, { surface: "feed", operation: "load_posts", table: "posts" });
+      toast.error("Unable to load posts — please refresh the page");
       setPosts([]);
       return;
     }
@@ -500,8 +502,8 @@ export function SocialFeed() {
       toast.success("Post broadcasted!");
       await fetchPosts();
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Unable to create post";
-      toast.error(message);
+      captureSocialError(error, { surface: "feed", operation: "create_post", table: "posts" });
+      toast.error("Unable to create post. Please try again.");
     } finally {
       setUploading(false);
     }
@@ -615,42 +617,42 @@ export function SocialFeed() {
     if (insertedComment?.id) {
       supabase.functions
         .invoke("moderate-comment", { body: { comment_id: insertedComment.id } })
-        .catch((err) => console.error("Comment moderation classification failed:", err));
+        .catch((error) => captureSocialError(error, { surface: "feed", operation: "moderate_comment" }));
     }
   }, [currentUserId, newComment, fetchPosts]);
 
-  const handlePollVote = useCallback(async (postId: string, optionIds: string[]) => {
+  const handlePollVote = useCallback(async (postId: string, optionIds: string[]): Promise<boolean> => {
     if (!currentUserId) {
       toast.error("Sign in to vote");
-      return;
+      return false;
     }
-    const post = posts.find((p) => p.id === postId);
-    if (!post?.poll_data) return;
 
-    // Update vote counts in poll_data JSONB and record user vote
-    const updatedOptions = post.poll_data.options.map((opt) => ({
-      ...opt,
-      voteCount: optionIds.includes(opt.id) ? opt.voteCount + 1 : opt.voteCount,
-    }));
-    const updatedPoll = {
-      ...post.poll_data,
-      options: updatedOptions,
-      totalVotes: post.poll_data.totalVotes + 1,
-    };
+    const post = posts.find((candidate) => candidate.id === postId);
+    if (!post?.poll_data || optionIds.length === 0) return false;
 
-    await supabase
-      .from("posts")
-      .update({ poll_data: updatedPoll } as unknown as Record<string, unknown>)
-      .eq("id", postId);
+    // poll_data totals/options are server-managed after publication. The browser
+    // writes only the authenticated vote ledger; database triggers validate the
+    // option ids, enforce single/multiple-choice rules, and rebuild aggregates.
+    const { error } = await supabase.from("poll_votes").insert(
+      optionIds.map((optionId) => ({
+        poll_id: postId,
+        user_id: currentUserId,
+        option_id: optionId,
+      }))
+    );
 
-    // Record user votes in poll_votes table (graceful)
-    try {
-      await supabase.from("poll_votes").upsert(
-        optionIds.map((optId) => ({ poll_id: postId, user_id: currentUserId, option_id: optId }))
-      );
-    } catch { /* poll_votes table not yet migrated */ }
+    if (error) {
+      captureSocialError(error, {
+        surface: "feed",
+        operation: "cast_poll_vote",
+        table: "poll_votes",
+      });
+      toast.error("Unable to record your vote. Please try again.");
+      return false;
+    }
 
     await fetchPosts();
+    return true;
   }, [currentUserId, fetchPosts, posts]);
 
   const toggleComments = (postId: string) => {

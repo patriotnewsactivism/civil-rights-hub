@@ -23,7 +23,7 @@ interface PollData {
 interface PollDisplayProps {
   poll: PollData;
   userVotes: string[] | null;
-  onVote: (optionIds: string[]) => void;
+  onVote: (optionIds: string[]) => Promise<boolean>;
   isExpired: boolean;
 }
 
@@ -78,10 +78,10 @@ export function PollDisplay({
     setSelectedOptions(newSelection);
   };
 
-  const handleSubmitVote = () => {
+  const handleSubmitVote = async () => {
     if (selectedOptions.size === 0) return;
-    onVote(Array.from(selectedOptions));
-    setHasVoted(true);
+    const accepted = await onVote(Array.from(selectedOptions));
+    if (accepted) setHasVoted(true);
   };
 
   const getPercentage = (voteCount: number): number => {

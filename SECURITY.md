@@ -4,7 +4,7 @@ Civil Rights Hub handles public-interest, legal-adjacent, account, messaging, lo
 
 ## Production systems
 
-- Frontend: Netlify (`civilrightshub-org`, site ID `169435f2-2b9c-46ad-b4f3-3f7753178451`)
+- Frontend: Netlify team `WTPNews` (`don-hpu0r1e`), project `civilrightshub-wtpnews`, site ID `75fe4acb-fbc2-4bf2-bc0c-51156d9ad24c`
 - Database/Auth/Storage/Realtime/Edge Functions: Supabase
 - Expected production Supabase project ref: `vrdnrbjnitptxrexdlao`
 - Cloudflare may provide DNS/CDN/WAF/edge protection

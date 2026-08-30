@@ -5,8 +5,9 @@ This file is authoritative for frontend hosting decisions.
 ## Canonical production architecture
 
 - Frontend hosting: **Netlify**
-- Canonical Netlify project: `civilrightshub-org`
-- Canonical Netlify site ID: `169435f2-2b9c-46ad-b4f3-3f7753178451`
+- Canonical Netlify team: `WTPNews` (`don-hpu0r1e`)
+- Canonical Netlify project: `civilrightshub-wtpnews`
+- Canonical Netlify site ID: `75fe4acb-fbc2-4bf2-bc0c-51156d9ad24c`
 - Primary public domain: `civilrightshub.org`
 - Secondary public domain: `civilrights.wtpnews.org`
 - Backend/data/auth/storage/realtime/Edge Functions: **Supabase**

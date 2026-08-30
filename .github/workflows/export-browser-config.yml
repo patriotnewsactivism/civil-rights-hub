@@ -1,0 +1,43 @@
+name: Export Civil Rights Hub Browser Config
+
+on:
+  push:
+    branches: [fix/community-social-recovery]
+    paths:
+      - .github/workflows/export-browser-config.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      PROJECT_REF: vrdnrbjnitptxrexdlao
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+    steps:
+      - name: Require existing Supabase management credential
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "${SUPABASE_ACCESS_TOKEN:-}" || { echo "::error::Missing SUPABASE_ACCESS_TOKEN"; exit 1; }
+
+      - name: Resolve browser-safe configuration
+        shell: bash
+        run: |
+          set -euo pipefail
+          response="$(curl -fsS -H "Authorization: Bearer ${SUPABASE_ACCESS_TOKEN}" "https://api.supabase.com/v1/projects/${PROJECT_REF}/api-keys?reveal=true")"
+          publishable="$(printf '%s' "$response" | jq -r '([.[] | select(.type == "publishable" and (.disabled != true))][0].api_key // [.[] | select(.name == "anon" and (.disabled != true))][0].api_key // empty)')"
+          test -n "$publishable" || { echo "::error::No enabled publishable/anon key returned"; exit 2; }
+          printf 'VITE_SUPABASE_URL=https://%s.supabase.co\n' "$PROJECT_REF" > /tmp/browser-config.env
+          printf 'VITE_SUPABASE_PUBLISHABLE_KEY=%s\n' "$publishable" >> /tmp/browser-config.env
+
+      - name: Upload browser-safe config
+        uses: actions/upload-artifact@v4
+        with:
+          name: civil-rights-hub-browser-config
+          path: /tmp/browser-config.env
+          if-no-files-found: error
+          retention-days: 1

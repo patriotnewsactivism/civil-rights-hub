@@ -24,11 +24,27 @@ BEGIN
 END
 $$;
 
--- 2. No public SECURITY DEFINER function may be directly executable by browser roles.
+-- 2. Browser-executable public SECURITY DEFINER functions are forbidden unless
+--    they are an explicitly reviewed actor-derived RPC. No approved RPC is anon.
 DO $$
 DECLARE
   bad TEXT;
+  missing_or_wrong TEXT;
 BEGIN
+  WITH approved(signature) AS (
+    SELECT unnest(ARRAY[
+      'public.deactivate_my_account()',
+      'public.reactivate_my_account()',
+      'public.get_unread_notifications_count(uuid)',
+      'public.get_or_create_direct_conversation(uuid)',
+      'public.create_group_conversation(text,uuid[])',
+      'public.send_conversation_message(uuid,text)',
+      'public.mark_conversation_read(uuid)',
+      'public.list_my_conversations(integer)',
+      'public.get_my_unread_message_count()',
+      'public.get_my_community_privacy_settings()'
+    ]::text[])
+  )
   SELECT string_agg(p.oid::regprocedure::text, ', ' ORDER BY p.oid::regprocedure::text)
   INTO bad
   FROM pg_proc p
@@ -38,10 +54,43 @@ BEGIN
     AND (
       has_function_privilege('anon', p.oid, 'EXECUTE')
       OR has_function_privilege('authenticated', p.oid, 'EXECUTE')
+    )
+    AND NOT EXISTS (
+      SELECT 1 FROM approved a WHERE to_regprocedure(a.signature) = p.oid
     );
 
   IF bad IS NOT NULL THEN
-    RAISE EXCEPTION 'Browser-executable public SECURITY DEFINER functions: %', bad;
+    RAISE EXCEPTION 'Unreviewed browser-executable public SECURITY DEFINER functions: %', bad;
+  END IF;
+
+  WITH approved(signature) AS (
+    SELECT unnest(ARRAY[
+      'public.deactivate_my_account()',
+      'public.reactivate_my_account()',
+      'public.get_unread_notifications_count(uuid)',
+      'public.get_or_create_direct_conversation(uuid)',
+      'public.create_group_conversation(text,uuid[])',
+      'public.send_conversation_message(uuid,text)',
+      'public.mark_conversation_read(uuid)',
+      'public.list_my_conversations(integer)',
+      'public.get_my_unread_message_count()',
+      'public.get_my_community_privacy_settings()'
+    ]::text[])
+  )
+  SELECT string_agg(signature, ', ' ORDER BY signature)
+  INTO missing_or_wrong
+  FROM approved a
+  WHERE to_regprocedure(a.signature) IS NULL
+     OR NOT EXISTS (
+       SELECT 1 FROM pg_proc p
+       WHERE p.oid = to_regprocedure(a.signature)
+         AND p.prosecdef = true
+         AND has_function_privilege('authenticated', p.oid, 'EXECUTE')
+         AND NOT has_function_privilege('anon', p.oid, 'EXECUTE')
+     );
+
+  IF missing_or_wrong IS NOT NULL THEN
+    RAISE EXCEPTION 'Approved authenticated RPC contract is missing or mis-granted: %', missing_or_wrong;
   END IF;
 END
 $$;
@@ -71,25 +120,36 @@ BEGIN
 END
 $$;
 
--- 4. Recursion-safe RLS helpers must live outside public and retain only the
---    execution grants needed by policies.
+-- 4. Recursion-safe RLS helpers live outside public. The new community helpers
+--    derive actor identity from auth.uid() and cannot inspect arbitrary pairs.
 DO $$
 BEGIN
   IF to_regprocedure('public.get_user_firm_id()') IS NOT NULL
-     OR to_regprocedure('public.is_conversation_member(uuid)') IS NOT NULL THEN
+     OR to_regprocedure('public.is_conversation_member(uuid)') IS NOT NULL
+     OR to_regprocedure('public.is_user_blocked_between(uuid,uuid)') IS NOT NULL
+     OR to_regprocedure('public.is_conversation_member(uuid,uuid)') IS NOT NULL
+     OR to_regprocedure('public.is_conversation_admin(uuid,uuid)') IS NOT NULL THEN
     RAISE EXCEPTION 'RLS SECURITY DEFINER helpers remain exposed in public';
   END IF;
 
   IF to_regprocedure('authz.get_user_firm_id()') IS NULL
-     OR to_regprocedure('authz.is_conversation_member(uuid)') IS NULL THEN
+     OR to_regprocedure('authz.is_conversation_member(uuid)') IS NULL
+     OR to_regprocedure('authz.is_conversation_admin(uuid)') IS NULL
+     OR to_regprocedure('authz.is_user_blocked_with(uuid)') IS NULL THEN
     RAISE EXCEPTION 'RLS authz helpers were not moved successfully';
   END IF;
 
-  IF NOT has_function_privilege('authenticated', 'authz.get_user_firm_id()'::regprocedure, 'EXECUTE') THEN
-    RAISE EXCEPTION 'authenticated lost get_user_firm_id helper execution';
+  IF NOT has_function_privilege('authenticated', 'authz.get_user_firm_id()'::regprocedure, 'EXECUTE')
+     OR NOT has_function_privilege('authenticated', 'authz.is_conversation_member(uuid)'::regprocedure, 'EXECUTE')
+     OR NOT has_function_privilege('authenticated', 'authz.is_conversation_admin(uuid)'::regprocedure, 'EXECUTE')
+     OR NOT has_function_privilege('authenticated', 'authz.is_user_blocked_with(uuid)'::regprocedure, 'EXECUTE') THEN
+    RAISE EXCEPTION 'authenticated lost required authz helper execution';
   END IF;
-  IF NOT has_function_privilege('authenticated', 'authz.is_conversation_member(uuid)'::regprocedure, 'EXECUTE') THEN
-    RAISE EXCEPTION 'authenticated lost is_conversation_member helper execution';
+
+  IF has_function_privilege('anon', 'authz.is_conversation_member(uuid)'::regprocedure, 'EXECUTE')
+     OR has_function_privilege('anon', 'authz.is_conversation_admin(uuid)'::regprocedure, 'EXECUTE')
+     OR has_function_privilege('anon', 'authz.is_user_blocked_with(uuid)'::regprocedure, 'EXECUTE') THEN
+    RAISE EXCEPTION 'anon can execute private community authz helpers';
   END IF;
 END
 $$;

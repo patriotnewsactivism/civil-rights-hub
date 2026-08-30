@@ -1,0 +1,67 @@
+name: Civil Rights Hub Community Authz Preflight
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths:
+      - supabase/migrations/20260830224500_remove_obsolete_authz_conversation_helper.sql
+      - supabase/migrations/20260830225000_harden_community_authz_helpers.sql
+      - supabase/tests/security_hardening_smoke.sql
+      - .github/workflows/community-authz-preflight.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  preflight:
+    if: github.event_name != 'pull_request' || github.head_ref == 'fix/community-authz-smoke'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      PROJECT_REF: vrdnrbjnitptxrexdlao
+      POOLER_URL: postgresql://postgres.vrdnrbjnitptxrexdlao@aws-0-us-west-2.pooler.supabase.com:5432/postgres
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+      PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+
+    steps:
+      - name: Checkout pull request
+        uses: actions/checkout@v4
+
+      - name: Require Civil Rights Hub production credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$SUPABASE_DB_PASSWORD" || { echo "::error::Missing SUPABASE_DB_PASSWORD"; exit 1; }
+          test "$PROJECT_REF" = "vrdnrbjnitptxrexdlao" || { echo "::error::Unexpected Supabase project ref"; exit 1; }
+
+      - name: Execute migrations and security smoke test then roll back
+        shell: bash
+        run: |
+          set -euo pipefail
+          {
+            echo '\set ON_ERROR_STOP on'
+            echo 'BEGIN;'
+            for migration in \
+              supabase/migrations/20260830224500_remove_obsolete_authz_conversation_helper.sql \
+              supabase/migrations/20260830225000_harden_community_authz_helpers.sql; do
+              sed -e '/^BEGIN;$/d' -e '/^COMMIT;$/d' "$migration"
+            done
+            sed -e '/^\\set ON_ERROR_STOP on$/d' -e '/^BEGIN;$/d' -e '/^ROLLBACK;$/d' \
+              supabase/tests/security_hardening_smoke.sql
+            echo 'ROLLBACK;'
+          } > /tmp/community-authz-preflight.sql
+
+          psql "$POOLER_URL" -v ON_ERROR_STOP=1 -f /tmp/community-authz-preflight.sql
+
+      - name: Confirm preflight left production unchanged
+        shell: bash
+        run: |
+          set -euo pipefail
+          if psql "$POOLER_URL" -v ON_ERROR_STOP=1 -Atc \
+            "select exists(select 1 from supabase_migrations.schema_migrations where version in ('20260830224500','20260830225000'))" \
+            | grep -qx 't'; then
+            echo "::error::Rollback-only preflight unexpectedly changed the production migration ledger"
+            exit 1
+          fi

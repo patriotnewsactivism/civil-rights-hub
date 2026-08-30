@@ -5,14 +5,17 @@ import type { Database } from "./types";
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
 
-// Validate environment variables
+// Browser-safe configuration validation. Production deployment performs a stricter
+// secret/configuration gate before publishing; local docs/static builds remain usable.
 if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
-  console.warn("⚠️  Supabase environment variables not configured");
-  console.warn("The app will continue with limited functionality.");
-  console.warn("Configure VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY to enable database features.");
+  console.warn("Supabase environment variables are not configured; account and database features are disabled.");
 } else {
-  console.log("✅ Supabase client initialized");
-  console.log("   URL:", SUPABASE_URL);
+  try {
+    const parsed = new URL(SUPABASE_URL);
+    if (parsed.protocol !== "https:") throw new Error("Supabase URL must use HTTPS");
+  } catch {
+    throw new Error("VITE_SUPABASE_URL must be a valid HTTPS URL");
+  }
 }
 
 const createDummyClient = (): SupabaseClient<Database> => {
@@ -26,10 +29,17 @@ const createDummyClient = (): SupabaseClient<Database> => {
       insert: () => builder,
       update: () => builder,
       delete: () => builder,
+      upsert: () => builder,
       eq: () => builder,
+      neq: () => builder,
+      gt: () => builder,
+      gte: () => builder,
+      lt: () => builder,
+      lte: () => builder,
       or: () => builder,
       order: () => builder,
       limit: () => builder,
+      range: () => builder,
       in: () => builder,
       single: () => promise,
       maybeSingle: () => promise,
@@ -48,10 +58,13 @@ const createDummyClient = (): SupabaseClient<Database> => {
 
   return {
     from: () => createDummyQueryBuilder(),
+    rpc: () => promise,
     auth: {
       signUp: () => promise,
       signInWithPassword: () => promise,
       signOut: () => promise,
+      resetPasswordForEmail: () => promise,
+      updateUser: () => promise,
       getSession: () => Promise.resolve({ data: { session: null }, error: null }),
       getUser: () => Promise.resolve({ data: { user: null }, error: null }),
       onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } }, error: null }),
@@ -60,6 +73,8 @@ const createDummyClient = (): SupabaseClient<Database> => {
       from: () => ({
         upload: () => promise,
         download: () => promise,
+        remove: () => promise,
+        createSignedUrl: () => promise,
         getPublicUrl: () => ({ data: { publicUrl: "" }, error: new Error("Supabase not configured") }),
       }),
     },
@@ -70,13 +85,13 @@ const createDummyClient = (): SupabaseClient<Database> => {
 
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";
-
 export const supabase: SupabaseClient<Database> = SUPABASE_URL && SUPABASE_PUBLISHABLE_KEY
   ? createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
       auth: {
         storage: localStorage,
         persistSession: true,
         autoRefreshToken: true,
+        detectSessionInUrl: true,
       },
     })
   : createDummyClient();

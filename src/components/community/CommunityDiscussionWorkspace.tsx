@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
+import { captureSocialError } from "@/lib/socialTelemetry";
 
 export function CommunityDiscussionWorkspace() {
   const { user } = useAuth();
@@ -29,11 +30,19 @@ export function CommunityDiscussionWorkspace() {
     }
 
     setSubmitting(true);
-    const { data: profile } = await supabase
+    const { data: profile, error: profileError } = await supabase
       .from("user_profiles")
       .select("display_name, username")
       .eq("user_id", user.id)
       .maybeSingle();
+
+    if (profileError) {
+      captureSocialError(profileError, {
+        surface: "discussions",
+        operation: "load_author_profile",
+        table: "user_profiles",
+      });
+    }
 
     const { error } = await supabase.from("forum_threads").insert({
       user_id: user.id,
@@ -49,7 +58,12 @@ export function CommunityDiscussionWorkspace() {
 
     setSubmitting(false);
     if (error) {
-      toast({ title: "Unable to start discussion", description: error.message, variant: "destructive" });
+      captureSocialError(error, {
+        surface: "discussions",
+        operation: "create_thread",
+        table: "forum_threads",
+      });
+      toast({ title: "Unable to start discussion", description: "The discussion could not be published. Please try again.", variant: "destructive" });
       return;
     }
 

@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
+import { captureSocialError } from "@/lib/socialTelemetry";
 
 interface CommunityEvent {
   id: string;
@@ -57,17 +58,31 @@ export function CommunityEventsWorkspace() {
     ]);
 
     if (eventsResult.error) {
-      toast({ title: "Unable to load events", description: eventsResult.error.message, variant: "destructive" });
+      captureSocialError(eventsResult.error, {
+        surface: "events",
+        operation: "load_events",
+        table: "community_events",
+      });
+      toast({ title: "Unable to load events", description: "Community events could not be loaded. Please try again.", variant: "destructive" });
       setEvents([]);
     } else {
       setEvents((eventsResult.data ?? []) as CommunityEvent[]);
     }
 
-    const map = new Map<string, string>();
-    for (const row of rsvpResult.data ?? []) {
-      if (row.event_id && row.status === "going") map.set(row.event_id, row.id);
+    if (rsvpResult.error) {
+      captureSocialError(rsvpResult.error, {
+        surface: "events",
+        operation: "load_rsvps",
+        table: "event_rsvps",
+      });
+      setOwnRsvps(new Map());
+    } else {
+      const map = new Map<string, string>();
+      for (const row of rsvpResult.data ?? []) {
+        if (row.event_id && row.status === "going") map.set(row.event_id, row.id);
+      }
+      setOwnRsvps(map);
     }
-    setOwnRsvps(map);
     setLoading(false);
   }, [toast, user?.id]);
 
@@ -105,7 +120,12 @@ export function CommunityEventsWorkspace() {
     } as any);
 
     if (error) {
-      toast({ title: "Unable to publish event", description: error.message, variant: "destructive" });
+      captureSocialError(error, {
+        surface: "events",
+        operation: "create_event",
+        table: "community_events",
+      });
+      toast({ title: "Unable to publish event", description: "The event could not be published. Please try again.", variant: "destructive" });
       return;
     }
 
@@ -123,7 +143,12 @@ export function CommunityEventsWorkspace() {
       : await supabase.from("event_rsvps").insert({ event_id: eventId, user_id: user.id, status: "going" });
 
     if (result.error) {
-      toast({ title: "Unable to update RSVP", description: result.error.message, variant: "destructive" });
+      captureSocialError(result.error, {
+        surface: "events",
+        operation: existingId ? "cancel_rsvp" : "create_rsvp",
+        table: "event_rsvps",
+      });
+      toast({ title: "Unable to update RSVP", description: "Your RSVP could not be updated. Please try again.", variant: "destructive" });
       return;
     }
     await load();

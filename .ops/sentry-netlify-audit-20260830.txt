@@ -1,0 +1,2 @@
+Civil Rights Hub Sentry production audit marker.
+No secrets belong in this file. Runtime DSN configuration is managed in the Netlify production environment.

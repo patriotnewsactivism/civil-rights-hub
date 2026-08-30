@@ -1,0 +1,3 @@
+Civil Rights Hub production migration trigger
+Project: vrdnrbjnitptxrexdlao
+Purpose: apply and verify the reviewed social recovery, runtime reconciliation, and current integrity migrations through the guarded GitHub Actions workflow.

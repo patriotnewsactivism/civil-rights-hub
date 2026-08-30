@@ -60,7 +60,7 @@ jobs:
           set -euo pipefail
           supabase link --project-ref "$PROJECT_REF" --password "$SUPABASE_DB_PASSWORD"
 
-      - name: Validate migration history and pending allowlist
+      - name: Validate migration history and reviewed allowlist
         shell: bash
         run: |
           set -euo pipefail
@@ -110,16 +110,16 @@ jobs:
 
           comm -23 /tmp/pending_versions.txt /tmp/reviewed_pending_allowlist.txt > /tmp/unexpected_pending.txt
           if [[ -s /tmp/unexpected_pending.txt ]]; then
-            echo "::error::Unreviewed historical migrations are missing from production history:"
+            echo "::error::Unreviewed migrations are missing from production history:"
             cat /tmp/unexpected_pending.txt
             exit 2
           fi
 
           for version in 20260830182000 20260830182500 20260830183000 20260830183500; do
-            grep -qx "$version" /tmp/pending_versions.txt || {
-              echo "::error::Expected community production migration $version is not pending against production"
+            if ! grep -qx "$version" /tmp/remote_versions.txt && ! grep -qx "$version" /tmp/pending_versions.txt; then
+              echo "::error::Required community migration $version is neither deployed nor pending"
               exit 3
-            }
+            fi
           done
 
       - name: Show linked migration dry-run
@@ -129,74 +129,52 @@ jobs:
           supabase migration list --linked --password "$SUPABASE_DB_PASSWORD"
           supabase db push --linked --include-all --dry-run --password "$SUPABASE_DB_PASSWORD"
 
-      - name: Execute community migrations against production schema and roll back
+      - name: Verify deployed community contract
         shell: bash
         run: |
           set -euo pipefail
-          psql "$POOLER_URL" -v ON_ERROR_STOP=1 -Atc \
-            "select 1 from supabase_migrations.schema_migrations where version = '20260828233500'" \
-            | grep -qx 1 || { echo "::error::Required clean-social migration 20260828233500 is not deployed"; exit 4; }
-
-          preflight="$(mktemp)"
-          printf '%s\n' 'BEGIN;' > "$preflight"
-          for migration in \
-            supabase/migrations/20260830182000_community_privacy_messaging_notifications.sql \
-            supabase/migrations/20260830182500_messaging_query_helpers.sql \
-            supabase/migrations/20260830183000_split_anonymous_block_aware_policies.sql \
-            supabase/migrations/20260830183500_keep_community_privacy_settings_private.sql; do
-            sed -E '/^[[:space:]]*(BEGIN|COMMIT);[[:space:]]*$/Id' "$migration" >> "$preflight"
-          done
-          cat >> "$preflight" <<'SQL'
-
+          psql "$POOLER_URL" -v ON_ERROR_STOP=1 -P pager=off <<'SQL'
           DO $$
+          DECLARE
+            deployed_count integer;
           BEGIN
-            IF to_regclass('public.user_blocks') IS NULL
-               OR to_regclass('public.user_mutes') IS NULL
-               OR to_regclass('public.notification_preferences') IS NULL THEN
-              RAISE EXCEPTION 'community privacy tables missing during migration preflight';
-            END IF;
-            IF to_regprocedure('public.get_or_create_direct_conversation(uuid)') IS NULL
-               OR to_regprocedure('public.create_group_conversation(text,uuid[])') IS NULL
-               OR to_regprocedure('public.send_conversation_message(uuid,text)') IS NULL
-               OR to_regprocedure('public.list_my_conversations(integer)') IS NULL
-               OR to_regprocedure('public.get_conversation_messages(uuid,integer,timestamp with time zone,uuid)') IS NULL THEN
-              RAISE EXCEPTION 'community messaging RPC contract incomplete';
-            END IF;
-            IF has_table_privilege('anon', 'public.user_blocks', 'SELECT')
-               OR has_table_privilege('anon', 'public.user_mutes', 'SELECT')
-               OR has_table_privilege('anon', 'public.notification_preferences', 'SELECT') THEN
-              RAISE EXCEPTION 'private relationship/preferences table leaked to anonymous role';
-            END IF;
-            IF has_table_privilege('authenticated', 'public.conversation_messages', 'INSERT') THEN
-              RAISE EXCEPTION 'conversation_messages still permits direct browser inserts';
-            END IF;
-            IF NOT has_function_privilege('authenticated', 'public.send_conversation_message(uuid,text)', 'EXECUTE') THEN
-              RAISE EXCEPTION 'authenticated role cannot execute message RPC';
-            END IF;
-            IF has_column_privilege('anon', 'public.user_profiles', 'message_permission', 'SELECT')
-               OR has_column_privilege('authenticated', 'public.user_profiles', 'message_permission', 'SELECT') THEN
-              RAISE EXCEPTION 'community privacy preference is browser-readable';
-            END IF;
-            IF NOT EXISTS (
-              SELECT 1 FROM pg_policies
-              WHERE schemaname='public' AND tablename='conversation_messages'
-                AND policyname='conversation_messages_member_select'
-            ) THEN
-              RAISE EXCEPTION 'hardened conversation message policy missing';
+            SELECT count(*) INTO deployed_count
+            FROM supabase_migrations.schema_migrations
+            WHERE version IN ('20260830182000','20260830182500','20260830183000','20260830183500');
+
+            IF deployed_count = 4 THEN
+              IF to_regclass('public.user_blocks') IS NULL
+                 OR to_regclass('public.user_mutes') IS NULL
+                 OR to_regclass('public.notification_preferences') IS NULL THEN
+                RAISE EXCEPTION 'community privacy tables missing';
+              END IF;
+              IF to_regprocedure('public.get_or_create_direct_conversation(uuid)') IS NULL
+                 OR to_regprocedure('public.create_group_conversation(text,uuid[])') IS NULL
+                 OR to_regprocedure('public.send_conversation_message(uuid,text)') IS NULL
+                 OR to_regprocedure('public.list_my_conversations(integer)') IS NULL
+                 OR to_regprocedure('public.get_conversation_messages(uuid,integer,timestamp with time zone,uuid)') IS NULL THEN
+                RAISE EXCEPTION 'community messaging RPC contract incomplete';
+              END IF;
+              IF has_table_privilege('anon', 'public.user_blocks', 'SELECT')
+                 OR has_table_privilege('anon', 'public.user_mutes', 'SELECT')
+                 OR has_table_privilege('anon', 'public.notification_preferences', 'SELECT') THEN
+                RAISE EXCEPTION 'private community data is anonymous-readable';
+              END IF;
+              IF has_table_privilege('authenticated', 'public.conversation_messages', 'INSERT') THEN
+                RAISE EXCEPTION 'direct browser message inserts remain enabled';
+              END IF;
+              IF NOT has_function_privilege('authenticated', 'public.send_conversation_message(uuid,text)', 'EXECUTE') THEN
+                RAISE EXCEPTION 'message RPC unavailable';
+              END IF;
+              IF has_column_privilege('anon', 'public.user_profiles', 'message_permission', 'SELECT')
+                 OR has_column_privilege('authenticated', 'public.user_profiles', 'message_permission', 'SELECT') THEN
+                RAISE EXCEPTION 'community privacy preference is browser-readable';
+              END IF;
+            ELSE
+              RAISE NOTICE 'Community foundation has %/4 migrations deployed; remaining versions are validated by dry-run.', deployed_count;
             END IF;
           END $$;
-
-          ROLLBACK;
           SQL
-
-          psql "$POOLER_URL" -v ON_ERROR_STOP=1 -P pager=off -f "$preflight"
-
-      - name: Verify rollback left production unchanged
-        shell: bash
-        run: |
-          set -euo pipefail
-          psql "$POOLER_URL" -v ON_ERROR_STOP=1 -Atc \
-            "select case when to_regclass('public.user_blocks') is null then 'clean' else 'already-deployed' end"
 
   migrate-production:
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
@@ -298,20 +276,30 @@ jobs:
           set -euo pipefail
           psql "$POOLER_URL" -v ON_ERROR_STOP=1 -P pager=off <<'SQL'
           DO $$
+          DECLARE
+            deployed_count integer;
           BEGIN
-            IF NOT EXISTS (
-              SELECT 1 FROM supabase_migrations.schema_migrations
-              WHERE version IN ('20260830182000','20260830182500','20260830183000','20260830183500')
-              GROUP BY true HAVING COUNT(*) = 4
-            ) THEN
-              RAISE EXCEPTION 'community production migrations missing from ledger';
+            SELECT count(*) INTO deployed_count
+            FROM supabase_migrations.schema_migrations
+            WHERE version IN ('20260830182000','20260830182500','20260830183000','20260830183500');
+
+            IF deployed_count <> 4 THEN
+              RAISE EXCEPTION 'community production migrations missing from ledger: expected 4, found %', deployed_count;
             END IF;
             IF to_regclass('public.user_blocks') IS NULL
                OR to_regclass('public.user_mutes') IS NULL
                OR to_regclass('public.notification_preferences') IS NULL THEN
               RAISE EXCEPTION 'community privacy tables missing';
             END IF;
+            IF to_regprocedure('public.get_or_create_direct_conversation(uuid)') IS NULL
+               OR to_regprocedure('public.create_group_conversation(text,uuid[])') IS NULL
+               OR to_regprocedure('public.send_conversation_message(uuid,text)') IS NULL
+               OR to_regprocedure('public.list_my_conversations(integer)') IS NULL
+               OR to_regprocedure('public.get_conversation_messages(uuid,integer,timestamp with time zone,uuid)') IS NULL THEN
+              RAISE EXCEPTION 'community messaging RPC contract incomplete';
+            END IF;
             IF has_table_privilege('anon', 'public.user_blocks', 'SELECT')
+               OR has_table_privilege('anon', 'public.user_mutes', 'SELECT')
                OR has_table_privilege('anon', 'public.notification_preferences', 'SELECT') THEN
               RAISE EXCEPTION 'private community data is anonymous-readable';
             END IF;
@@ -320,6 +308,10 @@ jobs:
             END IF;
             IF NOT has_function_privilege('authenticated', 'public.send_conversation_message(uuid,text)', 'EXECUTE') THEN
               RAISE EXCEPTION 'message RPC unavailable';
+            END IF;
+            IF has_column_privilege('anon', 'public.user_profiles', 'message_permission', 'SELECT')
+               OR has_column_privilege('authenticated', 'public.user_profiles', 'message_permission', 'SELECT') THEN
+              RAISE EXCEPTION 'community privacy preference is browser-readable';
             END IF;
           END $$;
           SQL

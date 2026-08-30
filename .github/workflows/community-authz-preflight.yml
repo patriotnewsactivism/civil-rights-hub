@@ -5,6 +5,7 @@ on:
     branches: [main]
     types: [opened, synchronize, reopened, ready_for_review]
     paths:
+      - supabase/migrations/20260830224500_remove_obsolete_authz_conversation_helper.sql
       - supabase/migrations/20260830225000_harden_community_authz_helpers.sql
       - supabase/tests/security_hardening_smoke.sql
       - .github/workflows/community-authz-preflight.yml
@@ -35,15 +36,18 @@ jobs:
           test -n "$SUPABASE_DB_PASSWORD" || { echo "::error::Missing SUPABASE_DB_PASSWORD"; exit 1; }
           test "$PROJECT_REF" = "vrdnrbjnitptxrexdlao" || { echo "::error::Unexpected Supabase project ref"; exit 1; }
 
-      - name: Execute migration and security smoke test then roll back
+      - name: Execute migrations and security smoke test then roll back
         shell: bash
         run: |
           set -euo pipefail
           {
             echo '\set ON_ERROR_STOP on'
             echo 'BEGIN;'
-            sed -e '/^BEGIN;$/d' -e '/^COMMIT;$/d' \
-              supabase/migrations/20260830225000_harden_community_authz_helpers.sql
+            for migration in \
+              supabase/migrations/20260830224500_remove_obsolete_authz_conversation_helper.sql \
+              supabase/migrations/20260830225000_harden_community_authz_helpers.sql; do
+              sed -e '/^BEGIN;$/d' -e '/^COMMIT;$/d' "$migration"
+            done
             sed -e '/^\\set ON_ERROR_STOP on$/d' -e '/^BEGIN;$/d' -e '/^ROLLBACK;$/d' \
               supabase/tests/security_hardening_smoke.sql
             echo 'ROLLBACK;'
@@ -56,7 +60,7 @@ jobs:
         run: |
           set -euo pipefail
           if psql "$POOLER_URL" -v ON_ERROR_STOP=1 -Atc \
-            "select exists(select 1 from supabase_migrations.schema_migrations where version='20260830225000')" \
+            "select exists(select 1 from supabase_migrations.schema_migrations where version in ('20260830224500','20260830225000'))" \
             | grep -qx 't'; then
             echo "::error::Rollback-only preflight unexpectedly changed the production migration ledger"
             exit 1

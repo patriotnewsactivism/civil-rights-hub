@@ -1,0 +1,213 @@
+name: Apply Verified Resource Seed
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/ops-apply-verified-resource-seed.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: civil-rights-hub-verified-resource-seed
+  cancel-in-progress: false
+
+env:
+  PROJECT_REF: vrdnrbjnitptxrexdlao
+  POOLER_URL: postgresql://postgres.vrdnrbjnitptxrexdlao@aws-0-us-west-2.pooler.supabase.com:5432/postgres
+  SEED_VERSION: "20260831050000"
+
+jobs:
+  apply-and-verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+      PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Require exact production credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$SUPABASE_ACCESS_TOKEN" || { echo "::error::Missing SUPABASE_ACCESS_TOKEN"; exit 1; }
+          test -n "$SUPABASE_DB_PASSWORD" || { echo "::error::Missing SUPABASE_DB_PASSWORD"; exit 1; }
+          test "$PROJECT_REF" = "vrdnrbjnitptxrexdlao" || { echo "::error::Wrong Supabase project"; exit 1; }
+          test -f "supabase/migrations/${SEED_VERSION}_seed_verified_primary_resources.sql" || { echo "::error::Reviewed seed migration missing"; exit 1; }
+
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Link production project
+        shell: bash
+        run: |
+          set -euo pipefail
+          supabase link --project-ref "$PROJECT_REF" --password "$SUPABASE_DB_PASSWORD"
+
+      - name: Enforce reviewed pending-migration set
+        shell: bash
+        run: |
+          set -euo pipefail
+          find supabase/migrations -maxdepth 1 -type f -name '*.sql' -printf '%f\n' \
+            | sed -E 's/^([0-9]{14}).*/\1/' | grep -E '^[0-9]{14}$' | sort -u > /tmp/local.txt
+          psql "$POOLER_URL" -v ON_ERROR_STOP=1 -Atc \
+            "select version from supabase_migrations.schema_migrations order by version" | sort -u > /tmp/remote.txt
+          comm -23 /tmp/local.txt /tmp/remote.txt > /tmp/pending.txt
+
+          cat > /tmp/allowed.txt <<'EOF'
+          20260803000000
+          20260812190000
+          20260822180500
+          20260822210500
+          20260822212000
+          20260822213000
+          20260822213500
+          20260822214500
+          20260822215000
+          20260822215500
+          20260822220000
+          20260822220500
+          20260822221000
+          20260822223000
+          20260823010000
+          20260823010100
+          20260823010200
+          20260823010300
+          20260823010400
+          20260828220500
+          20260828233500
+          20260829030500
+          20260830182000
+          20260830182500
+          20260830183000
+          20260830183500
+          20260830224500
+          20260830225000
+          20260831050000
+          EOF
+          sed -i 's/^[[:space:]]*//' /tmp/allowed.txt
+          sort -u -o /tmp/allowed.txt /tmp/allowed.txt
+          comm -23 /tmp/pending.txt /tmp/allowed.txt > /tmp/unreviewed.txt
+          echo "Pending reviewed versions:"
+          cat /tmp/pending.txt || true
+          if [[ -s /tmp/unreviewed.txt ]]; then
+            echo "::error::Refusing to apply unreviewed migrations:"
+            cat /tmp/unreviewed.txt
+            exit 2
+          fi
+          grep -qx "$SEED_VERSION" /tmp/pending.txt || echo "Seed version is already recorded; verification will still run."
+
+      - name: Dry-run reviewed migration plan
+        shell: bash
+        run: |
+          set -euo pipefail
+          supabase db push --linked --include-all --dry-run --password "$SUPABASE_DB_PASSWORD"
+
+      - name: Apply reviewed migrations
+        shell: bash
+        run: |
+          set -euo pipefail
+          supabase db push --linked --include-all --password "$SUPABASE_DB_PASSWORD"
+
+      - name: Verify seed ledger and canonical rows
+        shell: bash
+        run: |
+          set -euo pipefail
+          psql "$POOLER_URL" -v ON_ERROR_STOP=1 -P pager=off <<'SQL'
+          DO $$
+          DECLARE
+            ledger_count integer;
+            canonical_count integer;
+            provenance_count integer;
+            duplicate_count integer;
+          BEGIN
+            SELECT count(*) INTO ledger_count
+            FROM supabase_migrations.schema_migrations
+            WHERE version = '20260831050000';
+            IF ledger_count <> 1 THEN
+              RAISE EXCEPTION 'seed migration is not recorded exactly once';
+            END IF;
+
+            SELECT count(*) INTO canonical_count
+            FROM public.resource_library r
+            WHERE r.is_approved = true
+              AND r.external_url IN (
+                'https://www.foia.gov/how-to.html',
+                'https://www.uscourts.gov/forms-rules/current-rules-practice-procedure/federal-rules-civil-procedure',
+                'https://www.uscourts.gov/forms-rules/current-rules-practice-procedure/federal-rules-appellate-procedure',
+                'https://www.uscourts.gov/forms-rules/forms/civil-forms',
+                'https://www.uscourts.gov/forms-rules/forms/complaint-a-civil-case',
+                'https://pacer.uscourts.gov/',
+                'https://civilrights.justice.gov/report/',
+                'https://www.justice.gov/crt/publications',
+                'https://www.ada.gov/assets/pdfs/title_ii_reg_update.pdf',
+                'https://www.govinfo.gov/help/uscode',
+                'https://www.govinfo.gov/content/pkg/GOVPUB-JU13-PURL-gpo54237/pdf/GOVPUB-JU13-PURL-gpo54237.pdf'
+              );
+            IF canonical_count <> 11 THEN
+              RAISE EXCEPTION 'expected 11 approved canonical resources, found %', canonical_count;
+            END IF;
+
+            SELECT count(*) INTO provenance_count
+            FROM public.resource_library r
+            JOIN public.data_provenance p
+              ON p.entity_type = 'resource' AND p.entity_id = r.id
+            WHERE r.is_approved = true
+              AND p.is_active = true
+              AND p.is_primary_source = true
+              AND p.verification_status = 'verified_primary'
+              AND p.last_verified_at IS NOT NULL
+              AND r.external_url IN (
+                'https://www.foia.gov/how-to.html',
+                'https://www.uscourts.gov/forms-rules/current-rules-practice-procedure/federal-rules-civil-procedure',
+                'https://www.uscourts.gov/forms-rules/current-rules-practice-procedure/federal-rules-appellate-procedure',
+                'https://www.uscourts.gov/forms-rules/forms/civil-forms',
+                'https://www.uscourts.gov/forms-rules/forms/complaint-a-civil-case',
+                'https://pacer.uscourts.gov/',
+                'https://civilrights.justice.gov/report/',
+                'https://www.justice.gov/crt/publications',
+                'https://www.ada.gov/assets/pdfs/title_ii_reg_update.pdf',
+                'https://www.govinfo.gov/help/uscode',
+                'https://www.govinfo.gov/content/pkg/GOVPUB-JU13-PURL-gpo54237/pdf/GOVPUB-JU13-PURL-gpo54237.pdf'
+              );
+            IF provenance_count <> 11 THEN
+              RAISE EXCEPTION 'expected 11 reviewed primary provenance rows, found %', provenance_count;
+            END IF;
+
+            SELECT count(*) INTO duplicate_count FROM (
+              SELECT external_url
+              FROM public.resource_library
+              WHERE is_approved = true
+                AND external_url IN (
+                  'https://www.foia.gov/how-to.html',
+                  'https://www.uscourts.gov/forms-rules/current-rules-practice-procedure/federal-rules-civil-procedure',
+                  'https://www.uscourts.gov/forms-rules/current-rules-practice-procedure/federal-rules-appellate-procedure',
+                  'https://www.uscourts.gov/forms-rules/forms/civil-forms',
+                  'https://www.uscourts.gov/forms-rules/forms/complaint-a-civil-case',
+                  'https://pacer.uscourts.gov/',
+                  'https://civilrights.justice.gov/report/',
+                  'https://www.justice.gov/crt/publications',
+                  'https://www.ada.gov/assets/pdfs/title_ii_reg_update.pdf',
+                  'https://www.govinfo.gov/help/uscode',
+                  'https://www.govinfo.gov/content/pkg/GOVPUB-JU13-PURL-gpo54237/pdf/GOVPUB-JU13-PURL-gpo54237.pdf'
+                )
+              GROUP BY external_url HAVING count(*) > 1
+            ) d;
+            IF duplicate_count <> 0 THEN
+              RAISE EXCEPTION 'approved duplicate resource URLs remain: %', duplicate_count;
+            END IF;
+          END $$;
+          SQL
+
+      - name: Verify anonymous publication policy sees all 11
+        shell: bash
+        run: |
+          set -euo pipefail
+          visible="$(psql "$POOLER_URL" -v ON_ERROR_STOP=1 -Atc "set role anon; select count(*) from public.resource_library where external_url in ('https://www.foia.gov/how-to.html','https://www.uscourts.gov/forms-rules/current-rules-practice-procedure/federal-rules-civil-procedure','https://www.uscourts.gov/forms-rules/current-rules-practice-procedure/federal-rules-appellate-procedure','https://www.uscourts.gov/forms-rules/forms/civil-forms','https://www.uscourts.gov/forms-rules/forms/complaint-a-civil-case','https://pacer.uscourts.gov/','https://civilrights.justice.gov/report/','https://www.justice.gov/crt/publications','https://www.ada.gov/assets/pdfs/title_ii_reg_update.pdf','https://www.govinfo.gov/help/uscode','https://www.govinfo.gov/content/pkg/GOVPUB-JU13-PURL-gpo54237/pdf/GOVPUB-JU13-PURL-gpo54237.pdf');")"
+          [[ "$visible" == "11" ]] || { echo "::error::anon sees $visible/11 verified resources"; exit 3; }
+          echo "Anonymous publication policy exposes exactly 11 verified resources."

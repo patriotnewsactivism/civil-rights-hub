@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Shield, ExternalLink } from "lucide-react";
+import { FileLock2, Shield, ShieldAlert, ExternalLink } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const SAFETY_RESOURCES: Record<string, { title: string; links: { label: string; href: string }[] }> = {
@@ -32,9 +32,28 @@ const SAFETY_RESOURCES: Record<string, { title: string; links: { label: string; 
 
 export function CommunitySidebar({ currentUserRole }: { currentUserRole?: string | null }) {
   const safetyResources = currentUserRole ? SAFETY_RESOURCES[currentUserRole] : null;
+  const isStaff = currentUserRole === "moderator" || currentUserRole === "admin" || currentUserRole === "super_admin";
 
   return (
     <div className="space-y-4">
+      <Card className="border-primary/30 bg-primary/5">
+        <CardContent className="p-4">
+          <p className="flex items-center gap-2 text-sm font-semibold"><FileLock2 className="h-4 w-4" />Private incident intake</p>
+          <p className="mt-1 text-xs leading-relaxed text-muted-foreground">Draft and submit sensitive incident records separately from public community posts.</p>
+          <Button asChild variant="outline" size="sm" className="mt-3 w-full"><Link to="/incident-reports">Open private reports</Link></Button>
+        </CardContent>
+      </Card>
+
+      {isStaff && (
+        <Card className="border-destructive/30 bg-destructive/5">
+          <CardContent className="p-4">
+            <p className="flex items-center gap-2 text-sm font-semibold"><ShieldAlert className="h-4 w-4" />Staff review</p>
+            <p className="mt-1 text-xs leading-relaxed text-muted-foreground">Review reported community content and private incident submissions. Server-side role checks still apply.</p>
+            <Button asChild variant="outline" size="sm" className="mt-3 w-full"><Link to="/moderation">Open moderation console</Link></Button>
+          </CardContent>
+        </Card>
+      )}
+
       <Card className="border-amber-500/30 bg-amber-500/5">
         <CardContent className="p-4">
           <p className="text-sm font-semibold">Community public-data cleanup</p>

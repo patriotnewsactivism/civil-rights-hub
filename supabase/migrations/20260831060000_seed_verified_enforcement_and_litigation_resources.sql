@@ -40,10 +40,12 @@ INSERT INTO _enforcement_resource_seed VALUES
 ('e8f44f71-6c55-4ea4-a9dc-300000000020','AO 239 — Application to Proceed Without Prepaying Fees or Costs','Official U.S. Courts long-form AO 239 application for requesting permission to proceed in district court without prepaying fees or costs.','link','Court Forms','https://www.uscourts.gov/forms-rules/forms/application-proceed-district-court-without-prepaying-fees-or-costs-long-form','Administrative Office of the U.S. Courts','United States Courts','Administrative Office of the U.S. Courts','official',ARRAY['ao-239','ifp','fee-waiver','district-court','pro-se','official']),
 ('e8f44f71-6c55-4ea4-a9dc-300000000021','AO 88B — Civil Subpoena for Documents or Inspection','Official U.S. Courts AO 88B form for a subpoena to produce documents, electronically stored information, or objects, or to permit inspection of premises in a civil action.','link','Court Forms','https://www.uscourts.gov/forms-rules/forms/subpoena-produce-documents-information-or-objects-or-permit-inspection-premises-a-civil-action','Administrative Office of the U.S. Courts','United States Courts','Administrative Office of the U.S. Courts','official',ARRAY['ao-88b','subpoena','discovery','documents','civil-litigation','official']);
 
+-- Do not force deterministic IDs into the production table. Existing legacy data
+-- may already occupy an ID; the canonical record is resolved by its official URL.
 INSERT INTO public.resource_library (
-  id,title,description,resource_type,category,external_url,author,source,language,tags,is_approved
+  title,description,resource_type,category,external_url,author,source,language,tags,is_approved
 )
-SELECT seed_id,title,description,resource_type,category,external_url,author,source,'en',tags,true
+SELECT title,description,resource_type,category,external_url,author,source,'en',tags,true
 FROM _enforcement_resource_seed s
 WHERE NOT EXISTS (SELECT 1 FROM public.resource_library r WHERE r.external_url=s.external_url);
 

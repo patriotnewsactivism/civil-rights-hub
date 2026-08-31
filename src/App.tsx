@@ -28,6 +28,7 @@ import StateComparisonPage from "./pages/StateComparisonPage";
 import AttorneyPremiumPage from "./pages/AttorneyPremiumPage";
 import AttorneyDashboardPage from "./pages/AttorneyDashboardPage";
 import NewsletterPage from "./pages/NewsletterPage";
+import IncidentReportsPage from "./pages/IncidentReportsPage";
 import { JurisdictionProvider } from "./hooks/useJurisdiction";
 import { PageSkeleton } from "@/components/PageSkeleton";
 import { SearchCommandDialog } from "@/components/SearchCommandDialog";
@@ -92,6 +93,7 @@ const App = () => (
               <Route path="/help" element={<GetHelp />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/community" element={<Community />} />
+              <Route path="/incident-reports" element={<IncidentReportsPage />} />
               <Route path="/find-attorney" element={<AttorneyMatchPage />} />
               <Route path="/sol-calculator" element={<SolCalculatorPage />} />
               <Route path="/compare-states" element={<StateComparisonPage />} />

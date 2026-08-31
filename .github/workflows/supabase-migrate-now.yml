@@ -112,6 +112,7 @@ jobs:
           20260831060000
           20260831063000
           20260831070000
+          20260831072000
           EOF
           sed -i 's/^[[:space:]]*//' /tmp/reviewed_pending_allowlist.txt
           sort -u -o /tmp/reviewed_pending_allowlist.txt /tmp/reviewed_pending_allowlist.txt
@@ -123,7 +124,7 @@ jobs:
             exit 2
           fi
 
-          for version in 20260830182000 20260830182500 20260830183000 20260830183500 20260831070000; do
+          for version in 20260830182000 20260830182500 20260830183000 20260830183500 20260831070000 20260831072000; do
             if ! grep -qx "$version" /tmp/remote_versions.txt && ! grep -qx "$version" /tmp/pending_versions.txt; then
               echo "::error::Required production migration $version is neither deployed nor pending"
               exit 3
@@ -196,17 +197,92 @@ jobs:
 
           psql "$POOLER_URL" -v ON_ERROR_STOP=1 -P pager=off -f "$preflight"
 
+      - name: Execute sensitive policy correction against production schema and roll back
+        shell: bash
+        run: |
+          set -euo pipefail
+          if psql "$POOLER_URL" -v ON_ERROR_STOP=1 -Atc \
+            "select 1 from supabase_migrations.schema_migrations where version = '20260831072000'" | grep -qx 1; then
+            echo "Sensitive policy correction is already deployed; skipping rollback preflight."
+            exit 0
+          fi
+
+          preflight="$(mktemp)"
+          printf '%s\n' 'BEGIN;' > "$preflight"
+          sed -E '/^[[:space:]]*(BEGIN|COMMIT);[[:space:]]*$/Id' \
+            supabase/migrations/20260831072000_canonicalize_sensitive_select_policies.sql >> "$preflight"
+          cat >> "$preflight" <<'SQL'
+
+          DO $$
+          DECLARE
+            bad text;
+          BEGIN
+            WITH browser_roles AS (
+              SELECT oid, rolname FROM pg_roles WHERE rolname IN ('authenticated')
+            ), actions(code, name) AS (
+              VALUES ('r'::"char", 'select')
+            ), collisions AS (
+              SELECT n.nspname, c.relname, br.rolname, a.name, count(*) AS policy_count
+              FROM pg_policy p
+              JOIN pg_class c ON c.oid = p.polrelid
+              JOIN pg_namespace n ON n.oid = c.relnamespace
+              CROSS JOIN browser_roles br
+              CROSS JOIN actions a
+              WHERE n.nspname = 'public'
+                AND c.relname IN ('content_reports', 'incident_reports', 'incident_report_evidence')
+                AND p.polpermissive = true
+                AND p.polcmd IN ('*'::"char", a.code)
+                AND (0::oid = ANY(p.polroles) OR br.oid = ANY(p.polroles))
+              GROUP BY n.nspname, c.relname, br.rolname, a.name
+              HAVING count(*) > 1
+            )
+            SELECT string_agg(format('%I.%I/%s/%s=%s', nspname, relname, rolname, name, policy_count), ', ')
+            INTO bad
+            FROM collisions;
+
+            IF bad IS NOT NULL THEN
+              RAISE EXCEPTION 'Sensitive permissive policy collisions remain: %', bad;
+            END IF;
+
+            IF NOT EXISTS (
+              SELECT 1 FROM pg_policies WHERE schemaname='public' AND tablename='content_reports'
+                AND policyname='content_reports_owner_or_staff_select'
+            ) OR NOT EXISTS (
+              SELECT 1 FROM pg_policies WHERE schemaname='public' AND tablename='incident_reports'
+                AND policyname='incident_reports_owner_or_staff_select'
+            ) OR NOT EXISTS (
+              SELECT 1 FROM pg_policies WHERE schemaname='public' AND tablename='incident_report_evidence'
+                AND policyname='incident_evidence_owner_or_staff_select'
+            ) THEN
+              RAISE EXCEPTION 'Canonical sensitive owner/staff policies missing';
+            END IF;
+          END $$;
+
+          ROLLBACK;
+          SQL
+
+          psql "$POOLER_URL" -v ON_ERROR_STOP=1 -P pager=off -f "$preflight"
+
       - name: Verify rollback left production unchanged
         shell: bash
         run: |
           set -euo pipefail
           if psql "$POOLER_URL" -v ON_ERROR_STOP=1 -Atc \
             "select 1 from supabase_migrations.schema_migrations where version = '20260831070000'" | grep -qx 1; then
-            echo "already-deployed"
+            echo "private-incident-migration-deployed"
           else
             psql "$POOLER_URL" -v ON_ERROR_STOP=1 -Atc \
               "select case when to_regclass('public.incident_reports') is null then 'clean' else 'unexpected-residue' end" \
               | grep -qx clean
+          fi
+          if psql "$POOLER_URL" -v ON_ERROR_STOP=1 -Atc \
+            "select 1 from supabase_migrations.schema_migrations where version = '20260831072000'" | grep -qx 1; then
+            echo "canonical-policy-migration-deployed"
+          else
+            test "$(psql "$POOLER_URL" -v ON_ERROR_STOP=1 -Atc "select count(*) from pg_policies where schemaname='public' and policyname in ('content_reports_owner_or_staff_select','incident_reports_owner_or_staff_select','incident_evidence_owner_or_staff_select')")" = "0" || {
+              echo "::error::Canonical policy preflight left production residue"
+              exit 4
+            }
           fi
 
       - name: Verify deployed community contract
@@ -334,6 +410,7 @@ jobs:
           20260831060000
           20260831063000
           20260831070000
+          20260831072000
           EOF
           sed -i 's/^[[:space:]]*//' /tmp/reviewed_pending_allowlist.txt
           sort -u -o /tmp/reviewed_pending_allowlist.txt /tmp/reviewed_pending_allowlist.txt
@@ -406,6 +483,11 @@ jobs:
             ) THEN
               RAISE EXCEPTION 'private incident production migration missing from ledger';
             END IF;
+            IF NOT EXISTS (
+              SELECT 1 FROM supabase_migrations.schema_migrations WHERE version = '20260831072000'
+            ) THEN
+              RAISE EXCEPTION 'sensitive policy canonicalization migration missing from ledger';
+            END IF;
             IF to_regclass('public.incident_reports') IS NULL
                OR to_regclass('public.incident_report_evidence') IS NULL
                OR to_regclass('public.moderation_audit_log') IS NULL THEN
@@ -418,6 +500,18 @@ jobs:
             END IF;
             IF NOT EXISTS (SELECT 1 FROM storage.buckets WHERE id = 'incident-evidence' AND public = false) THEN
               RAISE EXCEPTION 'incident evidence bucket is missing or public';
+            END IF;
+            IF NOT EXISTS (
+              SELECT 1 FROM pg_policies WHERE schemaname='public' AND tablename='content_reports'
+                AND policyname='content_reports_owner_or_staff_select'
+            ) OR NOT EXISTS (
+              SELECT 1 FROM pg_policies WHERE schemaname='public' AND tablename='incident_reports'
+                AND policyname='incident_reports_owner_or_staff_select'
+            ) OR NOT EXISTS (
+              SELECT 1 FROM pg_policies WHERE schemaname='public' AND tablename='incident_report_evidence'
+                AND policyname='incident_evidence_owner_or_staff_select'
+            ) THEN
+              RAISE EXCEPTION 'canonical sensitive owner/staff policies missing';
             END IF;
           END $$;
           SQL
@@ -437,6 +531,9 @@ jobs:
         run: |
           set -euo pipefail
           for fn in case-search send-weekly-digest check-foia-deadlines send-foia-request track-foia-open legal-assistant upload-incident-evidence; do
+            if [[ -d "$fn" ]]; then
+              echo "Unexpected function path: $fn"
+            fi
             if [[ -d "supabase/functions/$fn" ]]; then
               supabase functions deploy "$fn" --project-ref "$PROJECT_REF"
             fi

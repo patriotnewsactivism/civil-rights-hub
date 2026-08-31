@@ -111,9 +111,31 @@ jobs:
             IF NOT EXISTS (SELECT 1 FROM supabase_migrations.schema_migrations WHERE version='20260831060000') THEN
               RAISE EXCEPTION 'seed migration missing from production ledger';
             END IF;
-            SELECT count(*) INTO n
+            SELECT count(DISTINCT r.external_url) INTO n
             FROM public.resource_library r
-            WHERE r.id::text LIKE 'e8f44f71-6c55-4ea4-a9dc-3000000000%'
+            WHERE r.external_url IN (
+              'https://uscode.house.gov/view.xhtml?edition=prelim&num=0&req=granuleid%3AUSC-prelim-title18-section241',
+              'https://uscode.house.gov/view.xhtml?edition=prelim&f=treesort&num=0&req=granuleid%3AUSC-prelim-title18-section242',
+              'https://uscode.house.gov/view.xhtml?edition=prelim&f=treesort&num=0&req=%28title%3A42+section%3A1983+edition%3Aprelim%29+OR+%28granuleid%3AUSC-prelim-title42-section1983%29',
+              'https://uscode.house.gov/view.xhtml?edition=prelim&f=treesort&num=0&req=%28title%3A42+section%3A1985+edition%3Aprelim%29+OR+%28granuleid%3AUSC-prelim-title42-section1985%29',
+              'https://uscode.house.gov/view.xhtml?edition=prelim&f=treesort&num=0&req=%28title%3A42+section%3A12132+edition%3Aprelim%29+OR+%28granuleid%3AUSC-prelim-title42-section12132%29',
+              'https://uscode.house.gov/view.xhtml?edition=prelim&num=0&req=%28title%3A42+section%3A12203+edition%3Aprelim%29',
+              'https://uscode.house.gov/view.xhtml?edition=prelim&num=0&req=granuleid%3AUSC-prelim-title29-section794',
+              'https://uscode.house.gov/view.xhtml?edition=prelim&num=0&req=granuleid%3AUSC-prelim-title5-section552%28b%29%283%29',
+              'https://uscode.house.gov/view.xhtml?edition=prelim&hl=false&req=granuleid%3AUSC-prelim-title5-section552a',
+              'https://uscode.house.gov/view.xhtml?edition=prelim&f=treesort&num=0&req=%28title%3A28+section%3A1346+edition%3Aprelim%29+OR+%28granuleid%3AUSC-prelim-title28-section1346%29',
+              'https://uscode.house.gov/view.xhtml?edition=prelim&num=0&req=granuleid%3AUSC-prelim-title28-section2675',
+              'https://www.ecfr.gov/current/title-28/chapter-I/part-35',
+              'https://www.justice.gov/oip/doj-guide-freedom-information-act-0',
+              'https://www.archives.gov/ogis/mediation-program',
+              'https://www.eeoc.gov/how-file-charge-employment-discrimination',
+              'https://www.hhs.gov/ocr/complaints/index.html',
+              'https://www.ed.gov/laws-and-policy/civil-rights-laws/file-complaint',
+              'https://www.hud.gov/helping-americans/fair-housing-act-overview',
+              'https://www.uscourts.gov/forms-rules/forms/fee-waiver-application-forms',
+              'https://www.uscourts.gov/forms-rules/forms/application-proceed-district-court-without-prepaying-fees-or-costs-long-form',
+              'https://www.uscourts.gov/forms-rules/forms/subpoena-produce-documents-information-or-objects-or-permit-inspection-premises-a-civil-action'
+            )
               AND r.is_approved=true
               AND public.has_publishable_provenance('resource',r.id)
               AND public.provenance_supports_fields(
@@ -128,6 +150,34 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          visible="$(psql "$POOLER_URL" -qAt -v ON_ERROR_STOP=1 -c "set role anon; select count(*) from public.resource_library where id::text like 'e8f44f71-6c55-4ea4-a9dc-3000000000%';" | tail -n1)"
+          visible="$(psql "$POOLER_URL" -qAt -v ON_ERROR_STOP=1 <<'SQL' | tail -n1
+          set role anon;
+          select count(distinct external_url)
+          from public.resource_library
+          where external_url in (
+            'https://uscode.house.gov/view.xhtml?edition=prelim&num=0&req=granuleid%3AUSC-prelim-title18-section241',
+            'https://uscode.house.gov/view.xhtml?edition=prelim&f=treesort&num=0&req=granuleid%3AUSC-prelim-title18-section242',
+            'https://uscode.house.gov/view.xhtml?edition=prelim&f=treesort&num=0&req=%28title%3A42+section%3A1983+edition%3Aprelim%29+OR+%28granuleid%3AUSC-prelim-title42-section1983%29',
+            'https://uscode.house.gov/view.xhtml?edition=prelim&f=treesort&num=0&req=%28title%3A42+section%3A1985+edition%3Aprelim%29+OR+%28granuleid%3AUSC-prelim-title42-section1985%29',
+            'https://uscode.house.gov/view.xhtml?edition=prelim&f=treesort&num=0&req=%28title%3A42+section%3A12132+edition%3Aprelim%29+OR+%28granuleid%3AUSC-prelim-title42-section12132%29',
+            'https://uscode.house.gov/view.xhtml?edition=prelim&num=0&req=%28title%3A42+section%3A12203+edition%3Aprelim%29',
+            'https://uscode.house.gov/view.xhtml?edition=prelim&num=0&req=granuleid%3AUSC-prelim-title29-section794',
+            'https://uscode.house.gov/view.xhtml?edition=prelim&num=0&req=granuleid%3AUSC-prelim-title5-section552%28b%29%283%29',
+            'https://uscode.house.gov/view.xhtml?edition=prelim&hl=false&req=granuleid%3AUSC-prelim-title5-section552a',
+            'https://uscode.house.gov/view.xhtml?edition=prelim&f=treesort&num=0&req=%28title%3A28+section%3A1346+edition%3Aprelim%29+OR+%28granuleid%3AUSC-prelim-title28-section1346%29',
+            'https://uscode.house.gov/view.xhtml?edition=prelim&num=0&req=granuleid%3AUSC-prelim-title28-section2675',
+            'https://www.ecfr.gov/current/title-28/chapter-I/part-35',
+            'https://www.justice.gov/oip/doj-guide-freedom-information-act-0',
+            'https://www.archives.gov/ogis/mediation-program',
+            'https://www.eeoc.gov/how-file-charge-employment-discrimination',
+            'https://www.hhs.gov/ocr/complaints/index.html',
+            'https://www.ed.gov/laws-and-policy/civil-rights-laws/file-complaint',
+            'https://www.hud.gov/helping-americans/fair-housing-act-overview',
+            'https://www.uscourts.gov/forms-rules/forms/fee-waiver-application-forms',
+            'https://www.uscourts.gov/forms-rules/forms/application-proceed-district-court-without-prepaying-fees-or-costs-long-form',
+            'https://www.uscourts.gov/forms-rules/forms/subpoena-produce-documents-information-or-objects-or-permit-inspection-premises-a-civil-action'
+          );
+          SQL
+          )"
           [[ "$visible" == "21" ]] || { echo "::error::anon sees ${visible}/21 seeded resources"; exit 3; }
           echo 'Verified: anon sees exactly 21 source-backed enforcement resources.'

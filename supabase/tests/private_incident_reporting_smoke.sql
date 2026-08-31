@@ -82,9 +82,21 @@ BEGIN
   IF NOT EXISTS (
     SELECT 1 FROM pg_policies
     WHERE schemaname = 'public' AND tablename = 'content_reports'
-      AND policyname = 'content_reports_staff_select'
+      AND policyname = 'content_reports_owner_or_staff_select'
   ) THEN
-    RAISE EXCEPTION 'staff content-report visibility policy is missing';
+    RAISE EXCEPTION 'canonical owner/staff content-report visibility policy is missing';
+  END IF;
+
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE schemaname = 'public' AND tablename = 'incident_reports'
+      AND policyname = 'incident_reports_owner_or_staff_select'
+  ) OR NOT EXISTS (
+    SELECT 1 FROM pg_policies
+    WHERE schemaname = 'public' AND tablename = 'incident_report_evidence'
+      AND policyname = 'incident_evidence_owner_or_staff_select'
+  ) THEN
+    RAISE EXCEPTION 'canonical owner/staff incident visibility policies are missing';
   END IF;
 END $$;
 

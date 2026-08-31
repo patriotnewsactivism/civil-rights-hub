@@ -113,24 +113,45 @@ jobs:
           ) ORDER BY tgname;
           SQL
 
-      - name: Rollback-test authenticated community operations
+      - name: Rollback-test pending fix and authenticated community operations
         shell: bash
         run: |
           set -euo pipefail
-          psql "$POOLER_URL" -v ON_ERROR_STOP=1 -P pager=off <<'SQL'
+          test_sql="$(mktemp)"
+          cat > "$test_sql" <<'SQL'
           SELECT id::text AS smoke_user_1 FROM auth.users ORDER BY created_at, id LIMIT 1 \gset
           SELECT id::text AS smoke_user_2 FROM auth.users
             WHERE id <> :'smoke_user_1'::uuid ORDER BY created_at, id LIMIT 1 \gset
-
           BEGIN;
+          SQL
+
+          # Execute the pending migration inside our outer transaction. Its own
+          # transaction wrapper is stripped so every DDL/DML change rolls back.
+          sed -e '/^[[:space:]]*BEGIN;[[:space:]]*$/d' \
+              -e '/^[[:space:]]*COMMIT;[[:space:]]*$/d' \
+              supabase/migrations/20260831064500_fix_social_profile_privacy_dependencies.sql >> "$test_sql"
+
+          cat >> "$test_sql" <<'SQL'
           SET LOCAL ROLE authenticated;
           SELECT set_config('request.jwt.claim.sub', :'smoke_user_1', true);
           SELECT set_config('request.jwt.claim.role', 'authenticated', true);
 
-          \echo '--- post + comment ---'
+          \echo '--- post + authenticated/public reads + comment ---'
           INSERT INTO public.posts (user_id, content, post_type, visibility)
           VALUES (:'smoke_user_1'::uuid, 'community-health-check', 'text', 'public')
           RETURNING id::text AS smoke_post_id \gset
+          SELECT id FROM public.posts WHERE id = :'smoke_post_id'::uuid;
+
+          RESET ROLE;
+          SET LOCAL ROLE anon;
+          SELECT set_config('request.jwt.claim.sub', '', true);
+          SELECT set_config('request.jwt.claim.role', 'anon', true);
+          SELECT id FROM public.posts WHERE id = :'smoke_post_id'::uuid;
+
+          RESET ROLE;
+          SET LOCAL ROLE authenticated;
+          SELECT set_config('request.jwt.claim.sub', :'smoke_user_1', true);
+          SELECT set_config('request.jwt.claim.role', 'authenticated', true);
           INSERT INTO public.comments (post_id, user_id, content)
           VALUES (:'smoke_post_id'::uuid, :'smoke_user_1'::uuid, 'health-check-comment');
 
@@ -202,5 +223,8 @@ jobs:
           SELECT count(*) AS message_count FROM public.get_conversation_messages(:'smoke_conversation_id'::uuid, 10, NULL, NULL);
           SELECT public.mark_conversation_read(:'smoke_conversation_id'::uuid);
 
+          RESET ROLE;
           ROLLBACK;
           SQL
+
+          psql "$POOLER_URL" -v ON_ERROR_STOP=1 -P pager=off -f "$test_sql"

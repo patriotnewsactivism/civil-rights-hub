@@ -1,0 +1,96 @@
+name: Civil Rights Hub Comment Moderation Production
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - supabase/functions/moderate-comment/**
+      - .github/workflows/moderate-comment-production.yml
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths:
+      - supabase/functions/moderate-comment/**
+      - .github/workflows/moderate-comment-production.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: civil-rights-hub-moderate-comment-${{ github.event_name == 'pull_request' && github.event.pull_request.number || 'production' }}
+  cancel-in-progress: false
+
+env:
+  PROJECT_REF: vrdnrbjnitptxrexdlao
+
+jobs:
+  validate:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+    steps:
+      - name: Checkout pull request
+        uses: actions/checkout@v4
+
+      - name: Require production function credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$SUPABASE_ACCESS_TOKEN" || { echo "::error::Missing SUPABASE_ACCESS_TOKEN repository secret"; exit 1; }
+          test "$PROJECT_REF" = "vrdnrbjnitptxrexdlao" || { echo "::error::Unexpected Supabase project ref"; exit 1; }
+
+      - name: Install Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Bundle hardened function
+        shell: bash
+        run: |
+          set -euo pipefail
+          supabase functions serve moderate-comment --env-file /dev/null >/tmp/moderate-comment-serve.log 2>&1 &
+          pid=$!
+          trap 'kill "$pid" 2>/dev/null || true' EXIT
+          for _ in {1..30}; do
+            if grep -q "Serving functions on" /tmp/moderate-comment-serve.log; then
+              exit 0
+            fi
+            if ! kill -0 "$pid" 2>/dev/null; then
+              cat /tmp/moderate-comment-serve.log
+              exit 1
+            fi
+            sleep 1
+          done
+          cat /tmp/moderate-comment-serve.log
+          exit 1
+
+  deploy:
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+    steps:
+      - name: Checkout deployment commit
+        uses: actions/checkout@v4
+
+      - name: Require production function credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$SUPABASE_ACCESS_TOKEN" || { echo "::error::Missing SUPABASE_ACCESS_TOKEN repository secret"; exit 1; }
+          test "$PROJECT_REF" = "vrdnrbjnitptxrexdlao" || { echo "::error::Unexpected Supabase project ref"; exit 1; }
+
+      - name: Install Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Deploy hardened moderate-comment function
+        shell: bash
+        run: |
+          set -euo pipefail
+          supabase functions deploy moderate-comment --project-ref "$PROJECT_REF"

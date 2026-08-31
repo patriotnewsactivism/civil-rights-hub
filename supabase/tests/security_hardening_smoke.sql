@@ -26,6 +26,7 @@ $$;
 
 -- 2. Browser-executable public SECURITY DEFINER functions are forbidden unless
 --    they are an explicitly reviewed actor-derived RPC. No approved RPC is anon.
+--    Keep this list deliberately explicit: adding an RPC requires a security review.
 DO $$
 DECLARE
   bad TEXT;
@@ -42,7 +43,16 @@ BEGIN
       'public.mark_conversation_read(uuid)',
       'public.list_my_conversations(integer)',
       'public.get_my_unread_message_count()',
-      'public.get_my_community_privacy_settings()'
+      'public.get_my_community_privacy_settings()',
+      'public.create_incident_report(text,text,timestamp with time zone,text,text,text,text,text,text,text,text,boolean)',
+      'public.update_my_incident_report(uuid,text,text,timestamp with time zone,text,text,text,text,text,text,text,text)',
+      'public.submit_my_incident_report(uuid)',
+      'public.delete_my_draft_incident_report(uuid)',
+      'public.register_incident_evidence(uuid,text,text,text,bigint,text,text)',
+      'public.unregister_incident_evidence(uuid)',
+      'public.is_current_user_staff()',
+      'public.moderate_content_report(uuid,text,text)',
+      'public.review_incident_report(uuid,text,text)'
     ]::text[])
   )
   SELECT string_agg(p.oid::regprocedure::text, ', ' ORDER BY p.oid::regprocedure::text)
@@ -74,7 +84,16 @@ BEGIN
       'public.mark_conversation_read(uuid)',
       'public.list_my_conversations(integer)',
       'public.get_my_unread_message_count()',
-      'public.get_my_community_privacy_settings()'
+      'public.get_my_community_privacy_settings()',
+      'public.create_incident_report(text,text,timestamp with time zone,text,text,text,text,text,text,text,text,boolean)',
+      'public.update_my_incident_report(uuid,text,text,timestamp with time zone,text,text,text,text,text,text,text,text)',
+      'public.submit_my_incident_report(uuid)',
+      'public.delete_my_draft_incident_report(uuid)',
+      'public.register_incident_evidence(uuid,text,text,text,bigint,text,text)',
+      'public.unregister_incident_evidence(uuid)',
+      'public.is_current_user_staff()',
+      'public.moderate_content_report(uuid,text,text)',
+      'public.review_incident_report(uuid,text,text)'
     ]::text[])
   )
   SELECT string_agg(signature, ', ' ORDER BY signature)

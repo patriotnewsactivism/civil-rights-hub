@@ -1,10 +1,11 @@
 -- Fix runtime regressions introduced when community privacy settings were removed
--- from browser-readable user_profiles columns.
+-- from browser-readable user_profiles columns and reconcile remaining legacy
+-- social triggers with the current clean-slate runtime contract.
 --
 -- Keep private account state private. Browser roles must not regain SELECT on
 -- is_deactivated or UPDATE on derived profile counters. Instead, RLS reads the
--- private state through a narrow internal authz helper, and the legacy post-count
--- trigger maintains its system counter with controlled SECURITY DEFINER rights.
+-- private state through a narrow internal authz helper, and system counters run
+-- through controlled trigger functions.
 
 BEGIN;
 
@@ -87,6 +88,39 @@ END;
 $$;
 
 REVOKE ALL ON FUNCTION public.update_user_post_count() FROM PUBLIC, anon, authenticated;
+
+-- The current client stores polls in posts.poll_data. A legacy trigger on
+-- poll_votes still invokes increment_poll_vote_count(), which mutates the old
+-- post_polls model and currently throws on every legitimate vote. Remove every
+-- trigger bound to that obsolete function. The authoritative
+-- refresh_post_poll_counts_trigger from 20260828233500 remains in place.
+DO $$
+DECLARE
+  legacy_trigger RECORD;
+  legacy_function OID;
+BEGIN
+  SELECT to_regprocedure('public.increment_poll_vote_count()')::oid
+    INTO legacy_function;
+
+  IF legacy_function IS NOT NULL THEN
+    FOR legacy_trigger IN
+      SELECT t.tgname, t.tgrelid::regclass AS relation_name
+      FROM pg_trigger t
+      WHERE NOT t.tgisinternal
+        AND t.tgfoid = legacy_function
+    LOOP
+      EXECUTE format(
+        'DROP TRIGGER IF EXISTS %I ON %s',
+        legacy_trigger.tgname,
+        legacy_trigger.relation_name
+      );
+    END LOOP;
+
+    REVOKE ALL ON FUNCTION public.increment_poll_vote_count() FROM PUBLIC, anon, authenticated;
+    DROP FUNCTION public.increment_poll_vote_count();
+  END IF;
+END;
+$$;
 
 -- Reassert the privacy boundary explicitly so future privilege drift does not
 -- turn this runtime fix into disclosure or counter-spoofing access.

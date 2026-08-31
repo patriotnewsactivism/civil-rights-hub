@@ -29,7 +29,7 @@ The production provenance gate controls publication for supported entity types a
 - React 18 + TypeScript + Vite
 - Tailwind CSS + shadcn/Radix
 - Supabase project `vrdnrbjnitptxrexdlao`
-- Vercel production deployment
+- Netlify production deployment
 - GitHub Actions guarded database migration workflow
 - Vitest/Testing Library regression coverage
 

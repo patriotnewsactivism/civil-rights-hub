@@ -60,7 +60,7 @@ const Privacy = () => (
           <CardContent className="pt-6 space-y-4">
             <h2 className="text-xl font-bold">Infrastructure and third parties</h2>
             <div className="space-y-3 text-sm text-muted-foreground leading-relaxed">
-              <p>Civil Rights Hub currently uses Supabase for application data/authentication and includes Vercel Analytics in the web application. Location features can contact OpenStreetMap/Nominatim, ipapi.co, and ip-api.com. External resource, donation, scanner, social, and research links may take you to other services with their own privacy practices.</p>
+              <p>Civil Rights Hub currently uses Supabase for application data/authentication. Location features can contact OpenStreetMap/Nominatim, ipapi.co, and ip-api.com. External resource, donation, scanner, social, and research links may take you to other services with their own privacy practices.</p>
               <p>Email-delivery code exists for a separate digest workflow and can use Resend when configured. The public digest-signup path and that delivery path are not currently represented as a verified end-to-end production flow.</p>
               <p>Because these providers process requests needed to operate features, Civil Rights Hub does not make a blanket representation that user data is never processed by third-party infrastructure.</p>
             </div>

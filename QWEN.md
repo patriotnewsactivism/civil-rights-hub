@@ -6,7 +6,7 @@ Instructional context for work on **Civil Rights Hub** (`civilrightshub.org`).
 
 - Frontend: React 18, TypeScript, Vite, Tailwind, shadcn/Radix.
 - Backend: Supabase project `vrdnrbjnitptxrexdlao`.
-- Hosting: Vercel.
+- Hosting: Netlify.
 - Canonical package manager: npm with `package-lock.json`.
 - Public legal/accountability data follows a source-first provenance gate.
 

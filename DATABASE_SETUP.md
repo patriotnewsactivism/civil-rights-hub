@@ -117,7 +117,7 @@ Some tables like `violations` and `violation_comments` are meant to be populated
 
 ## Production Deployment
 
-For Vercel deployment, ensure these environment variables are set:
+For Netlify deployment, ensure these environment variables are set:
 
 ```bash
 VITE_SUPABASE_URL=https://vrdnrbjnitptxrexdlao.supabase.co

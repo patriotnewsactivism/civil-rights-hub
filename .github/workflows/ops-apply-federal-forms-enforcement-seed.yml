@@ -1,0 +1,188 @@
+name: Apply Reviewed Federal Forms and Enforcement Seed
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/ops-apply-federal-forms-enforcement-seed.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: civil-rights-hub-federal-forms-enforcement-seed
+  cancel-in-progress: false
+
+env:
+  PROJECT_REF: vrdnrbjnitptxrexdlao
+  POOLER_URL: postgresql://postgres.vrdnrbjnitptxrexdlao@aws-0-us-west-2.pooler.supabase.com:5432/postgres
+  SEED_VERSION: "20260831063000"
+
+jobs:
+  apply-and-verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+      PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Verify target and link production
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$SUPABASE_ACCESS_TOKEN"
+          test -n "$SUPABASE_DB_PASSWORD"
+          test "$PROJECT_REF" = "vrdnrbjnitptxrexdlao"
+          test -f "supabase/migrations/${SEED_VERSION}_seed_verified_federal_forms_and_enforcement_sections.sql"
+          supabase link --project-ref "$PROJECT_REF" --password "$SUPABASE_DB_PASSWORD"
+
+      - name: Refuse unexpected pending migrations
+        shell: bash
+        run: |
+          set -euo pipefail
+          find supabase/migrations -maxdepth 1 -type f -name '*.sql' -printf '%f\n' \
+            | sed -E 's/^([0-9]{14}).*/\1/' | grep -E '^[0-9]{14}$' | sort -u > /tmp/local
+          psql "$POOLER_URL" -v ON_ERROR_STOP=1 -Atc \
+            "select version from supabase_migrations.schema_migrations order by version" | sort -u > /tmp/remote
+          comm -23 /tmp/local /tmp/remote > /tmp/pending
+          cat > /tmp/allowed <<'EOF'
+          20260803000000
+          20260812190000
+          20260822180500
+          20260822210500
+          20260822212000
+          20260822213000
+          20260822213500
+          20260822214500
+          20260822215000
+          20260822215500
+          20260822220000
+          20260822220500
+          20260822221000
+          20260822223000
+          20260823010000
+          20260823010100
+          20260823010200
+          20260823010300
+          20260823010400
+          20260828220500
+          20260828233500
+          20260829030500
+          20260830182000
+          20260830182500
+          20260830183000
+          20260830183500
+          20260830224500
+          20260830225000
+          20260831050000
+          20260831053000
+          20260831060000
+          20260831063000
+          EOF
+          sed -i 's/^[[:space:]]*//' /tmp/allowed
+          sort -u -o /tmp/allowed /tmp/allowed
+          comm -23 /tmp/pending /tmp/allowed > /tmp/unreviewed
+          echo 'Pending migrations:'
+          cat /tmp/pending || true
+          test ! -s /tmp/unreviewed || { echo '::error::Unreviewed pending migrations:'; cat /tmp/unreviewed; exit 2; }
+
+      - name: Dry run and apply reviewed seed
+        shell: bash
+        run: |
+          set -euo pipefail
+          supabase db push --linked --include-all --dry-run --password "$SUPABASE_DB_PASSWORD"
+          supabase db push --linked --include-all --password "$SUPABASE_DB_PASSWORD"
+
+      - name: Verify source-backed publication contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          psql "$POOLER_URL" -v ON_ERROR_STOP=1 -P pager=off <<'SQL'
+          DO $$
+          DECLARE n integer;
+          BEGIN
+            IF NOT EXISTS (SELECT 1 FROM supabase_migrations.schema_migrations WHERE version='20260831063000') THEN
+              RAISE EXCEPTION 'seed migration missing from production ledger';
+            END IF;
+            SELECT count(DISTINCT r.external_url) INTO n
+            FROM public.resource_library r
+            WHERE r.external_url IN (
+              'https://www.uscourts.gov/forms-rules/forms/subpoena-appear-and-testify-a-hearing-or-trial-a-civil-action',
+              'https://www.uscourts.gov/forms-rules/forms/subpoena-testify-a-deposition-a-civil-action',
+              'https://www.uscourts.gov/forms-rules/forms/notice-a-lawsuit-and-request-waive-service-a-summons',
+              'https://www.uscourts.gov/forms-rules/forms/waiver-service-summons',
+              'https://www.uscourts.gov/forms-rules/forms/summons-a-civil-action',
+              'https://www.uscourts.gov/forms-rules/forms/summons-third-party-complaint',
+              'https://www.uscourts.gov/forms-rules/forms/civil-cover-sheet',
+              'https://www.uscourts.gov/forms-rules/forms/complaint-judicial-misconduct-or-disability',
+              'https://www.uscourts.gov/forms-rules/forms/petition-writ-habeas-corpus-under-28-usc-ss-2254',
+              'https://www.uscourts.gov/forms-rules/forms/petition-a-writ-habeas-corpus-under-28-usc-ss-2241',
+              'https://www.uscourts.gov/forms-rules/forms/motion-vacate-set-aside-sentence-motion-under-28-usc-ss-2255',
+              'https://www.uscourts.gov/forms-rules/forms/application-proceed-district-court-without-prepaying-fees-or-costs-short-form',
+              'https://www.uscourts.gov/forms-rules/forms/notice-consent-and-reference-a-civil-action-a-magistrate-judge',
+              'https://www.justice.gov/crt/special-litigation-section',
+              'https://www.justice.gov/crt/rights-persons-confined-jails-and-prisons',
+              'https://www.justice.gov/crt/disability-rights-section',
+              'https://www.justice.gov/crt/voting-section',
+              'https://www.justice.gov/crt/criminal-section',
+              'https://www.justice.gov/crt/housing-and-civil-enforcement-section',
+              'https://www.justice.gov/crt/federal-coordination-and-compliance-section',
+              'https://www.justice.gov/crt/immigrant-and-employee-rights-section',
+              'https://www.justice.gov/crt/educational-opportunities-section',
+              'https://www.justice.gov/crt/employment-litigation-section'
+            )
+              AND r.is_approved=true
+              AND public.has_publishable_provenance('resource',r.id)
+              AND public.provenance_supports_fields(
+                'resource',r.id,
+                ARRAY['title','description','resource_type','category','external_url','author','source']::text[]
+              );
+            IF n <> 23 THEN RAISE EXCEPTION 'expected 23 verified federal-form/enforcement resources, found %',n; END IF;
+          END $$;
+          SQL
+
+      - name: Verify anonymous visibility
+        shell: bash
+        run: |
+          set -euo pipefail
+          visible="$(psql "$POOLER_URL" -qAt -v ON_ERROR_STOP=1 <<'SQL' | tail -n1
+          set role anon;
+          select count(distinct external_url)
+          from public.resource_library
+          where external_url in (
+            'https://www.uscourts.gov/forms-rules/forms/subpoena-appear-and-testify-a-hearing-or-trial-a-civil-action',
+            'https://www.uscourts.gov/forms-rules/forms/subpoena-testify-a-deposition-a-civil-action',
+            'https://www.uscourts.gov/forms-rules/forms/notice-a-lawsuit-and-request-waive-service-a-summons',
+            'https://www.uscourts.gov/forms-rules/forms/waiver-service-summons',
+            'https://www.uscourts.gov/forms-rules/forms/summons-a-civil-action',
+            'https://www.uscourts.gov/forms-rules/forms/summons-third-party-complaint',
+            'https://www.uscourts.gov/forms-rules/forms/civil-cover-sheet',
+            'https://www.uscourts.gov/forms-rules/forms/complaint-judicial-misconduct-or-disability',
+            'https://www.uscourts.gov/forms-rules/forms/petition-writ-habeas-corpus-under-28-usc-ss-2254',
+            'https://www.uscourts.gov/forms-rules/forms/petition-a-writ-habeas-corpus-under-28-usc-ss-2241',
+            'https://www.uscourts.gov/forms-rules/forms/motion-vacate-set-aside-sentence-motion-under-28-usc-ss-2255',
+            'https://www.uscourts.gov/forms-rules/forms/application-proceed-district-court-without-prepaying-fees-or-costs-short-form',
+            'https://www.uscourts.gov/forms-rules/forms/notice-consent-and-reference-a-civil-action-a-magistrate-judge',
+            'https://www.justice.gov/crt/special-litigation-section',
+            'https://www.justice.gov/crt/rights-persons-confined-jails-and-prisons',
+            'https://www.justice.gov/crt/disability-rights-section',
+            'https://www.justice.gov/crt/voting-section',
+            'https://www.justice.gov/crt/criminal-section',
+            'https://www.justice.gov/crt/housing-and-civil-enforcement-section',
+            'https://www.justice.gov/crt/federal-coordination-and-compliance-section',
+            'https://www.justice.gov/crt/immigrant-and-employee-rights-section',
+            'https://www.justice.gov/crt/educational-opportunities-section',
+            'https://www.justice.gov/crt/employment-litigation-section'
+          );
+          SQL
+          )"
+          [[ "$visible" == "23" ]] || { echo "::error::anon sees ${visible}/23 seeded resources"; exit 3; }
+          echo 'Verified: anon sees exactly 23 source-backed federal-form/enforcement resources.'

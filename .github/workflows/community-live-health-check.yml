@@ -1,0 +1,124 @@
+name: Civil Rights Hub Community Live Health Check
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+    paths:
+      - .github/workflows/community-live-health-check.yml
+      - src/pages/Community.tsx
+      - src/components/SocialFeed.tsx
+      - src/components/community/**
+      - src/components/social/**
+      - src/lib/sentry.ts
+      - src/lib/socialTelemetry.ts
+      - supabase/migrations/**
+
+permissions:
+  contents: read
+
+jobs:
+  production-contract:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      PROJECT_REF: vrdnrbjnitptxrexdlao
+      POOLER_URL: postgresql://postgres.vrdnrbjnitptxrexdlao@aws-0-us-west-2.pooler.supabase.com:5432/postgres
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+      PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify production project binding
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$SUPABASE_DB_PASSWORD" || { echo "::error::Missing SUPABASE_DB_PASSWORD"; exit 1; }
+          test "$PROJECT_REF" = "vrdnrbjnitptxrexdlao" || { echo "::error::Unexpected Supabase project ref"; exit 1; }
+
+      - name: Inspect live social recovery state
+        shell: bash
+        run: |
+          set -euo pipefail
+          psql "$POOLER_URL" -v ON_ERROR_STOP=1 -P pager=off <<'SQL'
+          \echo '=== Social recovery migration ledger ==='
+          SELECT version, name
+          FROM supabase_migrations.schema_migrations
+          WHERE version IN (
+            '20260828220500',
+            '20260828233500',
+            '20260830182000',
+            '20260830182500',
+            '20260830183000',
+            '20260830183500'
+          )
+          ORDER BY version;
+
+          \echo '=== Poll vote live schema ==='
+          SELECT column_name, data_type, is_nullable
+          FROM information_schema.columns
+          WHERE table_schema = 'public' AND table_name = 'poll_votes'
+          ORDER BY ordinal_position;
+
+          SELECT conname, pg_get_constraintdef(oid) AS definition
+          FROM pg_constraint
+          WHERE conrelid = 'public.poll_votes'::regclass
+          ORDER BY conname;
+
+          \echo '=== Clean-slate social counts ==='
+          SELECT 'posts' AS table_name, count(*) AS rows FROM public.posts
+          UNION ALL SELECT 'comments', count(*) FROM public.comments
+          UNION ALL SELECT 'forum_threads', count(*) FROM public.forum_threads
+          UNION ALL SELECT 'forum_posts', count(*) FROM public.forum_posts
+          UNION ALL SELECT 'community_events', count(*) FROM public.community_events
+          UNION ALL SELECT 'event_rsvps', count(*) FROM public.event_rsvps
+          UNION ALL SELECT 'stories', count(*) FROM public.stories
+          UNION ALL SELECT 'story_views', count(*) FROM public.story_views
+          UNION ALL SELECT 'follows', count(*) FROM public.follows
+          UNION ALL SELECT 'user_profiles', count(*) FROM public.user_profiles
+          ORDER BY table_name;
+
+          \echo '=== Recovery quarantine ==='
+          SELECT source_table, count(*) AS quarantined_rows
+          FROM private.community_social_recovery_quarantine
+          GROUP BY source_table
+          ORDER BY source_table;
+
+          \echo '=== Required storage buckets ==='
+          SELECT id, public, file_size_limit, allowed_mime_types
+          FROM storage.buckets
+          WHERE id IN ('posts','avatars')
+          ORDER BY id;
+
+          \echo '=== Storage policies ==='
+          SELECT policyname, cmd, roles::text, qual, with_check
+          FROM pg_policies
+          WHERE schemaname = 'storage' AND tablename = 'objects'
+            AND (coalesce(qual,'') ~ 'posts|avatars' OR coalesce(with_check,'') ~ 'posts|avatars')
+          ORDER BY policyname;
+
+          \echo '=== Critical social RLS policies ==='
+          SELECT tablename, policyname, cmd, roles::text, qual, with_check
+          FROM pg_policies
+          WHERE schemaname = 'public'
+            AND tablename IN ('posts','forum_threads','forum_posts','stories','story_views','community_events','event_rsvps','follows','poll_votes')
+          ORDER BY tablename, policyname;
+
+          \echo '=== Runtime trigger presence ==='
+          SELECT tgname, tgrelid::regclass::text AS table_name
+          FROM pg_trigger
+          WHERE NOT tgisinternal
+            AND tgname IN (
+              'enforce_post_poll_vote_trigger',
+              'refresh_post_poll_counts_trigger',
+              'protect_post_poll_data_trigger',
+              'refresh_story_view_count_trigger',
+              'refresh_community_event_rsvp_count_trigger',
+              'refresh_forum_thread_upvote_count_trigger',
+              'refresh_forum_thread_reply_stats_trigger',
+              'protect_forum_thread_system_fields_trigger'
+            )
+          ORDER BY tgname;
+          SQL

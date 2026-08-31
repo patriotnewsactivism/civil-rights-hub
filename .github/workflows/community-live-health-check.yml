@@ -8,8 +8,12 @@ on:
       - .github/workflows/community-live-health-check.yml
       - src/pages/Community.tsx
       - src/components/SocialFeed.tsx
+      - src/components/MessagingPanel.tsx
+      - src/components/NotificationsCenter.tsx
+      - src/components/StoriesBar.tsx
       - src/components/community/**
       - src/components/social/**
+      - src/services/communityMessaging.ts
       - src/lib/sentry.ts
       - src/lib/socialTelemetry.ts
       - supabase/migrations/**
@@ -18,6 +22,18 @@ permissions:
   contents: read
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+
   production-contract:
     if: github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
@@ -47,25 +63,17 @@ jobs:
           SELECT version, name
           FROM supabase_migrations.schema_migrations
           WHERE version IN (
-            '20260828220500',
-            '20260828233500',
-            '20260830182000',
-            '20260830182500',
-            '20260830183000',
-            '20260830183500'
-          )
-          ORDER BY version;
+            '20260828220500','20260828233500','20260830182000',
+            '20260830182500','20260830183000','20260830183500'
+          ) ORDER BY version;
 
           \echo '=== Poll vote live schema ==='
           SELECT column_name, data_type, is_nullable
           FROM information_schema.columns
           WHERE table_schema = 'public' AND table_name = 'poll_votes'
           ORDER BY ordinal_position;
-
           SELECT conname, pg_get_constraintdef(oid) AS definition
-          FROM pg_constraint
-          WHERE conrelid = 'public.poll_votes'::regclass
-          ORDER BY conname;
+          FROM pg_constraint WHERE conrelid = 'public.poll_votes'::regclass ORDER BY conname;
 
           \echo '=== Clean-slate social counts ==='
           SELECT 'posts' AS table_name, count(*) AS rows FROM public.posts
@@ -83,42 +91,116 @@ jobs:
           \echo '=== Recovery quarantine ==='
           SELECT source_table, count(*) AS quarantined_rows
           FROM private.community_social_recovery_quarantine
-          GROUP BY source_table
-          ORDER BY source_table;
+          GROUP BY source_table ORDER BY source_table;
 
-          \echo '=== Required storage buckets ==='
+          \echo '=== Required storage buckets and policies ==='
           SELECT id, public, file_size_limit, allowed_mime_types
-          FROM storage.buckets
-          WHERE id IN ('posts','avatars')
-          ORDER BY id;
-
-          \echo '=== Storage policies ==='
+          FROM storage.buckets WHERE id IN ('posts','avatars') ORDER BY id;
           SELECT policyname, cmd, roles::text, qual, with_check
           FROM pg_policies
           WHERE schemaname = 'storage' AND tablename = 'objects'
             AND (coalesce(qual,'') ~ 'posts|avatars' OR coalesce(with_check,'') ~ 'posts|avatars')
           ORDER BY policyname;
 
-          \echo '=== Critical social RLS policies ==='
-          SELECT tablename, policyname, cmd, roles::text, qual, with_check
-          FROM pg_policies
-          WHERE schemaname = 'public'
-            AND tablename IN ('posts','forum_threads','forum_posts','stories','story_views','community_events','event_rsvps','follows','poll_votes')
-          ORDER BY tablename, policyname;
-
           \echo '=== Runtime trigger presence ==='
           SELECT tgname, tgrelid::regclass::text AS table_name
           FROM pg_trigger
-          WHERE NOT tgisinternal
-            AND tgname IN (
-              'enforce_post_poll_vote_trigger',
-              'refresh_post_poll_counts_trigger',
-              'protect_post_poll_data_trigger',
-              'refresh_story_view_count_trigger',
-              'refresh_community_event_rsvp_count_trigger',
-              'refresh_forum_thread_upvote_count_trigger',
-              'refresh_forum_thread_reply_stats_trigger',
-              'protect_forum_thread_system_fields_trigger'
+          WHERE NOT tgisinternal AND tgname IN (
+            'enforce_post_poll_vote_trigger','refresh_post_poll_counts_trigger',
+            'protect_post_poll_data_trigger','refresh_story_view_count_trigger',
+            'refresh_community_event_rsvp_count_trigger','refresh_forum_thread_upvote_count_trigger',
+            'refresh_forum_thread_reply_stats_trigger','protect_forum_thread_system_fields_trigger'
+          ) ORDER BY tgname;
+          SQL
+
+      - name: Rollback-test authenticated community operations
+        shell: bash
+        run: |
+          set -euo pipefail
+          psql "$POOLER_URL" -v ON_ERROR_STOP=1 -P pager=off <<'SQL'
+          SELECT id::text AS smoke_user_1 FROM auth.users ORDER BY created_at, id LIMIT 1 \gset
+          SELECT id::text AS smoke_user_2 FROM auth.users
+            WHERE id <> :'smoke_user_1'::uuid ORDER BY created_at, id LIMIT 1 \gset
+
+          BEGIN;
+          SET LOCAL ROLE authenticated;
+          SELECT set_config('request.jwt.claim.sub', :'smoke_user_1', true);
+          SELECT set_config('request.jwt.claim.role', 'authenticated', true);
+
+          \echo '--- post + comment ---'
+          INSERT INTO public.posts (user_id, content, post_type, visibility)
+          VALUES (:'smoke_user_1'::uuid, 'community-health-check', 'text', 'public')
+          RETURNING id::text AS smoke_post_id \gset
+          INSERT INTO public.comments (post_id, user_id, content)
+          VALUES (:'smoke_post_id'::uuid, :'smoke_user_1'::uuid, 'health-check-comment');
+
+          \echo '--- poll post + vote ---'
+          INSERT INTO public.posts (user_id, content, post_type, visibility, poll_data)
+          VALUES (
+            :'smoke_user_1'::uuid,
+            'community-health-check-poll',
+            'text',
+            'public',
+            jsonb_build_object(
+              'id', gen_random_uuid()::text,
+              'question', 'health check',
+              'options', jsonb_build_array(
+                jsonb_build_object('id','option-a','text','A','voteCount',0),
+                jsonb_build_object('id','option-b','text','B','voteCount',0)
+              ),
+              'allowMultiple', false,
+              'totalVotes', 0
             )
-          ORDER BY tgname;
+          ) RETURNING id::text AS smoke_poll_id \gset
+
+          SELECT set_config('request.jwt.claim.sub', :'smoke_user_2', true);
+          INSERT INTO public.poll_votes (poll_id, user_id, option_id)
+          VALUES (:'smoke_poll_id'::uuid, :'smoke_user_2'::uuid, 'option-a');
+
+          \echo '--- discussion + reply + upvote ---'
+          SELECT set_config('request.jwt.claim.sub', :'smoke_user_1', true);
+          INSERT INTO public.forum_threads (user_id, username, title, content, category)
+          VALUES (:'smoke_user_1'::uuid, 'Health check', 'Community health check thread', 'Rollback-only runtime verification.', 'general')
+          RETURNING id::text AS smoke_thread_id \gset
+          INSERT INTO public.forum_posts (thread_id, user_id, username, content)
+          VALUES (:'smoke_thread_id'::uuid, :'smoke_user_1'::uuid, 'Health check', 'Rollback-only reply.');
+          SELECT set_config('request.jwt.claim.sub', :'smoke_user_2', true);
+          INSERT INTO public.thread_upvotes (thread_id, user_id)
+          VALUES (:'smoke_thread_id'::uuid, :'smoke_user_2'::uuid);
+
+          \echo '--- event + RSVP ---'
+          SELECT set_config('request.jwt.claim.sub', :'smoke_user_1', true);
+          INSERT INTO public.community_events (
+            organizer_id, title, description, event_type, city, state, start_date,
+            is_public, is_published, is_cancelled
+          ) VALUES (
+            :'smoke_user_1'::uuid, 'Community health check event', 'Rollback-only runtime verification.',
+            'other', 'Test City', 'MS', NOW() + INTERVAL '7 days', true, true, false
+          ) RETURNING id::text AS smoke_event_id \gset
+          SELECT set_config('request.jwt.claim.sub', :'smoke_user_2', true);
+          INSERT INTO public.event_rsvps (event_id, user_id, status)
+          VALUES (:'smoke_event_id'::uuid, :'smoke_user_2'::uuid, 'going');
+
+          \echo '--- story + view ---'
+          SELECT set_config('request.jwt.claim.sub', :'smoke_user_1', true);
+          INSERT INTO public.stories (user_id, content, media_type, background_color, text_color)
+          VALUES (:'smoke_user_1'::uuid, 'community-health-check-story', 'text', '#000000', '#ffffff')
+          RETURNING id::text AS smoke_story_id \gset
+          SELECT set_config('request.jwt.claim.sub', :'smoke_user_2', true);
+          INSERT INTO public.story_views (story_id, viewer_id)
+          VALUES (:'smoke_story_id'::uuid, :'smoke_user_2'::uuid);
+
+          \echo '--- follow ---'
+          SELECT set_config('request.jwt.claim.sub', :'smoke_user_1', true);
+          INSERT INTO public.follows (follower_id, following_id)
+          VALUES (:'smoke_user_1'::uuid, :'smoke_user_2'::uuid);
+
+          \echo '--- private messaging RPCs ---'
+          SELECT public.get_or_create_direct_conversation(:'smoke_user_2'::uuid)::text AS smoke_conversation_id \gset
+          SELECT public.send_conversation_message(:'smoke_conversation_id'::uuid, 'rollback-only-health-check');
+          SELECT count(*) AS conversation_count FROM public.list_my_conversations(10);
+          SELECT count(*) AS message_count FROM public.get_conversation_messages(:'smoke_conversation_id'::uuid, 10, NULL, NULL);
+          SELECT public.mark_conversation_read(:'smoke_conversation_id'::uuid);
+
+          ROLLBACK;
           SQL

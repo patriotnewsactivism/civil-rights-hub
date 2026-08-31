@@ -1,0 +1,70 @@
+name: Civil Rights Hub Community Authz Live Diagnostic
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+    paths:
+      - .github/workflows/community-authz-live-diagnostic.yml
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      PROJECT_REF: vrdnrbjnitptxrexdlao
+      POOLER_URL: postgresql://postgres.vrdnrbjnitptxrexdlao@aws-0-us-west-2.pooler.supabase.com:5432/postgres
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+      PGPASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inspect profile-dependent authorization
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$PROJECT_REF" = "vrdnrbjnitptxrexdlao"
+          psql "$POOLER_URL" -v ON_ERROR_STOP=1 -P pager=off <<'SQL'
+          \echo '=== Late community migration ledger ==='
+          SELECT version, name FROM supabase_migrations.schema_migrations
+          WHERE version IN ('20260830224500','20260830225000') ORDER BY version;
+
+          \echo '=== user_profiles browser privileges ==='
+          SELECT grantee, privilege_type, column_name
+          FROM information_schema.column_privileges
+          WHERE table_schema='public' AND table_name='user_profiles'
+            AND grantee IN ('anon','authenticated')
+          ORDER BY grantee, privilege_type, column_name;
+
+          \echo '=== post policies ==='
+          SELECT policyname, cmd, roles::text, qual, with_check
+          FROM pg_policies WHERE schemaname='public' AND tablename='posts'
+          ORDER BY policyname;
+
+          \echo '=== user profile policies ==='
+          SELECT policyname, cmd, roles::text, qual, with_check
+          FROM pg_policies WHERE schemaname='public' AND tablename='user_profiles'
+          ORDER BY policyname;
+
+          \echo '=== post triggers/functions ==='
+          SELECT t.tgname, p.proname, p.prosecdef, pg_get_functiondef(p.oid)
+          FROM pg_trigger t JOIN pg_proc p ON p.oid=t.tgfoid
+          WHERE t.tgrelid='public.posts'::regclass AND NOT t.tgisinternal
+          ORDER BY t.tgname;
+
+          \echo '=== direct authenticated post insert without RETURNING ==='
+          SELECT id::text AS smoke_user FROM auth.users ORDER BY created_at,id LIMIT 1 \gset
+          SELECT gen_random_uuid()::text AS smoke_post \gset
+          BEGIN;
+          SET LOCAL ROLE authenticated;
+          SELECT set_config('request.jwt.claim.sub', :'smoke_user', true);
+          SELECT set_config('request.jwt.claim.role', 'authenticated', true);
+          INSERT INTO public.posts(id,user_id,content,post_type,visibility)
+          VALUES (:'smoke_post'::uuid, :'smoke_user'::uuid, 'authz-diagnostic', 'text', 'public');
+          \echo 'insert succeeded; testing feed SELECT'
+          SELECT id FROM public.posts WHERE id=:'smoke_post'::uuid;
+          ROLLBACK;
+          SQL

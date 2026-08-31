@@ -69,11 +69,9 @@ jobs:
             | sed -E 's/^([0-9]{14}).*/\1/' \
             | grep -E '^[0-9]{14}$' \
             | sort -u > /tmp/local_versions.txt
-
           psql "$POOLER_URL" -v ON_ERROR_STOP=1 -Atc \
             "select version from supabase_migrations.schema_migrations order by version" \
             | sort -u > /tmp/remote_versions.txt
-
           comm -23 /tmp/local_versions.txt /tmp/remote_versions.txt > /tmp/pending_versions.txt
           echo "Pending migration versions:"
           cat /tmp/pending_versions.txt || true
@@ -113,6 +111,7 @@ jobs:
           20260831063000
           20260831070000
           20260831072000
+          20260831073000
           EOF
           sed -i 's/^[[:space:]]*//' /tmp/reviewed_pending_allowlist.txt
           sort -u -o /tmp/reviewed_pending_allowlist.txt /tmp/reviewed_pending_allowlist.txt
@@ -124,7 +123,7 @@ jobs:
             exit 2
           fi
 
-          for version in 20260830182000 20260830182500 20260830183000 20260830183500 20260831070000 20260831072000; do
+          for version in 20260830182000 20260830182500 20260830183000 20260830183500 20260831070000 20260831072000 20260831073000; do
             if ! grep -qx "$version" /tmp/remote_versions.txt && ! grep -qx "$version" /tmp/pending_versions.txt; then
               echo "::error::Required production migration $version is neither deployed nor pending"
               exit 3
@@ -138,123 +137,60 @@ jobs:
           supabase migration list --linked --password "$SUPABASE_DB_PASSWORD"
           supabase db push --linked --include-all --dry-run --password "$SUPABASE_DB_PASSWORD"
 
-      - name: Execute private incident migration against production schema and roll back
+      - name: Execute FK index correction against production schema and roll back
         shell: bash
         run: |
           set -euo pipefail
           if psql "$POOLER_URL" -v ON_ERROR_STOP=1 -Atc \
-            "select 1 from supabase_migrations.schema_migrations where version = '20260831070000'" | grep -qx 1; then
-            echo "Private incident migration is already deployed; skipping rollback preflight."
+            "select 1 from supabase_migrations.schema_migrations where version = '20260831073000'" | grep -qx 1; then
+            echo "Private incident FK index migration is already deployed; skipping rollback preflight."
             exit 0
           fi
 
           preflight="$(mktemp)"
           printf '%s\n' 'BEGIN;' > "$preflight"
           sed -E '/^[[:space:]]*(BEGIN|COMMIT);[[:space:]]*$/Id' \
-            supabase/migrations/20260831070000_private_incident_reporting_and_audited_moderation.sql >> "$preflight"
-          cat >> "$preflight" <<'SQL'
-
-          DO $$
-          BEGIN
-            IF to_regclass('public.incident_reports') IS NULL
-               OR to_regclass('public.incident_report_evidence') IS NULL
-               OR to_regclass('public.moderation_audit_log') IS NULL THEN
-              RAISE EXCEPTION 'private incident/moderation tables missing during preflight';
-            END IF;
-            IF to_regprocedure('public.create_incident_report(text,text,timestamp with time zone,text,text,text,text,text,text,text,text,boolean)') IS NULL
-               OR to_regprocedure('public.moderate_content_report(uuid,text,text)') IS NULL
-               OR to_regprocedure('public.review_incident_report(uuid,text,text)') IS NULL THEN
-              RAISE EXCEPTION 'private incident/moderation RPC contract incomplete';
-            END IF;
-            IF has_table_privilege('anon', 'public.incident_reports', 'SELECT')
-               OR has_table_privilege('anon', 'public.incident_report_evidence', 'SELECT')
-               OR has_table_privilege('anon', 'public.moderation_audit_log', 'SELECT') THEN
-              RAISE EXCEPTION 'private incident/moderation data leaked to anonymous role';
-            END IF;
-            IF has_table_privilege('authenticated', 'public.incident_reports', 'INSERT')
-               OR has_table_privilege('authenticated', 'public.incident_reports', 'UPDATE')
-               OR has_table_privilege('authenticated', 'public.incident_reports', 'DELETE') THEN
-              RAISE EXCEPTION 'incident report browser writes bypass server-authoritative RPCs';
-            END IF;
-            IF NOT has_function_privilege('authenticated', 'public.create_incident_report(text,text,timestamp with time zone,text,text,text,text,text,text,text,text,boolean)', 'EXECUTE')
-               OR NOT has_function_privilege('authenticated', 'public.moderate_content_report(uuid,text,text)', 'EXECUTE') THEN
-              RAISE EXCEPTION 'required authenticated RPC execute grants are missing';
-            END IF;
-            IF NOT EXISTS (SELECT 1 FROM storage.buckets WHERE id = 'incident-evidence' AND public = false) THEN
-              RAISE EXCEPTION 'private incident evidence bucket missing or public';
-            END IF;
-            IF NOT EXISTS (
-              SELECT 1 FROM pg_policies
-              WHERE schemaname = 'storage' AND tablename = 'objects'
-                AND policyname = 'incident_evidence_storage_owner_insert'
-            ) THEN
-              RAISE EXCEPTION 'incident evidence upload policy missing';
-            END IF;
-          END $$;
-
-          ROLLBACK;
-          SQL
-
-          psql "$POOLER_URL" -v ON_ERROR_STOP=1 -P pager=off -f "$preflight"
-
-      - name: Execute sensitive policy correction against production schema and roll back
-        shell: bash
-        run: |
-          set -euo pipefail
-          if psql "$POOLER_URL" -v ON_ERROR_STOP=1 -Atc \
-            "select 1 from supabase_migrations.schema_migrations where version = '20260831072000'" | grep -qx 1; then
-            echo "Sensitive policy correction is already deployed; skipping rollback preflight."
-            exit 0
-          fi
-
-          preflight="$(mktemp)"
-          printf '%s\n' 'BEGIN;' > "$preflight"
-          sed -E '/^[[:space:]]*(BEGIN|COMMIT);[[:space:]]*$/Id' \
-            supabase/migrations/20260831072000_canonicalize_sensitive_select_policies.sql >> "$preflight"
+            supabase/migrations/20260831073000_index_private_incident_foreign_keys.sql >> "$preflight"
           cat >> "$preflight" <<'SQL'
 
           DO $$
           DECLARE
             bad text;
           BEGIN
-            WITH browser_roles AS (
-              SELECT oid, rolname FROM pg_roles WHERE rolname IN ('authenticated')
-            ), actions(code, name) AS (
-              VALUES ('r'::"char", 'select')
-            ), collisions AS (
-              SELECT n.nspname, c.relname, br.rolname, a.name, count(*) AS policy_count
-              FROM pg_policy p
-              JOIN pg_class c ON c.oid = p.polrelid
+            WITH uncovered AS (
+              SELECT n.nspname, c.relname, con.conname
+              FROM pg_constraint con
+              JOIN pg_class c ON c.oid = con.conrelid
               JOIN pg_namespace n ON n.oid = c.relnamespace
-              CROSS JOIN browser_roles br
-              CROSS JOIN actions a
-              WHERE n.nspname = 'public'
-                AND c.relname IN ('content_reports', 'incident_reports', 'incident_report_evidence')
-                AND p.polpermissive = true
-                AND p.polcmd IN ('*'::"char", a.code)
-                AND (0::oid = ANY(p.polroles) OR br.oid = ANY(p.polroles))
-              GROUP BY n.nspname, c.relname, br.rolname, a.name
-              HAVING count(*) > 1
+              WHERE con.contype = 'f'
+                AND n.nspname = 'public'
+                AND con.conname IN (
+                  'incident_reports_reviewed_by_fkey',
+                  'moderation_audit_log_content_report_id_fkey',
+                  'moderation_audit_log_incident_report_id_fkey'
+                )
+                AND NOT EXISTS (
+                  SELECT 1
+                  FROM pg_index i
+                  WHERE i.indrelid = con.conrelid
+                    AND i.indisvalid = true
+                    AND i.indisready = true
+                    AND i.indpred IS NULL
+                    AND i.indexprs IS NULL
+                    AND i.indnkeyatts >= cardinality(con.conkey)
+                    AND NOT EXISTS (
+                      SELECT 1
+                      FROM generate_subscripts(con.conkey, 1) s
+                      WHERE i.indkey[s - 1] <> con.conkey[s]
+                    )
+                )
             )
-            SELECT string_agg(format('%I.%I/%s/%s=%s', nspname, relname, rolname, name, policy_count), ', ')
+            SELECT string_agg(format('%I.%I/%I', nspname, relname, conname), ', ' ORDER BY nspname, relname, conname)
             INTO bad
-            FROM collisions;
+            FROM uncovered;
 
             IF bad IS NOT NULL THEN
-              RAISE EXCEPTION 'Sensitive permissive policy collisions remain: %', bad;
-            END IF;
-
-            IF NOT EXISTS (
-              SELECT 1 FROM pg_policies WHERE schemaname='public' AND tablename='content_reports'
-                AND policyname='content_reports_owner_or_staff_select'
-            ) OR NOT EXISTS (
-              SELECT 1 FROM pg_policies WHERE schemaname='public' AND tablename='incident_reports'
-                AND policyname='incident_reports_owner_or_staff_select'
-            ) OR NOT EXISTS (
-              SELECT 1 FROM pg_policies WHERE schemaname='public' AND tablename='incident_report_evidence'
-                AND policyname='incident_evidence_owner_or_staff_select'
-            ) THEN
-              RAISE EXCEPTION 'Canonical sensitive owner/staff policies missing';
+              RAISE EXCEPTION 'Private incident foreign keys remain unindexed during preflight: %', bad;
             END IF;
           END $$;
 
@@ -263,29 +199,21 @@ jobs:
 
           psql "$POOLER_URL" -v ON_ERROR_STOP=1 -P pager=off -f "$preflight"
 
-      - name: Verify rollback left production unchanged
+      - name: Verify FK index preflight left production unchanged
         shell: bash
         run: |
           set -euo pipefail
           if psql "$POOLER_URL" -v ON_ERROR_STOP=1 -Atc \
-            "select 1 from supabase_migrations.schema_migrations where version = '20260831070000'" | grep -qx 1; then
-            echo "private-incident-migration-deployed"
+            "select 1 from supabase_migrations.schema_migrations where version = '20260831073000'" | grep -qx 1; then
+            echo "private-incident-fk-index-migration-deployed"
           else
-            psql "$POOLER_URL" -v ON_ERROR_STOP=1 -Atc \
-              "select case when to_regclass('public.incident_reports') is null then 'clean' else 'unexpected-residue' end" \
-              | grep -qx clean
-          fi
-          if psql "$POOLER_URL" -v ON_ERROR_STOP=1 -Atc \
-            "select 1 from supabase_migrations.schema_migrations where version = '20260831072000'" | grep -qx 1; then
-            echo "canonical-policy-migration-deployed"
-          else
-            test "$(psql "$POOLER_URL" -v ON_ERROR_STOP=1 -Atc "select count(*) from pg_policies where schemaname='public' and policyname in ('content_reports_owner_or_staff_select','incident_reports_owner_or_staff_select','incident_evidence_owner_or_staff_select')")" = "0" || {
-              echo "::error::Canonical policy preflight left production residue"
+            test "$(psql "$POOLER_URL" -v ON_ERROR_STOP=1 -Atc "select count(*) from pg_class where oid in (to_regclass('public.incident_reports_reviewed_by_idx'),to_regclass('public.moderation_audit_log_content_report_id_idx'),to_regclass('public.moderation_audit_log_incident_report_id_idx'))")" = "0" || {
+              echo "::error::FK index preflight left production residue"
               exit 4
             }
           fi
 
-      - name: Verify deployed community contract
+      - name: Verify deployed community and incident contract
         shell: bash
         run: |
           set -euo pipefail
@@ -298,36 +226,53 @@ jobs:
             FROM supabase_migrations.schema_migrations
             WHERE version IN ('20260830182000','20260830182500','20260830183000','20260830183500');
 
-            IF deployed_count = 4 THEN
-              IF to_regclass('public.user_blocks') IS NULL
-                 OR to_regclass('public.user_mutes') IS NULL
-                 OR to_regclass('public.notification_preferences') IS NULL THEN
-                RAISE EXCEPTION 'community privacy tables missing';
-              END IF;
-              IF to_regprocedure('public.get_or_create_direct_conversation(uuid)') IS NULL
-                 OR to_regprocedure('public.create_group_conversation(text,uuid[])') IS NULL
-                 OR to_regprocedure('public.send_conversation_message(uuid,text)') IS NULL
-                 OR to_regprocedure('public.list_my_conversations(integer)') IS NULL
-                 OR to_regprocedure('public.get_conversation_messages(uuid,integer,timestamp with time zone,uuid)') IS NULL THEN
-                RAISE EXCEPTION 'community messaging RPC contract incomplete';
-              END IF;
-              IF has_table_privilege('anon', 'public.user_blocks', 'SELECT')
-                 OR has_table_privilege('anon', 'public.user_mutes', 'SELECT')
-                 OR has_table_privilege('anon', 'public.notification_preferences', 'SELECT') THEN
-                RAISE EXCEPTION 'private community data is anonymous-readable';
-              END IF;
-              IF has_table_privilege('authenticated', 'public.conversation_messages', 'INSERT') THEN
-                RAISE EXCEPTION 'direct browser message inserts remain enabled';
-              END IF;
-              IF NOT has_function_privilege('authenticated', 'public.send_conversation_message(uuid,text)', 'EXECUTE') THEN
-                RAISE EXCEPTION 'message RPC unavailable';
-              END IF;
-              IF has_column_privilege('anon', 'public.user_profiles', 'message_permission', 'SELECT')
-                 OR has_column_privilege('authenticated', 'public.user_profiles', 'message_permission', 'SELECT') THEN
-                RAISE EXCEPTION 'community privacy preference is browser-readable';
-              END IF;
-            ELSE
-              RAISE NOTICE 'Community foundation has %/4 migrations deployed; remaining versions are validated by dry-run.', deployed_count;
+            IF deployed_count <> 4 THEN
+              RAISE EXCEPTION 'community production migrations missing from ledger: expected 4, found %', deployed_count;
+            END IF;
+            IF to_regclass('public.user_blocks') IS NULL
+               OR to_regclass('public.user_mutes') IS NULL
+               OR to_regclass('public.notification_preferences') IS NULL THEN
+              RAISE EXCEPTION 'community privacy tables missing';
+            END IF;
+            IF to_regprocedure('public.get_or_create_direct_conversation(uuid)') IS NULL
+               OR to_regprocedure('public.create_group_conversation(text,uuid[])') IS NULL
+               OR to_regprocedure('public.send_conversation_message(uuid,text)') IS NULL
+               OR to_regprocedure('public.list_my_conversations(integer)') IS NULL
+               OR to_regprocedure('public.get_conversation_messages(uuid,integer,timestamp with time zone,uuid)') IS NULL THEN
+              RAISE EXCEPTION 'community messaging RPC contract incomplete';
+            END IF;
+            IF has_table_privilege('anon', 'public.user_blocks', 'SELECT')
+               OR has_table_privilege('anon', 'public.user_mutes', 'SELECT')
+               OR has_table_privilege('anon', 'public.notification_preferences', 'SELECT') THEN
+              RAISE EXCEPTION 'private community data is anonymous-readable';
+            END IF;
+            IF has_table_privilege('authenticated', 'public.conversation_messages', 'INSERT') THEN
+              RAISE EXCEPTION 'direct browser message inserts remain enabled';
+            END IF;
+            IF NOT has_function_privilege('authenticated', 'public.send_conversation_message(uuid,text)', 'EXECUTE') THEN
+              RAISE EXCEPTION 'message RPC unavailable';
+            END IF;
+            IF has_column_privilege('anon', 'public.user_profiles', 'message_permission', 'SELECT')
+               OR has_column_privilege('authenticated', 'public.user_profiles', 'message_permission', 'SELECT') THEN
+              RAISE EXCEPTION 'community privacy preference is browser-readable';
+            END IF;
+
+            IF NOT EXISTS (SELECT 1 FROM supabase_migrations.schema_migrations WHERE version = '20260831070000')
+               OR NOT EXISTS (SELECT 1 FROM supabase_migrations.schema_migrations WHERE version = '20260831072000') THEN
+              RAISE EXCEPTION 'private incident production foundation is incomplete';
+            END IF;
+            IF to_regclass('public.incident_reports') IS NULL
+               OR to_regclass('public.incident_report_evidence') IS NULL
+               OR to_regclass('public.moderation_audit_log') IS NULL THEN
+              RAISE EXCEPTION 'private incident/moderation tables missing';
+            END IF;
+            IF has_table_privilege('anon', 'public.incident_reports', 'SELECT')
+               OR has_table_privilege('authenticated', 'public.incident_reports', 'INSERT')
+               OR has_table_privilege('authenticated', 'public.incident_reports', 'UPDATE') THEN
+              RAISE EXCEPTION 'private incident privilege boundary is unsafe';
+            END IF;
+            IF NOT EXISTS (SELECT 1 FROM storage.buckets WHERE id = 'incident-evidence' AND public = false) THEN
+              RAISE EXCEPTION 'incident evidence bucket is missing or public';
             END IF;
           END $$;
           SQL
@@ -411,6 +356,7 @@ jobs:
           20260831063000
           20260831070000
           20260831072000
+          20260831073000
           EOF
           sed -i 's/^[[:space:]]*//' /tmp/reviewed_pending_allowlist.txt
           sort -u -o /tmp/reviewed_pending_allowlist.txt /tmp/reviewed_pending_allowlist.txt
@@ -434,7 +380,7 @@ jobs:
           set -euo pipefail
           supabase db push --linked --include-all --password "$SUPABASE_DB_PASSWORD"
 
-      - name: Verify community and private incident production foundation
+      - name: Verify community, incident, and index production foundation
         shell: bash
         run: |
           set -euo pipefail
@@ -478,15 +424,10 @@ jobs:
               RAISE EXCEPTION 'community privacy preference is browser-readable';
             END IF;
 
-            IF NOT EXISTS (
-              SELECT 1 FROM supabase_migrations.schema_migrations WHERE version = '20260831070000'
-            ) THEN
-              RAISE EXCEPTION 'private incident production migration missing from ledger';
-            END IF;
-            IF NOT EXISTS (
-              SELECT 1 FROM supabase_migrations.schema_migrations WHERE version = '20260831072000'
-            ) THEN
-              RAISE EXCEPTION 'sensitive policy canonicalization migration missing from ledger';
+            IF NOT EXISTS (SELECT 1 FROM supabase_migrations.schema_migrations WHERE version = '20260831070000')
+               OR NOT EXISTS (SELECT 1 FROM supabase_migrations.schema_migrations WHERE version = '20260831072000')
+               OR NOT EXISTS (SELECT 1 FROM supabase_migrations.schema_migrations WHERE version = '20260831073000') THEN
+              RAISE EXCEPTION 'private incident production migrations are incomplete';
             END IF;
             IF to_regclass('public.incident_reports') IS NULL
                OR to_regclass('public.incident_report_evidence') IS NULL
@@ -501,17 +442,10 @@ jobs:
             IF NOT EXISTS (SELECT 1 FROM storage.buckets WHERE id = 'incident-evidence' AND public = false) THEN
               RAISE EXCEPTION 'incident evidence bucket is missing or public';
             END IF;
-            IF NOT EXISTS (
-              SELECT 1 FROM pg_policies WHERE schemaname='public' AND tablename='content_reports'
-                AND policyname='content_reports_owner_or_staff_select'
-            ) OR NOT EXISTS (
-              SELECT 1 FROM pg_policies WHERE schemaname='public' AND tablename='incident_reports'
-                AND policyname='incident_reports_owner_or_staff_select'
-            ) OR NOT EXISTS (
-              SELECT 1 FROM pg_policies WHERE schemaname='public' AND tablename='incident_report_evidence'
-                AND policyname='incident_evidence_owner_or_staff_select'
-            ) THEN
-              RAISE EXCEPTION 'canonical sensitive owner/staff policies missing';
+            IF to_regclass('public.incident_reports_reviewed_by_idx') IS NULL
+               OR to_regclass('public.moderation_audit_log_content_report_id_idx') IS NULL
+               OR to_regclass('public.moderation_audit_log_incident_report_id_idx') IS NULL THEN
+              RAISE EXCEPTION 'private incident foreign-key indexes are missing';
             END IF;
           END $$;
           SQL
@@ -531,9 +465,6 @@ jobs:
         run: |
           set -euo pipefail
           for fn in case-search send-weekly-digest check-foia-deadlines send-foia-request track-foia-open legal-assistant upload-incident-evidence; do
-            if [[ -d "$fn" ]]; then
-              echo "Unexpected function path: $fn"
-            fi
             if [[ -d "supabase/functions/$fn" ]]; then
               supabase functions deploy "$fn" --project-ref "$PROJECT_REF"
             fi

@@ -14,6 +14,7 @@ on:
     paths:
       - supabase/migrations/**
       - supabase/tests/**
+      - supabase/functions/**
       - .github/workflows/supabase-migrate-now.yml
   workflow_dispatch:
 
@@ -106,6 +107,11 @@ jobs:
           20260830183500
           20260830224500
           20260830225000
+          20260831050000
+          20260831053000
+          20260831060000
+          20260831063000
+          20260831070000
           EOF
           sed -i 's/^[[:space:]]*//' /tmp/reviewed_pending_allowlist.txt
           sort -u -o /tmp/reviewed_pending_allowlist.txt /tmp/reviewed_pending_allowlist.txt
@@ -117,9 +123,9 @@ jobs:
             exit 2
           fi
 
-          for version in 20260830182000 20260830182500 20260830183000 20260830183500; do
+          for version in 20260830182000 20260830182500 20260830183000 20260830183500 20260831070000; do
             if ! grep -qx "$version" /tmp/remote_versions.txt && ! grep -qx "$version" /tmp/pending_versions.txt; then
-              echo "::error::Required community migration $version is neither deployed nor pending"
+              echo "::error::Required production migration $version is neither deployed nor pending"
               exit 3
             fi
           done
@@ -130,6 +136,78 @@ jobs:
           set -euo pipefail
           supabase migration list --linked --password "$SUPABASE_DB_PASSWORD"
           supabase db push --linked --include-all --dry-run --password "$SUPABASE_DB_PASSWORD"
+
+      - name: Execute private incident migration against production schema and roll back
+        shell: bash
+        run: |
+          set -euo pipefail
+          if psql "$POOLER_URL" -v ON_ERROR_STOP=1 -Atc \
+            "select 1 from supabase_migrations.schema_migrations where version = '20260831070000'" | grep -qx 1; then
+            echo "Private incident migration is already deployed; skipping rollback preflight."
+            exit 0
+          fi
+
+          preflight="$(mktemp)"
+          printf '%s\n' 'BEGIN;' > "$preflight"
+          sed -E '/^[[:space:]]*(BEGIN|COMMIT);[[:space:]]*$/Id' \
+            supabase/migrations/20260831070000_private_incident_reporting_and_audited_moderation.sql >> "$preflight"
+          cat >> "$preflight" <<'SQL'
+
+          DO $$
+          BEGIN
+            IF to_regclass('public.incident_reports') IS NULL
+               OR to_regclass('public.incident_report_evidence') IS NULL
+               OR to_regclass('public.moderation_audit_log') IS NULL THEN
+              RAISE EXCEPTION 'private incident/moderation tables missing during preflight';
+            END IF;
+            IF to_regprocedure('public.create_incident_report(text,text,timestamp with time zone,text,text,text,text,text,text,text,text,boolean)') IS NULL
+               OR to_regprocedure('public.moderate_content_report(uuid,text,text)') IS NULL
+               OR to_regprocedure('public.review_incident_report(uuid,text,text)') IS NULL THEN
+              RAISE EXCEPTION 'private incident/moderation RPC contract incomplete';
+            END IF;
+            IF has_table_privilege('anon', 'public.incident_reports', 'SELECT')
+               OR has_table_privilege('anon', 'public.incident_report_evidence', 'SELECT')
+               OR has_table_privilege('anon', 'public.moderation_audit_log', 'SELECT') THEN
+              RAISE EXCEPTION 'private incident/moderation data leaked to anonymous role';
+            END IF;
+            IF has_table_privilege('authenticated', 'public.incident_reports', 'INSERT')
+               OR has_table_privilege('authenticated', 'public.incident_reports', 'UPDATE')
+               OR has_table_privilege('authenticated', 'public.incident_reports', 'DELETE') THEN
+              RAISE EXCEPTION 'incident report browser writes bypass server-authoritative RPCs';
+            END IF;
+            IF NOT has_function_privilege('authenticated', 'public.create_incident_report(text,text,timestamp with time zone,text,text,text,text,text,text,text,text,boolean)', 'EXECUTE')
+               OR NOT has_function_privilege('authenticated', 'public.moderate_content_report(uuid,text,text)', 'EXECUTE') THEN
+              RAISE EXCEPTION 'required authenticated RPC execute grants are missing';
+            END IF;
+            IF NOT EXISTS (SELECT 1 FROM storage.buckets WHERE id = 'incident-evidence' AND public = false) THEN
+              RAISE EXCEPTION 'private incident evidence bucket missing or public';
+            END IF;
+            IF NOT EXISTS (
+              SELECT 1 FROM pg_policies
+              WHERE schemaname = 'storage' AND tablename = 'objects'
+                AND policyname = 'incident_evidence_storage_owner_insert'
+            ) THEN
+              RAISE EXCEPTION 'incident evidence upload policy missing';
+            END IF;
+          END $$;
+
+          ROLLBACK;
+          SQL
+
+          psql "$POOLER_URL" -v ON_ERROR_STOP=1 -P pager=off -f "$preflight"
+
+      - name: Verify rollback left production unchanged
+        shell: bash
+        run: |
+          set -euo pipefail
+          if psql "$POOLER_URL" -v ON_ERROR_STOP=1 -Atc \
+            "select 1 from supabase_migrations.schema_migrations where version = '20260831070000'" | grep -qx 1; then
+            echo "already-deployed"
+          else
+            psql "$POOLER_URL" -v ON_ERROR_STOP=1 -Atc \
+              "select case when to_regclass('public.incident_reports') is null then 'clean' else 'unexpected-residue' end" \
+              | grep -qx clean
+          fi
 
       - name: Verify deployed community contract
         shell: bash
@@ -251,6 +329,11 @@ jobs:
           20260830183500
           20260830224500
           20260830225000
+          20260831050000
+          20260831053000
+          20260831060000
+          20260831063000
+          20260831070000
           EOF
           sed -i 's/^[[:space:]]*//' /tmp/reviewed_pending_allowlist.txt
           sort -u -o /tmp/reviewed_pending_allowlist.txt /tmp/reviewed_pending_allowlist.txt
@@ -274,7 +357,7 @@ jobs:
           set -euo pipefail
           supabase db push --linked --include-all --password "$SUPABASE_DB_PASSWORD"
 
-      - name: Verify community production foundation
+      - name: Verify community and private incident production foundation
         shell: bash
         run: |
           set -euo pipefail
@@ -317,6 +400,25 @@ jobs:
                OR has_column_privilege('authenticated', 'public.user_profiles', 'message_permission', 'SELECT') THEN
               RAISE EXCEPTION 'community privacy preference is browser-readable';
             END IF;
+
+            IF NOT EXISTS (
+              SELECT 1 FROM supabase_migrations.schema_migrations WHERE version = '20260831070000'
+            ) THEN
+              RAISE EXCEPTION 'private incident production migration missing from ledger';
+            END IF;
+            IF to_regclass('public.incident_reports') IS NULL
+               OR to_regclass('public.incident_report_evidence') IS NULL
+               OR to_regclass('public.moderation_audit_log') IS NULL THEN
+              RAISE EXCEPTION 'private incident/moderation tables missing';
+            END IF;
+            IF has_table_privilege('anon', 'public.incident_reports', 'SELECT')
+               OR has_table_privilege('authenticated', 'public.incident_reports', 'INSERT')
+               OR has_table_privilege('authenticated', 'public.incident_reports', 'UPDATE') THEN
+              RAISE EXCEPTION 'private incident privilege boundary is unsafe';
+            END IF;
+            IF NOT EXISTS (SELECT 1 FROM storage.buckets WHERE id = 'incident-evidence' AND public = false) THEN
+              RAISE EXCEPTION 'incident evidence bucket is missing or public';
+            END IF;
           END $$;
           SQL
 
@@ -326,12 +428,15 @@ jobs:
           set -euo pipefail
           psql "$POOLER_URL" -v ON_ERROR_STOP=1 -f supabase/tests/provenance_gate_smoke.sql
           psql "$POOLER_URL" -v ON_ERROR_STOP=1 -f supabase/tests/security_hardening_smoke.sql
+          if [[ -f supabase/tests/private_incident_reporting_smoke.sql ]]; then
+            psql "$POOLER_URL" -v ON_ERROR_STOP=1 -f supabase/tests/private_incident_reporting_smoke.sql
+          fi
 
       - name: Deploy fail-closed Edge Functions
         shell: bash
         run: |
           set -euo pipefail
-          for fn in case-search send-weekly-digest check-foia-deadlines send-foia-request track-foia-open legal-assistant; do
+          for fn in case-search send-weekly-digest check-foia-deadlines send-foia-request track-foia-open legal-assistant upload-incident-evidence; do
             if [[ -d "supabase/functions/$fn" ]]; then
               supabase functions deploy "$fn" --project-ref "$PROJECT_REF"
             fi

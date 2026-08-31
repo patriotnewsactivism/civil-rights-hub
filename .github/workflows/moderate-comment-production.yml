@@ -29,43 +29,34 @@ jobs:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    env:
-      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
     steps:
       - name: Checkout pull request
         uses: actions/checkout@v4
 
-      - name: Require production function credentials
-        shell: bash
-        run: |
-          set -euo pipefail
-          test -n "$SUPABASE_ACCESS_TOKEN" || { echo "::error::Missing SUPABASE_ACCESS_TOKEN repository secret"; exit 1; }
-          test "$PROJECT_REF" = "vrdnrbjnitptxrexdlao" || { echo "::error::Unexpected Supabase project ref"; exit 1; }
-
-      - name: Install Supabase CLI
-        uses: supabase/setup-cli@v1
+      - name: Set up Deno
+        uses: denoland/setup-deno@v2
         with:
-          version: latest
+          deno-version: v2.x
 
-      - name: Bundle hardened function
+      - name: Type-check hardened function
         shell: bash
         run: |
           set -euo pipefail
-          supabase functions serve moderate-comment --env-file /dev/null >/tmp/moderate-comment-serve.log 2>&1 &
-          pid=$!
-          trap 'kill "$pid" 2>/dev/null || true' EXIT
-          for _ in {1..30}; do
-            if grep -q "Serving functions on" /tmp/moderate-comment-serve.log; then
-              exit 0
-            fi
-            if ! kill -0 "$pid" 2>/dev/null; then
-              cat /tmp/moderate-comment-serve.log
-              exit 1
-            fi
-            sleep 1
-          done
-          cat /tmp/moderate-comment-serve.log
-          exit 1
+          deno check supabase/functions/moderate-comment/index.ts
+
+      - name: Verify fail-closed authorization contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          file=supabase/functions/moderate-comment/index.ts
+          grep -q 'service.auth.getUser(token)' "$file"
+          grep -q 'comment.user_id !== actor.id' "$file"
+          grep -q 'comment_moderation_verdicts' "$file"
+          grep -q 'Authentication required' "$file"
+          if grep -q '"Access-Control-Allow-Origin": "\*"' "$file"; then
+            echo "::error::moderate-comment restored wildcard CORS"
+            exit 1
+          fi
 
   deploy:
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'

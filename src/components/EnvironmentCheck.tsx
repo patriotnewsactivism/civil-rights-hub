@@ -79,16 +79,16 @@ export const EnvironmentCheck = ({ children }: EnvironmentCheckProps) => {
           </ul>
         </div>
 
-        {/* Instructions for Vercel */}
+        {/* Instructions for Netlify */}
         <div className="border-t border-gray-200 pt-6">
           <h2 className="font-semibold text-gray-900 mb-3">
-            For Vercel Administrators:
+            For Netlify Administrators:
           </h2>
           <ol className="list-decimal list-inside space-y-2 text-sm text-gray-700 mb-4">
-            <li>Go to your Vercel project dashboard</li>
-            <li>Navigate to <strong>Settings → Environment Variables</strong></li>
-            <li>Add both required variables (see VERCEL_SETUP.md for values)</li>
-            <li>Redeploy the application</li>
+            <li>Go to your Netlify site dashboard</li>
+            <li>Navigate to <strong>Site configuration → Environment variables</strong></li>
+            <li>Add both required variables (see docs/HOSTING.md for details)</li>
+            <li>Trigger a new deploy</li>
           </ol>
 
           <div className="flex gap-3">
@@ -101,13 +101,13 @@ export const EnvironmentCheck = ({ children }: EnvironmentCheckProps) => {
             </button>
 
             <a
-              href="https://vercel.com/docs/projects/environment-variables"
+              href="https://docs.netlify.com/environment-variables/overview/"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 bg-gray-200 hover:bg-gray-300 text-gray-800 px-4 py-2 rounded-md font-medium transition-colors text-sm"
             >
               <ExternalLink className="h-4 w-4" />
-              Vercel Docs
+              Netlify Docs
             </a>
           </div>
         </div>

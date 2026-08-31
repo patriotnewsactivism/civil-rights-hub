@@ -12,9 +12,9 @@ import { ExternalLink, Server, Shield, Database, GitBranch, ReceiptText, AlertTr
 const INFRASTRUCTURE = [
   {
     icon: Server,
-    item: "Vercel",
+    item: "Netlify",
     role: "Web hosting and deployment",
-    evidence: "Repository deployment integration and live production deployment",
+    evidence: "netlify.toml deployment configuration and live production deployment",
     status: "Confirmed",
   },
   {

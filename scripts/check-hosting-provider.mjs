@@ -18,6 +18,13 @@ if (!fs.existsSync(netlifyPath)) {
   }
 }
 
+const forbiddenFiles = ['vercel.json', 'VERCEL_SETUP.md', '.vercel'];
+for (const file of forbiddenFiles) {
+  if (fs.existsSync(path.join(root, file))) {
+    violations.push(`${file}: prohibited Vercel deployment artifact must not exist in this repository`);
+  }
+}
+
 const forbiddenPatterns = [
   /@vercel\//i,
   /\bvercel\s+(deploy|build|pull|link|rollback|promote)\b/i,
